@@ -8,15 +8,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/khach-hang/")
+@RequestMapping("/khach-hang")
 public class QLKhachHangController {
 
     @Autowired
     private KhachHangRepo repo;
 
-    @GetMapping("hien-thi")
+    @GetMapping("/hien-thi")
     public String hienThiDanhSach(Model model){
         model.addAttribute("lists", repo.findAll());
-        return "QuanLyKhachHang";
+        return "admin/ql_khach_hang/QuanLyKhachHang";
     }
 }
