@@ -20,6 +20,6 @@ public class BanHangController {
     public String hienThi(Model model) {
         List<SanPham> productList = banHangRepo.findAll();
         model.addAttribute("productList", productList);
-        return "employee/ban_hang/test"; // Your JSP file path
+        return "employee/ban_hang/index"; // Your JSP file path
     }
 }
