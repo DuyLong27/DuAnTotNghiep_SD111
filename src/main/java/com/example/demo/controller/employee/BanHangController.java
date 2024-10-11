@@ -13,13 +13,13 @@ import java.util.List;
 @Controller
 @RequestMapping("/ban-hang")
 public class BanHangController {
-//    @Autowired
-//    BanHangRepo banHangRepo;
-//
-//    @GetMapping("/hien-thi")
-//    public String hienThi(Model model) {
-//        List<SanPham> productList = banHangRepo.findAll();
-//        model.addAttribute("productList", productList);
-//        return "employee/ban_hang/index"; // Your JSP file path
-//    }
+    @Autowired
+    BanHangRepo banHangRepo;
+
+    @GetMapping("/hien-thi")
+    public String hienThi(Model model) {
+        List<SanPham> productList = banHangRepo.findAll();
+        model.addAttribute("productList", productList);
+        return "employee/ban_hang/index"; // Your JSP file path
+    }
 }
