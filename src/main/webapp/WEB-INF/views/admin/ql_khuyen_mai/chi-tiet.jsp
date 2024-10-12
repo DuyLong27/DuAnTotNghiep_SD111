@@ -84,7 +84,7 @@
 <nav class="navbar navbar-expand-sm navbar-dark shadow-lg" style="background-color: #0B745E; height: 80px;">
     <div class="container d-flex align-items-center">
         <a href="#" class="navbar-brand d-flex align-items-center">
-            <img src="../../lib/logo_xanh.png" style="height: 60px; margin-right: 10px;" alt="Logo">
+            <img src="../../../lib/logo_xanh.png" style="height: 60px; margin-right: 10px;" alt="Logo">
         </a>
 
         <ul class="navbar-nav mx-auto" style="flex-grow: 1; justify-content: center; gap: 20px;">
@@ -171,7 +171,7 @@
         </div>
     </form>
     <div class="mt-3 text-center">
-    <a href="/khuyen-mai/hien-thi" class="btn btn-secondary btn-sm">Quay lại</a>
+        <a href="/khuyen-mai/hien-thi" class="btn btn-secondary btn-sm">Quay lại</a>
     </div>
 </div>
 

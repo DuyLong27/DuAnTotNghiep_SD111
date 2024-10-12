@@ -23,6 +23,10 @@
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
         /* Dropdown Custom */
         .dropdown-custom {
             position: relative;
@@ -76,6 +80,141 @@
                 flex-direction: column;
             }
         }
+
+        .filter-section {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+
+        /* Table */
+        table.table {
+            background-color: white;
+            border-collapse: separate;
+            border-spacing: 0 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        table thead th {
+            background-color: #0B745E;
+            font-size: 16px;
+            padding: 15px;
+        }
+        table tbody tr {
+            transition: background-color 0.3s;
+        }
+        table tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+        .table td, .table th {
+            vertical-align: middle;
+        }
+        /* Buttons */
+        /* Adjust the Action Column Width */
+        th:nth-child(7), td:nth-child(7) {
+            width: 100px; /* Adjust as per your needs */
+        }
+
+        /* Ensure Buttons Stay Compact */
+        .btn-custom {
+            width: 45px; /* Smaller width */
+            height: 28px; /* Smaller height */
+            font-size: 11px; /* Smaller font size */
+            padding: 4px 6px; /* Reduce padding */
+        }
+
+        .d-flex.gap-2 .btn-custom {
+            margin-right: 4px; /* Reduce gap between buttons */
+        }
+
+        @media (max-width: 768px) {
+            .btn-custom {
+                width: 60px; /* Adjust further for small screens */
+                height: 25px;
+            }
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #0B745E;
+            border-color: #0B745E;
+        }
+
+        /* Nút với đường viền */
+        .btn-outline-custom {
+            color: #0B745E; /* Màu chữ */
+            border: 2px solid #0B745E; /* Đường viền */
+            background-color: transparent; /* Không có màu nền */
+            border-radius: 5px;
+            padding: 6px 12px; /* Padding hợp lý */
+            transition: background-color 0.3s, color 0.3s; /* Hiệu ứng mượt khi hover */
+            font-size: 14px; /* Cỡ chữ */
+        }
+
+        /* Hiệu ứng hover */
+        .btn-outline-custom:hover {
+            background-color: #0B745E; /* Màu nền khi hover */
+            color: white; /* Màu chữ khi hover */
+            text-decoration: none; /* Xóa gạch chân nếu là link */
+        }
+
+        /* Custom style for the Filter and Create buttons */
+        .btn-custom-action {
+            width: 90px; /* Adjust the width to fit your button text */
+            height: 35px; /* Adjust the height for consistency */
+            font-size: 14px; /* Adjust the font size */
+            padding: 5px 10px; /* Set padding for a balanced look */
+            border: 1px solid #0B745E; /* Add a border to match the theme */
+            background-color: transparent; /* No background color */
+            color: #0B745E; /* Text color matching your theme */
+            transition: background-color 0.3s ease; /* Smooth transition */
+        }
+
+        /* Hover effect for the buttons */
+        .btn-custom-action:hover {
+            background-color: rgba(11, 116, 94, 0.1); /* Light background on hover */
+            color: #0B745E; /* Text color stays the same */
+        }
+
+        /* Custom style for the Filter and Create buttons with full background color */
+        .btn-filter {
+            width: 90px; /* Adjust width to fit button text */
+            height: 35px; /* Set consistent height */
+            font-size: 14px; /* Font size for the buttons */
+            padding: 5px 10px; /* Add padding for space inside the button */
+            background-color: #0B745E; /* Dark green background for "Lọc" */
+            color: white; /* White text */
+            border: none; /* Remove border */
+            border-radius: 5px; /* Slightly rounded corners */
+            transition: background-color 0.3s ease; /* Smooth hover transition */
+        }
+
+        /* Hover effect for "Lọc" button */
+        .btn-filter:hover {
+            background-color: #095F4D; /* Darker green on hover */
+        }
+
+        /* Custom style for "Tạo mới" button with full green background */
+        .btn-create {
+            width: 90px;
+            height: 35px;
+            font-size: 14px;
+            padding: 5px 10px;
+            background-color: #28a745; /* Green background */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Hover effect for "Tạo mới" button */
+        .btn-create:hover {
+            background-color: #218838; /* Darker green on hover */
+        }
+
+
+
 
     </style>
 
@@ -131,7 +270,7 @@
             <li class="nav-item dropdown-custom">
                 <a href="#" class="nav-link text-light">Tài khoản</a>
                 <ul class="dropdown-menu-custom">
-                    <li><a class="dropdown-item" href="#">Thông tin</a></li>
+                    <li><a class="dropdown-item" href="">Thông tin</a></li>
                     <li><a class="dropdown-item" href="#">Đăng xuất</a></li>
                 </ul>
             </li>
@@ -146,22 +285,61 @@
 <%--body--%>
 <div class="container mt-3">
     <div class="row">
-        <div class="d-flex justify-content-end mb-3">
-            <a href="/khuyen-mai/them" class="btn btn-success">Tạo mới</a>
+
+        <div class="col-md-3 filter-section">
+            <h5>Bộ lọc khuyến mãi</h5>
+            <form action="/khuyen-mai/hien-thi" method="get">
+                <div class="mb-3">
+                    <label for="maKhuyenMai" class="form-label">Mã khuyến mãi</label>
+                    <input type="text" class="form-control" id="maKhuyenMai" name="maKhuyenMai">
+                </div>
+                <div class="mb-3">
+                    <label for="tenKhuyenMai" class="form-label">Tên khuyến mãi</label>
+                    <input type="text" class="form-control" id="tenKhuyenMai" name="tenKhuyenMai">
+                </div>
+                <div class="mb-3">
+                    <label for="giaTriKhuyenMai" class="form-label">Giá trị khuyến mãi (Từ - Đến)</label>
+                    <div class="d-flex gap-2">
+                        <input type="number" class="form-control" name="giaTriMin" placeholder="Từ">
+                        <input type="number" class="form-control" name="giaTriMax" placeholder="Đến">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="ngayBatDau" class="form-label">Ngày bắt đầu</label>
+                    <input type="date" class="form-control" id="ngayBatDau" name="ngayBatDau">
+                </div>
+                <div class="mb-3">
+                    <label for="ngayKetThuc" class="form-label">Ngày kết thúc</label>
+                    <input type="date" class="form-control" id="ngayKetThuc" name="ngayKetThuc">
+                </div>
+                <button type="submit" class="btn btn-filter">Lọc</button>
+                <a href="/khuyen-mai/hien-thi" class="btn btn-secondary">Xóa lọc</a>
+            </form>
         </div>
-        <table class="table table-striped table-hover table-bordered">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Mã khuyến mãi</th>
-                <th>Tên khuyến mãi</th>
-                <th>Giá trị khuyến mãi</th>
-                <th>Ngày bắt đầu</th>
-                <th>Ngày kết thúc</th>
-                <th>Hành Động</th>
-            </tr>
-            </thead>
-            <tbody>
+
+        <div class="col-md-9">
+            <div class="d-flex justify-content-end mb-3">
+
+                <button type="button" class="btn btn-create" data-bs-toggle="modal" data-bs-target="#addPromotionModal">
+                    Tạo mới
+                </button>
+
+            </div>
+
+            <table class="table table-striped table-hover table-bordered text-center">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Mã khuyến mãi</th>
+                    <th>Tên khuyến mãi</th>
+                    <th>Giá trị khuyến mãi</th>
+                    <th>Ngày bắt đầu</th>
+                    <th>Ngày kết thúc</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                </tr>
+                </thead>
+                <tbody>
                 <c:forEach items="${listKhuyenMai}" var="item">
                     <tr>
                         <td>${item.idKhuyenMai}</td>
@@ -170,22 +348,99 @@
                         <td>${item.giaTriKhuyenMai}</td>
                         <td>${item.ngayBatDau}</td>
                         <td>${item.ngayKetThuc}</td>
-                        <td>
-                            <a href="/khuyen-mai/chi-tiet?id=${item.idKhuyenMai}" class="btn btn-primary btn-sm">
-                                <i class="fa fa-info-circle"></i> Chi Tiết
-                            </a>
-                            <a href="/khuyen-mai/sua/${item.idKhuyenMai}" class="btn btn-warning btn-sm">
-                                <i class="fa fa-edit"></i> Sửa
-                            </a>
-                            <a href="" class="btn btn-danger btn-sm">
-                                <i class="fa fa-trash"></i> Xóa
-                            </a>
-
+                        <td>${item.tinhTrang ==1?"Đang hoạt động":"Không hoạt động"}</td>
+                        <td style="width: 100px;">
+                            <div class="d-flex justify-content-center gap-2">
+                                <a href="/khuyen-mai/chi-tiet?id=${item.idKhuyenMai}" class="btn btn-outline-custom">
+                                    <i class="fa fa-info-circle"></i>
+                                </a>
+                                <a href="/khuyen-mai/sua/${item.idKhuyenMai}" class="btn btn-outline-custom">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+                                <a href="/khuyen-mai/xoa?id=${item.idKhuyenMai}" class="btn btn-outline-custom">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </div>
                         </td>
                     </tr>
                 </c:forEach>
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item ${currentPage == 0 ? 'disabled' : ''}">
+                        <a class="page-link" href="?page=${currentPage - 1}&size=5">Previous</a>
+                    </li>
+                    <c:forEach var="i" begin="0" end="${totalPages - 1}">
+                        <li class="page-item ${currentPage == i ? 'active' : ''}">
+                            <a class="page-link" href="?page=${i}&size=5">${i + 1}</a>
+                        </li>
+                    </c:forEach>
+                    <li class="page-item ${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                        <a class="page-link" href="?page=${currentPage + 1}&size=5">Next</a>
+                    </li>
+                </ul>
+            </nav>
+
+        </div>
+    </div>
+</div>
+
+<!-- Pop-up -->
+<div class="modal fade" id="addPromotionModal" tabindex="-1" aria-labelledby="addPromotionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addPromotionModalLabel">Thêm Khuyến Mãi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/khuyen-mai/them" method="post">
+                    <div class="mb-3">
+                        <label class="form-label">Mã khuyến mãi</label>
+                        <input type="text" class="form-control" name="maKhuyenMai">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Tên khuyến mãi</label>
+                        <input type="text" class="form-control" name="tenKhuyenMai">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Giá trị khuyến mãi</label>
+                        <input type="text" class="form-control" name="giaTriKhuyenMai">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Ngày bắt đầu</label>
+                        <input type="date" class="form-control" name="ngayBatDau">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Ngày kết thúc</label>
+                        <input type="date" class="form-control" name="ngayKetThuc">
+                    </div>
+                    <div class="mb-3">
+                        <p>Tình trạng</p>
+                        <div class="d-flex">
+                            <div class="form-check me-3">
+                                <input class="form-check-input" type="radio" name="tinhTrang" value="1" id="dangHoatDong">
+                                <label class="form-check-label" for="dangHoatDong">
+                                    Đang hoạt động
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="tinhTrang" value="0" id="khongHoatDong">
+                                <label class="form-check-label" for="khongHoatDong">
+                                    Không hoạt động
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 text-center">
+                        <a href="/khuyen-mai/hien-thi" class="btn btn-secondary" data-bs-dismiss="modal">Quay lại</a>
+                        <button type="submit" class="btn btn-success">Tạo mới</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 

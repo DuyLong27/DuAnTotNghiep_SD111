@@ -84,7 +84,7 @@
 <nav class="navbar navbar-expand-sm navbar-dark shadow-lg" style="background-color: #0B745E; height: 80px;">
     <div class="container d-flex align-items-center">
         <a href="#" class="navbar-brand d-flex align-items-center">
-            <img src="../../lib/logo_xanh.png" style="height: 60px; margin-right: 10px;" alt="Logo">
+            <img src="../../../lib/logo_xanh.png" style="height: 60px; margin-right: 10px;" alt="Logo">
         </a>
 
         <ul class="navbar-nav mx-auto" style="flex-grow: 1; justify-content: center; gap: 20px;">
@@ -145,36 +145,38 @@
 <%--body--%>
 <div class="container mt-3">
     <h2 class="d-flex justify-content-center">CHI TIẾT KHUYẾN MÃI</h2>
-    <form action="/khuyen-mai/sua/${khuyenMaiDetail.idKhuyenMai}" method="post">
+    <form action="/khuyen-mai/sua/${khuyenMaiEdit.idKhuyenMai}" method="post">
         <div class="mb-3">
             <label class="form-label">ID</label>
-            <input type="text" class="form-control" name="idKhuyenMai" value="${khuyenMaiDetail.idKhuyenMai}" disabled>
+            <input type="text" class="form-control" name="idKhuyenMai" readonly value="${khuyenMaiEdit.idKhuyenMai}" disabled>
         </div>
         <div class="mb-3">
             <label class="form-label">Mã khuyến mãi</label>
-            <input type="text" class="form-control" name="maKhuyenMai" value="${khuyenMaiDetail.maKhuyenMai}">
+            <input type="text" class="form-control" name="maKhuyenMai" value="${khuyenMaiEdit.maKhuyenMai}">
         </div>
         <div class="mb-3">
             <label class="form-label">Tên khuyến mãi</label>
-            <input type="text" class="form-control" name="tenKhuyenMai" value="${khuyenMaiDetail.tenKhuyenMai}">
+            <input type="text" class="form-control" name="tenKhuyenMai" value="${khuyenMaiEdit.tenKhuyenMai}">
         </div>
         <div class="mb-3">
             <label class="form-label">Giá trị khuyến mãi</label>
-            <input type="text" class="form-control" name="giaTriKhuyenMai" value="${khuyenMaiDetail.giaTriKhuyenMai}">
+            <input type="text" class="form-control" name="giaTriKhuyenMai" value="${khuyenMaiEdit.giaTriKhuyenMai}">
         </div>
         <div class="mb-3">
             <label class="form-label">Ngày bắt đầu</label>
-            <input type="text" class="form-control" name="ngayBatDau" value="${khuyenMaiDetail.ngayBatDau}">
+            <input type="text" class="form-control" name="ngayBatDau" value="${khuyenMaiEdit.ngayBatDau}">
         </div>
         <div class="mb-3">
             <label class="form-label">Ngày kết thúc</label>
-            <input type="text" class="form-control" name="ngayKetThuc" value="${khuyenMaiDetail.ngayKetThuc}">
+            <input type="text" class="form-control" name="ngayKetThuc" value="${khuyenMaiEdit.ngayKetThuc}">
+        </div>
+
+        <div class="mt-3 text-center">
+            <a href="/khuyen-mai/hien-thi" class="btn btn-secondary">Quay lại</a>
+            <button type="submit" class="btn btn-success">Sửa</button>
         </div>
     </form>
-    <div class="mt-3 text-center">
-        <a href="/khuyen-mai/hien-thi" class="btn btn-secondary btn-sm">Quay lại</a>
-        <a href="/khuyen-mai/sua" class="btn btn-success btn-sm">Sửa</a>
-    </div>
+
 </div>
 
 </body>
