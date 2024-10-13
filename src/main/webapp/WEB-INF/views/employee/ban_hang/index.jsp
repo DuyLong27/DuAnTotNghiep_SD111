@@ -164,6 +164,7 @@
             background: #fff;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            height: 915px;
         }
 
         .order-summary .amount span {
@@ -187,13 +188,17 @@
             border-top: 1px solid #888;
         }
 
+        .order-summary table tbody {
+            /*height: 200px;*/
+        }
+
         .order-summary table thead tr th:first-child {
             text-align: left;
         }
 
         .order-summary table td {
-            border-bottom: 1px solid #ddd;
-            padding: 12px 0;
+            /*border-bottom: 1px solid #ddd;*/
+            /*padding: 12px 0;*/
         }
 
         .order-summary table thead tr th:last-child {
@@ -210,7 +215,7 @@
         }
 
         .order-summary table tbody tr td {
-            border-right: 1px solid #888;
+            /*border-right: 1px solid #888;*/
         }
 
 
@@ -219,6 +224,11 @@
             font-weight: bold;
         }
 
+        .add-product {
+            width: 100%;
+            border-bottom-right-radius: 50%;
+            border-bottom-left-radius: 50%;
+        }
 
 
         /* Responsive adjustments */
@@ -314,7 +324,7 @@
             </select>
         </div>
         <ul class="nav justify-content-end" style="padding-right: 24px">
-            <button class="nav-item" onclick="createNewInvoice()">Tạo hóa đơn mới</button>
+            <button class="nav-item" onclick="createPendingInvoice(); displayPendingInvoices()">Tạo hóa đơn mới</button>
             <select class="nav-item" style="margin-left: 20px" id="invoiceSelector" onchange="selectInvoice()">
                 <option value="">Chọn hóa đơn</option>
             </select>
@@ -328,8 +338,13 @@
                                 <span>-10%</span>
                                 <img src="/lib/logo_xanh.png" alt="${product.ten}" style="width: 90%;">
                                 <h2>${product.ten}</h2>
+                                <div class="price1">899.000<sup>$</sup></div>
                                 <div class="price2">${product.giaBan}<sup>$</sup></div>
-                                <button class="add-product" onclick="addToInvoice('${product.ten}', ${product.giaBan})">Add</button>
+                                    <%--                                <button class="add-product" onclick="addToInvoice('${product.ten}', ${product.giaBan})">Add</button>--%>
+                                <form class="add-product" action="<c:url value='add-to-invoice'/>" method="post">
+                                    <input type="hidden" name="productId" value="${product.id}"/>
+                                    <button type="submit">Thêm</button>
+                                </form>
                             </div>
                         </div>
                     </c:forEach>
@@ -346,8 +361,11 @@
                     </div>
                 </div>
             </div>
-            <div id="invoices" class="col-4 order-summary">
+            <div id="pendingInvoices" class="col-4 order-summary">
                 <h2>Hóa đơn</h2>
+                <ul id="pendingInvoiceList">
+                    <li>Chưa có hóa đơn nào.</li>
+                </ul>
                 <form action="">
                     <table>
                         <thead>
@@ -359,7 +377,25 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <!--  -->
+                        <c:forEach items="${invoice}" var="invoice">
+                            <tr>
+                                <td style="display: flex; font-size: small; align-items: center;">
+                                    <img style="width: 70px; margin-right: 10px" src="/lib/logo_xanh.png"
+                                         alt="${invoice.ten}">${invoice.ten}
+                                </td>
+                                <td style="font-size: small; padding-top: 18px; padding-left: 5px; padding-right: 5px">
+                                    <p><span>${invoice.giaBan}</span><sup>$</sup></p>
+                                </td>
+                                <td style="font-size: small; padding-left: 25px;">
+                                    <input style="width: 30px; outline: none;" type="number" value="${item.quantity}1"
+                                           min="0">
+                                </td>
+                                <td>
+                                    <button onclick="deleteItem('${item.product}')">Xóa</button>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                        <td>Tạm tính: <c:out value="${total}"/></td>
                         </tbody>
                     </table>
                 </form>
@@ -370,9 +406,13 @@
                         <label for="promotion" class="form-label" style="padding-right: 180px">
                             Mã khuyến mãi
                         </label>
-                        <a href="#">Xem tất cả <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 5 7 7-7 7"/>
-                        </svg>
+                        <a href="/khuyen-mai/hien-thi">Xem tất cả
+                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                                 xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                                 viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                      stroke-width="2" d="m9 5 7 7-7 7"/>
+                            </svg>
                         </a>
                     </div>
                     <input type="text" class="form-control" id="promotion" value="Không có" readonly>
@@ -383,147 +423,127 @@
                     <textarea class="form-control" id="notes" rows="3"></textarea>
                 </div>
                 <hr>
-                <div class="mb-3 total">
+                <div class="mb-3 total" style="align-items: center">
                     <h3>Tổng tiền</h3>
                     <hr>
-                    <span style="font-weight: bold; padding-left: 150px; font-size: 30px">927.440<sup>$</sup></span>
+                    <span style="font-weight: bold; display: flex; justify-content: center; font-size: 30px"><c:out value="${total}"/></span>
                 </div>
                 <hr>
-                <div class="mb-3">
-                    <label for="paymentMethod" class="form-label">Phương thức thanh toán</label>
-                    <select class="form-select" id="paymentMethod">
-                        <option selected>Thẻ tín dụng</option>
-                        <option>Chuyển khoản qua ngân hàng</option>
-                        <option>Momo</option>
-                        <option>ZaloPay</option>
-                    </select>
+                <div style="display: flex; justify-content: center; height: 6%; margin-top: 26px">
+                    <button type="button" class="btn btn-primary" style="width: 189px;font-size: 26px;">Thanh toán
+                    </button>
                 </div>
-                <button type="button" class="btn btn-primary">Thanh toán</button>
             </div>
         </div>
     </div>
 </div>
 </div>
 </body>
-<script>
-    let invoiceCounter = 0;
-    let invoices = [];
-    let selectedInvoiceId = null;
 
-    function createNewInvoice() {
-        invoiceCounter++;
-        let newInvoice = {
-            id: invoiceCounter,
-            items: [],
-            totalAmount: 0
-        };
-        invoices.push(newInvoice);
-        updateInvoiceSelector();
-        selectInvoiceById(invoiceCounter);
-    }
+<%--<script>--%>
+<%--    let invoiceCounter = 0;--%>
+<%--    let invoices = [];--%>
+<%--    let selectedInvoiceId = null;--%>
 
-    function addToInvoice(ten, giaBan) {
-        if (!selectedInvoiceId) {
-            alert("Vui lòng chọn hóa đơn trước khi thêm sản phẩm.");
-            return;
-        }
+<%--    function createNewInvoice() {--%>
+<%--        invoiceCounter++;--%>
+<%--        let newInvoice = {--%>
+<%--            id: invoiceCounter,--%>
+<%--            items: [],--%>
+<%--            totalAmount: 0--%>
+<%--        };--%>
+<%--        invoices.push(newInvoice);--%>
+<%--        updateInvoiceSelector();--%>
+<%--        selectInvoiceById(invoiceCounter);--%>
+<%--    }--%>
 
-        const currentInvoice = invoices.find(invoice => invoice.id === parseInt(selectedInvoiceId));
+<%--    function addToInvoice(ten, giaBan) {--%>
+<%--        if (!selectedInvoiceId) {--%>
+<%--            alert("Vui lòng chọn hóa đơn trước khi thêm sản phẩm.");--%>
+<%--            return;--%>
+<%--        }--%>
 
-        // Kiểm tra xem sản phẩm đã tồn tại trong hóa đơn chưa
-        const existingItem = currentInvoice.items.find(item => item.product === ten);
+<%--        const currentInvoice = invoices.find(invoice => invoice.id === parseInt(selectedInvoiceId));--%>
 
-        if (existingItem) {
-            existingItem.quantity += 1; // Tăng số lượng nếu sản phẩm đã tồn tại
-        } else {
-            currentInvoice.items.push({ product: ten, price: giaBan, quantity: 1 });
-        }
+<%--        // Kiểm tra xem sản phẩm đã tồn tại trong hóa đơn chưa--%>
+<%--        const existingItem = currentInvoice.items.find(item => item.product === ten);--%>
 
-        currentInvoice.totalAmount += giaBan; // Cập nhật tổng tiền
-        console.log(ten,giaBan)
-        displayInvoices(); // Hiển thị hóa đơn
-    }
+<%--        if (existingItem) {--%>
+<%--            existingItem.quantity += 1; // Tăng số lượng nếu sản phẩm đã tồn tại--%>
+<%--        } else {--%>
+<%--            currentInvoice.items.push({ product: ten, price: giaBan, quantity: 1 });--%>
+<%--        }--%>
+
+<%--        currentInvoice.totalAmount += giaBan; // Cập nhật tổng tiền--%>
+<%--        console.log(ten,giaBan)--%>
+<%--        displayInvoices(); // Hiển thị hóa đơn--%>
+<%--    }--%>
 
 
+<%--    function deleteInvoice(id) {--%>
+<%--        invoices = invoices.filter(invoice => invoice.id !== id);--%>
+<%--        selectedInvoiceId = null;--%>
+<%--        updateInvoiceSelector();--%>
+<%--        displayInvoices();--%>
+<%--    }--%>
 
-    function deleteInvoice(id) {
-        invoices = invoices.filter(invoice => invoice.id !== id);
-        selectedInvoiceId = null;
-        updateInvoiceSelector();
-        displayInvoices();
-    }
+<%--    function selectInvoice() {--%>
+<%--        const selector = document.getElementById('invoiceSelector');--%>
+<%--        selectedInvoiceId = selector.value;--%>
+<%--        displayInvoices();--%>
+<%--    }--%>
 
-    function selectInvoice() {
-        const selector = document.getElementById('invoiceSelector');
-        selectedInvoiceId = selector.value;
-        displayInvoices();
-    }
+<%--    function selectInvoiceById(id) {--%>
+<%--        const selector = document.getElementById('invoiceSelector');--%>
+<%--        selectedInvoiceId = id;--%>
+<%--        selector.value = id;--%>
+<%--        displayInvoices();--%>
+<%--    }--%>
 
-    function selectInvoiceById(id) {
-        const selector = document.getElementById('invoiceSelector');
-        selectedInvoiceId = id;
-        selector.value = id;
-        displayInvoices();
-    }
+<%--    function updateInvoiceSelector() {--%>
+<%--        const selector = document.getElementById('invoiceSelector');--%>
+<%--        selector.innerHTML = '<option value="">Chọn hóa đơn</option>';--%>
+<%--        invoices.forEach(invoice => {--%>
+<%--            const option = document.createElement('option');--%>
+<%--            option.value = invoice.id;--%>
+<%--            option.textContent = `Hóa Đơn ${invoice.id}`;--%>
+<%--            selector.appendChild(option);--%>
+<%--        });--%>
+<%--    }--%>
 
-    function updateInvoiceSelector() {
-        const selector = document.getElementById('invoiceSelector');
-        selector.innerHTML = '<option value="">Chọn hóa đơn</option>';
-        invoices.forEach(invoice => {
-            const option = document.createElement('option');
-            option.value = invoice.id;
-            option.textContent = `Hóa Đơn ${invoice.id}`;
-            selector.appendChild(option);
-        });
-    }
+<%--    function displayInvoices() {--%>
+<%--        const tbody = document.querySelector("#invoices tbody");--%>
+<%--        tbody.innerHTML = ''; // Xóa nội dung hiện tại của tbody--%>
 
-    function displayInvoices() {
-        const tbody = document.querySelector("#invoices tbody");
-        tbody.innerHTML = ''; // Xóa nội dung hiện tại của tbody
+<%--        if (!selectedInvoiceId) {--%>
+<%--            tbody.innerHTML = '<tr><td colspan="4">Chưa có hóa đơn nào được chọn.</td></tr>';--%>
+<%--            return;--%>
+<%--        }--%>
 
-        if (!selectedInvoiceId) {
-            tbody.innerHTML = '<tr><td colspan="4">Chưa có hóa đơn nào được chọn.</td></tr>';
-            return;
-        }
+<%--        let currentInvoice = invoices.find(invoice => invoice.id === parseInt(selectedInvoiceId));--%>
 
-        let currentInvoice = invoices.find(invoice => invoice.id === parseInt(selectedInvoiceId));
+<%--        if (currentInvoice) {--%>
+<%--            console.log(currentInvoice.items); // Thêm dòng này để kiểm tra items--%>
+<%--            console.log("Selected Invoice ID:", selectedInvoiceId);--%>
+<%--            currentInvoice.items.forEach(item => {--%>
+<%--                tbody.innerHTML += ``;--%>
+<%--            });--%>
 
-        if (currentInvoice) {
-            console.log(currentInvoice.items); // Thêm dòng này để kiểm tra items
-            console.log("Selected Invoice ID:", selectedInvoiceId);
-            currentInvoice.items.forEach(item => {
-                tbody.innerHTML += `
-                <tr>
-                    <td style="display: flex; font-size: small; align-items: center;">
-                        <img style="width: 70px; margin-right: 10px" src="/lib/logo_xanh.png" alt="${item.product}">${item.product}Cà phê Robusta
-                    </td>
-                    <td style="font-size: small; padding-top: 25px; padding-left: 5px; padding-right: 5px">
-                        <p><span>${item.price}150000</span><sup>$</sup></p>
-                    </td>
-                    <td style="font-size: small; padding-left: 25px;">
-                        <input style="width: 30px; outline: none;" type="number" value="${item.quantity}1" min="0">
-                    </td>
-                    <td>
-                        <button onclick="deleteItem('${item.product}')">Xóa</button>
-                    </td>
-                </tr>`;
-            });
+<%--            // Cập nhật tổng tiền--%>
+<%--            const totalRow = document.createElement('tr');--%>
+<%--            totalRow.innerHTML = `<td colspan="3">Tạm tính: </td><td>${currentInvoice.totalAmount}<sup>$</sup></td>`;--%>
+<%--            tbody.appendChild(totalRow);--%>
+<%--        }--%>
+<%--    }--%>
 
-            // Cập nhật tổng tiền
-            const totalRow = document.createElement('tr');
-            totalRow.innerHTML = `<td colspan="3">Tạm tính: </td><td>${currentInvoice.totalAmount}<sup>$</sup></td>`;
-            tbody.appendChild(totalRow);
-        }
-    }
+<%--    // Hàm xóa sản phẩm--%>
+<%--    function deleteItem(ten) {--%>
+<%--        let currentInvoice = invoices.find(invoice => invoice.id === parseInt(selectedInvoiceId));--%>
+<%--        currentInvoice.items = currentInvoice.items.filter(item => item.product !== ten);--%>
+<%--        currentInvoice.totalAmount -= currentInvoice.items.find(item => item.product === ten)?.price || 0;--%>
 
-    // Hàm xóa sản phẩm
-    function deleteItem(ten) {
-        let currentInvoice = invoices.find(invoice => invoice.id === parseInt(selectedInvoiceId));
-        currentInvoice.items = currentInvoice.items.filter(item => item.product !== ten);
-        currentInvoice.totalAmount -= currentInvoice.items.find(item => item.product === ten)?.price || 0;
+<%--        displayInvoices();--%>
+<%--    }--%>
 
-        displayInvoices();
-    }
-
-</script>
+<%--</script>--%>
 </html>
