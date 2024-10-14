@@ -1,6 +1,8 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,4 +39,9 @@ public class NhanVien {
 
     @Column(name = "ngay_di_lam")
     private LocalDate ngayDiLam;
+
+    @NotNull
+    @Digits(integer = 1, fraction = 0)
+    @Column(name = "tinh_trang")
+    private Integer tinhTrang;
 }

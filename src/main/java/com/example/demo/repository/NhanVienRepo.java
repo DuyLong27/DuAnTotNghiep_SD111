@@ -8,5 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface NhanVienRepo extends JpaRepository<NhanVien, Integer> {
-    Page<NhanVien> findByTenNhanVienContainingIgnoreCase(String keyword, Pageable pageable);
+    Page<NhanVien> findByTinhTrang(Integer tinhTrang, Pageable pageable);
+
+    Page<NhanVien> findByTenNhanVienContainingIgnoreCase(String nhaCungCapTen, Pageable pageable);
 }
