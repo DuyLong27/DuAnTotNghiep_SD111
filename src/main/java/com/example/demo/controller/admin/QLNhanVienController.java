@@ -29,7 +29,7 @@ public class QLNhanVienController {
         }
         nhanVienRepo.save(nhanVien);
         redirectAttributes.addFlashAttribute("message", "Thêm thành công!");
-        return "redirect:admin/ql_nhan_vien/index";
+        return "redirect:/nhan-vien/hien-thi";
     }
 
     @GetMapping("hien-thi")
@@ -72,7 +72,7 @@ public class QLNhanVienController {
     public String delete(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
         nhanVienRepo.deleteById(id);
         redirectAttributes.addFlashAttribute("message", "Xóa thành công!");
-        return "redirect:admin/ql_nhan_vien/index";
+        return "redirect:/nhan-vien/hien-thi";
     }
 
 
@@ -92,6 +92,6 @@ public class QLNhanVienController {
         }
         nhanVienRepo.save(nhanVien);
         redirectAttributes.addFlashAttribute("message", "Sửa thành công!");
-        return "redirect:admin/ql_nhan_vien/index";
+        return "redirect:/nhan-vien/hien-thi";
     }
 }
