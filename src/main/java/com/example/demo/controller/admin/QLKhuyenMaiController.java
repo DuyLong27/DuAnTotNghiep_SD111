@@ -6,9 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @Controller
 @RequestMapping("/khuyen-mai")
@@ -18,32 +21,53 @@ public class QLKhuyenMaiController {
 
     @GetMapping("/hien-thi")
     public String view(@RequestParam(defaultValue = "0") int page,
-                          @RequestParam(defaultValue = "5") int size, Model model) {
-
+                       @RequestParam(defaultValue = "5") int size,
+                       @RequestParam(required = false) String maKhuyenMai,
+                       @RequestParam(required = false) String tenKhuyenMai,
+                       @RequestParam(required = false) Integer giaTriMin,
+                       @RequestParam(required = false) Integer giaTriMax,
+                       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate ngayBatDau,
+                       @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate ngayKetThuc,
+                       Model model) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<KhuyenMai> khuyenMaiPage = khuyenMaiRepo.findAll(pageable);
+
+        Page<KhuyenMai> khuyenMaiPage = khuyenMaiRepo.findFiltered(maKhuyenMai, tenKhuyenMai, giaTriMin, giaTriMax, ngayBatDau, ngayKetThuc, pageable);
+
+        model.addAttribute("maKhuyenMai", maKhuyenMai);
+        model.addAttribute("tenKhuyenMai", tenKhuyenMai);
+        model.addAttribute("giaTriMin", giaTriMin);
+        model.addAttribute("giaTriMax", giaTriMax);
+        model.addAttribute("ngayBatDau", ngayBatDau);
+        model.addAttribute("ngayKetThuc", ngayKetThuc);
 
         model.addAttribute("listKhuyenMai", khuyenMaiPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", khuyenMaiPage.getTotalPages());
-        return "admin/ql_khuyen_mai/khuyen-mai";
+
+        return "admin/ql_khuyen_mai/index";
     }
 
-    @GetMapping("/chi-tiet")
-    public String detailPage(@RequestParam("id")Integer id, Model model){
-        model.addAttribute("khuyenMaiDetail",khuyenMaiRepo.findById(id).get());
-        return "admin/ql_khuyen_mai/chi-tiet";
-    }
-
-    @GetMapping ("/sua/{id}")
-    public String editPage(@PathVariable("id") Integer id, Model model){
-        model.addAttribute("khuyenMaiEdit",khuyenMaiRepo.findById(id).get());
-        return "admin/ql_khuyen_mai/sua";
-    }
 
     @PostMapping("/them")
     public String add(KhuyenMai khuyenMai){
-        khuyenMaiRepo.save(khuyenMai);
+         khuyenMaiRepo.save(khuyenMai);
+        return "redirect:/khuyen-mai/hien-thi";
+    }
+
+    @PostMapping("/sua")
+    public String update(@RequestParam("id") Integer id, @ModelAttribute KhuyenMai khuyenMai) {
+        KhuyenMai existingKhuyenMai = khuyenMaiRepo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid khuyen mai id: " + id));
+
+        // except id
+        existingKhuyenMai.setMaKhuyenMai(khuyenMai.getMaKhuyenMai());
+        existingKhuyenMai.setTenKhuyenMai(khuyenMai.getTenKhuyenMai());
+        existingKhuyenMai.setGiaTriKhuyenMai(khuyenMai.getGiaTriKhuyenMai());
+        existingKhuyenMai.setNgayBatDau(khuyenMai.getNgayBatDau());
+        existingKhuyenMai.setNgayKetThuc(khuyenMai.getNgayKetThuc());
+        existingKhuyenMai.setTinhTrang(khuyenMai.getTinhTrang());
+
+        khuyenMaiRepo.save(existingKhuyenMai);
         return "redirect:/khuyen-mai/hien-thi";
     }
 
@@ -53,11 +77,5 @@ public class QLKhuyenMaiController {
         return "redirect:/khuyen-mai/hien-thi";
     }
 
-    @PostMapping("/sua/{id}")
-    public String edit(@PathVariable("id") Integer id, KhuyenMai khuyenMai){
-        khuyenMai.setIdKhuyenMai(id);
-        khuyenMaiRepo.save(khuyenMai);
-        return "redirect:/khuyen-mai/hien-thi";
-    }
 }
 
