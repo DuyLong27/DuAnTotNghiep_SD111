@@ -15,63 +15,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;400;500;600&display=swap" rel="stylesheet">
 
     <title>Danh Sách Sản Phẩm</title>
-
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;400;500;600&display=swap');
-
-        body {
-            background-color: #f8f9fa;
-            position: relative; /* Để thông báo được căn chỉnh đúng */
-        }
-
-        .bordervien {
-            border: 1px solid #030303;
-        }
-
-        .table__logo {
-            font-size: 20px;
-            margin-bottom: 2.5rem;
-        }
-
-        .input-group {
-            flex: 1;
-            max-width: 500px;
-        }
-
-        .form-control {
-            flex: 1;
-        }
-
-        .input-group .btn {
-            white-space: nowrap;
-        }
-
-        /* CSS cho thông báo */
-        #successMessage {
-            position: fixed; /* Sử dụng fixed để thông báo không di chuyển khi cuộn */
-            top: 20px; /* Cách mép trên 20px */
-            right: 20px; /* Cách mép bên phải 20px */
-            z-index: 1050; /* Đảm bảo thông báo nằm trên các phần tử khác */
-        }
-    </style>
 </head>
 <body>
 <div class="container mt-3">
     <h1 class="text-center mt-3">Danh Sách Nhân Viên</h1>
-    <!-- Thông báo -->
-    <c:if test="${not empty message}">
-        <div class="alert alert-success alert-dismissible fade show" role="alert" id="successMessage">
-                ${message}
-        </div>
-    </c:if>
     <form action="/nhan-vien/hien-thi" method="get" id="filterSearchForm">
         <div class="row">
             <div class="col-md-4">
                 <h5>Lọc Theo Tình Trạng</h5>
                 <select name="tinhTrang" class="form-select" onchange="this.form.submit();">
                     <option value="" ${param.tinhTrang == '' ? 'selected' : ''}>Tất Cả</option>
-                    <option value="1" ${param.tinhTrang == '1' ? 'selected' : ''}>Còn Hàng</option>
-                    <option value="0" ${param.tinhTrang == '0' ? 'selected' : ''}>Hết Hàng</option>
+                    <option value="1" ${param.tinhTrang == '1' ? 'selected' : ''}>Làm Việc</option>
+                    <option value="0" ${param.tinhTrang == '0' ? 'selected' : ''}>Tan Ca</option>
                 </select>
             </div>
 
@@ -141,12 +96,12 @@
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="tinhTrang" id="tinhTrangConHang"
                                            value="1" required>
-                                    <label class="form-check-label" for="tinhTrangConHang">Hoạt động</label>
+                                    <label class="form-check-label" for="tinhTrangConHang">Làm việc</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="tinhTrang" id="tinhTrangHetHang"
                                            value="0" required>
-                                    <label class="form-check-label" for="tinhTrangHetHang">Không hoạt động</label>
+                                    <label class="form-check-label" for="tinhTrangHetHang">Tan ca</label>
                                 </div>
                             </div>
                         </div>
@@ -162,11 +117,12 @@
         <thead>
         <tr>
             <th>STT</th>
-            <th>Nhà Cung Cấp</th>
-            <th>Danh Mục</th>
-            <th>Tên</th>
-            <th>Giá Cơ Bản</th>
-            <th>Mô Tả</th>
+            <th>Tên Nhân Viên</th>
+            <th>Email</th>
+            <th>Mật Khẩu</th>
+            <th>Số Điện Thoại</th>
+            <th>Chức Vụ</th>
+            <th>Ngày Đi Làm</th>
             <th>Tình Trạng</th>
             <th>Thao Tác</th>
         </tr>
@@ -188,12 +144,12 @@
                     <td>${nv.chucVu}</td>
                     <td>${nv.ngayDiLam}</td>
                     <td class="${nv.tinhTrang == 1 ? 'text-success' : 'text-danger'}">
-                            ${nv.tinhTrang == 1 ? "Còn Hàng" : "Hết Hàng"}
+                            ${nv.tinhTrang == 1 ? "Đang làm" : "Tan ca"}
                     </td>
                     <td>
                         <a onclick="openEditModal(${nv.idNhanVien}, '${nv.tenNhanVien}', ${nv.email}, '${nv.matKhau}', ${nv.soDienThoai}, ${nv.chucVu}, ${nv.ngayDiLam}, ${nv.tinhTrang})"
                            type="button" class="btn btn-default bordervien table__logo"><i class='bx bx-edit-alt'></i></a>
-                        <a onclick="return confirm('Bạn có chắc muốn xóa?')" href="/nhan-vien/delete/${nv.idNhanVien}"
+                        <a onclick="return confirm('Bạn có chắc muốn xóa?')" href="/nhan-vien/delete?id=${nv.idNhanVien}"
                            class="btn btn-default bordervien table__logo"><i class='bx bx-trash' ></i></a>
                     </td>
                 </tr>
@@ -278,17 +234,37 @@
         // Gửi lại form để lấy lại danh sách sản phẩm gốc
         document.getElementById('filterSearchForm').submit();
     }
-
-
-    // Ẩn thông báo sau 3 giây
-    window.onload = function () {
-        var successMessage = document.getElementById("successMessage");
-        if (successMessage) {
-            setTimeout(function () {
-                successMessage.style.display = 'none';
-            }, 3000); // 3 giây
-        }
-    };
 </script>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;400;500;600&display=swap');
+
+    body {
+        background-color: #f8f9fa;
+        position: relative; /* Để thông báo được căn chỉnh đúng */
+    }
+
+    .bordervien {
+        border: 1px solid #030303;
+    }
+
+    .table__logo {
+        font-size: 20px;
+        margin-bottom: 2.5rem;
+    }
+
+    .input-group {
+        flex: 1;
+        max-width: 500px;
+    }
+
+    .form-control {
+        flex: 1;
+    }
+
+    .input-group .btn {
+        white-space: nowrap;
+    }
+</style>
 </body>
 </html>

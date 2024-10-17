@@ -2,7 +2,6 @@ package com.example.demo.controller.admin;
 
 import com.example.demo.entity.NhanVien;
 import com.example.demo.repository.NhanVienRepo;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -68,8 +67,8 @@ public class QLNhanVienController {
 
 
 
-    @GetMapping("delete/{id}")
-    public String delete(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+    @GetMapping("delete")
+    public String delete(@RequestParam("id") Integer id, RedirectAttributes redirectAttributes) {
         nhanVienRepo.deleteById(id);
         redirectAttributes.addFlashAttribute("message", "Xóa thành công!");
         return "redirect:/nhan-vien/hien-thi";
@@ -81,7 +80,7 @@ public class QLNhanVienController {
     public String editProduct(@PathVariable("id") Integer id, Model model) {
         NhanVien nhanVien = nhanVienRepo.findById(id).orElse(null);
         model.addAttribute("data", nhanVien);
-        return "admin/ql_nhan_vien/index"; // Tạo một trang mới hoặc trả về index với modal
+        return "admin/ql_nhan_vien/index";
     }
 
     @PostMapping("/update")
