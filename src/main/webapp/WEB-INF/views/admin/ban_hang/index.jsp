@@ -31,70 +31,13 @@
             border-radius: 50%;
             padding: 8px 12px;
         }
-
-    /*    show hoa don*/
-        .invoice {
-            display: none; /* Ẩn hóa đơn ban đầu */
-            position: fixed;
-            top: 20%;
-            right: -300px; /* Đặt bên ngoài màn hình */
-            width: 250px;
-            border: 1px solid #ccc;
-            padding: 10px;
-            background-color: white;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            transition: right 0.5s ease; /* Hiệu ứng trượt */
-            z-index: 2; /* Đảm bảo hóa đơn nằm trên cùng */
-        }
-        .invoice.show {
-            display: block; /* Hiện hóa đơn */
-            right: 20px; /* Vị trí khi hiện ra */
-        }
-        .overlay {
-            display: none; /* Ẩn lớp mờ ban đầu */
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000000; /* Màu mờ */
-            opacity: 0.4;
-            z-index: 1; /* Đảm bảo lớp mờ nằm dưới hóa đơn */
-        }
-        .content {
-            z-index: 0; /* Nội dung trang bán hàng nằm dưới lớp mờ */
-        }
     </style>
     <title>Bán Hàng</title>
 </head>
 <body>
-<div class="overlay" id="overlay"></div>
-<div class="container mt-5 content">
+<jsp:include page="../layout.jsp" />
+<div class="container mt-5">
     <div class="row">
-        <div class="col-md-6">
-            <c:if test="${not empty selectedHoaDonId}">
-                <h4 class="mt-4">Thêm Sản Phẩm</h4>
-                <div class="row">
-                    <c:forEach items="${sanPhams}" var="sanPham">
-                        <div class="col-md-4 mb-3">
-                            <div class="card">
-                                <div class="card-body text-center">
-                                    <h5 class="card-title">${sanPham.sanPham.ten}</h5>
-                                    <p class="card-text">Giá: ${sanPham.giaBan} VNĐ</p>
-                                    <form action="${pageContext.request.contextPath}/hoa-don/${selectedHoaDonId}/add-product" method="post">
-                                        <input type="hidden" name="sanPhamId" value="${sanPham.id}" />
-                                        <button type="submit" class="btn btn-outline-primary">
-                                            <i class="bi bi-plus"></i> <!-- Icon dấu cộng -->
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </c:forEach>
-                </div>
-            </c:if>
-        </div>
-
         <div class="col-md-6">
             <h2 class="text-primary">Danh Sách Hóa Đơn</h2>
             <div class="d-flex align-items-center mb-3">
@@ -106,21 +49,24 @@
                     <select id="hoaDonSelect" class="form-select" onchange="location = this.value;">
                         <option value="">-- Chọn Hóa Đơn --</option>
                         <c:forEach items="${hoaDonList}" var="hoaDon">
-                            <option value="${pageContext.request.contextPath}/hoa-don/${hoaDon.id}"
-                                    <c:if test="${hoaDon.id == selectedHoaDonId}">selected</c:if>>
-                                    ${hoaDon.so_hoa_don}
-                            </option>
+                            <c:if test="${hoaDon.tinh_trang == 0}">
+                                <option value="${pageContext.request.contextPath}/hoa-don/${hoaDon.id}"
+                                        <c:if test="${hoaDon.id == selectedHoaDonId}">selected</c:if>>
+                                        ${hoaDon.so_hoa_don}
+                                </option>
+                            </c:if>
                         </c:forEach>
                     </select>
                 </div>
-                <form action="${pageContext.request.contextPath}/hoa-don/${selectedHoaDonId}/delete" method="post" class="ms-2">
-                    <input type="hidden" name="hoaDonId" value="${selectedHoaDonId}"/>
-                    <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa hóa đơn này?');">Xóa</button>
-                </form>
+                <c:if test="${not empty selectedHoaDonId}">
+                    <form action="/hoa-don/${selectedHoaDonId}/delete" method="post" class="me-2">
+                        <button class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa hóa đơn này?');">Xóa</button>
+                    </form>
+                </c:if>
             </div>
 
             <c:if test="${not empty selectedHoaDonId}">
-                <h3 class="text-primary">Chi Tiết Hóa Đơn ID: ${selectedHoaDonId}</h3>
+                <h3 class="text-primary">Hóa Đơn ID: ${selectedHoaDonId}</h3>
                 <table class="table table-striped table-bordered">
                     <thead class="table-dark">
                     <tr>
@@ -138,7 +84,7 @@
                             <td>${i.index + 1}</td>
                             <td>${item.sanPhamChiTiet.sanPham.ten}</td>
                             <td>${item.sanPhamChiTiet.giaBan}</td>
-                            <td><input type="number" id="so_luong" value="${item.so_luong}"/></td>
+                            <td>${item.so_luong}</td>
                             <td>
                                 <form action="${pageContext.request.contextPath}/hoa-don/${selectedHoaDonId}/remove-product/${item.sanPhamChiTiet.id}" method="post" style="display:inline-block;">
                                     <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
@@ -152,9 +98,7 @@
                     </tbody>
                 </table>
 
-                <c:if test="${not empty selectedHoaDonId}">
-                    <h4 class="text-primary">Tổng Tiền: ${tongTien} VNĐ</h4> <!-- Hiển thị tổng tiền -->
-                </c:if>
+                <h5>Tổng tiền: ${tongTien}</h5> <!-- Hiển thị tổng tiền -->
 
                 <form id="paymentMethodForm" action="${pageContext.request.contextPath}/hoa-don/${selectedHoaDonId}/update-all-payment-method" method="post" class="mb-3">
                     <div class="form-group">
@@ -170,26 +114,43 @@
 
                 <div class="mb-3" id="cashPaymentSection" style="display: none;">
                     <label for="soTienKhachDua" class="form-label">Số tiền khách đưa:</label>
-                    <input id="soTienKhachDua" class="form-control" oninput="calculateChange()" />
+                    <input type="number" id="soTienKhachDua" class="form-control" oninput="calculateChange()" />
                 </div>
                 <h4 class="text-danger" id="soTienPhaiBu" style="display: none;">Số tiền phải bù lại: 0 VNĐ</h4>
             </c:if>
-            <c:forEach items="${hoaDonChiTiets}" var="item" varStatus="i">
-            <form action="${pageContext.request.contextPath}/hoa-don/${selectedHoaDonId}/update-note" method="post">
-                <div class="mb-3">
-                    <label for="ghi_chu" class="form-label">Ghi chú</label>
-                    <textarea name="ghi_chu" id="ghi_chu" class="form-control" rows="3">${item.ghi_chu}</textarea>
+            <c:if test="${not empty selectedHoaDonId}">
+                <h4 class="mt-4">Ghi chú</h4>
+                <form id="noteForm" action="${pageContext.request.contextPath}/hoa-don/${selectedHoaDonId}/confirm" method="post">
+                    <div class="form-group">
+                        <textarea name="ghi_chu" class="form-control" rows="3">${hoaDon.ghi_chu}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-2">Xác nhận hóa đơn</button>
+                </form>
+            </c:if>
+        </div>
+        <div class="col-md-6">
+            <c:if test="${not empty selectedHoaDonId}">
+                <h4 class="mt-4">Thêm Sản Phẩm</h4>
+                <div class="row">
+                    <c:forEach items="${sanPhams}" var="sanPham">
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">${sanPham.sanPham.ten}</h5>
+                                    <p class="card-text">Giá: ${sanPham.giaBan} VNĐ</p>
+                                    <p class="card-text">Số Lượng: ${sanPham.soLuong}</p>
+                                    <form action="${pageContext.request.contextPath}/hoa-don/${selectedHoaDonId}/add-product" method="post">
+                                        <input type="hidden" name="sanPhamId" value="${sanPham.id}" />
+                                        <button type="submit" class="btn btn-outline-primary">
+                                            <i class="bi bi-plus"></i> <!-- Icon dấu cộng -->
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </c:forEach>
                 </div>
-                <button type="submit" class="btn btn-primary">Cập nhật ghi chú</button>
-            </form>
-            </c:forEach>
-            <button id="checkoutBtn">Thanh Toán</button>
-            <div class="invoice" id="invoice">
-                <h2>Hóa Đơn</h2>
-                <p>Sản phẩm: CF chon</p>
-                <p>Giá: 200.000 VNĐ</p>
-                <p>Tổng: 200.000 VNĐ</p>
-            </div>
+            </c:if>
         </div>
     </div>
 </div>
@@ -224,20 +185,6 @@
 
         document.getElementById("soTienPhaiBu").innerText = "Số tiền phải bù lại: " + Math.max(0, soTienPhaiBu) + " VNĐ";
     }
-
-    //show hoa don khi chon thanh toan
-        document.getElementById('checkoutBtn').addEventListener('click', function() {
-        const invoice = document.getElementById('invoice');
-        const overlay = document.getElementById('overlay');
-
-        // Hiện lớp mờ
-        overlay.style.display = overlay.style.display === 'block' ? 'none' : 'block';
-
-        // Đợi 0.5 giây để hiển thị hóa đơn
-        setTimeout(() => {
-        invoice.classList.toggle('show'); // Thay đổi trạng thái hiển thị
-    }, 500); // Hiện hóa đơn sau 0.5 giây
-    });
 </script>
 </body>
 </html>

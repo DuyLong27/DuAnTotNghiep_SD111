@@ -11,10 +11,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-            crossorigin="anonymous"></script>
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
           integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
           crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -24,68 +20,7 @@
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
-<%--header--%>
-<nav class="navbar navbar-expand-sm navbar-dark shadow-lg" style="background-color: #0B745E; height: 80px;">
-    <div class="container d-flex align-items-center">
-        <a href="#" class="navbar-brand d-flex align-items-center">
-            <img src="../../lib/logo_xanh.png" style="height: 60px; margin-right: 10px;" alt="Logo">
-        </a>
-
-        <ul class="navbar-nav mx-auto" style="flex-grow: 1; justify-content: center; gap: 20px;">
-            <li class="nav-item">
-                <a class="nav-link text-light" href="#">Tổng quan</a>
-            </li>
-
-            <!-- Dropdown Custom -->
-            <li class="nav-item dropdown-custom">
-                <a href="#" class="nav-link text-light">Hàng hóa</a>
-                <ul class="dropdown-menu-custom">
-                    <li><a class="dropdown-item" href="#">Sản phẩm</a></li>
-                    <li><a class="dropdown-item" href="#">Kho hàng</a></li>
-                </ul>
-            </li>
-
-            <li class="nav-item dropdown-custom">
-                <a href="#" class="nav-link text-light">Giao dịch</a>
-                <ul class="dropdown-menu-custom">
-                    <li><a class="dropdown-item" href="#">Bán hàng</a></li>
-                    <li><a class="dropdown-item" href="#">Nhập hàng</a></li>
-                    <li><a class="dropdown-item" href="#">Hóa đơn</a></li>
-                </ul>
-            </li>
-
-            <li class="nav-item dropdown-custom">
-                <a href="#" class="nav-link text-light">Đối tác</a>
-                <ul class="dropdown-menu-custom">
-                    <li><a class="dropdown-item" href="#">Khách hàng</a></li>
-                    <li><a class="dropdown-item" href="#">Nguồn nhập</a></li>
-                </ul>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link text-light" href="#">Nhân viên</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-light" href="#">Khuyến mãi</a>
-            </li>
-        </ul>
-
-        <ul class="navbar-nav">
-            <li class="nav-item dropdown-custom">
-                <a href="#" class="nav-link text-light">Tài khoản</a>
-                <ul class="dropdown-menu-custom">
-                    <li><a class="dropdown-item" href="#">Thông tin</a></li>
-                    <li><a class="dropdown-item" href="#">Đăng xuất</a></li>
-                </ul>
-            </li>
-            <li class="nav-item">
-                <span class="btn rounded-pill text-white" style="padding: 10px 15px;"><i class="fa-solid fa-user"></i></span>
-            </li>
-        </ul>
-    </div>
-</nav>
-<img src="/lib/background_quanly.png" style="width: 100%; height: auto;">
-
+<jsp:include page="../layout.jsp" />
 <%--body--%>
 <div class="row" style="text-align: center">
     <H1>Quản Lý Khách Hàng</H1>

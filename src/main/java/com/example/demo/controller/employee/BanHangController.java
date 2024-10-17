@@ -35,7 +35,7 @@ public class BanHangController {
         model.addAttribute("hoaDonList", hoaDonList);
         model.addAttribute("selectedHoaDonId", null);
         model.addAttribute("sanPhams", sanPhamChiTietList); // Truyền SanPhamChiTiet thay vì SanPham
-        return "employee/ban_hang/index";
+        return "admin/ban_hang/index";
     }
 
     @GetMapping("/{id}")
@@ -44,54 +44,55 @@ public class BanHangController {
         List<HoaDonChiTiet> hoaDonChiTiets = hoaDonChiTietRepository.findByHoaDonId(id);
         List<SanPhamChiTiet> sanPhamChiTietList = sanPhamChiTietRepo.findAll();
 
-        String phuongThucThanhToan = hoaDonChiTiets.isEmpty() ? "Tiền mặt" : hoaDonChiTiets.get(0).getPhuong_thuc_thanh_toan();
+        HoaDon hoaDon = hoaDonRepository.findById(id).orElseThrow();
+        int totalAmount = hoaDonChiTietRepository.findByHoaDonId(id).stream()
+                .mapToInt(detail -> detail.getGia_san_pham() * detail.getSo_luong())
+                .sum();
+
+        hoaDon.setTong_tien(totalAmount);
+        hoaDonRepository.save(hoaDon);
+
+        String phuongThucThanhToan = hoaDon.getPhuong_thuc_thanh_toan();
         model.addAttribute("hoaDonList", hoaDonList);
         model.addAttribute("selectedHoaDonId", id);
         model.addAttribute("hoaDonChiTiets", hoaDonChiTiets);
         model.addAttribute("sanPhams", sanPhamChiTietList);
-        model.addAttribute("phuongThucThanhToan", phuongThucThanhToan); // Thêm thuộc tính này
-        return "employee/ban_hang/index";
+        model.addAttribute("phuongThucThanhToan", phuongThucThanhToan);
+        model.addAttribute("tongTien", totalAmount); // Truyền tổng tiền vào model
+        return "admin/ban_hang/index";
     }
+
 
 
 
     @PostMapping("/{id}/add-product")
     public String addProductToInvoice(@PathVariable Integer id, @RequestParam Integer sanPhamId) {
-        // Lấy hóa đơn theo ID
         HoaDon hoaDon = hoaDonRepository.findById(id).orElseThrow();
-
-        // Tìm sản phẩm chi tiết theo sanPhamId
         SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamId).orElseThrow();
-
-        // Tìm chi tiết hóa đơn theo hóa đơn ID và sản phẩm chi tiết ID
         HoaDonChiTiet existingDetail = hoaDonChiTietRepository.findByHoaDonIdAndSanPhamChiTietId(id, sanPhamChiTiet.getId());
 
+        if (sanPhamChiTiet.getSoLuong() <= 0) {
+            // Nếu số lượng không đủ, không thực hiện thêm vào hóa đơn
+            return "redirect:/hoa-don/" + id + "?error=InsufficientStock";
+        }
+
+        // Giảm số lượng sản phẩm chi tiết trước khi thêm
+        sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - 1);
+        sanPhamChiTietRepo.save(sanPhamChiTiet);
+
         if (existingDetail != null) {
-            // Nếu đã tồn tại, tăng số lượng lên 1
+            // Chỉ tăng số lượng mà không thay đổi giá
             existingDetail.setSo_luong(existingDetail.getSo_luong() + 1);
-            // Tính toán lại tổng tiền
-            existingDetail.setTong_tien(existingDetail.getSo_luong() * sanPhamChiTiet.getGiaBan());
             hoaDonChiTietRepository.save(existingDetail);
         } else {
-            // Nếu không tồn tại, tạo mới chi tiết hóa đơn
             HoaDonChiTiet hoaDonChiTiet = new HoaDonChiTiet();
             hoaDonChiTiet.setHoaDon(hoaDon);
             hoaDonChiTiet.setSanPhamChiTiet(sanPhamChiTiet);
-            hoaDonChiTiet.setSo_luong(1); // Khởi tạo số lượng là 1
-            hoaDonChiTiet.setTong_tien(sanPhamChiTiet.getGiaBan()); // Tính tổng tiền
-            hoaDonChiTiet.setPhuong_thuc_thanh_toan("Tiền mặt"); // Gán giá trị mặc định
+            hoaDonChiTiet.setSo_luong(1);
+            hoaDonChiTiet.setGia_san_pham(sanPhamChiTiet.getGiaBan()); // Giữ nguyên giá ban đầu
             hoaDonChiTietRepository.save(hoaDonChiTiet);
         }
 
-        // Cập nhật tổng tiền cho hóa đơn
-        List<HoaDonChiTiet> chiTietHoaDons = hoaDonChiTietRepository.findByHoaDonId(id);
-        int totalAmount = chiTietHoaDons.stream()
-                .mapToInt(HoaDonChiTiet::getTong_tien)
-                .sum();
-
-        // Nếu bạn cần cập nhật tổng tiền vào một trường nào đó trong hóa đơn, hãy thêm logic ở đây.
-
-        // Chuyển hướng về chi tiết hóa đơn
         return "redirect:/hoa-don/" + id;
     }
 
@@ -107,7 +108,8 @@ public class BanHangController {
     public String addHoaDon(@ModelAttribute HoaDon hoaDon, Model model) {
         hoaDon.setSo_hoa_don(generateRandomId());
         hoaDon.setTinh_trang(0);
-        hoaDon.setNgay_tao(new Timestamp(System.currentTimeMillis())); // Set ngay_phat_hanh với thời gian hiện tại
+        hoaDon.setNgay_tao(new Timestamp(System.currentTimeMillis()));
+        hoaDon.setPhuong_thuc_thanh_toan("Tiền mặt"); // Đặt mặc định là "Tiền mặt"
         hoaDonRepository.save(hoaDon);
 
         // Chuyển hướng đến trang chi tiết hóa đơn mới được tạo
@@ -117,82 +119,131 @@ public class BanHangController {
 
     @PostMapping("/{id}/delete")
     @Transactional
-    public String deleteInvoice(@PathVariable Integer id) {
-        // Kiểm tra nếu hóa đơn tồn tại
-        if (hoaDonRepository.existsById(id)) {
-            // Xóa tất cả chi tiết hóa đơn liên quan
-            hoaDonChiTietRepository.deleteByHoaDonId(id);
-
-            // Xóa hóa đơn
-            hoaDonRepository.deleteById(id);
+    public String deleteHoaDon(@PathVariable Integer id, Model model) {
+        List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findByHoaDonId(id);
+        // Hoàn trả số lượng sản phẩm trước khi xóa
+        for (HoaDonChiTiet hoaDonChiTiet : hoaDonChiTietList) {
+            SanPhamChiTiet sanPhamChiTiet = hoaDonChiTiet.getSanPhamChiTiet();
+            sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() + hoaDonChiTiet.getSo_luong());
+            sanPhamChiTietRepo.save(sanPhamChiTiet); // Cập nhật số lượng sản phẩm trong cơ sở dữ liệu
         }
-        return "redirect:/hoa-don";
+        hoaDonChiTietRepository.deleteAll(hoaDonChiTietList);
+        // Xóa hóa đơn
+        hoaDonRepository.deleteById(id);
+
+        // Tìm ID hóa đơn kế tiếp
+        List<Integer> nextIds = hoaDonRepository.findNextId(id);
+        Integer nextHoaDonId = nextIds.isEmpty() ? null : nextIds.get(0);
+
+        // Nếu không có hóa đơn kế tiếp, lấy hóa đơn đầu tiên trong danh sách
+        if (nextHoaDonId == null) {
+            List<HoaDon> remainingHoaDons = hoaDonRepository.findAll();
+            if (!remainingHoaDons.isEmpty()) {
+                nextHoaDonId = remainingHoaDons.get(0).getId();
+            }
+        }
+
+        // Nếu còn hóa đơn, chuyển hướng đến hóa đơn đó
+        return nextHoaDonId != null
+                ? "redirect:/hoa-don/" + nextHoaDonId
+                : "redirect:/hoa-don";
     }
+
+
 
 
 
 
     @PostMapping("/{hoaDonId}/remove-product/{sanPhamChiTietId}")
     public String removeProductFromInvoice(@PathVariable Integer hoaDonId, @PathVariable Integer sanPhamChiTietId) {
-        // Tìm chi tiết hóa đơn theo hóa đơn ID và sản phẩm chi tiết ID
         HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietRepository.findByHoaDonIdAndSanPhamChiTietId(hoaDonId, sanPhamChiTietId);
         if (hoaDonChiTiet != null) {
+            SanPhamChiTiet sanPhamChiTiet = hoaDonChiTiet.getSanPhamChiTiet();
+
             if (hoaDonChiTiet.getSo_luong() > 1) {
-                // Nếu số lượng lớn hơn 1, trừ đi 1
                 hoaDonChiTiet.setSo_luong(hoaDonChiTiet.getSo_luong() - 1);
-                // Cập nhật tổng tiền
-                hoaDonChiTiet.setTong_tien(hoaDonChiTiet.getSo_luong() * hoaDonChiTiet.getSanPhamChiTiet().getGiaBan());
+                hoaDonChiTiet.setGia_san_pham(hoaDonChiTiet.getSo_luong() * sanPhamChiTiet.getGiaBan());
                 hoaDonChiTietRepository.save(hoaDonChiTiet);
             } else {
-                // Nếu số lượng là 1, xóa sản phẩm khỏi hóa đơn
                 hoaDonChiTietRepository.delete(hoaDonChiTiet);
             }
+
+            // Cộng lại số lượng sản phẩm khi xóa khỏi hóa đơn
+            sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() + 1);
+            sanPhamChiTietRepo.save(sanPhamChiTiet);
         }
-        // Chuyển hướng về chi tiết hóa đơn
+
         return "redirect:/hoa-don/" + hoaDonId;
     }
 
 
 
-    @PostMapping("/{id}/update-all-payment-method")
-    public String updatePaymentMethod(@PathVariable Integer id, @RequestParam String phuongThucThanhToan) {
-        // Lấy tất cả chi tiết hóa đơn cho hóa đơn hiện tại
-        List<HoaDonChiTiet> hoaDonChiTiets = hoaDonChiTietRepository.findByHoaDonId(id);
-
-        // Cập nhật phương thức thanh toán cho tất cả các chi tiết hóa đơn
-        for (HoaDonChiTiet chiTiet : hoaDonChiTiets) {
-            chiTiet.setPhuong_thuc_thanh_toan(phuongThucThanhToan);
-            hoaDonChiTietRepository.save(chiTiet);
+    @PostMapping("/{hoaDonId}/update-all-payment-method")
+    public String updatePaymentMethod(@PathVariable("hoaDonId") Integer hoaDonId,
+                                      @RequestParam("phuongThucThanhToan") String phuongThucThanhToan) {
+        HoaDon hoaDon = hoaDonRepository.findById(hoaDonId).orElse(null);
+        if (hoaDon != null) {
+            hoaDon.setPhuong_thuc_thanh_toan(phuongThucThanhToan);
+            hoaDonRepository.save(hoaDon);
         }
-
-        // Chuyển hướng lại trang chi tiết hóa đơn
-        return "redirect:/hoa-don/" + id; // Trở lại trang chi tiết hóa đơn
+        return "redirect:/hoa-don/" + hoaDonId;
     }
-
-
 
 
     @PostMapping("/{hoaDonId}/update-note")
-    public String updateNote(@PathVariable Integer hoaDonId, @RequestParam("ghi_chu") String ghiChu) {
-        // Nếu ghi chú rỗng hoặc trống, gán giá trị mặc định "Không có ghi chú"
-        if (ghiChu == null || ghiChu.trim().isEmpty()) {
-            ghiChu = "Không có ghi chú";
-        }
-
-        List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findByHoaDonId(hoaDonId);
-        if (!hoaDonChiTietList.isEmpty()) {
-            // Cập nhật ghi chú cho từng sản phẩm chi tiết trong hóa đơn
-            for (HoaDonChiTiet hoaDonChiTiet : hoaDonChiTietList) {
-                hoaDonChiTiet.setGhi_chu(ghiChu);
-                hoaDonChiTietRepository.save(hoaDonChiTiet);
+    public String updateNote(@PathVariable("hoaDonId") Integer hoaDonId,
+                             @RequestParam("ghi_chu") String ghiChu) {
+        HoaDon hoaDon = hoaDonRepository.findById(hoaDonId).orElse(null);
+        if (hoaDon != null) {
+            if (ghiChu != null && !ghiChu.trim().isEmpty()) {
+                hoaDon.setGhi_chu(ghiChu);
+            } else {
+                hoaDon.setGhi_chu(null);
             }
+            hoaDonRepository.save(hoaDon);
         }
         return "redirect:/hoa-don/" + hoaDonId;
     }
 
 
+    @PostMapping("/{id}/confirm")
+    public String goToConfirmOrder(@PathVariable Integer id, @RequestParam("ghi_chu") String ghiChu, Model model) {
+        HoaDon hoaDon1 = hoaDonRepository.findById(id).orElseThrow();
+        List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findByHoaDonId(id);
+        model.addAttribute("hoaDon", hoaDon1);
+        model.addAttribute("chiTietList", hoaDonChiTietList);
+        // Tìm hóa đơn theo ID
+        HoaDon hoaDon = hoaDonRepository.findById(id).orElse(null);
+        if (hoaDon != null) {
+            // Cập nhật ghi chú cho hóa đơn
+            hoaDon.setGhi_chu(ghiChu);
+            hoaDonRepository.save(hoaDon);
+        }
+        model.addAttribute("hoaDon", hoaDon);
+        return "admin/ban_hang/confirm-order";
+    }
 
 
 
+
+    @PostMapping("/{id}/confirm-order")
+    public String confirmOrder(@PathVariable Integer id) {
+        HoaDon hoaDon = hoaDonRepository.findById(id).orElseThrow();
+        // Cập nhật trạng thái hóa đơn
+        hoaDon.setTinh_trang(1);
+        hoaDonRepository.save(hoaDon);
+
+        // Tìm hóa đơn tiếp theo có tình trạng là 0
+        List<HoaDon> remainingHoaDons = hoaDonRepository.findAll();
+        Integer nextHoaDonId = remainingHoaDons.stream()
+                .filter(hd -> hd.getTinh_trang() == 0)
+                .map(HoaDon::getId)
+                .findFirst()
+                .orElse(null);
+
+        return nextHoaDonId != null
+                ? "redirect:/hoa-don/" + nextHoaDonId
+                : "redirect:/hoa-don";
+    }
 
 }

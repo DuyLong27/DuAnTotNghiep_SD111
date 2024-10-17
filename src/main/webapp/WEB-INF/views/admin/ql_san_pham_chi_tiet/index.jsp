@@ -8,7 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <title>Sản Phẩm Chi Tiết</title>
     <style>
         body {
@@ -86,6 +85,7 @@
 </head>
 
 <body>
+<jsp:include page="../layout.jsp" />
 <div class="container mt-3">
     <h4>Danh sách sản phẩm chi tiết</h4>
     <!-- Thông báo -->

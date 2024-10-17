@@ -433,13 +433,13 @@
 
     <img src="../../lib/logo_xanh.png" alt="Logo">
 
-    <a href="#"><i class="fa-solid fa-chart-simple"></i>Tổng quan</a>
+    <a href="/bao-cao/hien-thi"><i class="fa-solid fa-chart-simple"></i>Tổng quan</a>
 
     <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
         <i class="fas fa-box"></i>Hàng hóa
     </a>
     <ul class="dropdown-menu">
-        <li><a class="dropdown-item" href="#"><i class="fas fa-cube"></i>Sản phẩm</a></li>
+        <li><a class="dropdown-item" href="/san-pham/index"><i class="fas fa-cube"></i>Sản phẩm</a></li>
         <li><a class="dropdown-item" href="#"><i class="fas fa-warehouse"></i>Kho hàng</a></li>
     </ul>
 
@@ -447,7 +447,7 @@
         <i class="fas fa-exchange-alt"></i>Giao dịch
     </a>
     <ul class="dropdown-menu">
-        <li><a class="dropdown-item" href="#"><i class="fas fa-shopping-cart"></i>Bán hàng</a></li>
+        <li><a class="dropdown-item" href="/hoa-don"><i class="fas fa-shopping-cart"></i>Bán hàng</a></li>
         <li><a class="dropdown-item" href="#"><i class="fas fa-download"></i>Nhập hàng</a></li>
         <li><a class="dropdown-item" href="#"><i class="fas fa-file-invoice"></i>Hóa đơn</a></li>
     </ul>
@@ -460,8 +460,8 @@
         <li><a class="dropdown-item" href="#"><i class="fas fa-truck"></i>Nguồn nhập</a></li>
     </ul>
 
-    <a href="#"><i class="fas fa-users"></i>Nhân viên</a>
-    <a href="hien-thi"><i class="fa-solid fa-tag"></i>Khuyến mãi</a>
+    <a href="/nhan-vien/hien-thi"><i class="fas fa-users"></i>Nhân viên</a>
+    <a href="/khuyen-mai/hien-thi"><i class="fa-solid fa-tag"></i>Khuyến mãi</a>
 
 </div>
 

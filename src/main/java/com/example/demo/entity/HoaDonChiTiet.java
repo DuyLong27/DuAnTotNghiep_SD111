@@ -28,11 +28,9 @@ public class HoaDonChiTiet {
     @JoinColumn(name = "id_san_pham_chi_tiet",referencedColumnName = "id_san_pham_chi_tiet")
     private SanPhamChiTiet sanPhamChiTiet;
 
-    @Column(name = "tong_tien")
-    private int tong_tien;
+    @Column(name = "gia_san_pham")
+    private int gia_san_pham;
 
-    @Column(name = "phuong_thuc_thanh_toan")
-    private String phuong_thuc_thanh_toan;
 
     @Column(name = "so_luong")
     private int so_luong;
@@ -40,9 +38,6 @@ public class HoaDonChiTiet {
     @Column(name = "giam_gia")
     private int giam_gia;
 
-
-    @Column(name = "ghi_chu")
-    private String ghi_chu;
 
     @Column(name = "tinh_trang")
     private Boolean tinhTrang;

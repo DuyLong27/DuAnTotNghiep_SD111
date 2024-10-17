@@ -29,10 +29,28 @@ public class HoaDon {
     @Column(name = "so_hoa_don")
     private String so_hoa_don;
 
+    @Column(name = "tong_tien")
+    private int tong_tien;
+
+    @Column(name = "phuong_thuc_thanh_toan")
+    private String phuong_thuc_thanh_toan;
+
+    @Column(name = "ghi_chu")
+    private String ghi_chu;
+
     @Column(name = "ngay_tao")
     private Date ngay_tao;
 
     @Column(name = "tinh_trang")
     private Integer tinh_trang;
 
+    @OneToMany(mappedBy = "hoaDon", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<HoaDonChiTiet> hoaDonChiTietList;
+
+    // Phương thức để tính tổng số tiền hóa đơn
+    public void calculateTotalAmount() {
+        this.tong_tien = hoaDonChiTietList.stream()
+                .mapToInt(detail -> detail.getGia_san_pham() * detail.getSo_luong())
+                .sum();
+    }
 }

@@ -44,7 +44,7 @@ public class QLSanPhamController {
         }
         sanPhamRepo.save(sanPham);
         redirectAttributes.addFlashAttribute("message", "Thêm thành công!");
-        return "redirect:admin/ql_san_pham/index";
+        return "redirect:/san-pham/index";
     }
 
     @GetMapping("index")
@@ -97,7 +97,7 @@ public class QLSanPhamController {
     public String delete(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
         sanPhamRepo.deleteById(id);
         redirectAttributes.addFlashAttribute("message", "Xóa thành công!");
-        return "redirect:admin/ql_san_pham/index";
+        return "redirect:/san-pham/index";
     }
 
 
@@ -125,6 +125,6 @@ public class QLSanPhamController {
         }
         sanPhamRepo.save(sanPham);
         redirectAttributes.addFlashAttribute("message", "Sửa thành công!");
-        return "redirect:admin/ql_san_pham/index";
+        return "redirect:/san-pham/index";
     }
 }
