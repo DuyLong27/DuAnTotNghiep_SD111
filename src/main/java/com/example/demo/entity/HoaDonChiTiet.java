@@ -25,28 +25,26 @@ public class HoaDonChiTiet {
     private HoaDon hoaDon;
 
     @ManyToOne
-    @JoinColumn(name = "id_san_pham",referencedColumnName = "id_san_pham")
-    private SanPham sanPham;
+    @JoinColumn(name = "id_san_pham_chi_tiet",referencedColumnName = "id_san_pham_chi_tiet")
+    private SanPhamChiTiet sanPhamChiTiet;
+
+    @Column(name = "tong_tien")
+    private int tong_tien;
+
+    @Column(name = "phuong_thuc_thanh_toan")
+    private String phuong_thuc_thanh_toan;
 
     @Column(name = "so_luong")
-    private int soLuong;
-
-    @Column(name = "gia_ban")
-    private int giaBan;
+    private int so_luong;
 
     @Column(name = "giam_gia")
-    private int giamGia;
+    private int giam_gia;
 
-    @Column(name = "tong_cong")
-    private int tongCong;
 
-    @Column(name = "ngay_tao")
-    private Date ngayTao;
+    @Column(name = "ghi_chu")
+    private String ghi_chu;
 
     @Column(name = "tinh_trang")
     private Boolean tinhTrang;
 
-    public int getTongCong() {
-        return (giaBan - giamGia) * soLuong;
-    }
 }
