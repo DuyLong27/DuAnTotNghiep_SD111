@@ -41,7 +41,7 @@
         <div class="col-md-6 filter-section">
             <h2 class="text-primary">Danh Sách Hóa Đơn</h2>
             <div class="d-flex align-items-center mb-3">
-                <form action="/hoa-don/addHoaDon" method="post" class="me-2">
+                <form action="/ban-hang/addHoaDon" method="post" class="me-2">
                     <button class="btn btn-create">Tạo hóa đơn mới</button>
                 </form>
                 <div class="form-group me-2">
@@ -50,7 +50,7 @@
                         <option value="">-- Chọn Hóa Đơn --</option>
                         <c:forEach items="${hoaDonList}" var="hoaDon">
                             <c:if test="${hoaDon.tinh_trang == 0}">
-                                <option value="${pageContext.request.contextPath}/hoa-don/${hoaDon.id}"
+                                <option value="${pageContext.request.contextPath}/ban-hang/${hoaDon.id}"
                                         <c:if test="${hoaDon.id == selectedHoaDonId}">selected</c:if>>
                                         ${hoaDon.so_hoa_don}
                                 </option>
@@ -59,7 +59,7 @@
                     </select>
                 </div>
                 <c:if test="${not empty selectedHoaDonId}">
-                    <form action="/hoa-don/${selectedHoaDonId}/delete" method="post" class="me-2">
+                    <form action="/ban-hang/${selectedHoaDonId}/delete" method="post" class="me-2">
                         <button class="btn btn-secondary-outline" onclick="return confirm('Bạn có chắc chắn muốn xóa hóa đơn này?');">Xóa</button>
                     </form>
                 </c:if>
@@ -86,7 +86,7 @@
                             <td>${item.sanPhamChiTiet.giaBan}</td>
                             <td>${item.so_luong}</td>
                             <td>
-                                <form action="${pageContext.request.contextPath}/hoa-don/${selectedHoaDonId}/remove-product/${item.sanPhamChiTiet.id}" method="post" style="display:inline-block;">
+                                <form action="${pageContext.request.contextPath}/ban-hang/${selectedHoaDonId}/remove-product/${item.sanPhamChiTiet.id}" method="post" style="display:inline-block;">
                                     <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
                                 </form>
                             </td>
@@ -100,7 +100,7 @@
 
                 <h5>Tổng tiền: ${tongTien}</h5> <!-- Hiển thị tổng tiền -->
 
-                <form id="paymentMethodForm" action="${pageContext.request.contextPath}/hoa-don/${selectedHoaDonId}/update-all-payment-method" method="post" class="mb-3">
+                <form id="paymentMethodForm" action="${pageContext.request.contextPath}/ban-hang/${selectedHoaDonId}/update-all-payment-method" method="post" class="mb-3">
                     <div class="form-group">
                         <label for="phuongThucThanhToan">Chọn phương thức thanh toán:</label>
                         <select id="phuongThucThanhToan" name="phuongThucThanhToan" class="form-select" onchange="this.form.submit();">
@@ -120,7 +120,7 @@
             </c:if>
             <c:if test="${not empty selectedHoaDonId}">
                 <h4 class="mt-4">Ghi chú</h4>
-                <form id="noteForm" action="${pageContext.request.contextPath}/hoa-don/${selectedHoaDonId}/confirm" method="post">
+                <form id="noteForm" action="${pageContext.request.contextPath}/ban-hang/${selectedHoaDonId}/confirm" method="post">
                     <div class="form-group">
                         <textarea name="ghi_chu" class="form-control" rows="3">${hoaDon.ghi_chu}</textarea>
                     </div>
@@ -139,7 +139,7 @@
                                     <h5 class="card-title">${sanPham.sanPham.ten}</h5>
                                     <p class="card-text">Giá: ${sanPham.giaBan} VNĐ</p>
                                     <p class="card-text">Số Lượng: ${sanPham.soLuong}</p>
-                                    <form action="${pageContext.request.contextPath}/hoa-don/${selectedHoaDonId}/add-product" method="post">
+                                    <form action="${pageContext.request.contextPath}/ban-hang/${selectedHoaDonId}/add-product" method="post">
                                         <input type="hidden" name="sanPhamId" value="${sanPham.id}" />
                                         <button type="submit" class="btn btn-outline-custom">
                                             <i class="bi bi-plus"></i> <!-- Icon dấu cộng -->

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Random;
 
 @Controller
-@RequestMapping("/hoa-don")
+@RequestMapping("/ban-hang")
 public class BanHangController {
     @Autowired
     private SanPhamRepo sanPhamRepository;
@@ -73,7 +73,7 @@ public class BanHangController {
 
         if (sanPhamChiTiet.getSoLuong() <= 0) {
             // Nếu số lượng không đủ, không thực hiện thêm vào hóa đơn
-            return "redirect:/hoa-don/" + id + "?error=InsufficientStock";
+            return "redirect:/ban-hang/" + id + "?error=InsufficientStock";
         }
 
         // Giảm số lượng sản phẩm chi tiết trước khi thêm
@@ -93,7 +93,7 @@ public class BanHangController {
             hoaDonChiTietRepository.save(hoaDonChiTiet);
         }
 
-        return "redirect:/hoa-don/" + id;
+        return "redirect:/ban-hang/" + id;
     }
 
 
@@ -113,7 +113,7 @@ public class BanHangController {
         hoaDonRepository.save(hoaDon);
 
         // Chuyển hướng đến trang chi tiết hóa đơn mới được tạo
-        return "redirect:/hoa-don/" + hoaDon.getId();
+        return "redirect:/ban-hang/" + hoaDon.getId();
     }
 
 
@@ -145,8 +145,8 @@ public class BanHangController {
 
         // Nếu còn hóa đơn, chuyển hướng đến hóa đơn đó
         return nextHoaDonId != null
-                ? "redirect:/hoa-don/" + nextHoaDonId
-                : "redirect:/hoa-don";
+                ? "redirect:/ban-hang/" + nextHoaDonId
+                : "redirect:/ban-hang";
     }
 
 
@@ -173,7 +173,7 @@ public class BanHangController {
             sanPhamChiTietRepo.save(sanPhamChiTiet);
         }
 
-        return "redirect:/hoa-don/" + hoaDonId;
+        return "redirect:/ban-hang/" + hoaDonId;
     }
 
 
@@ -186,7 +186,7 @@ public class BanHangController {
             hoaDon.setPhuong_thuc_thanh_toan(phuongThucThanhToan);
             hoaDonRepository.save(hoaDon);
         }
-        return "redirect:/hoa-don/" + hoaDonId;
+        return "redirect:/ban-hang/" + hoaDonId;
     }
 
 
@@ -202,7 +202,7 @@ public class BanHangController {
             }
             hoaDonRepository.save(hoaDon);
         }
-        return "redirect:/hoa-don/" + hoaDonId;
+        return "redirect:/ban-hang/" + hoaDonId;
     }
 
 
@@ -242,8 +242,8 @@ public class BanHangController {
                 .orElse(null);
 
         return nextHoaDonId != null
-                ? "redirect:/hoa-don/" + nextHoaDonId
-                : "redirect:/hoa-don";
+                ? "redirect:/ban-hang/" + nextHoaDonId
+                : "redirect:/ban-hang";
     }
 
 }

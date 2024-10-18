@@ -41,10 +41,10 @@
                     <p><strong>Tổng Tiền:</strong> ${hoaDon.tong_tien} VNĐ</p>
                 </div>
                 <div class="modal-footer">
-                    <form action="${pageContext.request.contextPath}/hoa-don/${hoaDon.id}/confirm-order" method="post">
+                    <form action="${pageContext.request.contextPath}/ban-hang/${hoaDon.id}/confirm-order" method="post">
                         <button type="submit" class="btn btn-primary">Xác nhận Đơn hàng</button>
                     </form>
-                    <form action="${pageContext.request.contextPath}/hoa-don/${hoaDon.id}" method="get">
+                    <form action="${pageContext.request.contextPath}/ban-hang/${hoaDon.id}" method="get">
                         <button type="submit" class="btn btn-secondary">Quay lại chi tiết hóa đơn</button>
                     </form>
                 </div>
