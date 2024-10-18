@@ -18,32 +18,32 @@
 <jsp:include page="../layout.jsp" />
 <div class="container mt-3">
     <h1 class="text-center mt-3">Danh Sách Nhân Viên</h1>
-    <form action="/nhan-vien/hien-thi" method="get" id="filterSearchForm">
-        <div class="row">
-            <div class="col-md-4">
-                <h5>Lọc Theo Tình Trạng</h5>
-                <select name="tinhTrang" class="form-select" onchange="this.form.submit();">
-                    <option value="" ${param.tinhTrang == '' ? 'selected' : ''}>Tất Cả</option>
-                    <option value="1" ${param.tinhTrang == '1' ? 'selected' : ''}>Làm Việc</option>
-                    <option value="0" ${param.tinhTrang == '0' ? 'selected' : ''}>Tan Ca</option>
-                </select>
-            </div>
+    <div class="filter-section mb-3">
+        <form action="/nhan-vien/hien-thi" method="get" id="filterSearchForm">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Lọc Theo Tình Trạng</h5>
+                    <select name="tinhTrang" class="form-select" onchange="this.form.submit();">
+                        <option value="" ${param.tinhTrang == '' ? 'selected' : ''}>Tất Cả</option>
+                        <option value="1" ${param.tinhTrang == '1' ? 'selected' : ''}>Làm Việc</option>
+                        <option value="0" ${param.tinhTrang == '0' ? 'selected' : ''}>Tan Ca</option>
+                    </select>
+                </div>
 
-            <div class="col-md-4">
-                <h5>Tìm Kiếm Theo Tên Nhân Viên</h5>
-                <input type="text" name="tenNhanVien" class="form-control" placeholder="Nhập tên nhân viên"
-                       value="${param.tenNhanVien}">
+                <div class="col-md-4">
+                    <h5>Tìm Kiếm Theo Tên Nhân Viên</h5>
+                    <input type="text" name="tenNhanVien" class="form-control" placeholder="Nhập tên nhân viên"
+                           value="${param.tenNhanVien}">
+                </div>
             </div>
+        </form>
+        <div class="mt-2">
+            <button type="button" class="btn btn-create" data-bs-toggle="modal" data-bs-target="#productModal"
+                    onclick="resetForm(); setModalTitle('Thêm Nhân Viên');">
+                + Thêm Nhân Viên
+            </button>
+            <button type="button" class="btn btn-secondary-outline ms-2" onclick="resetFilters();">Reset</button>
         </div>
-    </form>
-
-
-    <div class="mt-3">
-        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#productModal"
-                onclick="resetForm(); setModalTitle('Thêm Nhân Viên');">
-            + Thêm Nhân Viên
-        </button>
-        <button type="button" class="btn btn-outline-danger ms-2" onclick="resetFilters();">Reset</button>
     </div>
 
     <!-- Bootstrap Modal -->
@@ -104,7 +104,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary" id="submitButton">Lưu Sản Phẩm</button>
+                        <button type="submit" class="btn btn-create" id="submitButton">Lưu Sản Phẩm</button>
                     </form>
                 </div>
             </div>
@@ -112,7 +112,7 @@
     </div>
 
     <!-- Bảng hiển thị danh sách sản phẩm -->
-    <table class="table table-hover table-bordered text-center mt-3">
+    <table class="table table-striped table-hover table-bordered text-center">
         <thead>
         <tr>
             <th>STT</th>
@@ -147,9 +147,9 @@
                     </td>
                     <td>
                         <a onclick="openEditModal(${nv.idNhanVien}, '${nv.tenNhanVien}', ${nv.email}, '${nv.matKhau}', ${nv.soDienThoai}, ${nv.chucVu}, ${nv.ngayDiLam}, ${nv.tinhTrang})"
-                           type="button" class="btn btn-default bordervien table__logo"><i class='bx bx-edit-alt'></i></a>
+                           type="button" class="btn btn-outline-custom"><i class='bx bx-edit-alt'></i></a>
                         <a onclick="return confirm('Bạn có chắc muốn xóa?')" href="/nhan-vien/delete?id=${nv.idNhanVien}"
-                           class="btn btn-default bordervien table__logo"><i class='bx bx-trash' ></i></a>
+                           class="btn btn-outline-custom"><i class='bx bx-trash' ></i></a>
                     </td>
                 </tr>
             </c:forEach>
