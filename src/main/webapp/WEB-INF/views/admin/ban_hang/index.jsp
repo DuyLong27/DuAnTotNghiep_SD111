@@ -136,6 +136,7 @@
                         <div class="col-md-4 mb-3">
                             <div class="card">
                                 <div class="card-body text-center">
+                                    <img style="width: 70px" src="${sanPham.hinhAnh}" alt="">
                                     <h5 class="card-title">${sanPham.sanPham.ten}</h5>
                                     <p class="card-text">Giá: ${sanPham.giaBan} VNĐ</p>
                                     <p class="card-text">Số Lượng: ${sanPham.soLuong}</p>
