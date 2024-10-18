@@ -88,9 +88,6 @@
                                    onclick="showPromotionEdits(${item.idKhuyenMai}, '${item.maKhuyenMai}', '${item.tenKhuyenMai}', ${item.giaTriKhuyenMai}, '${item.ngayBatDau}', '${item.ngayKetThuc}', ${item.tinhTrang})">
                                     <i class="fa fa-edit"></i>
                                 </a>
-                                <a href="/khuyen-mai/xoa?id=${item.idKhuyenMai}" class="btn btn-outline-custom">
-                                    <i class="fa fa-trash"></i>
-                                </a>
                             </div>
                         </td>
                     </tr>

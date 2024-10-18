@@ -11,46 +11,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <title>Sản Phẩm Chi Tiết</title>
     <style>
-        body {
-            background-color: #f8f9fa;
-        }
-
-        .container {
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            margin-top: 20px;
-        }
-
-        h4 {
-            color: #343a40;
-        }
-
-        .form-label {
-            font-weight: bold;
-        }
-
-        .table {
-            margin-top: 20px;
-        }
-
-        .table th {
-            background-color: #007bff;
-            color: white;
-        }
-
-        .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
-        }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #0056b3;
-        }
-
-
         #productInfo {
             border: 1px solid #007bff;
             border-radius: 5px;
@@ -95,18 +55,20 @@
                 ${message}
         </div>
     </c:if>
-    <form method="get" action="/spct/index" class="d-flex align-items-center">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
-            Thêm sản phẩm
-        </button>
-        <div class="col-md-2 me-2 ms-3">
-            <select name="tinhTrang" class="form-select" onchange="this.form.submit();">
-                <option value="" ${param.tinhTrang == '' ? 'selected' : ''}>Tất Cả</option>
-                <option value="1" ${param.tinhTrang == '1' ? 'selected' : ''}>Hoạt Động</option>
-                <option value="0" ${param.tinhTrang == '0' ? 'selected' : ''}>Không Hoạt Động</option>
-            </select>
-        </div>
-    </form>
+    <div class="mb-3 filter-section">
+        <form method="get" action="/spct/index" class="d-flex align-items-center">
+            <button type="button" class="btn btn-create" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                Thêm sản phẩm
+            </button>
+            <div class="col-md-2 me-2 ms-3">
+                <select name="tinhTrang" class="form-select" onchange="this.form.submit();">
+                    <option value="" ${param.tinhTrang == '' ? 'selected' : ''}>Tất Cả</option>
+                    <option value="1" ${param.tinhTrang == '1' ? 'selected' : ''}>Hoạt Động</option>
+                    <option value="0" ${param.tinhTrang == '0' ? 'selected' : ''}>Không Hoạt Động</option>
+                </select>
+            </div>
+        </form>
+    </div>
 
 
 
@@ -237,8 +199,8 @@
                                 </select>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary">Thêm sản phẩm</button>
-                        <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset</button>
+                        <button type="submit" class="btn btn-create">Thêm sản phẩm</button>
+                        <button type="button" class="btn btn-secondary-outline" onclick="resetForm()">Reset</button>
                     </form>
                 </div>
             </div>
@@ -372,13 +334,13 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-warning">Cập nhật sản phẩm</button>
+                        <button type="submit" class="btn btn-create">Cập nhật sản phẩm</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-    <table class="table table-bordered table-hover text-center">
+    <table class="table table-striped table-hover table-bordered text-center">
         <thead class="table-light">
         <tr>
             <th>STT</th>
@@ -424,8 +386,8 @@
                             ${sanPhamChiTiet.tinhTrang == 1 ? 'Hoạt Động' : 'Không Hoạt Động'}</td>
                     <td>
                         <div class="d-flex justify-content-center">
-                            <a class="btn btn-warning btn-sm me-2" data-bs-toggle="modal" data-bs-target="#editProductModal" data-id="${sanPhamChiTiet.id}" data-ma="${sanPhamChiTiet.ma}" data-soLuong="${sanPhamChiTiet.soLuong}" data-giaBan="${sanPhamChiTiet.giaBan}" data-sanPhamId="${sanPhamChiTiet.sanPham.id}" data-loaiCaPheId="${sanPhamChiTiet.loaiCaPhe.id}" data-canNangId="${sanPhamChiTiet.canNang.id}" data-loaiHatId="${sanPhamChiTiet.loaiHat.id}" data-loaiTuiId="${sanPhamChiTiet.loaiTui.id}" data-mucDoRangId="${sanPhamChiTiet.mucDoRang.id}" data-huongViId="${sanPhamChiTiet.huongVi.id}" data-thuongHieuId="${sanPhamChiTiet.thuongHieu.id}" data-tinhTrang="${sanPhamChiTiet.tinhTrang}"><i class="fas fa-edit"></i> Sửa</a>
-<%--                            <a href="${pageContext.request.contextPath}/spct/delete/${sanPhamChiTiet.id}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này không?')"><i class="fas fa-trash-alt"></i> Xóa</a>--%>
+                            <a class="btn btn-outline-custom btn-sm me-2" data-bs-toggle="modal" data-bs-target="#editProductModal" data-id="${sanPhamChiTiet.id}" data-ma="${sanPhamChiTiet.ma}" data-soLuong="${sanPhamChiTiet.soLuong}" data-giaBan="${sanPhamChiTiet.giaBan}" data-sanPhamId="${sanPhamChiTiet.sanPham.id}" data-loaiCaPheId="${sanPhamChiTiet.loaiCaPhe.id}" data-canNangId="${sanPhamChiTiet.canNang.id}" data-loaiHatId="${sanPhamChiTiet.loaiHat.id}" data-loaiTuiId="${sanPhamChiTiet.loaiTui.id}" data-mucDoRangId="${sanPhamChiTiet.mucDoRang.id}" data-huongViId="${sanPhamChiTiet.huongVi.id}" data-thuongHieuId="${sanPhamChiTiet.thuongHieu.id}" data-tinhTrang="${sanPhamChiTiet.tinhTrang}"><i class="fas fa-edit"></i> Sửa</a>
+                                <%--                            <a href="${pageContext.request.contextPath}/spct/delete/${sanPhamChiTiet.id}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này không?')"><i class="fas fa-trash-alt"></i> Xóa</a>--%>
                         </div>
                     </td>
                 </tr>

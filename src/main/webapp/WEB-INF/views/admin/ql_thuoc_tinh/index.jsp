@@ -42,7 +42,7 @@
                 ${message}
         </div>
     </c:if>
-    <div class="d-flex justify-content-start align-items-center mb-4">
+    <div class="d-flex justify-content-start align-items-center mb-4 filter-section">
         <form method="get" action="/thuoc-tinh" class="me-3">
             <select name="entity" id="entitySelect" class="form-select" onchange="this.form.submit()">
                 <option value="canNang" ${param.entity == 'canNang' ? 'selected' : ''}>Cân Nặng</option>
@@ -60,14 +60,14 @@
             <input type="hidden" name="entity" value="${param.entity}"/>
             <div class="input-group">
                 <input type="text" name="propertyName" id="propertyName" class="form-control" placeholder="Tên thuộc tính mới" required/>
-                <button type="submit" class="btn btn-outline-primary">Thêm Thuộc Tính</button>
+                <button type="submit" class="btn btn-create">Thêm Thuộc Tính</button>
             </div>
         </form>
     </div>
 
     <!-- Bảng thuộc tính -->
-    <table class="table table-hover table-bordered text-center">
-        <thead class="table-dark">
+    <table class="table table-striped table-hover table-bordered text-center">
+        <thead>
         <tr>
             <th>ID</th>
             <th>Tên</th>
@@ -84,13 +84,13 @@
                         <input type="hidden" name="entity" value="${entity}"/>
                         <input type="hidden" name="id" value="${item.id}"/>
                         <input type="text" name="propertyName" value="${item.ten}" class="form-control d-inline-block w-50" required/>
-                        <button type="submit" class="btn btn-sm btn-warning">Sửa</button>
+                        <button type="submit" class="btn btn-outline-custom">Sửa</button>
                     </form>
-<%--                    <form action="/thuoc-tinh/delete" method="post" class="d-inline">--%>
-<%--                        <input type="hidden" name="entity" value="${entity}"/>--%>
-<%--                        <input type="hidden" name="id" value="${item.id}"/>--%>
-<%--&lt;%&ndash;            <button onclick="return confirm('Bạn có chắc muốn xóa?')" type="submit" class="btn btn-sm btn-danger">Xóa</button>&ndash;%&gt;--%>
-<%--                    </form>--%>
+                        <%--                    <form action="/thuoc-tinh/delete" method="post" class="d-inline">--%>
+                        <%--                        <input type="hidden" name="entity" value="${entity}"/>--%>
+                        <%--                        <input type="hidden" name="id" value="${item.id}"/>--%>
+                        <%--&lt;%&ndash;            <button onclick="return confirm('Bạn có chắc muốn xóa?')" type="submit" class="btn btn-sm btn-danger">Xóa</button>&ndash;%&gt;--%>
+                        <%--                    </form>--%>
                 </td>
             </tr>
         </c:forEach>

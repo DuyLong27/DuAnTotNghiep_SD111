@@ -26,7 +26,7 @@
     <H1>Quản Lý Khách Hàng</H1>
 </div>
 
-<table class="table">
+<table class="table table-striped table-hover table-bordered text-center">
     <thead>
     <tr>
         <th scope="col">Tên khách hàng</th>
@@ -54,9 +54,9 @@
             <td>${kh.lich_su_mua_hang}</td>
             <td>${kh.khuyen_mai_da_dung}</td>
             <td>
-                <a href="/khach-hang/view-add" class="btn btn-info">Thêm</a>
-                <a href="/khach-hang/update/" class="btn btn-warning">Sửa</a>
-                <a href="/khach-hang/delete/" class="btn btn-danger">Xóa</a>
+                <a href="/khach-hang/view-add" class="btn btn-outline-custom">Thêm</a>
+                <a href="/khach-hang/update/" class="btn btn-outline-custom">Sửa</a>
+                <a href="/khach-hang/delete/" class="btn btn-outline-custom">Xóa</a>
             </td>
         </tr>
     </c:forEach>

@@ -29,7 +29,7 @@
         </div>
     </c:if>
     <!-- Form tìm kiếm và lọc -->
-    <form action="/nha-cung-cap" method="get" class="mb-4">
+    <form action="/nha-cung-cap" method="get" class="mb-4 filter-section">
         <div class="row mb-3">
             <div class="col-md-8">
                 <input type="text" class="form-control" placeholder="Tìm kiếm theo tên nhà cung cấp" name="search" value="${search}" onkeypress="if(event.keyCode == 13) { this.form.submit(); }">
@@ -44,16 +44,16 @@
         </div>
         <div class="d-flex justify-content-start mb-3">
             <!-- Nút mở form pop-up -->
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addNhaCungCapModal">Thêm Nhà Cung Cấp</button>
+            <button type="button" class="btn btn-create" data-bs-toggle="modal" data-bs-target="#addNhaCungCapModal">Thêm Nhà Cung Cấp</button>
             <!-- Nút reset -->
-            <button type="button" class="btn btn-secondary ms-2" onclick="resetForm()">Reset</button>
+            <button type="button" class="btn btn-secondary-outline ms-2" onclick="resetForm()">Reset</button>
         </div>
     </form>
 
 
 
     <!-- Bảng hiển thị nhà cung cấp -->
-    <table class="table table-hover table-bordered text-center mt-3">
+    <table class="table table-striped table-hover table-bordered text-center">
         <thead>
         <tr>
             <th>STT</th>
@@ -86,14 +86,14 @@
                     <td class="align-middle ${ncc.tinhTrang == 1 ? 'text-success' : 'text-danger'}">
                             ${ncc.tinhTrang == 1 ? 'Hoạt Động' : 'Không Hoạt Động'}
                     </td>
-                    <td class="d-flex align-middle justify-content-center">
-                        <button class="btn btn-warning btn-sm me-2"
+                    <td >
+                        <button class="btn btn-outline-custom"
                                 data-bs-toggle="modal"
                                 data-bs-target="#addNhaCungCapModal"
                                 onclick="editNhaCungCap(${ncc.id}, '${ncc.tenNCC}', '${ncc.soDienThoai}', '${ncc.email}', '${ncc.diaChi}', '${ncc.sanPhamCungCap}', '${ncc.nguonGoc}', ${ncc.tinhTrang})">
                             Sửa
                         </button>
-<%--                        <a href="/nha-cung-cap/delete/${ncc.id}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa?');">Xóa</a>--%>
+                            <%--                        <a href="/nha-cung-cap/delete/${ncc.id}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa?');">Xóa</a>--%>
                     </td>
                 </tr>
             </c:forEach>
@@ -190,7 +190,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary">Lưu</button>
+                        <button type="submit" class="btn btn-create">Lưu</button>
                     </form>
                 </div>
             </div>

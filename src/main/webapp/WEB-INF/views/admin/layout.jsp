@@ -336,8 +336,6 @@
 
         /* Custom style for the Filter and Create buttons */
         .btn-filter, .btn-create {
-            width: 90px;
-            height: 35px;
             font-size: 14px;
             padding: 5px 10px;
             border: 2px solid #0B745E;
@@ -458,7 +456,7 @@
         <i class="fas fa-handshake"></i>Đối tác
     </a>
     <ul class="dropdown-menu">
-        <li><a class="dropdown-item" href="#"><i class="fas fa-user"></i>Khách hàng</a></li>
+        <li><a class="dropdown-item" href="/khach-hang/hien-thi"><i class="fas fa-user"></i>Khách hàng</a></li>
         <li><a class="dropdown-item" href="/nha-cung-cap"><i class="fas fa-truck"></i>Nhà cung cấp</a></li>
     </ul>
 

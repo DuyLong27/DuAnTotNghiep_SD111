@@ -38,11 +38,11 @@
 <jsp:include page="../layout.jsp" />
 <div class="container mt-5">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-6 filter-section">
             <h2 class="text-primary">Danh Sách Hóa Đơn</h2>
             <div class="d-flex align-items-center mb-3">
                 <form action="/hoa-don/addHoaDon" method="post" class="me-2">
-                    <button class="btn btn-success">Tạo hóa đơn mới</button>
+                    <button class="btn btn-create">Tạo hóa đơn mới</button>
                 </form>
                 <div class="form-group me-2">
                     <label for="hoaDonSelect" class="visually-hidden">Chọn Hóa Đơn:</label>
@@ -60,7 +60,7 @@
                 </div>
                 <c:if test="${not empty selectedHoaDonId}">
                     <form action="/hoa-don/${selectedHoaDonId}/delete" method="post" class="me-2">
-                        <button class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa hóa đơn này?');">Xóa</button>
+                        <button class="btn btn-secondary-outline" onclick="return confirm('Bạn có chắc chắn muốn xóa hóa đơn này?');">Xóa</button>
                     </form>
                 </c:if>
             </div>
@@ -124,7 +124,7 @@
                     <div class="form-group">
                         <textarea name="ghi_chu" class="form-control" rows="3">${hoaDon.ghi_chu}</textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary mt-2">Xác nhận hóa đơn</button>
+                    <button type="submit" class="btn btn-create mt-2">Xác nhận hóa đơn</button>
                 </form>
             </c:if>
         </div>
@@ -141,7 +141,7 @@
                                     <p class="card-text">Số Lượng: ${sanPham.soLuong}</p>
                                     <form action="${pageContext.request.contextPath}/hoa-don/${selectedHoaDonId}/add-product" method="post">
                                         <input type="hidden" name="sanPhamId" value="${sanPham.id}" />
-                                        <button type="submit" class="btn btn-outline-primary">
+                                        <button type="submit" class="btn btn-outline-custom">
                                             <i class="bi bi-plus"></i> <!-- Icon dấu cộng -->
                                         </button>
                                     </form>

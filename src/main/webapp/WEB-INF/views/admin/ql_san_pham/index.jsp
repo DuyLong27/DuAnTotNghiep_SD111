@@ -46,7 +46,7 @@
         </div>
     </c:if>
     <form action="/san-pham/index" method="get" id="filterSearchForm">
-        <div class="row">
+        <div class="row filter-section">
             <div class="col-md-4">
                 <h5>Lọc Theo Danh Mục</h5>
                 <select name="danhMucId" class="form-select" onchange="this.form.submit();">
@@ -76,11 +76,11 @@
 
 
     <div class="mt-3">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#productModal"
+        <button type="button" class="btn btn-create" data-bs-toggle="modal" data-bs-target="#productModal"
                 onclick="resetForm(); setModalTitle('Thêm Sản Phẩm');">
-            Add Sản Phẩm
+            Tạo mới
         </button>
-        <button type="button" class="btn btn-danger ms-2" onclick="resetFilters();">Reset</button>
+        <button type="button" class="btn btn-secondary-outline" onclick="resetFilters();">Reset</button>
     </div>
 
     <!-- Bootstrap Modal -->
@@ -146,7 +146,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary" id="submitButton">Lưu Sản Phẩm</button>
+                        <button type="submit" class="btn btn-create" id="submitButton">Tạo mới</button>
                     </form>
                 </div>
             </div>
@@ -154,7 +154,7 @@
     </div>
 
     <!-- Bảng hiển thị danh sách sản phẩm -->
-    <table class="table table-hover table-bordered text-center mt-3">
+    <table class="table table-striped table-hover table-bordered text-center">
         <thead>
         <tr>
             <th>STT</th>
@@ -189,19 +189,19 @@
                         <!-- Nút Chi Tiết -->
                         <c:choose>
                             <c:when test="${sanPham.tinhTrang == 1}">
-                                <a href="/spct/index?id=${sanPham.id}&openModal=true" class="btn btn-info">Chi tiết</a>
+                                <a href="/spct/index?id=${sanPham.id}&openModal=true" class="btn btn-outline-custom">Chi tiết</a>
                             </c:when>
                             <c:otherwise>
-                                <button class="btn btn-info" disabled>Chi tiết</button>
+                                <button class="btn btn-outline-custom" disabled>Chi tiết</button>
                             </c:otherwise>
                         </c:choose>
 
                         <!-- Nút Sửa -->
                         <a onclick="openEditModal(${sanPham.id}, '${sanPham.ten}', ${sanPham.giaBan}, '${sanPham.moTa}', ${sanPham.danhMuc.id}, ${sanPham.nhaCungCap.id}, ${sanPham.tinhTrang})"
-                           class="btn btn-warning">Sửa</a>
+                           class="btn btn-outline-custom">Sửa</a>
 
                         <!-- Nút Xóa -->
-<%--                        <a href="/san-pham/delete/${sanPham.id}" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">Xóa</a>--%>
+                            <%--                        <a href="/san-pham/delete/${sanPham.id}" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">Xóa</a>--%>
                     </td>
                 </tr>
             </c:forEach>
@@ -270,7 +270,7 @@
             radio.checked = (radio.value == tinhTrang);
         }
 
-        document.getElementById('submitButton').innerText = 'Cập Nhật Sản Phẩm';
+        document.getElementById('submitButton').innerText = 'Cập Nhật';
         document.getElementById('productForm').action = `/san-pham/update`; // Update action
         var myModal = new bootstrap.Modal(document.getElementById('productModal'));
         myModal.show();
