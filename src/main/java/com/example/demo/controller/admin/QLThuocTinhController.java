@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 @Controller
 @RequestMapping("thuoc-tinh")
 public class QLThuocTinhController {
@@ -30,6 +31,9 @@ public class QLThuocTinhController {
     CanNangRepo canNangRepo;
     @Autowired
     HuongViRepo huongViRepo;
+
+    @Autowired
+    DanhMucRepo danhMucRepo;
 
     @GetMapping
     public String displayAttributes(
@@ -65,6 +69,9 @@ public class QLThuocTinhController {
                 break;
             case "thuongHieu":
                 page = thuongHieuRepo.findAll(pageable);
+                break;
+            case "danhMuc":
+                page = danhMucRepo.findAll(pageable);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid entity type");
@@ -117,6 +124,11 @@ public class QLThuocTinhController {
                 thuongHieu.setTen(propertyName);
                 thuongHieuRepo.save(thuongHieu);
                 break;
+            case "danhMuc":
+                DanhMuc danhMuc = new DanhMuc();
+                danhMuc.setTen(propertyName);
+                danhMucRepo.save(danhMuc);
+                break;
         }
 
         // Thêm thông báo thành công vào flash attributes
@@ -126,38 +138,41 @@ public class QLThuocTinhController {
         return "redirect:/thuoc-tinh?entity=" + entity;
     }
 
-    @PostMapping("/delete")
-    public String deleteAttribute(@RequestParam String entity, @RequestParam Integer id, RedirectAttributes redirectAttributes) {
-        switch (entity) {
-            case "canNang":
-                canNangRepo.deleteById(id);
-                break;
-            case "huongVi":
-                huongViRepo.deleteById(id);
-                break;
-            case "loaiCaPhe":
-                loaiCaPheRepo.deleteById(id);
-                break;
-            case "loaiHat":
-                loaiHatRepo.deleteById(id);
-                break;
-            case "loaiTui":
-                loaiTuiRepo.deleteById(id);
-                break;
-            case "mucDoRang":
-                mucDoRangRepo.deleteById(id);
-                break;
-            case "thuongHieu":
-                thuongHieuRepo.deleteById(id);
-                break;
-        }
-
-        // Thêm thông báo thành công vào flash attributes
-        redirectAttributes.addFlashAttribute("message", "Xóa thuộc tính thành công!");
-
-        // Sau khi xóa, chuyển hướng lại về phương thức hiển thị với entity đã chọn
-        return "redirect:/thuoc-tinh?entity=" + entity;
-    }
+//    @PostMapping("/delete")
+//    public String deleteAttribute(@RequestParam String entity, @RequestParam Integer id, RedirectAttributes redirectAttributes) {
+//        switch (entity) {
+//            case "canNang":
+//                canNangRepo.deleteById(id);
+//                break;
+//            case "huongVi":
+//                huongViRepo.deleteById(id);
+//                break;
+//            case "loaiCaPhe":
+//                loaiCaPheRepo.deleteById(id);
+//                break;
+//            case "loaiHat":
+//                loaiHatRepo.deleteById(id);
+//                break;
+//            case "loaiTui":
+//                loaiTuiRepo.deleteById(id);
+//                break;
+//            case "mucDoRang":
+//                mucDoRangRepo.deleteById(id);
+//                break;
+//            case "thuongHieu":
+//                thuongHieuRepo.deleteById(id);
+//                break;
+//            case "danhMuc":
+//                danhMucRepo.deleteById(id);
+//                break;
+//        }
+//
+//        // Thêm thông báo thành công vào flash attributes
+//        redirectAttributes.addFlashAttribute("message", "Xóa thuộc tính thành công!");
+//
+//        // Sau khi xóa, chuyển hướng lại về phương thức hiển thị với entity đã chọn
+//        return "redirect:/thuoc-tinh?entity=" + entity;
+//    }
 
     @PostMapping("/update")
     public String updateAttribute(@RequestParam String entity, @RequestParam Integer id, @RequestParam String propertyName, RedirectAttributes redirectAttributes) {
@@ -210,6 +225,13 @@ public class QLThuocTinhController {
                 if (thuongHieu != null) {
                     thuongHieu.setTen(propertyName);
                     thuongHieuRepo.save(thuongHieu);
+                }
+                break;
+            case "danhMuc":
+                DanhMuc danhMuc = danhMucRepo.findById(id).orElse(null);
+                if (danhMuc != null) {
+                    danhMuc.setTen(propertyName);
+                    danhMucRepo.save(danhMuc);
                 }
                 break;
         }

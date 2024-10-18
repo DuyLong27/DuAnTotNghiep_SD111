@@ -33,6 +33,7 @@
     </style>
 </head>
 <body>
+<jsp:include page="../layout.jsp" />
 <div class="container mt-5">
     <h1 class="text-center mb-4 text-primary">Quản Lý Thuộc Tính Sản Phẩm</h1>
     <!-- Thông báo -->
@@ -51,6 +52,7 @@
                 <option value="loaiTui" ${param.entity == 'loaiTui' ? 'selected' : ''}>Loại Túi</option>
                 <option value="mucDoRang" ${param.entity == 'mucDoRang' ? 'selected' : ''}>Mức Độ Rang</option>
                 <option value="thuongHieu" ${param.entity == 'thuongHieu' ? 'selected' : ''}>Thương Hiệu</option>
+                <option value="danhMuc" ${param.entity == 'danhMuc' ? 'selected' : ''}>Danh Mục</option>
             </select>
         </form>
 
@@ -84,11 +86,11 @@
                         <input type="text" name="propertyName" value="${item.ten}" class="form-control d-inline-block w-50" required/>
                         <button type="submit" class="btn btn-sm btn-warning">Sửa</button>
                     </form>
-                    <form action="/thuoc-tinh/delete" method="post" class="d-inline">
-                        <input type="hidden" name="entity" value="${entity}"/>
-                        <input type="hidden" name="id" value="${item.id}"/>
-                        <button onclick="return confirm('Bạn có chắc muốn xóa?')" type="submit" class="btn btn-sm btn-danger">Xóa</button>
-                    </form>
+<%--                    <form action="/thuoc-tinh/delete" method="post" class="d-inline">--%>
+<%--                        <input type="hidden" name="entity" value="${entity}"/>--%>
+<%--                        <input type="hidden" name="id" value="${item.id}"/>--%>
+<%--&lt;%&ndash;            <button onclick="return confirm('Bạn có chắc muốn xóa?')" type="submit" class="btn btn-sm btn-danger">Xóa</button>&ndash;%&gt;--%>
+<%--                    </form>--%>
                 </td>
             </tr>
         </c:forEach>

@@ -5,13 +5,14 @@ import com.example.demo.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Calendar;
+
 @Controller
 @RequestMapping("spct")
 public class QLSanPhamChiTietController {
@@ -92,13 +93,13 @@ public class QLSanPhamChiTietController {
     }
 
 
-    @GetMapping("/delete/{id}")
-    public String deleteSanPhamChiTiet(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
-        // Xóa sản phẩm chi tiết theo ID
-        sanPhamChiTietRepo.deleteById(id);
-        redirectAttributes.addFlashAttribute("message", "Xóa thành công!");
-        return "redirect:/spct/index";
-    }
+//    @GetMapping("/delete/{id}")
+//    public String deleteSanPhamChiTiet(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
+//        // Xóa sản phẩm chi tiết theo ID
+//        sanPhamChiTietRepo.deleteById(id);
+//        redirectAttributes.addFlashAttribute("message", "Xóa thành công!");
+//        return "redirect:/spct/index";
+//    }
 
     @PostMapping("/update")
     public String updateSanPhamChiTiet(@ModelAttribute SanPhamChiTiet sanPhamChiTiet, RedirectAttributes redirectAttributes) {
