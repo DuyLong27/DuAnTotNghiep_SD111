@@ -7,6 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <title>Sản Phẩm Chi Tiết</title>
     <style>
@@ -101,8 +102,8 @@
         <div class="col-md-2 me-2 ms-3">
             <select name="tinhTrang" class="form-select" onchange="this.form.submit();">
                 <option value="" ${param.tinhTrang == '' ? 'selected' : ''}>Tất Cả</option>
-                <option value="1" ${param.tinhTrang == '1' ? 'selected' : ''}>Còn Hàng</option>
-                <option value="0" ${param.tinhTrang == '0' ? 'selected' : ''}>Hết Hàng</option>
+                <option value="1" ${param.tinhTrang == '1' ? 'selected' : ''}>Hoạt Động</option>
+                <option value="0" ${param.tinhTrang == '0' ? 'selected' : ''}>Không Hoạt Động</option>
             </select>
         </div>
     </form>
@@ -112,8 +113,7 @@
 
 
     <!-- Modal Thêm -->
-    <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel"
-         aria-hidden="true">
+    <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -124,11 +124,13 @@
                     <form action="${pageContext.request.contextPath}/spct/add" method="post" id="productForm">
                         <div class="mb-3">
                             <label for="sanPham" class="form-label">Sản phẩm</label>
-                            <select class="form-select" id="sanPham" name="sanPham.id" required
-                                    onchange="displayProductInfo()">
+                            <select class="form-select" id="sanPham" name="sanPham.id" required onchange="displayProductInfo()">
                                 <option value="" disabled selected>Chọn sản phẩm</option>
                                 <c:forEach var="sp" items="${sanPhamList}">
-                                    <option value="${sp.id}" data-price="${sp.giaBan}">${sp.ten}</option>
+                                    <!-- Chỉ hiển thị các sản phẩm có tình trạng là Hoạt Động -->
+                                    <c:if test="${sp.tinhTrang == 1}">
+                                        <option value="${sp.id}" data-price="${sp.giaBan}">${sp.ten}</option>
+                                    </c:if>
                                 </c:forEach>
                             </select>
                         </div>
@@ -157,12 +159,12 @@
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="tinhTrang" id="conHang" value="1"
                                            required>
-                                    <label class="form-check-label" for="conHang">Còn Hàng</label>
+                                    <label class="form-check-label" for="conHang">Hoạt Động</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="tinhTrang" id="hetHang" value="0"
                                            required>
-                                    <label class="form-check-label" for="hetHang">Hết Hàng</label>
+                                    <label class="form-check-label" for="hetHang">Không Hoạt Động</label>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -290,12 +292,12 @@
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="tinhTrang" id="updateconHang"
                                            value="1" required>
-                                    <label class="form-check-label" for="updateconHang">Còn Hàng</label>
+                                    <label class="form-check-label" for="updateconHang">Hoạt Động</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="tinhTrang" id="updatehetHang"
                                            value="0" required>
-                                    <label class="form-check-label" for="updatehetHang">Hết Hàng</label>
+                                    <label class="form-check-label" for="updatehetHang">Không Hoạt Động</label>
                                 </div>
                             </div>
 
@@ -419,11 +421,11 @@
                     <td>${sanPhamChiTiet.huongVi.ten}</td>
                     <td>${sanPhamChiTiet.thuongHieu.ten}</td>
                     <td class="${sanPhamChiTiet.tinhTrang == 1 ? 'text-success' : 'text-danger'}">
-                            ${sanPhamChiTiet.tinhTrang == 1 ? 'Còn hàng' : 'Hết hàng'}</td>
+                            ${sanPhamChiTiet.tinhTrang == 1 ? 'Hoạt Động' : 'Không Hoạt Động'}</td>
                     <td>
                         <div class="d-flex justify-content-center">
                             <a class="btn btn-warning btn-sm me-2" data-bs-toggle="modal" data-bs-target="#editProductModal" data-id="${sanPhamChiTiet.id}" data-ma="${sanPhamChiTiet.ma}" data-soLuong="${sanPhamChiTiet.soLuong}" data-giaBan="${sanPhamChiTiet.giaBan}" data-sanPhamId="${sanPhamChiTiet.sanPham.id}" data-loaiCaPheId="${sanPhamChiTiet.loaiCaPhe.id}" data-canNangId="${sanPhamChiTiet.canNang.id}" data-loaiHatId="${sanPhamChiTiet.loaiHat.id}" data-loaiTuiId="${sanPhamChiTiet.loaiTui.id}" data-mucDoRangId="${sanPhamChiTiet.mucDoRang.id}" data-huongViId="${sanPhamChiTiet.huongVi.id}" data-thuongHieuId="${sanPhamChiTiet.thuongHieu.id}" data-tinhTrang="${sanPhamChiTiet.tinhTrang}"><i class="fas fa-edit"></i> Sửa</a>
-                            <a href="${pageContext.request.contextPath}/spct/delete/${sanPhamChiTiet.id}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này không?')"><i class="fas fa-trash-alt"></i> Xóa</a>
+<%--                            <a href="${pageContext.request.contextPath}/spct/delete/${sanPhamChiTiet.id}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này không?')"><i class="fas fa-trash-alt"></i> Xóa</a>--%>
                         </div>
                     </td>
                 </tr>
@@ -474,12 +476,16 @@
         var productInfo = document.getElementById("productInfo");
         var selectedOption = select.options[select.selectedIndex];
 
-        document.getElementById("productId").innerText = "ID Sản Phẩm: " + selectedOption.value;
-        document.getElementById("productName").innerText = "Tên Sản Phẩm: " + selectedOption.text;
-        document.getElementById("productPrice").innerText = "Giá Ban Đầu: " + selectedOption.getAttribute("data-price");
-
-        productInfo.style.display = selectedOption.value ? "block" : "none";
+        if (selectedOption) {
+            document.getElementById("productId").innerText = "ID: " + selectedOption.value;
+            document.getElementById("productName").innerText = "Tên sản phẩm: " + selectedOption.text;
+            document.getElementById("productPrice").innerText = "Giá Ban Đầu: " + selectedOption.getAttribute("data-price");
+            productInfo.style.display = "block";
+        } else {
+            productInfo.style.display = "none";
+        }
     }
+
 
     function resetForm() {
         document.getElementById("productForm").reset();
@@ -494,7 +500,7 @@
         const ma = button.getAttribute('data-ma');
         const soLuong = button.getAttribute('data-soLuong');
         const giaBan = button.getAttribute('data-giaBan');
-        const sanPhamId = button.getAttribute('data-sanPhamId');
+        const sanPhamId = button.getAttribute('data-sanPhamId'); // ID sản phẩm chính
         const loaiCaPheId = button.getAttribute('data-loaiCaPheId');
         const canNangId = button.getAttribute('data-canNangId');
         const loaiHatId = button.getAttribute('data-loaiHatId');
@@ -541,13 +547,15 @@
         const selectedSanPham = editSanPham.options[editSanPham.selectedIndex];
         const productPrice = selectedSanPham.getAttribute('data-price');
 
-        document.getElementById('editProductIdDisplay').innerText = 'ID Sản Phẩm: ' + id;
+        // Hiển thị ID sản phẩm chính
+        document.getElementById('editProductIdDisplay').innerText = 'ID Sản Phẩm: ' + sanPhamId; // Sử dụng sanPhamId
         document.getElementById('editProductName').innerText = 'Tên Sản Phẩm: ' + selectedSanPham.text;
         document.getElementById('editProductPrice').innerText = 'Giá Ban Đầu: ' + productPrice;
 
         // Hiển thị thông tin chi tiết
         document.getElementById('editProductInfo').style.display = 'block';
     });
+
 
 
 
@@ -560,6 +568,30 @@
             }, 3000); // 3 giây
         }
     };
+
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Lấy giá trị query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+        const openModal = urlParams.get('openModal');
+
+        if (openModal === 'true' && productId) {
+            // Tự động mở modal
+            $('#addProductModal').modal('show');
+
+            // Chọn sản phẩm theo ID
+            var select = document.getElementById("sanPham");
+            for (let i = 0; i < select.options.length; i++) {
+                if (select.options[i].value == productId) {
+                    select.selectedIndex = i; // Chọn sản phẩm
+                    displayProductInfo();  // Hiển thị thông tin sản phẩm đã chọn
+                    break;
+                }
+            }
+        }
+    });
 </script>
 </body>
 </html>

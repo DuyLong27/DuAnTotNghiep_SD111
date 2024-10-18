@@ -52,7 +52,7 @@
                 <select name="danhMucId" class="form-select" onchange="this.form.submit();">
                     <option value="" ${param.danhMucId == '' ? 'selected' : ''}>Tất Cả</option>
                     <c:forEach var="dm" items="${danhMucList}">
-                        <option value="${dm.id}" ${param.danhMucId == dm.id ? 'selected' : ''}>${dm.tenDanhMuc}</option>
+                        <option value="${dm.id}" ${param.danhMucId == dm.id ? 'selected' : ''}>${dm.ten}</option>
                     </c:forEach>
                 </select>
             </div>
@@ -61,8 +61,8 @@
                 <h5>Lọc Theo Tình Trạng</h5>
                 <select name="tinhTrang" class="form-select" onchange="this.form.submit();">
                     <option value="" ${param.tinhTrang == '' ? 'selected' : ''}>Tất Cả</option>
-                    <option value="1" ${param.tinhTrang == '1' ? 'selected' : ''}>Còn Hàng</option>
-                    <option value="0" ${param.tinhTrang == '0' ? 'selected' : ''}>Hết Hàng</option>
+                    <option value="1" ${param.tinhTrang == '1' ? 'selected' : ''}>Hoạt Động</option>
+                    <option value="0" ${param.tinhTrang == '0' ? 'selected' : ''}>Không Hoạt Động</option>
                 </select>
             </div>
 
@@ -113,7 +113,7 @@
                                 <label for="danhMuc" class="form-label">Danh Mục</label>
                                 <select id="danhMuc" name="danhMuc.id" class="form-select">
                                     <c:forEach var="dm" items="${danhMucList}">
-                                        <option value="${dm.id}">${dm.tenDanhMuc}</option>
+                                        <option value="${dm.id}">${dm.ten}</option>
                                     </c:forEach>
                                 </select>
                             </div>
@@ -130,12 +130,12 @@
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="tinhTrang" id="tinhTrangConHang"
                                            value="1" required>
-                                    <label class="form-check-label" for="tinhTrangConHang">Còn Hàng</label>
+                                    <label class="form-check-label" for="tinhTrangConHang">Hoạt Động</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="tinhTrang" id="tinhTrangHetHang"
                                            value="0" required>
-                                    <label class="form-check-label" for="tinhTrangHetHang">Hết Hàng</label>
+                                    <label class="form-check-label" for="tinhTrangHetHang">Không Hoạt Động</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -178,18 +178,30 @@
                 <tr>
                     <th>${i.index + 1}</th>
                     <td>${sanPham.nhaCungCap.tenNCC}</td>
-                    <td>${sanPham.danhMuc.tenDanhMuc}</td>
+                    <td>${sanPham.danhMuc.ten}</td>
                     <td>${sanPham.ten}</td>
                     <td>${sanPham.giaBan}</td>
                     <td>${sanPham.moTa}</td>
                     <td class="${sanPham.tinhTrang == 1 ? 'text-success' : 'text-danger'}">
-                            ${sanPham.tinhTrang == 1 ? "Còn Hàng" : "Hết Hàng"}
+                            ${sanPham.tinhTrang == 1 ? "Hoạt Động" : "Không Hoạt Động"}
                     </td>
                     <td>
+                        <!-- Nút Chi Tiết -->
+                        <c:choose>
+                            <c:when test="${sanPham.tinhTrang == 1}">
+                                <a href="/spct/index?id=${sanPham.id}&openModal=true" class="btn btn-info">Chi tiết</a>
+                            </c:when>
+                            <c:otherwise>
+                                <button class="btn btn-info" disabled>Chi tiết</button>
+                            </c:otherwise>
+                        </c:choose>
+
+                        <!-- Nút Sửa -->
                         <a onclick="openEditModal(${sanPham.id}, '${sanPham.ten}', ${sanPham.giaBan}, '${sanPham.moTa}', ${sanPham.danhMuc.id}, ${sanPham.nhaCungCap.id}, ${sanPham.tinhTrang})"
                            class="btn btn-warning">Sửa</a>
-                        <a onclick="return confirm('Bạn có chắc muốn xóa?')" href="/san-pham/delete/${sanPham.id}"
-                           class="btn btn-danger">Xóa</a>
+
+                        <!-- Nút Xóa -->
+<%--                        <a href="/san-pham/delete/${sanPham.id}" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">Xóa</a>--%>
                     </td>
                 </tr>
             </c:forEach>

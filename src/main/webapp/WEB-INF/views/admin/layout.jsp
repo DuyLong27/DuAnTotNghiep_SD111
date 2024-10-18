@@ -440,6 +440,8 @@
     </a>
     <ul class="dropdown-menu">
         <li><a class="dropdown-item" href="/san-pham/index"><i class="fas fa-cube"></i>Sản phẩm</a></li>
+        <li><a class="dropdown-item" href="/spct/index"><i class="fas fa-cube"></i>CT Sản phẩm</a></li>
+        <li><a class="dropdown-item" href="/thuoc-tinh"><i class="fas fa-cube"></i>Thuộc Tính</a></li>
         <li><a class="dropdown-item" href="#"><i class="fas fa-warehouse"></i>Kho hàng</a></li>
     </ul>
 
@@ -457,7 +459,7 @@
     </a>
     <ul class="dropdown-menu">
         <li><a class="dropdown-item" href="#"><i class="fas fa-user"></i>Khách hàng</a></li>
-        <li><a class="dropdown-item" href="#"><i class="fas fa-truck"></i>Nguồn nhập</a></li>
+        <li><a class="dropdown-item" href="/nha-cung-cap"><i class="fas fa-truck"></i>Nhà cung cấp</a></li>
     </ul>
 
     <a href="/nhan-vien/hien-thi"><i class="fas fa-users"></i>Nhân viên</a>
