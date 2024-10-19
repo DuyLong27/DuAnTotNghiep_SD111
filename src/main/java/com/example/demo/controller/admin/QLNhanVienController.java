@@ -40,13 +40,10 @@ public class QLNhanVienController {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<NhanVien> page;
 
-        // Xử lý đầu vào tìm kiếm tên nhà cung cấp
         if (tenNhanVien != null) {
-            // Loại bỏ dấu cách ở đầu và cuối, và thay thế nhiều dấu cách liên tiếp
             tenNhanVien = tenNhanVien.trim().replaceAll("\\s+", " ");
         }
 
-        // Tìm kiếm theo tên nhà cung cấp
         if (tenNhanVien != null && !tenNhanVien.isEmpty()) {
             page = nhanVienRepo.findByTenNhanVienContainingIgnoreCase(tenNhanVien, pageable);
         } else if (tinhTrang != null) {
@@ -59,20 +56,18 @@ public class QLNhanVienController {
         model.addAttribute("currentPage", pageNo);
         model.addAttribute("totalPages", page.getTotalPages());
         model.addAttribute("tinhTrang", tinhTrang);
-        model.addAttribute("tenNhanVien", tenNhanVien); // Để giữ trạng thái tìm kiếm
+        model.addAttribute("tenNhanVien", tenNhanVien);
         return "admin/ql_nhan_vien/index";
     }
 
 
-
-
-
-    @GetMapping("delete")
-    public String delete(@RequestParam("id") Integer id, RedirectAttributes redirectAttributes) {
-        nhanVienRepo.deleteById(id);
-        redirectAttributes.addFlashAttribute("message", "Xóa thành công!");
-        return "redirect:/nhan-vien/hien-thi";
-    }
+//
+//    @GetMapping("delete")
+//    public String delete(@RequestParam("id") Integer id, RedirectAttributes redirectAttributes) {
+//        nhanVienRepo.deleteById(id);
+//        redirectAttributes.addFlashAttribute("message", "Xóa thành công!");
+//        return "redirect:/nhan-vien/hien-thi";
+//    }
 
 
 
@@ -87,7 +82,7 @@ public class QLNhanVienController {
     public String updateProduct(@Valid @ModelAttribute("data") NhanVien nhanVien, BindingResult validate, Model model, RedirectAttributes redirectAttributes) {
         if (validate.hasErrors()) {
             model.addAttribute("data", nhanVien);
-            return "admin/ql_nhan_vien/index"; // Hoặc trả về một trang cụ thể
+            return "admin/ql_nhan_vien/index";
         }
         nhanVienRepo.save(nhanVien);
         redirectAttributes.addFlashAttribute("message", "Sửa thành công!");
