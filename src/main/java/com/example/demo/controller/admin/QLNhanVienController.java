@@ -40,10 +40,13 @@ public class QLNhanVienController {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<NhanVien> page;
 
+        // Xử lý đầu vào tìm kiếm tên nhà cung cấp
         if (tenNhanVien != null) {
+            // Loại bỏ dấu cách ở đầu và cuối, và thay thế nhiều dấu cách liên tiếp
             tenNhanVien = tenNhanVien.trim().replaceAll("\\s+", " ");
         }
 
+        // Tìm kiếm theo tên nhà cung cấp
         if (tenNhanVien != null && !tenNhanVien.isEmpty()) {
             page = nhanVienRepo.findByTenNhanVienContainingIgnoreCase(tenNhanVien, pageable);
         } else if (tinhTrang != null) {
@@ -56,9 +59,11 @@ public class QLNhanVienController {
         model.addAttribute("currentPage", pageNo);
         model.addAttribute("totalPages", page.getTotalPages());
         model.addAttribute("tinhTrang", tinhTrang);
-        model.addAttribute("tenNhanVien", tenNhanVien);
+        model.addAttribute("tenNhanVien", tenNhanVien); // Để giữ trạng thái tìm kiếm
         return "admin/ql_nhan_vien/index";
     }
+
+
 
 
 //
@@ -82,7 +87,7 @@ public class QLNhanVienController {
     public String updateProduct(@Valid @ModelAttribute("data") NhanVien nhanVien, BindingResult validate, Model model, RedirectAttributes redirectAttributes) {
         if (validate.hasErrors()) {
             model.addAttribute("data", nhanVien);
-            return "admin/ql_nhan_vien/index";
+            return "admin/ql_nhan_vien/index"; // Hoặc trả về một trang cụ thể
         }
         nhanVienRepo.save(nhanVien);
         redirectAttributes.addFlashAttribute("message", "Sửa thành công!");
