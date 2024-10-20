@@ -83,7 +83,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="${pageContext.request.contextPath}/spct/add" method="post" id="productForm">
+                    <form action="${pageContext.request.contextPath}/spct/add" method="post" id="productForm"  enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="sanPham" class="form-label">Sản phẩm</label>
                             <select class="form-select" id="sanPham" name="sanPham.id" required onchange="displayProductInfo()">
@@ -107,6 +107,10 @@
                             <div class="col-md-4">
                                 <label for="ma" class="form-label">Mã sản phẩm</label>
                                 <input type="text" class="form-control" id="ma" name="ma" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="imageFile">Chọn hình ảnh:</label>
+                                <input type="file" id="imageFile" name="imageFile" accept="image/*">
                             </div>
                             <div class="col-md-4">
                                 <label for="soLuong" class="form-label">Số lượng</label>
@@ -199,8 +203,8 @@
                                 </select>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-create">Thêm sản phẩm</button>
-                        <button type="button" class="btn btn-secondary-outline" onclick="resetForm()">Reset</button>
+                        <button type="submit" class="btn btn-primary">Thêm sản phẩm</button>
+                        <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset</button>
                     </form>
                 </div>
             </div>
@@ -218,7 +222,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="${pageContext.request.contextPath}/spct/update" method="post" id="editProductForm">
+                    <form action="${pageContext.request.contextPath}/spct/update" method="post" id="editProductForm" enctype="multipart/form-data">
                         <input type="hidden" id="editProductId" name="id"> <!-- Hidden field to store product ID -->
                         <div class="mb-3">
                             <label for="editSanPham" class="form-label">Sản phẩm</label>
@@ -236,10 +240,17 @@
                             <p id="editProductPrice">Giá Ban Đầu: </p>
                         </div>
 
+
                         <div class="row mb-3">
                             <div class="col-md-4">
                                 <label for="editMa" class="form-label">Mã sản phẩm</label>
                                 <input type="text" class="form-control" id="editMa" name="ma" required>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label for="editImageFile" class="form-label">Hình ảnh sản phẩm</label>
+                                    <input type="file" class="form-control" id="editImageFile" name="imageFile" accept="image/*">
+                                </div>
                             </div>
                             <div class="col-md-4">
                                 <label for="editSoLuong" class="form-label">Số lượng</label>
@@ -334,7 +345,7 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-create">Cập nhật sản phẩm</button>
+                        <button type="submit" class="btn btn-warning">Cập nhật sản phẩm</button>
                     </form>
                 </div>
             </div>
@@ -344,6 +355,7 @@
         <thead class="table-light">
         <tr>
             <th>STT</th>
+            <th>Hình ảnh</th>
             <th>Mã</th>
             <th>Ngày hết hạn</th>
             <th>Số lượng</th>
@@ -370,6 +382,11 @@
             <c:forEach var="sanPhamChiTiet" items="${sanPhamChiTietList}" varStatus="i">
                 <tr>
                     <td>${i.index + 1}</td>
+                    <td>
+                        <c:if test="${sanPhamChiTiet.hinhAnh != null}">
+                            <img src="${pageContext.request.contextPath}/uploads/${sanPhamChiTiet.hinhAnh}" width="100"/>
+                        </c:if>
+                    </td>
                     <td>${sanPhamChiTiet.ma}</td>
                     <td>${sanPhamChiTiet.ngayHetHan}</td>
                     <td>${sanPhamChiTiet.soLuong}</td>
