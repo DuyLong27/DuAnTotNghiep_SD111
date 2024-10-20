@@ -1,31 +1,20 @@
 package com.example.demo.controller.admin;
 
-<<<<<<< HEAD
+
 import com.example.demo.repository.KhachHangRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-=======
-import com.example.demo.entity.KhachHang;
-import com.example.demo.repository.KhachHangRepo;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
->>>>>>> main
+
+
 
 @Controller
 @RequestMapping("/khach-hang")
 public class QLKhachHangController {
-<<<<<<< HEAD
 
     @Autowired
     private KhachHangRepo repo;
@@ -36,7 +25,7 @@ public class QLKhachHangController {
         return "admin/ql_khach_hang/QuanLyKhachHang";
     }
 }
-=======
+
     @Autowired
     KhachHangRepo repo;
 
