@@ -1,7 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!doctype html>
-<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -22,6 +21,64 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"
             integrity="sha512-KZmyTq3PLx9EZl0RHShHQuXtrvdJ+m35tuOiwlcZfs/rE7NZv29ygNA8SFCkMXTnYZQK2OX0Gm2qKGfvWEtRXA=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <style>
+        /* Dropdown Custom */
+        .dropdown-custom {
+            position: relative;
+        }
+
+        .dropdown-custom .dropdown-menu-custom {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #0B745E;
+            padding: 10px;
+            list-style: none;
+            margin: 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            min-width: 160px;
+        }
+
+        .dropdown-custom:hover .dropdown-menu-custom {
+            display: block;
+        }
+
+        .dropdown-custom .dropdown-item {
+            color: white;
+            padding: 10px;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .dropdown-custom .dropdown-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+
+        /* Hover Effect for Nav Items */
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+
+        /* Logo Styling */
+        .navbar-brand {
+            font-size: 24px;
+            color: white;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .navbar-nav {
+                flex-direction: column;
+            }
+        }
+
+    </style>
+
 </head>
 <body>
 <%--header--%>
@@ -66,7 +123,7 @@
                 <a class="nav-link text-light" href="#">Nhân viên</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-light" href="#">Khuyến mãi</a>
+                <a class="nav-link text-light" href="/khuyen-mai/hien-thi">Khuyến mãi</a>
             </li>
         </ul>
 
@@ -87,103 +144,50 @@
 <img src="/lib/background_quanly.png" style="width: 100%; height: auto;">
 
 <%--body--%>
-<div class="row" style="text-align: center">
-<H1>Quản Lý Khách Hàng</H1>
+<div class="container mt-3">
+    <div class="row">
+        <div class="d-flex justify-content-end mb-3">
+            <a href="/khuyen-mai/them" class="btn btn-success">Tạo mới</a>
+        </div>
+        <table class="table table-striped table-hover table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Mã khuyến mãi</th>
+                <th>Tên khuyến mãi</th>
+                <th>Giá trị khuyến mãi</th>
+                <th>Ngày bắt đầu</th>
+                <th>Ngày kết thúc</th>
+                <th>Hành Động</th>
+            </tr>
+            </thead>
+            <tbody>
+                <c:forEach items="${listKhuyenMai}" var="item">
+                    <tr>
+                        <td>${item.idKhuyenMai}</td>
+                        <td>${item.maKhuyenMai}</td>
+                        <td>${item.tenKhuyenMai}</td>
+                        <td>${item.giaTriKhuyenMai}</td>
+                        <td>${item.ngayBatDau}</td>
+                        <td>${item.ngayKetThuc}</td>
+                        <td>
+                            <a href="/khuyen-mai/chi-tiet?id=${item.idKhuyenMai}" class="btn btn-primary btn-sm">
+                                <i class="fa fa-info-circle"></i> Chi Tiết
+                            </a>
+                            <a href="/khuyen-mai/sua/${item.idKhuyenMai}" class="btn btn-warning btn-sm">
+                                <i class="fa fa-edit"></i> Sửa
+                            </a>
+                            <a href="" class="btn btn-danger btn-sm">
+                                <i class="fa fa-trash"></i> Xóa
+                            </a>
+
+                        </td>
+                    </tr>
+                </c:forEach>
+            </tbody>
+        </table>
+    </div>
 </div>
 
-<table class="table">
-    <thead>
-    <tr>
-        <th scope="col">Tên khách hàng</th>
-        <th scope="col">Email</th>
-        <th scope="col">Mật khẩu</th>
-        <th scope="col">Số điện thoại</th>
-        <th scope="col">Địa chỉ</th>
-        <th scope="col">Điểm tích lũy</th>
-        <th scope="col">Ngày đăng ký</th>
-        <th scope="col">Lịch sử mua hàng</th>
-        <th scope="col">Khuyến mãi đa dụng</th>
-        <th scope="col">Hành động</th>
-    </tr>
-    </thead>
-    <tbody>
-    <c:forEach var="kh" items="${lists}">
-        <tr>
-            <td>${kh.ten_khach_hang}</td>
-            <td>${kh.email}</td>
-            <td>${kh.mat_khau}</td>
-            <td>${kh.so_dien_thoai}</td>
-            <td>${kh.dia_chi}</td>
-            <td>${kh.diem_tich_luy}</td>
-            <td>${kh.ngay_dang_ky}</td>
-            <td>${kh.lich_su_mua_hang}</td>
-            <td>${kh.khuyen_mai_da_dung}</td>
-            <td>
-                <a href="/khach-hang/view-add" class="btn btn-info">Thêm</a>
-                <a href="/khach-hang/update/" class="btn btn-warning">Sửa</a>
-                <a href="/khach-hang/delete/" class="btn btn-danger">Xóa</a>
-            </td>
-        </tr>
-    </c:forEach>
-    </tbody>
-</table>
-
-
 </body>
-
-<style>
-    /* Dropdown Custom */
-    .dropdown-custom {
-        position: relative;
-    }
-
-    .dropdown-custom .dropdown-menu-custom {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        background-color: #0B745E;
-        padding: 10px;
-        list-style: none;
-        margin: 0;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        border-radius: 5px;
-        min-width: 160px;
-    }
-
-    .dropdown-custom:hover .dropdown-menu-custom {
-        display: block;
-    }
-
-    .dropdown-custom .dropdown-item {
-        color: white;
-        padding: 10px;
-        text-decoration: none;
-        font-size: 16px;
-    }
-
-    .dropdown-custom .dropdown-item:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-        border-radius: 5px;
-    }
-
-    /* Hover Effect for Nav Items */
-    .nav-link:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-        border-radius: 5px;
-    }
-
-    /* Logo Styling */
-    .navbar-brand {
-        font-size: 24px;
-        color: white;
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-        .navbar-nav {
-            flex-direction: column;
-        }
-    }
-</style>
 </html>
