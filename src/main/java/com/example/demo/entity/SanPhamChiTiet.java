@@ -24,8 +24,8 @@ public class SanPhamChiTiet {
     private String ma;
 
 
-//    @Column(name = "hinh_anh_san_pham")
-//    private String hinhAnh;
+    @Column(name = "hinh_anh_san_pham")
+    private String hinhAnh;
     @Column(name = "ngay_het_han")
     private Date ngayHetHan;
     @Column(name = "danh_gia_san_pham")

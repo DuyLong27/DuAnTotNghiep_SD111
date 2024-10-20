@@ -9,8 +9,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Calendar;
 
 @Controller
@@ -80,13 +85,32 @@ public class QLSanPhamChiTietController {
 
 
     @PostMapping("/add")
-    public String addSanPhamChiTiet(@ModelAttribute SanPhamChiTiet sanPhamChiTiet, RedirectAttributes redirectAttributes) {
+    public String addSanPhamChiTiet(@ModelAttribute SanPhamChiTiet sanPhamChiTiet,
+                                    @RequestParam("imageFile") MultipartFile imageFile,
+                                    RedirectAttributes redirectAttributes) {
         // Tính toán ngày hết hạn là 3 tháng sau
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MONTH, 3);
         sanPhamChiTiet.setNgayHetHan(calendar.getTime());
 
-        // Lưu sản phẩm chi tiết vào database
+        // Xử lý upload file ảnh
+        if (!imageFile.isEmpty()) {
+            try {
+                String relativeFolder = "src/main/webapp/uploads/";
+                Path folderPath = Paths.get(relativeFolder).toAbsolutePath();
+                if (!Files.exists(folderPath)) {
+                    Files.createDirectories(folderPath);
+                }
+                String originalFilename = imageFile.getOriginalFilename();
+                String fileName = System.currentTimeMillis() + "_" + originalFilename;
+                Path filePath = folderPath.resolve(fileName);
+                Files.write(filePath, imageFile.getBytes());
+                sanPhamChiTiet.setHinhAnh(fileName);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         sanPhamChiTietRepo.save(sanPhamChiTiet);
         redirectAttributes.addFlashAttribute("message", "Thêm thành công!");
         return "redirect:/spct/index";
@@ -102,13 +126,45 @@ public class QLSanPhamChiTietController {
 //    }
 
     @PostMapping("/update")
-    public String updateSanPhamChiTiet(@ModelAttribute SanPhamChiTiet sanPhamChiTiet, RedirectAttributes redirectAttributes) {
+    public String updateSanPhamChiTiet(@ModelAttribute SanPhamChiTiet sanPhamChiTiet,
+                                       @RequestParam("imageFile") MultipartFile imageFile,
+                                       RedirectAttributes redirectAttributes) {
+        // Lấy sản phẩm hiện tại từ database để có thông tin hình ảnh cũ
+        SanPhamChiTiet existingProduct = sanPhamChiTietRepo.findById(sanPhamChiTiet.getId()).orElse(null);
+
         // Tính toán ngày hết hạn là 3 tháng sau
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MONTH, 3);
         sanPhamChiTiet.setNgayHetHan(calendar.getTime());
 
-        // Lưu sản phẩm chi tiết vào database
+        if (!imageFile.isEmpty()) {
+            if (existingProduct != null && existingProduct.getHinhAnh() != null) {
+                String relativeFolder = "src/main/webapp/uploads/";
+                Path oldImagePath = Paths.get(relativeFolder).resolve(existingProduct.getHinhAnh());
+                try {
+                    Files.deleteIfExists(oldImagePath);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            try {
+                String relativeFolder = "src/main/webapp/uploads/";
+                Path folderPath = Paths.get(relativeFolder).toAbsolutePath();
+                if (!Files.exists(folderPath)) {
+                    Files.createDirectories(folderPath);
+                }
+                String originalFilename = imageFile.getOriginalFilename();
+                String fileName = System.currentTimeMillis() + "_" + originalFilename;
+                Path filePath = folderPath.resolve(fileName);
+                Files.write(filePath, imageFile.getBytes());
+                sanPhamChiTiet.setHinhAnh(fileName);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            sanPhamChiTiet.setHinhAnh(existingProduct.getHinhAnh());
+        }
+
         sanPhamChiTietRepo.save(sanPhamChiTiet);
         redirectAttributes.addFlashAttribute("message", "Sửa thành công!");
         return "redirect:/spct/index";
