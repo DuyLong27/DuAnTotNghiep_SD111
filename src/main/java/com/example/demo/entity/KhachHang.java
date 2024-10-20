@@ -14,11 +14,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-<<<<<<< HEAD
-=======
 import java.time.LocalDate;
->>>>>>> main
-import java.util.Date;
+
 
 @Getter
 @Setter
@@ -34,45 +31,21 @@ public class KhachHang {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_khach_hang")
-<<<<<<< HEAD
+
     private Integer id_khach_hang;
 
     @Column(name = "ten_khach_hang")
     private String ten_khach_hang;
-=======
+
     private Integer idKhachHang;
 
     @Column(name = "ten_khach_hang")
     private String tenKhachHang;
->>>>>>> main
 
     @Column(name = "email")
     private String email;
 
     @Column(name = "mat_khau")
-<<<<<<< HEAD
-    private String mat_khau;
-
-    @Column(name = "so_dien_thoai")
-    private String so_dien_thoai;
-
-    @Column(name = "dia_chi")
-    private String dia_chi;
-
-    @Column(name = "diem_tich_luy")
-    private Integer diem_tich_luy;
-
-    @Column(name = "ngay_dang_ky")
-    private Date ngay_dang_ky;
-
-    @Column(name = "lich_su_mua_hang")
-    private String lich_su_mua_hang;
-
-    @Column(name = "khuyen_mai_da_dung")
-    private String khuyen_mai_da_dung;
-
-}
-=======
     private String matKhau;
 
     @Column(name = "so_dien_thoai")
@@ -97,4 +70,3 @@ public class KhachHang {
     private Integer tinhTrang;
 
 }
->>>>>>> main
