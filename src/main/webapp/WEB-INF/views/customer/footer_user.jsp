@@ -15,7 +15,7 @@
         <div class="row align-items-center">
 
             <div class="col-md-3">
-                <img src="../../img_layout/logo_nau.png" style="height: 250px; margin-bottom: 20px;" alt="Logo">
+                <img src="../../lib/logo_nau.png" style="height: 250px; margin-bottom: 20px;" alt="Logo">
             </div>
 
 

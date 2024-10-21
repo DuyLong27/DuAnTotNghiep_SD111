@@ -21,14 +21,14 @@
     <div class="filter-section mb-3">
         <form action="/khach-hang/hien-thi" method="get" id="filterSearchForm">
             <div class="row">
-                <div class="col-md-4">
-                    <h5>Lọc Theo Tình Trạng</h5>
-                    <select name="tinhTrang" class="form-select" onchange="this.form.submit();">
-                        <option value="" ${param.tinhTrang == '' ? 'selected' : ''}>Tất Cả</option>
-                        <option value="1" ${param.tinhTrang == '1' ? 'selected' : ''}>Hoạt Động</option>
-                        <option value="0" ${param.tinhTrang == '0' ? 'selected' : ''}>Ngừng Hoạt Động</option>
-                    </select>
-                </div>
+                <%--                <div class="col-md-4">--%>
+                <%--                    <h5>Lọc Theo Tình Trạng</h5>--%>
+                <%--                    <select name="tinhTrang" class="form-select" onchange="this.form.submit();">--%>
+                <%--                        <option value="" ${param.tinhTrang == '' ? 'selected' : ''}>Tất Cả</option>--%>
+                <%--                        <option value="1" ${param.tinhTrang == '1' ? 'selected' : ''}>Hoạt Động</option>--%>
+                <%--                        <option value="0" ${param.tinhTrang == '0' ? 'selected' : ''}>Ngừng Hoạt Động</option>--%>
+                <%--                    </select>--%>
+                <%--                </div>--%>
 
                 <div class="col-md-4">
                     <h5>Tìm Kiếm Theo Tên Khách Hàng</h5>
@@ -121,19 +121,19 @@
                                            required>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Tình Trạng</label><br>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="tinhTrang" id="tinhTrangHoatDong"
-                                           value="1" required>
-                                    <label class="form-check-label" for="tinhTrangHoatDong">Hoạt Động</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="tinhTrang" id="tinhTrangNgung"
-                                           value="0" required>
-                                    <label class="form-check-label" for="tinhTrangNgung">Ngừng Hoạt Động</label>
-                                </div>
-                            </div>
+                            <%--                            <div class="col-md-6">--%>
+                            <%--                                <label class="form-label">Tình Trạng</label><br>--%>
+                            <%--                                <div class="form-check form-check-inline">--%>
+                            <%--                                    <input class="form-check-input" type="radio" name="tinhTrang" id="tinhTrangHoatDong"--%>
+                            <%--                                           value="1" required>--%>
+                            <%--                                    <label class="form-check-label" for="tinhTrangHoatDong">Hoạt Động</label>--%>
+                            <%--                                </div>--%>
+                            <%--                                <div class="form-check form-check-inline">--%>
+                            <%--                                    <input class="form-check-input" type="radio" name="tinhTrang" id="tinhTrangNgung"--%>
+                            <%--                                           value="0" required>--%>
+                            <%--                                    <label class="form-check-label" for="tinhTrangNgung">Ngừng Hoạt Động</label>--%>
+                            <%--                                </div>--%>
+                            <%--                            </div>--%>
                         </div>
                         <button type="submit" class="btn btn-create" id="submitButton">Lưu Khách Hàng</button>
                     </form>
@@ -155,7 +155,7 @@
             <th>Ngày Đăng Ký</th>
             <th>Lịch Sử Mua Hàng</th>
             <th>Khuyến Mãi Đa Dụng</th>
-            <th>Tình Trạng</th>
+            <%--            <th>Tình Trạng</th>--%>
             <th>Thao Tác</th>
         </tr>
         </thead>
@@ -178,13 +178,15 @@
                     <td>${kh.ngayDangKy}</td>
                     <td>${kh.lichSuMuaHang}</td>
                     <td>${kh.khuyenMaiDaDung}</td>
-                    <td class="${kh.tinhTrang == 1 ? 'text-success' : 'text-danger'}">
-                            ${kh.tinhTrang == 1 ? "Hoạt Động" : "Ngừng Hoạt Động"}
-                    </td>
+                        <%--                    <td class="${kh.tinhTrang == 1 ? 'text-success' : 'text-danger'}">--%>
+                        <%--                            ${kh.tinhTrang == 1 ? "Hoạt Động" : "Ngừng Hoạt Động"}--%>
+                        <%--                    </td>--%>
                     <td>
                         <a onclick="openEditModal(${kh.idKhachHang}, '${kh.tenKhachHang}', '${kh.email}',
                                 '${kh.matKhau}', '${kh.soDienThoai}', '${kh.diaChi}', ${kh.diemTichLuy},
-                                '${kh.ngayDangKy}', '${kh.lichSuMuaHang}', '${kh.khuyenMaiDaDung}', '${kh.tinhTrang}')"
+                                '${kh.ngayDangKy}', '${kh.lichSuMuaHang}', '${kh.khuyenMaiDaDung}'
+                            <%--, '${kh.tinhTrang}'--%>
+                                )"
                            type="button" class="btn btn-outline-custom"><i class='bx bx-edit-alt'></i></a>
                     </td>
                 </tr>

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface KhachHangRepo extends JpaRepository<KhachHang, Integer> {
-    Page<KhachHang> findByTinhTrang(Integer tinhTrang, Pageable pageable);
+//    Page<KhachHang> findByTinhTrang(Integer tinhTrang, Pageable pageable);
 
     Page<KhachHang> findBytenKhachHangContainingIgnoreCase(String tenKhachHang, Pageable pageable);
 }
