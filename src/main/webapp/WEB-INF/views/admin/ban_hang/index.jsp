@@ -134,9 +134,9 @@
                 <div class="row">
                     <c:forEach items="${sanPhams}" var="sanPham">
                         <div class="col-md-4 mb-3">
-                            <div class="card">
+                            <div class="card" style="border-radius: 20px">
                                 <div class="card-body text-center">
-                                    <img style="width: 70px" src="${sanPham.hinhAnh}" alt="">
+                                    <img style="width: 90px" height="70px" src="${pageContext.request.contextPath}/uploads/${sanPham.hinhAnh}">
                                     <h5 class="card-title">${sanPham.sanPham.ten}</h5>
                                     <p class="card-text">Giá: ${sanPham.giaBan} VNĐ</p>
                                     <p class="card-text">Số Lượng: ${sanPham.soLuong}</p>

@@ -378,7 +378,7 @@
                     <div class="col-md-4 mb-4">
                         <div class="card h-100 shadow-sm position-relative">
                             <a href="#">
-                                <img src="${item.hinhAnh}" class="card-img-top product-image" alt="${item.sanPham.ten}">
+                                <img style="width: 90px" height="70px" src="${pageContext.request.contextPath}/uploads/${item.hinhAnh}">
                             </a>
                             <div class="card-body text-center">
                                 <h5 class="card-title">${item.sanPham.ten}</h5>
