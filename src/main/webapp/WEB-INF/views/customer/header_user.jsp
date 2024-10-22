@@ -144,10 +144,10 @@
 
             <!-- Dropdown Custom -->
             <li class="nav-item dropdown-custom">
-                <a href="#" class="nav-link text-light">Sản phẩm</a>
+                <a href="/danh-sach-san-pham/hien-thi" class="nav-link text-light">Sản phẩm</a>
                 <ul class="dropdown-menu-custom">
                     <li class="dropdown-submenu">
-                        <a class="dropdown-item" href="#">Cà phê</a>
+                        <a class="dropdown-item" href="/danh-sach-san-pham/hien-thi">Cà phê</a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="#">Cà phê chuyên biệt</a></li>
                             <li><a class="dropdown-item" href="#">Cà phê rang xay</a></li>

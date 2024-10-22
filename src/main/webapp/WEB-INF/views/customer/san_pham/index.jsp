@@ -233,6 +233,44 @@
             display: block; /* Hiện số lượng khi hover */
         }
 
+        .product-quantity.top-50 {
+            top: 40% !important;
+        }
+
+        .product-buy, .product-cart {
+            display: none; /* Ẩn số lượng sản phẩm mặc định */
+            background-color: rgba(11, 116, 94, 1);
+            padding: 10px; /* Khoảng cách */
+            border-radius: 5px; /* Bo tròn góc */
+            z-index: 10; /* Đảm bảo nó nằm trên các phần tử khác */
+        }
+
+        .card:hover .product-buy, .card:hover .product-cart {
+            display: block; /* Hiện số lượng khi hover */
+        }
+
+
+        .product-cart.top-50, .product-buy.top-50 {
+            top: 60% !important;
+        }
+
+        .product-cart.start-50 {
+            left: 56% !important;
+        }
+
+        .product-buy.start-50 {
+            left: 43% !important;
+        }
+
+        .product-buy a i, .product-cart a i {
+            transition: transform 0.3s ease, color 0.3s ease; /* Thêm chuyển động mượt khi hover */
+            color: white !important; /* Màu trắng ưu tiên */
+        }
+
+        .product-buy a:hover i, .product-cart a:hover i {
+            transform: scale(1.2);
+        }
+
     </style>
 </head>
 <body>
@@ -377,17 +415,23 @@
                 <c:forEach items="${listSanPham}" var="item">
                     <div class="col-md-4 mb-4">
                         <div class="card h-100 shadow-sm position-relative">
-                            <a href="#">
+                            <a href="/danh-sach-san-pham-chi-tiet/view-sp/${item.id}">
                                 <img src="${pageContext.request.contextPath}/uploads/${item.hinhAnh}" class="card-img-top product-image" alt="${item.sanPham.ten}">
                             </a>
                             <div class="card-body text-center">
                                 <h5 class="card-title">${item.sanPham.ten}</h5>
                                 <p class="card-text">${item.giaBan} VNĐ</p>
-                                <div class="product-detail-link rounded-bottom-3" style="background-color: #0B745E;">
-                                    <a class="nav-link text-light" href="#">
+                                <div class="product-detail-link rounded-bottom-3" style="background-color: #0B745E; border-radius: 5px;">
+                                    <a class="nav-link text-light" href="/danh-sach-san-pham-chi-tiet/view-sp/${item.id}">
                                         <i class="fa-solid fa-link"></i> Chi Tiết Sản Phẩm
                                     </a>
                                 </div>
+                            </div>
+                            <div class="product-buy position-absolute top-50 start-50 translate-middle">
+                                <a href=""><i class="fa-solid fa-money-bill"></i></a>
+                            </div>
+                            <div class="product-cart position-absolute top-50 start-50 translate-middle">
+                                <a href=""><i class="fa-solid fa-cart-shopping"></i></a>
                             </div>
                             <div class="product-quantity position-absolute top-50 start-50 translate-middle">
                                 <span class="quantity-text">${item.soLuong} sản phẩm</span>
