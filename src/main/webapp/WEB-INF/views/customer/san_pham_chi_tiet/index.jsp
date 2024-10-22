@@ -64,13 +64,13 @@
     </style>
 </head>
 <body>
-<%--<jsp:include page="../../header_user.jsp" />--%>
+<jsp:include page="../header_user.jsp" />
 <div class="container mt-5">
     <div class="row">
         <div class="col-lg-9"> <!-- Increased size to 75% -->
             <div class="row">
                 <div class="col-md-6">
-                    <img src="${sanPhamChiTiet.hinhAnh}" alt="Product Image" class="img-fluid">
+                    <img src="${pageContext.request.contextPath}/uploads/${sanPhamChiTiet.hinhAnh}" class="card-img-top product-image">
                 </div>
                 <div class="col-md-6">
                     <input type="text" name="id" value="${sanPhamChiTiet.id}" hidden>
@@ -80,7 +80,7 @@
                         <p>${sanPhamChiTiet.soLuong}</p>
                     </div>
                     <div class="price">
-                        ${sanPhamChiTiet.sanPham.giaBan} VNĐ
+                        ${sanPhamChiTiet.giaBan} VNĐ
 <%--                        <span class="old-price">$${sanPhamChiTiet.giaBan} VNĐ</span>--%>
                     </div>
                     <hr>
@@ -207,7 +207,7 @@
         </section>
     </div>
 </div>
-<%--<jsp:include page="../../header_user.jsp" />--%>
+<jsp:include page="../footer_user.jsp" />
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
