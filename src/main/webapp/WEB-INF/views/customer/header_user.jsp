@@ -107,6 +107,55 @@
             color: white;
         }
 
+        /* Cart */
+        .icon-cart{
+            padding-right: 26px;
+            padding-top: 7px;
+            color: white;
+            position: relative;
+        }
+        .icon-cart span{
+            display: flex;
+            width: 20px;
+            height: 20px;
+            background-color: red;
+            justify-content: center;
+            align-items: center;
+            color: #dddddd;
+            border-radius: 68%;
+            position: absolute;
+            top: 50%;
+            right: 6px;
+        }
+        .cartTab{
+            width: 427px;
+            background-color: #545252;
+            color: #dddddd;
+            position: fixed;
+            inset: 0 -450px 0 auto;
+            display: grid;
+            grid-template-rows: 70px 1fr 70px;
+            margin-top: 80px;
+        }
+        .cartTab h1 {
+            padding: 20px;
+            margin: 0;
+            font-weight: 300;
+        }
+        .cartTab .btn{
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .cartTab .btn button{
+            background-color: #084d3c;
+            border: none;
+            font-family: Poppins;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        body.showCart .cartTab{
+            inset: 0 0 0 auto;
+        }
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .navbar-nav {
@@ -183,7 +232,12 @@
                 <a class="nav-link text-light" href="#">Liên hệ</a>
             </li>
         </ul>
-
+        <ul class="icon-cart">
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7H7.312"/>
+            </svg>
+            <span>0</span>
+        </ul>
         <ul class="navbar-nav float-end">
             <li class="nav-item dropdown-custom">
                 <a href="#" class="nav-link text-light">Tài khoản</a>
@@ -198,5 +252,68 @@
         </ul>
     </div>
 </nav>
+
+<%--shoping cart--%>
+<div class="cartTab">
+    <h1>Shopping Cart</h1>
+    <div class="listCart">
+        <table class="table table-striped table-bordered" style="margin-top: 15px; color: white">
+            <thead class="table-dark">
+            <tr>
+                <th>STT</th>
+                <th>Tên Sản Phẩm</th>
+                <th>Giá Bán</th>
+                <th>Số Lượng</th>
+                <th>Thao Tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>1</td>
+                <td>Coffee Arabica</td>
+                <td>120.000</td>
+                <td>2</td>
+                <td>
+                    <form style="display:inline-block;">
+                        <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+                    </form>
+                </td>
+            </tr>
+<%--            <c:set var="tongTien" value="0" /> <!-- Khởi tạo tổng tiền -->--%>
+<%--            <c:forEach items="${hoaDonChiTiets}" var="item" varStatus="i">--%>
+<%--                <tr>--%>
+<%--                    <td>${i.index + 1}</td>--%>
+<%--                    <td>${item.sanPhamChiTiet.sanPham.ten}</td>--%>
+<%--                    <td>${item.sanPhamChiTiet.giaBan}</td>--%>
+<%--                    <td>${item.so_luong}</td>--%>
+<%--                    <td>--%>
+<%--                        <form action="${pageContext.request.contextPath}/ban-hang/${selectedHoaDonId}/remove-product/${item.sanPhamChiTiet.id}" method="post" style="display:inline-block;">--%>
+<%--                            <button type="submit" class="btn btn-danger btn-sm">Xóa</button>--%>
+<%--                        </form>--%>
+<%--                    </td>--%>
+<%--                </tr>--%>
+                <!-- Tính tổng tiền dựa trên giá bán của SanPhamChiTiet -->
+<%--                <c:set var="tongTien" value="${tongTien + (item.so_luong * item.sanPhamChiTiet.giaBan)}" />--%>
+<%--            </c:forEach>--%>
+            </tbody>
+        </table>
+    </div>
+    <div class="btn">
+        <button class="close">ĐÓNG</button>
+        <button class="thanhToan">THANH TOÁN</button>
+    </div>
+</div>
 </body>
+<script>
+    let iconCart = document.querySelector('.icon-cart');
+    let closeCart = document.querySelector('.close');
+    let body = document.querySelector('body');
+
+    iconCart.addEventListener('click', () => {
+        body.classList.toggle('showCart')
+    })
+    closeCart.addEventListener('click', () => {
+        body.classList.toggle('showCart')
+    })
+</script>
 </html>
