@@ -429,7 +429,7 @@
 
 <div class="sidebar" id="sidebar">
 
-    <img src="../../lib/logo_xanh.png" alt="Logo">
+    <img src="../../uploads/logo_xanh.png" alt="Logo">
 
     <a href="/bao-cao/hien-thi"><i class="fa-solid fa-chart-simple"></i>Tổng quan</a>
 
@@ -469,7 +469,7 @@
 <div class="overlay" id="overlay"></div>
 
 
-<img src="/lib/background_quanly.png" alt="Background" class="img-fluid" style="width: 100%; height: auto;">
+<img src="/uploads/background_quanly.png" alt="Background" class="img-fluid" style="width: 100%; height: auto;">
 <div class="overlay-content">
     <div class="dropdown">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="accountDropdown" data-bs-toggle="dropdown" aria-expanded="false">
