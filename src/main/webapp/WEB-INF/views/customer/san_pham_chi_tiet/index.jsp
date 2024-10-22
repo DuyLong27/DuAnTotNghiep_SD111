@@ -75,18 +75,17 @@
                 <div class="col-md-6">
                     <input type="text" name="id" value="${sanPhamChiTiet.id}" hidden>
                     <h1 class="product-title">${sanPhamChiTiet.sanPham.ten}</h1>
-                    <p>Mã sản phẩm: ${sanPhamChiTiet.ma}</p>
-                    <div class="items">
-                        <p>${sanPhamChiTiet.soLuong}</p>
-                    </div>
                     <div class="price">
-                        ${sanPhamChiTiet.sanPham.giaBan} VNĐ
+                        ${sanPhamChiTiet.giaBan} VNĐ
 <%--                        <span class="old-price">$${sanPhamChiTiet.giaBan} VNĐ</span>--%>
                     </div>
                     <hr>
                     <div class="quantity">
                         Chọn số lượng:
                         <input type="number" id="quantity" value="1" min="1" class="form-control">
+                    </div>
+                    <div class="items">
+                        <p>Còn ${sanPhamChiTiet.soLuong} sản phẩm trong kho</p>
                     </div>
                     <hr>
                     <div class="mt-3">
