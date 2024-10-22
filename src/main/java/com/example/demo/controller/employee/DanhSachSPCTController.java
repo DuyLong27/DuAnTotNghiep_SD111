@@ -59,6 +59,6 @@ public class DanhSachSPCTController {
         model.addAttribute("mucDoRangList", mucDoRangRepo.findAll());
         model.addAttribute("huongViList", huongViRepo.findAll());
         model.addAttribute("thuongHieuList", thuongHieuRepo.findAll());
-        return "gio-hang/view-update";
+        return "customer/san_pham_chi_tiet/index";
     }
 }

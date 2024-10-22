@@ -64,7 +64,7 @@
     </style>
 </head>
 <body>
-<jsp:include page="../header_user.jsp" />
+<%--<jsp:include page="../../header_user.jsp" />--%>
 <div class="container mt-5">
     <div class="row">
         <div class="col-lg-9"> <!-- Increased size to 75% -->
@@ -75,12 +75,13 @@
                 <div class="col-md-6">
                     <input type="text" name="id" value="${sanPhamChiTiet.id}" hidden>
                     <h1 class="product-title">${sanPhamChiTiet.sanPham.ten}</h1>
-                    <div class="description_product">
-                        <p>${sanPhamChiTiet.sanPham.moTa}</p>
+                    <p>Mã sản phẩm: ${sanPhamChiTiet.ma}</p>
+                    <div class="items">
+                        <p>${sanPhamChiTiet.soLuong}</p>
                     </div>
                     <div class="price">
                         ${sanPhamChiTiet.sanPham.giaBan} VNĐ
-                        <span class="old-price">$${sanPhamChiTiet.giaBan} VNĐ</span>
+<%--                        <span class="old-price">$${sanPhamChiTiet.giaBan} VNĐ</span>--%>
                     </div>
                     <hr>
                     <div class="quantity">
@@ -98,11 +99,11 @@
                 <ul class="nav nav-tabs" id="productTab" role="tablist">
                     <li class="nav-item">
                         <a class="nav-link active text-black" id="description-tab" data-toggle="tab" href="#description"
-                           role="tab" aria-controls="description" aria-selected="true">Nhận xét</a>
+                           role="tab" aria-controls="description" aria-selected="true">Thông tin sản phẩm</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link text-black" id="details-tab" data-toggle="tab" href="#details" role="tab"
-                           aria-controls="details" aria-selected="false">Chi tiết</a>
+                           aria-controls="details" aria-selected="false">Nhận xét</a>
                     </li>
                     <%--                    <li class="nav-item">--%>
                     <%--                        <a class="nav-link text-black" id="reviews-tab" data-toggle="tab" href="#reviews" role="tab"--%>
@@ -112,11 +113,18 @@
                 <div class="tab-content" id="productTabContent">
                     <div class="tab-pane fade show active mt-3" id="description" role="tabpanel"
                          aria-labelledby="description-tab">
-                        <p>${sanPhamChiTiet.danhGia}</p>
+                        <p>Mô tả sản phẩm: ${sanPhamChiTiet.sanPham.moTa}</p>
+                        <p>Trọng lượng: ${sanPhamChiTiet.canNang.ten}</p>
+                        <p>Loại hạt: ${sanPhamChiTiet.loaiHat.ten}</p>
+                        <p>Loại túi: ${sanPhamChiTiet.loaiTui.ten}</p>
+                        <p>Mức độ rang: ${sanPhamChiTiet.mucDoRang.ten}</p>
+                        <p>Hương vị: ${sanPhamChiTiet.huongVi.ten}</p>
+                        <p>Thương hiệu: ${sanPhamChiTiet.thuongHieu.ten}</p>
                     </div>
                     <div class="tab-pane fade mt-5" id="details" role="tabpanel" aria-labelledby="details-tab">
-                        <p>Chi tiết: Cà phê hòa tan, đóng gói thành 15 gói x 2g trong mỗi hộp, phù hợp để sử dụng hàng
-                            ngày hoặc mang theo khi đi du lịch...</p>
+                        <p>
+                            ${sanPhamChiTiet.danhGia}
+                        </p>
                     </div>
                     <%--                    <div class="tab-pane fade mt-5" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">--%>
                     <%--                        <p>${sanPhamChiTiet.danhGia}</p>--%>
@@ -171,7 +179,7 @@
         <!-- Related items section-->
         <section class="py-5 bg-light">
             <div class="container px-4 px-lg-5 mt-5">
-                <h2 class="fw-bolder mb-4">Related products</h2>
+                <h2 class="fw-bolder mb-4">Sản phẩm gợi ý</h2>
                 <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
                     <c:forEach items="${listSanPham}" var="item">
                         <div class="col mb-5">
@@ -199,7 +207,7 @@
         </section>
     </div>
 </div>
-<jsp:include page="../footer_user.jsp" />
+<%--<jsp:include page="../../header_user.jsp" />--%>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
