@@ -145,7 +145,6 @@
                     </div>
                     <div class="col-md-6">
                         <c:if test="${not empty selectedHoaDonId}">
-                            <h4 class="mt-4">Thêm Sản Phẩm</h4>
                             <div class="row">
                                 <c:forEach items="${sanPhams}" var="sanPham">
                                     <div class="col-md-4 mb-3">

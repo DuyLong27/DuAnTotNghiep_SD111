@@ -32,7 +32,7 @@
             display: none;
             position: absolute;
             top: 100%;
-            left: 0;
+            right: 0;
             background-color: #532B0E; /* Đặt màu nền cho dropdown */
             padding: 0px;
             list-style: none;
@@ -108,24 +108,66 @@
         }
 
         /* Cart */
-        .icon-cart{
-            padding-right: 121px;
-            padding-top: 7px;
-            color: white;
+        /*.icon-cart{*/
+        /*    padding-right: 99px;*/
+        /*    padding-top: 7px;*/
+        /*    color: white;*/
+        /*}*/
+        /*.icon-cart span{*/
+        /*    display: flex;*/
+        /*    width: 20px;*/
+        /*    height: 20px;*/
+        /*    background-color: red;*/
+        /*    justify-content: center;*/
+        /*    align-items: center;*/
+        /*    color: #dddddd;*/
+        /*    border-radius: 68%;*/
+        /*    position: absolute;*/
+        /*    top: 0%;*/
+        /*    right: -10px;*/
+        /*}*/
+        .icon-cart a {
+            position: relative;
+            display: inline-block;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            padding-right: 20px;
         }
-        .icon-cart span{
+
+        .icon-cart a:hover {
+            transform: translateY(-5px); /* Nâng icon lên một chút khi hover */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Thêm bóng đổ */
+        }
+
+        .icon-cart svg {
+            transition: color 0.3s ease, fill 0.3s ease;
+        }
+
+        .icon-cart a:hover svg {
+            color: #FFD700; /* Đổi màu icon khi hover */
+        }
+
+        .icon-cart span {
             display: flex;
             width: 20px;
             height: 20px;
             background-color: red;
             justify-content: center;
             align-items: center;
-            color: #dddddd;
-            border-radius: 68%;
+            color: #fff;
+            border-radius: 50%;
             position: absolute;
-            top: 0%;
-            right: -10px;
+            top: -10px;
+            right: -15px;
+            font-size: 12px;
+            font-weight: bold;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); /* Thêm bóng đổ cho số lượng */
         }
+
+        .icon-cart a:hover span {
+            background-color: #FF4500; /* Đổi màu nền cho số lượng khi hover */
+            transform: scale(1.1); /* Phóng to nhẹ khi hover */
+        }
+
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .navbar-nav {
@@ -204,17 +246,17 @@
         </ul>
         <ul class="navbar-nav icon-cart">
             <li class="nav-item dropdown-custom">
-                <a href="/gio-hang/hien-thi" class="nav-link text-light" style="position: relative;">
+                <a href="/gio-hang/cart" class="nav-link text-light" style="position: relative;">
                     <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7H7.312"/>
                     </svg>
                     <c:forEach var="item" items="${listGioHang}">
-                        <span>${item.gioHang.tongSoLuong}</span>
+                    <span>${item.gioHang.tongSoLuong}</span>
                     </c:forEach>
                 </a>
                 <ul class="dropdown-menu-custom">
                     <li>
-                        <a class="dropdown-item" href="#">
+                        <a class="dropdown-item" href="/gio-hang/cart">
                             <table class="table table-striped table-hover table-bordered text-center">
                                 <thead>
                                 <tr>

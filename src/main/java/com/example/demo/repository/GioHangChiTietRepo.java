@@ -12,7 +12,6 @@ import java.util.Optional;
 @Repository
 public interface GioHangChiTietRepo extends JpaRepository<GioHangChiTiet, Integer> {
     Optional<GioHangChiTiet> findByGioHangAndSanPhamChiTiet(GioHang gioHang, SanPhamChiTiet sanPhamChiTiet);
-
     List<GioHangChiTiet> findByGioHang(GioHang gioHang);
 
 
