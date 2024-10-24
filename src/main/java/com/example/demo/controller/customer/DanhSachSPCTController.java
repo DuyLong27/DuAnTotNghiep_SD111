@@ -1,4 +1,4 @@
-package com.example.demo.controller.employee;
+package com.example.demo.controller.customer;
 
 import com.example.demo.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
