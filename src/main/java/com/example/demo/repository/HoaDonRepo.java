@@ -12,4 +12,8 @@ import java.util.List;
 public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
     @Query("SELECT h.id FROM HoaDon h WHERE h.id > :currentId ORDER BY h.id ASC")
     List<Integer> findNextId(@Param("currentId") Integer currentId);
+
+
+    @Query("SELECT h FROM HoaDon h WHERE h.tinh_trang = :tinhTrang")
+    List<HoaDon> findByTinhTrang(@Param("tinhTrang") Integer tinhTrang);
 }
