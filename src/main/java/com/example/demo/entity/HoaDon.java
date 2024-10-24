@@ -38,6 +38,14 @@ public class HoaDon {
     @Column(name = "ghi_chu")
     private String ghi_chu;
 
+    @Column(name = "so_dien_thoai")
+    private String soDienThoai;
+    @Column(name = "dia_chi_cu_the")
+    private String diaChi;
+
+    @Column(name = "phuong_thuc_van_chuyen")
+    private String phuongThucVanChuyen;
+
     @Column(name = "ngay_tao")
     private Date ngay_tao;
 

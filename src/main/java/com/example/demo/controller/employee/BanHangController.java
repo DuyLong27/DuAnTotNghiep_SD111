@@ -71,15 +71,6 @@ public class BanHangController {
         SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamId).orElseThrow();
         HoaDonChiTiet existingDetail = hoaDonChiTietRepository.findByHoaDonIdAndSanPhamChiTietId(id, sanPhamChiTiet.getId());
 
-        if (sanPhamChiTiet.getSoLuong() <= 0) {
-            // Nếu số lượng không đủ, không thực hiện thêm vào hóa đơn
-            return "redirect:/ban-hang/" + id + "?error=InsufficientStock";
-        }
-
-        // Giảm số lượng sản phẩm chi tiết trước khi thêm
-        sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - 1);
-        sanPhamChiTietRepo.save(sanPhamChiTiet);
-
         if (existingDetail != null) {
             // Chỉ tăng số lượng mà không thay đổi giá
             existingDetail.setSo_luong(existingDetail.getSo_luong() + 1);
@@ -95,6 +86,7 @@ public class BanHangController {
 
         return "redirect:/ban-hang/" + id;
     }
+
 
 
 
@@ -229,8 +221,24 @@ public class BanHangController {
     @PostMapping("/{id}/confirm-order")
     public String confirmOrder(@PathVariable Integer id) {
         HoaDon hoaDon = hoaDonRepository.findById(id).orElseThrow();
+        List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findByHoaDonId(id);
+
+        // Trừ số lượng sản phẩm khi xác nhận đơn hàng
+        for (HoaDonChiTiet hoaDonChiTiet : hoaDonChiTietList) {
+            SanPhamChiTiet sanPhamChiTiet = hoaDonChiTiet.getSanPhamChiTiet();
+
+            if (sanPhamChiTiet.getSoLuong() >= hoaDonChiTiet.getSo_luong()) {
+                // Trừ số lượng sản phẩm
+                sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - hoaDonChiTiet.getSo_luong());
+                sanPhamChiTietRepo.save(sanPhamChiTiet);
+            } else {
+                // Nếu không đủ số lượng thì báo lỗi
+                return "redirect:/ban-hang/" + id + "?error=InsufficientStock";
+            }
+        }
+
         // Cập nhật trạng thái hóa đơn
-        hoaDon.setTinh_trang(1);
+        hoaDon.setTinh_trang(1);  // Đánh dấu hóa đơn đã xác nhận
         hoaDonRepository.save(hoaDon);
 
         // Tìm hóa đơn tiếp theo có tình trạng là 0
@@ -245,5 +253,6 @@ public class BanHangController {
                 ? "redirect:/ban-hang/" + nextHoaDonId
                 : "redirect:/ban-hang";
     }
+
 
 }
