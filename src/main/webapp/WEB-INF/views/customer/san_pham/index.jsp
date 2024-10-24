@@ -430,9 +430,12 @@
                             <div class="product-buy position-absolute top-50 start-50 translate-middle">
                                 <a href=""><i class="fa-solid fa-money-bill"></i></a>
                             </div>
-                            <div class="product-cart position-absolute top-50 start-50 translate-middle">
-                                <a href=""><i class="fa-solid fa-cart-shopping"></i></a>
-                            </div>
+                            <form action="/gio-hang/add" method="post">
+                                <input type="hidden" name="sanPhamId" value="${item.id}">
+                                <div class="product-cart position-absolute top-50 start-50 translate-middle">
+                                    <button type="submit"><i class="fa-solid fa-cart-shopping"></i></button>
+                                </div>
+                            </form>
                             <div class="product-quantity position-absolute top-50 start-50 translate-middle">
                                 <span class="quantity-text">${item.soLuong} sản phẩm</span>
                             </div>

@@ -33,6 +33,12 @@ public class DanhSachSanPhamController {
     @Autowired
     HuongViRepo huongViRepo;
 
+    @Autowired
+    private GioHangChiTietRepo gioHangChiTietRepo;
+
+    @Autowired
+    private GioHangRepo gioHangRepo;
+
     @GetMapping("/hien-thi")
     public String hienThi(Model model,
                           @RequestParam(required = false) Integer thuongHieuId,
@@ -80,6 +86,9 @@ public class DanhSachSanPhamController {
         model.addAttribute("listLoaiHat", loaiHatRepo.findAll());
         model.addAttribute("listMucDoRang", mucDoRangRepo.findAll());
         model.addAttribute("listLoaiCaPhe", loaiCaPheRepo.findAll());
+
+        model.addAttribute("listGioHang",gioHangChiTietRepo.findAll());
+        model.addAttribute("listGioHang2",gioHangRepo.findAll());
 
         return "customer/san_pham/index";
     }
