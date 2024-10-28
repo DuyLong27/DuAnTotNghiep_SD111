@@ -47,10 +47,17 @@ public class QLHoaDonController {
     @PostMapping("/cap-nhat-tinh-trang")
     public String capNhatTinhTrang(@RequestParam("id") Integer id,
                                    @RequestParam("tinhTrangMoi") Integer tinhTrangMoi,
+                                   @RequestParam(value = "ghiChu", required = false) String ghiChu, // Đặt required = false
                                    RedirectAttributes redirectAttributes) {
         HoaDon hoaDon = hoaDonRepo.findById(id).orElse(null);
         if (hoaDon != null) {
             hoaDon.setTinh_trang(tinhTrangMoi);
+
+            // Kiểm tra ghi chú và chỉ cập nhật nếu không rỗng
+            if (ghiChu != null && !ghiChu.trim().isEmpty()) {
+                hoaDon.setGhi_chu(ghiChu);
+            }
+
             hoaDonRepo.save(hoaDon);
             redirectAttributes.addFlashAttribute("message", "Cập nhật trạng thái thành công!");
         } else {
