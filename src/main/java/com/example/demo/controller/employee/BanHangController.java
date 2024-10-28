@@ -32,9 +32,9 @@ public class BanHangController {
     public String showHoaDon(Model model,
                              @RequestParam(required = false) Integer tinhTrang) {
         List<HoaDon> hoaDonList;
-        if (tinhTrang != null){
+        if (tinhTrang != null) {
             hoaDonList = hoaDonRepository.findByTinhTrang(tinhTrang);
-        }else {
+        } else {
             hoaDonList = hoaDonRepository.findAll();
         }
         List<SanPhamChiTiet> sanPhamChiTietList = sanPhamChiTietRepo.findAll(); // Lấy danh sách SanPhamChiTiet
@@ -69,16 +69,19 @@ public class BanHangController {
     }
 
 
-
-
     @PostMapping("/{id}/add-product")
     public String addProductToInvoice(@PathVariable Integer id, @RequestParam Integer sanPhamId) {
         HoaDon hoaDon = hoaDonRepository.findById(id).orElseThrow();
         SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamId).orElseThrow();
         HoaDonChiTiet existingDetail = hoaDonChiTietRepository.findByHoaDonIdAndSanPhamChiTietId(id, sanPhamChiTiet.getId());
 
+        if (sanPhamChiTiet.getSoLuong() <= 0) {
+            // Nếu không còn đủ số lượng sản phẩm trong kho thì báo lỗi
+            return "redirect:/ban-hang/" + id + "?error=InsufficientStock";
+        }
+
         if (existingDetail != null) {
-            // Chỉ tăng số lượng mà không thay đổi giá
+            // Tăng số lượng sản phẩm chi tiết
             existingDetail.setSo_luong(existingDetail.getSo_luong() + 1);
             hoaDonChiTietRepository.save(existingDetail);
         } else {
@@ -86,16 +89,16 @@ public class BanHangController {
             hoaDonChiTiet.setHoaDon(hoaDon);
             hoaDonChiTiet.setSanPhamChiTiet(sanPhamChiTiet);
             hoaDonChiTiet.setSo_luong(1);
-            hoaDonChiTiet.setGia_san_pham(sanPhamChiTiet.getGiaBan()); // Giữ nguyên giá ban đầu
+            hoaDonChiTiet.setGia_san_pham(sanPhamChiTiet.getGiaBan());
             hoaDonChiTietRepository.save(hoaDonChiTiet);
         }
 
+        // Trừ số lượng sản phẩm trong kho sau khi thêm vào hóa đơn
+        sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - 1);
+        sanPhamChiTietRepo.save(sanPhamChiTiet);
+
         return "redirect:/ban-hang/" + id;
     }
-
-
-
-
 
 
     public String generateRandomId() {
@@ -148,10 +151,6 @@ public class BanHangController {
     }
 
 
-
-
-
-
     @PostMapping("/{hoaDonId}/remove-product/{sanPhamChiTietId}")
     public String removeProductFromInvoice(@PathVariable Integer hoaDonId, @PathVariable Integer sanPhamChiTietId) {
         HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietRepository.findByHoaDonIdAndSanPhamChiTietId(hoaDonId, sanPhamChiTietId);
@@ -173,7 +172,6 @@ public class BanHangController {
 
         return "redirect:/ban-hang/" + hoaDonId;
     }
-
 
 
     @PostMapping("/{hoaDonId}/update-all-payment-method")
@@ -222,31 +220,13 @@ public class BanHangController {
     }
 
 
-
-
     @PostMapping("/{id}/confirm-order")
     public String confirmOrder(@PathVariable Integer id) {
         HoaDon hoaDon = hoaDonRepository.findById(id).orElseThrow();
         List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findByHoaDonId(id);
-
-        // Trừ số lượng sản phẩm khi xác nhận đơn hàng
-        for (HoaDonChiTiet hoaDonChiTiet : hoaDonChiTietList) {
-            SanPhamChiTiet sanPhamChiTiet = hoaDonChiTiet.getSanPhamChiTiet();
-
-            if (sanPhamChiTiet.getSoLuong() >= hoaDonChiTiet.getSo_luong()) {
-                // Trừ số lượng sản phẩm
-                sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - hoaDonChiTiet.getSo_luong());
-                sanPhamChiTietRepo.save(sanPhamChiTiet);
-            } else {
-                // Nếu không đủ số lượng thì báo lỗi
-                return "redirect:/ban-hang/" + id + "?error=InsufficientStock";
-            }
-        }
-
         // Cập nhật trạng thái hóa đơn
-        hoaDon.setTinh_trang(1);  // Đánh dấu hóa đơn đã xác nhận
+        hoaDon.setTinh_trang(4);  // Đánh dấu hóa đơn đã xác nhận
         hoaDonRepository.save(hoaDon);
-
         // Tìm hóa đơn tiếp theo có tình trạng là 0
         List<HoaDon> remainingHoaDons = hoaDonRepository.findAll();
         Integer nextHoaDonId = remainingHoaDons.stream()
@@ -254,7 +234,6 @@ public class BanHangController {
                 .map(HoaDon::getId)
                 .findFirst()
                 .orElse(null);
-
         return nextHoaDonId != null
                 ? "redirect:/ban-hang/" + nextHoaDonId
                 : "redirect:/ban-hang";
