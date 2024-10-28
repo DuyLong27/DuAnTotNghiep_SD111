@@ -152,7 +152,10 @@ public class GioHangController {
     }
 
     @PostMapping("/updateQuantity")
-    public String updateQuantity(@RequestParam("sanPhamId") int sanPhamId, @RequestParam("action") String action) {
+    public String updateQuantity(@RequestParam("sanPhamId") int sanPhamId, @RequestParam("soLuong") int soLuong) {
+        if (soLuong < 1) {
+            return "redirect:/gio-hang/cart";
+        }
         // Tìm giỏ hàng hiện tại (nếu có)
         Optional<GioHang> existingCart = gioHangRepo.findByKhachHangIsNull();
 
@@ -164,20 +167,8 @@ public class GioHangController {
 
             if (cartDetail.isPresent()) {
                 GioHangChiTiet detail = cartDetail.get();
-
-                // Kiểm tra action để tăng hoặc giảm số lượng
-                if (action.equals("increase")) {
-                    detail.setSoLuong(detail.getSoLuong() + 1);
-                    gioHangChiTietRepo.save(detail); // Lưu sau khi tăng số lượng
-                } else if (action.equals("decrease")) {
-                    detail.setSoLuong(detail.getSoLuong() - 1);
-                    // Nếu số lượng về 0, xóa sản phẩm khỏi giỏ hàng
-                    if (detail.getSoLuong() == 0) {
-                        gioHangChiTietRepo.delete(detail);
-                    } else {
-                        gioHangChiTietRepo.save(detail); // Lưu sau khi giảm số lượng
-                    }
-                }
+                detail.setSoLuong(soLuong); // Cập nhật số lượng
+                gioHangChiTietRepo.save(detail); // Lưu sau khi cập nhật số lượng
 
                 // Cập nhật lại tổng số lượng và tổng tiền của giỏ hàng sau khi thay đổi
                 int tongSoLuong = 0;
@@ -197,7 +188,7 @@ public class GioHangController {
         }
 
         // Chuyển hướng về trang giỏ hàng
-        return "redirect:/gio-hang/cart";
+        return "redirect:/gio-hang/cart"; // Có thể thay đổi tùy ý
     }
 
     @PostMapping("/calculateTotal")
