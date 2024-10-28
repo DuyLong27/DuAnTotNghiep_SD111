@@ -7,10 +7,8 @@ import com.example.demo.repository.HoaDonRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -44,5 +42,20 @@ public class QLHoaDonController {
         model.addAttribute("hoaDon",hoaDonRepo.findById(id).get());
         model.addAttribute("hoaDonChiTiets", hoaDonChiTiets);
         return "/admin/ql_hoa_don/detail";
+    }
+
+    @PostMapping("/cap-nhat-tinh-trang")
+    public String capNhatTinhTrang(@RequestParam("id") Integer id,
+                                   @RequestParam("tinhTrangMoi") Integer tinhTrangMoi,
+                                   RedirectAttributes redirectAttributes) {
+        HoaDon hoaDon = hoaDonRepo.findById(id).orElse(null);
+        if (hoaDon != null) {
+            hoaDon.setTinh_trang(tinhTrangMoi);
+            hoaDonRepo.save(hoaDon);
+            redirectAttributes.addFlashAttribute("message", "Cập nhật trạng thái thành công!");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Không tìm thấy hóa đơn!");
+        }
+        return "redirect:/hoa-don/detail/" + id;
     }
 }

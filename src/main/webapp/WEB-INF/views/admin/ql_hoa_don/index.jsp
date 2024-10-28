@@ -56,7 +56,28 @@
                     <td>${item.phuong_thuc_thanh_toan}</td>
                     <td>${item.ghi_chu}</td>
                     <td>${item.ngay_tao}</td>
-                    <td>${item.tinh_trang == 0 ? "Chờ xác nhận" : (item.tinh_trang == 1 ? "Chờ giao" : (item.tinh_trang == 2 ? "Hoàn thành" : (item.tinh_trang == 3 ? "Đã hủy" : "Hoàn một phần")))}</td>
+                    <td>
+                        <c:choose>
+                            <c:when test="${item.tinh_trang == 0}">
+                                Chờ xác nhận
+                            </c:when>
+                            <c:when test="${item.tinh_trang == 1 || item.tinh_trang == 2 || item.tinh_trang == 3}">
+                                Chờ giao
+                            </c:when>
+                            <c:when test="${item.tinh_trang == 4}">
+                                Hoàn thành
+                            </c:when>
+                            <c:when test="${item.tinh_trang == 5}">
+                                Đã hủy
+                            </c:when>
+                            <c:when test="${item.tinh_trang == 6}">
+                                Hoàn một phần
+                            </c:when>
+                            <c:otherwise>
+                                Không xác định
+                            </c:otherwise>
+                        </c:choose>
+                    </td>
                     <td>
                         <a href="detail/${item.id}" class="btn btn-outline-custom" >
                             <i class="fa-solid fa-circle-info"></i>
@@ -93,7 +114,28 @@
                         <td>${item.phuong_thuc_thanh_toan}</td>
                         <td>${item.ghi_chu}</td>
                         <td>${item.ngay_tao}</td>
-                        <td>${item.tinh_trang == 0 ? "Chờ xác nhận" : (item.tinh_trang == 1 ? "Chờ giao" : (item.tinh_trang == 2 ? "Hoàn thành" : (item.tinh_trang == 3 ? "Đã hủy" : "Hoàn một phần")))}</td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${item.tinh_trang == 0}">
+                                    Chờ xác nhận
+                                </c:when>
+                                <c:when test="${item.tinh_trang == 1 || item.tinh_trang == 2 || item.tinh_trang == 3}">
+                                    Chờ giao
+                                </c:when>
+                                <c:when test="${item.tinh_trang == 4}">
+                                    Hoàn thành
+                                </c:when>
+                                <c:when test="${item.tinh_trang == 5}">
+                                    Đã hủy
+                                </c:when>
+                                <c:when test="${item.tinh_trang == 6}">
+                                    Hoàn một phần
+                                </c:when>
+                                <c:otherwise>
+                                    Không xác định
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
                         <td>
                             <a href="detail/${item.id}" class="btn btn-outline-custom" >
                                 <i class="fa-solid fa-circle-info"></i>
@@ -122,7 +164,7 @@
             </thead>
             <tbody>
             <c:forEach items="${listHoaDon}" var="item">
-                <c:if test="${item.tinh_trang == 1}">
+                <c:if test="${item.tinh_trang == 1 || item.tinh_trang == 2 || item.tinh_trang == 3}">
                     <tr>
                         <td>${item.id}</td>
                         <td>${item.id_khach_hang.tenKhachHang}</td>
@@ -131,7 +173,28 @@
                         <td>${item.phuong_thuc_thanh_toan}</td>
                         <td>${item.ghi_chu}</td>
                         <td>${item.ngay_tao}</td>
-                        <td>${item.tinh_trang == 0 ? "Chờ xác nhận" : (item.tinh_trang == 1 ? "Chờ giao" : (item.tinh_trang == 2 ? "Hoàn thành" : (item.tinh_trang == 3 ? "Đã hủy" : "Hoàn một phần")))}</td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${item.tinh_trang == 0}">
+                                    Chờ xác nhận
+                                </c:when>
+                                <c:when test="${item.tinh_trang == 1 || item.tinh_trang == 2 || item.tinh_trang == 3}">
+                                    Chờ giao
+                                </c:when>
+                                <c:when test="${item.tinh_trang == 4}">
+                                    Hoàn thành
+                                </c:when>
+                                <c:when test="${item.tinh_trang == 5}">
+                                    Đã hủy
+                                </c:when>
+                                <c:when test="${item.tinh_trang == 6}">
+                                    Hoàn một phần
+                                </c:when>
+                                <c:otherwise>
+                                    Không xác định
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
                         <td>
                             <a href="detail/${item.id}" class="btn btn-outline-custom" >
                                 <i class="fa-solid fa-circle-info"></i>
@@ -159,7 +222,7 @@
             </thead>
             <tbody>
             <c:forEach items="${listHoaDon}" var="item">
-                <c:if test="${item.tinh_trang == 2}">
+                <c:if test="${item.tinh_trang == 4}">
                     <tr>
                         <td>${item.id}</td>
                         <td>${item.id_khach_hang.tenKhachHang}</td>
@@ -168,7 +231,28 @@
                         <td>${item.phuong_thuc_thanh_toan}</td>
                         <td>${item.ghi_chu}</td>
                         <td>${item.ngay_tao}</td>
-                        <td>${item.tinh_trang == 0 ? "Chờ xác nhận" : (item.tinh_trang == 1 ? "Chờ giao" : (item.tinh_trang == 2 ? "Hoàn thành" : (item.tinh_trang == 3 ? "Đã hủy" : "Hoàn một phần")))}</td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${item.tinh_trang == 0}">
+                                    Chờ xác nhận
+                                </c:when>
+                                <c:when test="${item.tinh_trang == 1 || item.tinh_trang == 2 || item.tinh_trang == 3}">
+                                    Chờ giao
+                                </c:when>
+                                <c:when test="${item.tinh_trang == 4}">
+                                    Hoàn thành
+                                </c:when>
+                                <c:when test="${item.tinh_trang == 5}">
+                                    Đã hủy
+                                </c:when>
+                                <c:when test="${item.tinh_trang == 6}">
+                                    Hoàn một phần
+                                </c:when>
+                                <c:otherwise>
+                                    Không xác định
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
                         <td>
                             <a href="detail/${item.id}" class="btn btn-outline-custom" >
                                 <i class="fa-solid fa-circle-info"></i>
@@ -196,7 +280,7 @@
             </thead>
             <tbody>
             <c:forEach items="${listHoaDon}" var="item">
-                <c:if test="${item.tinh_trang == 3}">
+                <c:if test="${item.tinh_trang == 5}">
                     <tr>
                         <td>${item.id}</td>
                         <td>${item.id_khach_hang.tenKhachHang}</td>
@@ -205,7 +289,28 @@
                         <td>${item.phuong_thuc_thanh_toan}</td>
                         <td>${item.ghi_chu}</td>
                         <td>${item.ngay_tao}</td>
-                        <td>${item.tinh_trang == 0 ? "Chờ xác nhận" : (item.tinh_trang == 1 ? "Chờ giao" : (item.tinh_trang == 2 ? "Hoàn thành" : (item.tinh_trang == 3 ? "Đã hủy" : "Hoàn một phần")))}</td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${item.tinh_trang == 0}">
+                                    Chờ xác nhận
+                                </c:when>
+                                <c:when test="${item.tinh_trang == 1 || item.tinh_trang == 2 || item.tinh_trang == 3}">
+                                    Chờ giao
+                                </c:when>
+                                <c:when test="${item.tinh_trang == 4}">
+                                    Hoàn thành
+                                </c:when>
+                                <c:when test="${item.tinh_trang == 5}">
+                                    Đã hủy
+                                </c:when>
+                                <c:when test="${item.tinh_trang == 6}">
+                                    Hoàn một phần
+                                </c:when>
+                                <c:otherwise>
+                                    Không xác định
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
                         <td>
                             <a href="detail/${item.id}" class="btn btn-outline-custom" >
                                 <i class="fa-solid fa-circle-info"></i>
@@ -233,7 +338,7 @@
             </thead>
             <tbody>
             <c:forEach items="${listHoaDon}" var="item">
-                <c:if test="${item.tinh_trang == 4}">
+                <c:if test="${item.tinh_trang == 6}">
                     <tr>
                         <td>${item.id}</td>
                         <td>${item.id_khach_hang.tenKhachHang}</td>
@@ -242,7 +347,28 @@
                         <td>${item.phuong_thuc_thanh_toan}</td>
                         <td>${item.ghi_chu}</td>
                         <td>${item.ngay_tao}</td>
-                        <td>${item.tinh_trang == 0 ? "Chờ xác nhận" : (item.tinh_trang == 1 ? "Chờ giao" : (item.tinh_trang == 2 ? "Hoàn thành" : (item.tinh_trang == 3 ? "Đã hủy" : "Hoàn một phần")))}</td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${item.tinh_trang == 0}">
+                                    Chờ xác nhận
+                                </c:when>
+                                <c:when test="${item.tinh_trang == 1 || item.tinh_trang == 2 || item.tinh_trang == 3}">
+                                    Chờ giao
+                                </c:when>
+                                <c:when test="${item.tinh_trang == 4}">
+                                    Hoàn thành
+                                </c:when>
+                                <c:when test="${item.tinh_trang == 5}">
+                                    Đã hủy
+                                </c:when>
+                                <c:when test="${item.tinh_trang == 6}">
+                                    Hoàn một phần
+                                </c:when>
+                                <c:otherwise>
+                                    Không xác định
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
                         <td>
                             <a href="detail/${item.id}" class="btn btn-outline-custom" >
                                 <i class="fa-solid fa-circle-info"></i>

@@ -29,8 +29,14 @@ public class BanHangController {
     private HoaDonChiTietRepo hoaDonChiTietRepository;
 
     @GetMapping("")
-    public String showHoaDon(Model model) {
-        List<HoaDon> hoaDonList = hoaDonRepository.findAll();
+    public String showHoaDon(Model model,
+                             @RequestParam(required = false) Integer tinhTrang) {
+        List<HoaDon> hoaDonList;
+        if (tinhTrang != null){
+            hoaDonList = hoaDonRepository.findByTinhTrang(tinhTrang);
+        }else {
+            hoaDonList = hoaDonRepository.findAll();
+        }
         List<SanPhamChiTiet> sanPhamChiTietList = sanPhamChiTietRepo.findAll(); // Lấy danh sách SanPhamChiTiet
         model.addAttribute("hoaDonList", hoaDonList);
         model.addAttribute("selectedHoaDonId", null);

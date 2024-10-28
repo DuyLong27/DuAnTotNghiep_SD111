@@ -209,28 +209,28 @@
         }
 
         .card {
-            overflow: hidden; /* Đảm bảo ảnh không tràn ra ngoài card */
+            overflow: hidden;
         }
 
         .product-image {
-            transition: transform 0.3s ease; /* Thêm hiệu ứng chuyển đổi cho ảnh */
+            transition: transform 0.3s ease;
         }
 
         .card:hover .product-image {
-            transform: scale(1.1); /* Phóng to ảnh lên 110% khi hover */
+            transform: scale(1.1);
         }
 
         .product-quantity {
-            display: none; /* Ẩn số lượng sản phẩm mặc định */
-            background-color: rgba(0, 0, 0, 0.7); /* Nền mờ đen */
-            color: white; /* Màu chữ trắng */
-            padding: 10px; /* Khoảng cách */
-            border-radius: 5px; /* Bo tròn góc */
-            z-index: 10; /* Đảm bảo nó nằm trên các phần tử khác */
+            display: none;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 10;
         }
 
         .card:hover .product-quantity {
-            display: block; /* Hiện số lượng khi hover */
+            display: block;
         }
 
         .product-quantity.top-50 {
@@ -238,15 +238,15 @@
         }
 
         .product-buy, .product-cart {
-            display: none; /* Ẩn số lượng sản phẩm mặc định */
+            display: none;
             background-color: rgba(11, 116, 94, 1);
-            padding: 10px; /* Khoảng cách */
-            border-radius: 5px; /* Bo tròn góc */
-            z-index: 10; /* Đảm bảo nó nằm trên các phần tử khác */
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 10;
         }
 
         .card:hover .product-buy, .card:hover .product-cart {
-            display: block; /* Hiện số lượng khi hover */
+            display: block;
         }
 
 
@@ -263,13 +263,35 @@
         }
 
         .product-buy a i, .product-cart a i {
-            transition: transform 0.3s ease, color 0.3s ease; /* Thêm chuyển động mượt khi hover */
-            color: white !important; /* Màu trắng ưu tiên */
+            transition: transform 0.3s ease, color 0.3s ease;
+            color: white !important;
         }
 
         .product-buy a:hover i, .product-cart a:hover i {
             transform: scale(1.2);
         }
+
+        .btn-custom {
+            background-color: rgba(11, 116, 94, 1);
+            border: none;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .btn-custom i {
+            color: white !important;
+            font-size: 20px;
+            transition: transform 0.3s;
+        }
+
+        .btn-custom:hover {
+            transform: scale(1.1);
+        }
+
 
     </style>
 </head>
@@ -433,7 +455,7 @@
                             <form action="/gio-hang/add" method="post">
                                 <input type="hidden" name="sanPhamId" value="${item.id}">
                                 <div class="product-cart position-absolute top-50 start-50 translate-middle">
-                                    <button type="submit"><i class="fa-solid fa-cart-shopping"></i></button>
+                                    <button type="submit" class="btn-custom"><i class="fa-solid fa-cart-shopping"></i></button>
                                 </div>
                             </form>
                             <div class="product-quantity position-absolute top-50 start-50 translate-middle">
