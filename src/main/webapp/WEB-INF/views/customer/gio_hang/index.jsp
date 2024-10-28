@@ -10,6 +10,7 @@
     <title>Giỏ hàng của bạn</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         body {
             background-color: #f8f9fa;
@@ -76,6 +77,16 @@
         .btn-secondary {
             margin: 0 5px;
         }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
     </style>
 </head>
 <body>
@@ -130,36 +141,30 @@
                             </td>
                             <td>${item.sanPhamChiTiet.giaBan} đ</td>
                     </form>
-                    <td>
-                        <form action="${pageContext.request.contextPath}/gio-hang/updateQuantity" method="post"
-                              style="display: inline-block;">
-                            <input type="hidden" name="sanPhamId" value="${item.sanPhamChiTiet.id}"/>
-                            <input type="hidden" name="action" value="increase"/>
-                            <button type="submit" class="btn btn-secondary">
-                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
-                                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                                     viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                          stroke-width="2" d="m5 15 7-7 7 7"/>
-                                </svg>
-                            </button>
-                        </form>
-                        <form action="${pageContext.request.contextPath}/gio-hang/checkout" method="post">
-                                ${item.soLuong}
-                        </form>
-                        <form action="${pageContext.request.contextPath}/gio-hang/updateQuantity" method="post"
-                              style="display: inline-block;">
-                            <input type="hidden" name="sanPhamId" value="${item.sanPhamChiTiet.id}"/>
-                            <input type="hidden" name="action" value="decrease"/>
-                            <button type="submit" class="btn btn-secondary">
-                                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
-                                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
-                                     viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                          stroke-width="2" d="m19 9-7 7-7-7"/>
-                                </svg>
-                            </button>
-                        </form>
+                    <td class="text-center">
+                        <div class="d-flex align-items-center justify-content-center">
+                            <form action="${pageContext.request.contextPath}/gio-hang/updateQuantity" method="post" class="me-2">
+                                <input type="hidden" name="sanPhamId" value="${item.sanPhamChiTiet.id}"/>
+                                <input type="hidden" name="soLuong" value="${item.soLuong + 1}"/>
+                                <button type="submit" class="btn btn-secondary">
+                                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>
+                                    </svg>
+                                </button>
+                            </form>
+
+                            <input type="number" id="soLuong-${item.sanPhamChiTiet.id}" name="soLuong" value="${item.soLuong}" min="1" required class="form-control me-2" style="width: 60px; text-align: center;" />
+
+                            <form action="${pageContext.request.contextPath}/gio-hang/updateQuantity" method="post" class="me-2">
+                                <input type="hidden" name="sanPhamId" value="${item.sanPhamChiTiet.id}"/>
+                                <input type="hidden" name="soLuong" value="${item.soLuong - 1}"/>
+                                <button type="submit" class="btn btn-secondary" ${item.soLuong <= 1 ? 'disabled' : ''}>
+                                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                                    </svg>
+                                </button>
+                            </form>
+                        </div>
                     </td>
                     <td>${item.sanPhamChiTiet.giaBan * item.soLuong}</td>
                     <td>
@@ -252,5 +257,41 @@
 
     // Gọi hàm kiểm tra ban đầu để đảm bảo trạng thái nút đúng
     toggleCheckoutButton();
+
+    // Lắng nghe sự kiện keydown cho các trường nhập số lượng
+    document.querySelectorAll('input[type="number"]').forEach(input => {
+        input.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Ngăn chặn hành vi mặc định của phím Enter
+                const productId = this.id.split('-')[1]; // Lấy ID sản phẩm từ ID input
+                const quantity = this.value;
+
+                // Kiểm tra nếu giá trị số lượng hợp lệ trước khi gửi yêu cầu
+                if (quantity && quantity > 0) {
+                    // Gửi yêu cầu cập nhật số lượng sản phẩm
+                    const formData = new FormData();
+                    formData.append('sanPhamId', productId);
+                    formData.append('soLuong', quantity);
+
+                    fetch('${pageContext.request.contextPath}/gio-hang/updateQuantity', {
+                        method: 'POST',
+                        body: formData
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                console.log('Số lượng đã được cập nhật thành công.');
+                                window.location.reload(); // Tải lại trang để thấy sự thay đổi
+                            } else {
+                                console.error('Có lỗi xảy ra khi cập nhật số lượng.');
+                            }
+                        })
+                        .catch(error => console.error('Có lỗi xảy ra:', error));
+                } else {
+                    alert('Vui lòng nhập số lượng hợp lệ.');
+                }
+            }
+        });
+    });
+
 </script>
 </html>
