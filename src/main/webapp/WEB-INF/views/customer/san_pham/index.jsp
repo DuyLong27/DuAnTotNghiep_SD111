@@ -262,9 +262,12 @@
             left: 43% !important;
         }
 
-        .product-buy a i, .product-cart a i {
+        .product-buy a i {
             transition: transform 0.3s ease, color 0.3s ease;
             color: white !important;
+            width: 24px;
+            height: 20px;
+            padding-left: 3px;
         }
 
         .product-buy a:hover i, .product-cart a:hover i {
@@ -284,8 +287,9 @@
 
         .btn-custom i {
             color: white !important;
-            font-size: 20px;
+            font-size: 16px;
             transition: transform 0.3s;
+            padding-right: 2px
         }
 
         .btn-custom:hover {

@@ -181,16 +181,16 @@
                     <a class="nav-link" href="?tinhTrang=0" id="ChoXacNhan" data-bs-toggle="tab" data-bs-target="#choxacnhan" role="tab" aria-controls="choxacnhan" aria-selected="false">Chờ xác nhận</a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link" href="?tinhTrang=1" id="ChoGiao" data-bs-toggle="tab" data-bs-target="#chogiao" role="tab" aria-controls="chogiao" aria-selected="false">Chờ giao</a>
+                    <a class="nav-link" href="?tinhTrang=1&2&3" id="ChoGiao" data-bs-toggle="tab" data-bs-target="#chogiao" role="tab" aria-controls="chogiao" aria-selected="false">Chờ giao</a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link" href="?tinhTrang=2" id="HoanThanh" data-bs-toggle="tab" data-bs-target="#hoanthanh" role="tab" aria-controls="hoanthanh" aria-selected="false">Hoàn thành</a>
+                    <a class="nav-link" href="?tinhTrang=4" id="HoanThanh" data-bs-toggle="tab" data-bs-target="#hoanthanh" role="tab" aria-controls="hoanthanh" aria-selected="false">Hoàn thành</a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link" href="?tinhTrang=3" id="DaHuy" data-bs-toggle="tab" data-bs-target="#dahuy" role="tab" aria-controls="dahuy" aria-selected="false">Đã hủy</a>
+                    <a class="nav-link" href="?tinhTrang=5" id="DaHuy" data-bs-toggle="tab" data-bs-target="#dahuy" role="tab" aria-controls="dahuy" aria-selected="false">Đã hủy</a>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <a class="nav-link" href="?tinhTrang=4" id="HoanMotPhan" data-bs-toggle="tab" data-bs-target="#hoanmotphan" role="tab" aria-controls="hoanmotphan" aria-selected="false">Hoàn một phần</a>
+                    <a class="nav-link" href="?tinhTrang=6" id="HoanMotPhan" data-bs-toggle="tab" data-bs-target="#hoanmotphan" role="tab" aria-controls="hoanmotphan" aria-selected="false">Hoàn một phần</a>
                 </li>
             </ul>
             <div class="tab-content" id="myTabContent">

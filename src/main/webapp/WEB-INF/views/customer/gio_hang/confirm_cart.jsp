@@ -15,11 +15,12 @@
 <jsp:include page="../header_user.jsp" />
 <div class="container">
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-8 mt-3 mb-3">
             <h1 class="text-center mb-4">Thông tin đơn hàng</h1>
-            <table class="table table-bordered table-striped">
+            <table class="table table-striped text-center">
                 <thead class="table-light">
                 <tr>
+                    <th></th>
                     <th>Tên sản phẩm</th>
                     <th>Giá</th>
                     <th>Số lượng</th>
@@ -29,17 +30,18 @@
                 <tbody>
                 <c:forEach var="item" items="${selectedItems}">
                     <tr>
+                        <td><img style="width: 90px" src="${pageContext.request.contextPath}/uploads/${item.sanPhamChiTiet.hinhAnh}"></td>
                         <td>${item.sanPhamChiTiet.sanPham.ten}</td>
-                        <td>${item.giaBan} đ</td>
+                        <td>${item.giaBan} VNĐ</td>
                         <td>${item.soLuong}</td>
-                        <td>${item.soLuong * item.giaBan} đ</td>
+                        <td>${item.soLuong * item.giaBan} VNĐ</td>
                     </tr>
                 </c:forEach>
                 </tbody>
             </table>
-            <h3 class="text-center">Tổng tiền: <span class="text-danger">${tongTien} đ</span></h3>
+            <h3 class="d-flex justify-content-end">Tổng tiền: <span class="text-danger">${tongTien} VNĐ</span></h3>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4 mt-3 mb-3">
             <h2 class="text-center mb-4">Thông tin thanh toán</h2>
             <form action="/gio-hang/xac-nhan-hoa-don" method="post">
                 <div class="mb-3">
