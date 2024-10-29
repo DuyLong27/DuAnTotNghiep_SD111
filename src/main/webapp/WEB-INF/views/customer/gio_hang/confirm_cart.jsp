@@ -15,12 +15,11 @@
 <jsp:include page="../header_user.jsp" />
 <div class="container">
     <div class="row">
-        <div class="col-md-8 mt-3 mb-3">
+        <div class="col-md-8">
             <h1 class="text-center mb-4">Thông tin đơn hàng</h1>
-            <table class="table table-striped text-center">
+            <table class="table table-bordered table-striped">
                 <thead class="table-light">
                 <tr>
-                    <th></th>
                     <th>Tên sản phẩm</th>
                     <th>Giá</th>
                     <th>Số lượng</th>
@@ -30,18 +29,17 @@
                 <tbody>
                 <c:forEach var="item" items="${selectedItems}">
                     <tr>
-                        <td><img style="width: 90px" src="${pageContext.request.contextPath}/uploads/${item.sanPhamChiTiet.hinhAnh}"></td>
                         <td>${item.sanPhamChiTiet.sanPham.ten}</td>
-                        <td>${item.giaBan} VNĐ</td>
+                        <td>${item.giaBan} đ</td>
                         <td>${item.soLuong}</td>
-                        <td>${item.soLuong * item.giaBan} VNĐ</td>
+                        <td>${item.soLuong * item.giaBan} đ</td>
                     </tr>
                 </c:forEach>
                 </tbody>
             </table>
-            <h3 class="d-flex justify-content-end">Tổng tiền: <span class="text-danger">${tongTien} VNĐ</span></h3>
+            <h3 class="text-center">Tổng tiền: <span id="totalPrice" class="text-danger">${tongTien} đ</span></h3>
         </div>
-        <div class="col-md-4 mt-3 mb-3">
+        <div class="col-md-4">
             <h2 class="text-center mb-4">Thông tin thanh toán</h2>
             <form action="/gio-hang/xac-nhan-hoa-don" method="post">
                 <div class="mb-3">
@@ -55,11 +53,11 @@
                 <div class="mb-3">
                     <label class="form-label">Phương thức vận chuyển:</label>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="phuongThucVanChuyen" id="giaoHangNhanh" value="Giao Hàng Nhanh" required>
+                        <input class="form-check-input" type="radio" name="phuongThucVanChuyen" id="giaoHangNhanh" value="Giao Hàng Nhanh" required onchange="updateTotal()">
                         <label class="form-check-label" for="giaoHangNhanh">Giao Hàng Nhanh</label>
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="phuongThucVanChuyen" id="giaoHangTieuChuan" value="Giao Hàng Tiêu Chuẩn">
+                        <input class="form-check-input" type="radio" name="phuongThucVanChuyen" id="giaoHangTieuChuan" value="Giao Hàng Tiêu Chuẩn" onchange="updateTotal()">
                         <label class="form-check-label" for="giaoHangTieuChuan">Giao Hàng Tiêu Chuẩn</label>
                     </div>
                 </div>
@@ -72,17 +70,28 @@
                     <input type="tel" class="form-control" id="soDienThoai" name="soDienThoai" pattern="[0-9]{10}" required>
                 </div>
 
-                <!-- Đoạn mã bạn cần -->
                 <c:forEach var="item" items="${selectedItems}">
                     <input type="hidden" name="selectedItems" value="${item.sanPhamChiTiet.id}">
                 </c:forEach>
 
                 <button type="submit" class="btn btn-success w-100">Xác nhận đơn hàng</button>
             </form>
-
         </div>
     </div>
 </div>
 <jsp:include page="../footer_user.jsp" />
+<script>
+    // Hàm cập nhật tổng tiền
+    function updateTotal() {
+        // Lấy tổng tiền ban đầu
+        let totalPrice = parseInt('${tongTien}');
+        // Lấy giá trị phí vận chuyển
+        let shippingFee = document.querySelector('input[name="phuongThucVanChuyen"]:checked') ? (document.querySelector('input[name="phuongThucVanChuyen"]:checked').value === "Giao Hàng Nhanh" ? 33000 : 20000) : 0;
+        // Cập nhật tổng tiền
+        let finalTotal = totalPrice + shippingFee;
+        // Hiển thị tổng tiền mới
+        document.getElementById('totalPrice').innerText = finalTotal + ' đ';
+    }
+</script>
 </body>
 </html>

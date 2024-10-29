@@ -262,12 +262,9 @@
             left: 43% !important;
         }
 
-        .product-buy a i {
+        .product-buy a i, .product-cart a i {
             transition: transform 0.3s ease, color 0.3s ease;
             color: white !important;
-            width: 24px;
-            height: 20px;
-            padding-left: 3px;
         }
 
         .product-buy a:hover i, .product-cart a:hover i {
@@ -287,13 +284,26 @@
 
         .btn-custom i {
             color: white !important;
-            font-size: 16px;
+            font-size: 20px;
             transition: transform 0.3s;
-            padding-right: 2px
         }
 
         .btn-custom:hover {
             transform: scale(1.1);
+        }
+
+        .modal.show {
+            display: block;
+            opacity: 1;
+        }
+        #soLuong::-webkit-outer-spin-button,
+        #soLuong::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        #soLuong {
+            -moz-appearance: textfield;
         }
 
 
@@ -454,7 +464,12 @@
                                 </div>
                             </div>
                             <div class="product-buy position-absolute top-50 start-50 translate-middle">
-                                <a href=""><i class="fa-solid fa-money-bill"></i></a>
+                                <form action="/danh-sach-san-pham/mua-ngay" method="get">
+                                    <input type="hidden" name="productId" value="${item.id}">
+                                    <div class="product-cart position-absolute top-50 start-50 translate-middle">
+                                        <button type="submit" class="btn-custom"><i class="fa-solid fa-money-bill"></i></button>
+                                    </div>
+                                </form>
                             </div>
                             <form action="/gio-hang/add" method="post">
                                 <input type="hidden" name="sanPhamId" value="${item.id}">
@@ -468,10 +483,121 @@
                         </div>
                     </div>
                 </c:forEach>
+
+                <!-- Modal hiển thị thông tin sản phẩm (hiển thị nếu sản phẩm được chọn) -->
+                <c:if test="${not empty sanPhamChiTiet}">
+                    <div class="modal fade show" id="productPopup" tabindex="-1" aria-labelledby="productPopupLabel" aria-modal="true" role="dialog" style="display: block;">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="productPopupLabel">Mua Ngay Tức Thì!</h5>
+                                    <a href="/danh-sach-san-pham/hien-thi" class="btn-close" aria-label="Close"></a>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h5>${sanPhamChiTiet.sanPham.ten}</h5>
+                                            <p>Giá: <span id="giaBan">${sanPhamChiTiet.giaBan}</span> VNĐ</p>
+                                            <p>Mô tả: ${sanPhamChiTiet.sanPham.moTa}</p>
+                                            <div class="mb-3 d-flex align-items-center">
+                                                <button type="button" class="btn btn-secondary" onclick="changeQuantity(-1)">-</button>
+                                                <input type="number" class="form-control mx-2" id="soLuong" name="soLuong" min="1" value="1" required onchange="updateTotal()" style="width: 80px; text-align: center;">
+                                                <button type="button" class="btn btn-secondary" onclick="changeQuantity(1)">+</button>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Tổng tiền:</label>
+                                                <p id="tongTien">${sanPhamChiTiet.giaBan} VNĐ</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h2 class="text-center mb-4">Thông tin thanh toán</h2>
+                                            <form action="/danh-sach-san-pham/xac-nhan-hoa-don" method="post">
+                                                <input type="hidden" name="sanPhamId" value="${sanPhamChiTiet.id}">
+                                                <input type="hidden" name="soLuong" id="soLuongInput" value="1">
+                                                <input type="hidden" name="tongTien" id="tongTienInput" value="${sanPhamChiTiet.giaBan}">
+
+                                                <div class="mb-3">
+                                                    <label for="phuongThucThanhToan" class="form-label">Phương thức thanh toán:</label>
+                                                    <select class="form-select" id="phuongThucThanhToan" name="phuongThucThanhToan" required>
+                                                        <option value="Tiền mặt">Tiền mặt</option>
+                                                        <option value="Chuyển khoản">Chuyển khoản</option>
+                                                        <option value="Thẻ tín dụng">Thẻ tín dụng</option>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Phương thức vận chuyển:</label>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="phuongThucVanChuyen" id="giaoHangNhanh" value="Giao Hàng Nhanh" required onchange="updateTotal()">
+                                                        <label class="form-check-label" for="giaoHangNhanh">Giao Hàng Nhanh</label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="phuongThucVanChuyen" id="giaoHangTieuChuan" value="Giao Hàng Tiêu Chuẩn" onchange="updateTotal()">
+                                                        <label class="form-check-label" for="giaoHangTieuChuan">Giao Hàng Tiêu Chuẩn</label>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="diaChi" class="form-label">Địa chỉ cụ thể:</label>
+                                                    <input type="text" class="form-control" id="diaChi" name="diaChi" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="soDienThoai" class="form-label">Số điện thoại:</label>
+                                                    <input type="tel" class="form-control" id="soDienThoai" name="soDienThoai" pattern="[0-9]{10}" required>
+                                                </div>
+                                                <button type="submit" class="btn btn-success w-100">Xác nhận đơn hàng</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </c:if>
             </div>
         </div>
     </div>
 </div>
 <jsp:include page="../footer_user.jsp" />
+<script>
+    // Giá bán của sản phẩm
+    const giaBan = ${sanPhamChiTiet.giaBan};
+
+    // Hàm cập nhật tổng tiền
+    function updateTotal() {
+        const soLuong = parseInt(document.getElementById("soLuong").value) || 1; // Giá trị mặc định là 1
+        const selectedShipping = document.querySelector('input[name="phuongThucVanChuyen"]:checked');
+
+        // Đặt chi phí vận chuyển mặc định là 0
+        let shippingCost = 0;
+
+        // Nếu có phương thức vận chuyển được chọn, tính toán giá trị chi phí vận chuyển
+        if (selectedShipping) {
+            if (selectedShipping.value === "Giao Hàng Nhanh") {
+                shippingCost = 33000; // Chi phí cho giao hàng nhanh
+            } else if (selectedShipping.value === "Giao Hàng Tiêu Chuẩn") {
+                shippingCost = 20000; // Chi phí cho giao hàng tiêu chuẩn
+            }
+        }
+
+        // Tính tổng tiền
+        const tongTien = (giaBan * soLuong) + shippingCost;
+
+        // Cập nhật nội dung tổng tiền trong modal
+        document.getElementById("tongTien").innerText = tongTien.toLocaleString('vi-VN') + " VNĐ";
+    }
+
+    function changeQuantity(amount) {
+        const soLuongInput = document.getElementById("soLuong");
+        const soLuongHiddenInput = document.getElementById("soLuongInput"); // Thêm dòng này
+        let currentQuantity = parseInt(soLuongInput.value);
+        currentQuantity = isNaN(currentQuantity) ? 1 : currentQuantity;
+        currentQuantity = Math.max(1, currentQuantity + amount); // Đảm bảo số lượng tối thiểu là 1
+        soLuongInput.value = currentQuantity;
+
+        // Cập nhật giá trị cho trường ẩn
+        soLuongHiddenInput.value = currentQuantity; // Thêm dòng này
+
+        updateTotal(); // Cập nhật lại tổng tiền
+    }
+</script>
 </body>
 </html>

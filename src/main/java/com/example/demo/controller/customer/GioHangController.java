@@ -293,6 +293,17 @@ public class GioHangController {
                 }
             }
 
+            // Xác định phí vận chuyển
+            int phiVanChuyen = 0;
+            if (phuongThucVanChuyen.equals("Giao Hàng Tiêu Chuẩn")) {
+                phiVanChuyen = 20000;
+            } else if (phuongThucVanChuyen.equals("Giao Hàng Nhanh")) {
+                phiVanChuyen = 33000;
+            }
+
+            // Cộng phí vận chuyển vào tổng tiền
+            totalAmount += phiVanChuyen;
+
             // Tạo hóa đơn mới
             HoaDon invoice = new HoaDon();
             invoice.setTong_tien(totalAmount);
@@ -317,9 +328,4 @@ public class GioHangController {
 
         return "redirect:/danh-sach-san-pham/hien-thi";
     }
-
-
-
-
-
 }
