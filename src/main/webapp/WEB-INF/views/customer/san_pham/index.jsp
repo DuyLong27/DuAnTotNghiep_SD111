@@ -483,41 +483,42 @@
                         </div>
                     </div>
                 </c:forEach>
-
                 <!-- Modal hiển thị thông tin sản phẩm (hiển thị nếu sản phẩm được chọn) -->
                 <c:if test="${not empty sanPhamChiTiet}">
                     <div class="modal fade show" id="productPopup" tabindex="-1" aria-labelledby="productPopupLabel" aria-modal="true" role="dialog" style="display: block;">
                         <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="productPopupLabel">Mua Ngay Tức Thì!</h5>
+                            <div class="modal-content shadow-lg border-0 rounded">
+                                <div class="modal-header border-bottom-0 pb-0">
+                                    <h5 class="modal-title fw-bold text-success" id="productPopupLabel">Mua Ngay Tức Thì Nào HeHeBoizz!</h5>
                                     <a href="/danh-sach-san-pham/hien-thi" class="btn-close" aria-label="Close"></a>
                                 </div>
                                 <div class="modal-body">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <h5>${sanPhamChiTiet.sanPham.ten}</h5>
-                                            <p>Giá: <span id="giaBan">${sanPhamChiTiet.giaBan}</span> VNĐ</p>
-                                            <p>Mô tả: ${sanPhamChiTiet.sanPham.moTa}</p>
-                                            <div class="mb-3 d-flex align-items-center">
-                                                <button type="button" class="btn btn-secondary" onclick="changeQuantity(-1)">-</button>
-                                                <input type="number" class="form-control mx-2" id="soLuong" name="soLuong" min="1" value="1" required onchange="updateTotal()" style="width: 80px; text-align: center;">
-                                                <button type="button" class="btn btn-secondary" onclick="changeQuantity(1)">+</button>
+                                    <div class="row g-4">
+                                        <div class="col-md-6 d-flex flex-column align-items-center text-center">
+                                            <a href="/danh-sach-san-pham-chi-tiet/view-sp/${sanPhamChiTiet.id}">
+                                                <img src="${pageContext.request.contextPath}/uploads/${sanPhamChiTiet.hinhAnh}" class="card-img-top product-image rounded mb-3 shadow-sm" alt="${sanPhamChiTiet.sanPham.ten}">
+                                            </a>
+                                            <h5 class="fw-bold mb-2">${sanPhamChiTiet.sanPham.ten}</h5>
+                                            <p class="text-danger fw-bold">Giá: <span id="giaBan">${sanPhamChiTiet.giaBan}</span> VNĐ</p>
+                                            <p class="text-muted">Mô tả: ${sanPhamChiTiet.sanPham.moTa}</p>
+                                            <div class="mb-3 d-flex align-items-center justify-content-center">
+                                                <button type="button" class="btn btn-outline-secondary rounded-circle px-2" onclick="changeQuantity(-1)">-</button>
+                                                <input type="number" class="form-control mx-2 text-center" id="soLuong" name="soLuong" min="1" value="1" required onchange="updateTotal()" style="width: 80px;">
+                                                <button type="button" class="btn btn-outline-secondary rounded-circle px-2" onclick="changeQuantity(1)">+</button>
                                             </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">Tổng tiền:</label>
-                                                <p id="tongTien">${sanPhamChiTiet.giaBan} VNĐ</p>
+                                            <div>
+                                                <label class="form-label fw-bold">Tổng tiền:</label>
+                                                <p id="tongTien" class="text-success fw-bold">${sanPhamChiTiet.giaBan} VNĐ</p>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <h2 class="text-center mb-4">Thông tin thanh toán</h2>
+                                        <div class="col-md-6 border-start">
+                                            <h3 class="text-center mb-4 text-secondary">Thông tin thanh toán</h3>
                                             <form action="/danh-sach-san-pham/xac-nhan-hoa-don" method="post">
                                                 <input type="hidden" name="sanPhamId" value="${sanPhamChiTiet.id}">
                                                 <input type="hidden" name="soLuong" id="soLuongInput" value="1">
                                                 <input type="hidden" name="tongTien" id="tongTienInput" value="${sanPhamChiTiet.giaBan}">
-
                                                 <div class="mb-3">
-                                                    <label for="phuongThucThanhToan" class="form-label">Phương thức thanh toán:</label>
+                                                    <label for="phuongThucThanhToan" class="form-label fw-bold">Phương thức thanh toán:</label>
                                                     <select class="form-select" id="phuongThucThanhToan" name="phuongThucThanhToan" required>
                                                         <option value="Tiền mặt">Tiền mặt</option>
                                                         <option value="Chuyển khoản">Chuyển khoản</option>
@@ -525,7 +526,7 @@
                                                     </select>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label class="form-label">Phương thức vận chuyển:</label>
+                                                    <label class="form-label fw-bold">Phương thức vận chuyển:</label>
                                                     <div class="form-check">
                                                         <input class="form-check-input" type="radio" name="phuongThucVanChuyen" id="giaoHangNhanh" value="Giao Hàng Nhanh" required onchange="updateTotal()">
                                                         <label class="form-check-label" for="giaoHangNhanh">Giao Hàng Nhanh</label>
@@ -536,14 +537,14 @@
                                                     </div>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="diaChi" class="form-label">Địa chỉ cụ thể:</label>
+                                                    <label for="diaChi" class="form-label fw-bold">Địa chỉ cụ thể:</label>
                                                     <input type="text" class="form-control" id="diaChi" name="diaChi" required>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="soDienThoai" class="form-label">Số điện thoại:</label>
+                                                    <label for="soDienThoai" class="form-label fw-bold">Số điện thoại:</label>
                                                     <input type="tel" class="form-control" id="soDienThoai" name="soDienThoai" pattern="[0-9]{10}" required>
                                                 </div>
-                                                <button type="submit" class="btn btn-success w-100">Xác nhận đơn hàng</button>
+                                                <button type="submit" class="btn btn-success w-100 py-2 mt-4">Xác nhận đơn hàng</button>
                                             </form>
                                         </div>
                                     </div>
