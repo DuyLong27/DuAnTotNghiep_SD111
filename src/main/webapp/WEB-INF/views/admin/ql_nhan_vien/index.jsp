@@ -57,7 +57,7 @@
                 </div>
                 <div class="modal-body">
                     <form id="productForm" action="/nhan-vien/add" method="post">
-                        <input type="hidden" id="nhanVienId" name="idNhanVien"/>
+                        <input type="hidden" id="nhanVienId" name="id"/>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
@@ -147,9 +147,9 @@
                             ${nv.tinhTrang == 1 ? "Đang làm" : "Tan ca"}
                     </td>
                     <td>
-                        <a onclick="openEditModal(${nv.idNhanVien}, '${nv.tenNhanVien}', ${nv.email}, '${nv.matKhau}', ${nv.soDienThoai}, ${nv.chucVu}, ${nv.ngayDiLam}, ${nv.tinhTrang})"
+                        <a onclick="openEditModal(${nv.id}, '${nv.tenNhanVien}', ${nv.email}, '${nv.matKhau}', ${nv.soDienThoai}, ${nv.chucVu}, ${nv.ngayDiLam}, ${nv.tinhTrang})"
                            type="button" class="btn btn-default bordervien table__logo"><i class='bx bx-edit-alt'></i></a>
-                        <a onclick="return confirm('Bạn có chắc muốn xóa?')" href="/nhan-vien/delete?id=${nv.idNhanVien}"
+                        <a onclick="return confirm('Bạn có chắc muốn xóa?')" href="/nhan-vien/delete?id=${nv.id}"
                            class="btn btn-default bordervien table__logo"><i class='bx bx-trash' ></i></a>
                     </td>
                 </tr>
@@ -205,9 +205,9 @@
         document.getElementById('productModalLabel').innerText = title;
     }
 
-    function openEditModal(idNhanVien, tenNhanVien, email, matKhau, soDienThoai, chucVu, ngayDiLam, tinhTrang) {
+    function openEditModal(id, tenNhanVien, email, matKhau, soDienThoai, chucVu, ngayDiLam, tinhTrang) {
         setModalTitle('Cập Nhật Sản Phẩm');
-        document.getElementById('nhanVienId').value = idNhanVien;
+        document.getElementById('nhanVienId').value = id;
         document.getElementById('nhanVienName').value = tenNhanVien;
         document.getElementById('nhanVienEmail').value = email;
         document.getElementById('nhanVienMatKhau').value = matKhau;
