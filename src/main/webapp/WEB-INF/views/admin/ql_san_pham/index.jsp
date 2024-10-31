@@ -6,7 +6,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <title>Danh Sách Sản Phẩm</title>
     <style>
         body {
@@ -37,6 +36,7 @@
     </style>
 </head>
 <body>
+<jsp:include page="../layout.jsp" />
 <div class="container mt-3">
     <h1 class="text-center mt-3">Danh Sách Sản Phẩm</h1>
     <!-- Thông báo -->
@@ -46,13 +46,13 @@
         </div>
     </c:if>
     <form action="/san-pham/index" method="get" id="filterSearchForm">
-        <div class="row">
+        <div class="row filter-section">
             <div class="col-md-4">
                 <h5>Lọc Theo Danh Mục</h5>
                 <select name="danhMucId" class="form-select" onchange="this.form.submit();">
                     <option value="" ${param.danhMucId == '' ? 'selected' : ''}>Tất Cả</option>
                     <c:forEach var="dm" items="${danhMucList}">
-                        <option value="${dm.id}" ${param.danhMucId == dm.id ? 'selected' : ''}>${dm.tenDanhMuc}</option>
+                        <option value="${dm.id}" ${param.danhMucId == dm.id ? 'selected' : ''}>${dm.ten}</option>
                     </c:forEach>
                 </select>
             </div>
@@ -61,8 +61,8 @@
                 <h5>Lọc Theo Tình Trạng</h5>
                 <select name="tinhTrang" class="form-select" onchange="this.form.submit();">
                     <option value="" ${param.tinhTrang == '' ? 'selected' : ''}>Tất Cả</option>
-                    <option value="1" ${param.tinhTrang == '1' ? 'selected' : ''}>Còn Hàng</option>
-                    <option value="0" ${param.tinhTrang == '0' ? 'selected' : ''}>Hết Hàng</option>
+                    <option value="1" ${param.tinhTrang == '1' ? 'selected' : ''}>Hoạt Động</option>
+                    <option value="0" ${param.tinhTrang == '0' ? 'selected' : ''}>Không Hoạt Động</option>
                 </select>
             </div>
 
@@ -76,11 +76,11 @@
 
 
     <div class="mt-3">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#productModal"
+        <button type="button" class="btn btn-create" data-bs-toggle="modal" data-bs-target="#productModal"
                 onclick="resetForm(); setModalTitle('Thêm Sản Phẩm');">
-            Add Sản Phẩm
+            Tạo mới
         </button>
-        <button type="button" class="btn btn-danger ms-2" onclick="resetFilters();">Reset</button>
+        <button type="button" class="btn btn-secondary-outline" onclick="resetFilters();">Reset</button>
     </div>
 
     <!-- Bootstrap Modal -->
@@ -113,7 +113,7 @@
                                 <label for="danhMuc" class="form-label">Danh Mục</label>
                                 <select id="danhMuc" name="danhMuc.id" class="form-select">
                                     <c:forEach var="dm" items="${danhMucList}">
-                                        <option value="${dm.id}">${dm.tenDanhMuc}</option>
+                                        <option value="${dm.id}">${dm.ten}</option>
                                     </c:forEach>
                                 </select>
                             </div>
@@ -130,12 +130,12 @@
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="tinhTrang" id="tinhTrangConHang"
                                            value="1" required>
-                                    <label class="form-check-label" for="tinhTrangConHang">Còn Hàng</label>
+                                    <label class="form-check-label" for="tinhTrangConHang">Hoạt Động</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="tinhTrang" id="tinhTrangHetHang"
                                            value="0" required>
-                                    <label class="form-check-label" for="tinhTrangHetHang">Hết Hàng</label>
+                                    <label class="form-check-label" for="tinhTrangHetHang">Không Hoạt Động</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -146,7 +146,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary" id="submitButton">Lưu Sản Phẩm</button>
+                        <button type="submit" class="btn btn-create" id="submitButton">Tạo mới</button>
                     </form>
                 </div>
             </div>
@@ -154,7 +154,7 @@
     </div>
 
     <!-- Bảng hiển thị danh sách sản phẩm -->
-    <table class="table table-hover table-bordered text-center mt-3">
+    <table class="table table-striped table-hover table-bordered text-center">
         <thead>
         <tr>
             <th>STT</th>
@@ -178,18 +178,30 @@
                 <tr>
                     <th>${i.index + 1}</th>
                     <td>${sanPham.nhaCungCap.tenNCC}</td>
-                    <td>${sanPham.danhMuc.tenDanhMuc}</td>
+                    <td>${sanPham.danhMuc.ten}</td>
                     <td>${sanPham.ten}</td>
                     <td>${sanPham.giaBan}</td>
                     <td>${sanPham.moTa}</td>
                     <td class="${sanPham.tinhTrang == 1 ? 'text-success' : 'text-danger'}">
-                            ${sanPham.tinhTrang == 1 ? "Còn Hàng" : "Hết Hàng"}
+                            ${sanPham.tinhTrang == 1 ? "Hoạt Động" : "Không Hoạt Động"}
                     </td>
                     <td>
+                        <!-- Nút Chi Tiết -->
+                        <c:choose>
+                            <c:when test="${sanPham.tinhTrang == 1}">
+                                <a href="/spct/index?id=${sanPham.id}&openModal=true" class="btn btn-outline-custom">Chi tiết</a>
+                            </c:when>
+                            <c:otherwise>
+                                <button class="btn btn-outline-custom" disabled>Chi tiết</button>
+                            </c:otherwise>
+                        </c:choose>
+
+                        <!-- Nút Sửa -->
                         <a onclick="openEditModal(${sanPham.id}, '${sanPham.ten}', ${sanPham.giaBan}, '${sanPham.moTa}', ${sanPham.danhMuc.id}, ${sanPham.nhaCungCap.id}, ${sanPham.tinhTrang})"
-                           class="btn btn-warning">Sửa</a>
-                        <a onclick="return confirm('Bạn có chắc muốn xóa?')" href="/san-pham/delete/${sanPham.id}"
-                           class="btn btn-danger">Xóa</a>
+                           class="btn btn-outline-custom">Sửa</a>
+
+                        <!-- Nút Xóa -->
+                            <%--                        <a href="/san-pham/delete/${sanPham.id}" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">Xóa</a>--%>
                     </td>
                 </tr>
             </c:forEach>
@@ -258,7 +270,7 @@
             radio.checked = (radio.value == tinhTrang);
         }
 
-        document.getElementById('submitButton').innerText = 'Cập Nhật Sản Phẩm';
+        document.getElementById('submitButton').innerText = 'Cập Nhật';
         document.getElementById('productForm').action = `/san-pham/update`; // Update action
         var myModal = new bootstrap.Modal(document.getElementById('productModal'));
         myModal.show();

@@ -100,20 +100,17 @@
             margin-bottom: 20px;
             padding-left: 32px;
         }
-
         /*Product list*/
-        .listProduct .item img {
+        .listProduct .item img{
             width: 90%;
         }
-
         .listProduct {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 20px;
             padding: 5px 5px;
         }
-
-        .listProduct .item {
+        .listProduct .item{
             background-color: #eeee;
             padding: 20px;
             border-radius: 20px;
@@ -122,27 +119,23 @@
             width: 190px;
             height: 264px;
         }
-
-        .listProduct .item .price1 {
+        .listProduct .item .price1{
             letter-spacing: 3px;
             font-size: 20px;
             text-decoration-line: line-through;
             color: #AFAFAF;
         }
-
-        .listProduct .item .price2 {
+        .listProduct .item .price2{
             letter-spacing: 3px;
             font-size: 20px;
             font-weight: bold;
             color: #F62400;
         }
-
         .listProduct .item h2 {
             font-size: 15px;
             padding-top: 10px;
         }
-
-        .listProduct .item span {
+        .listProduct .item span{
             width: 40px;
             height: 30px;
             background-color: darkgreen;
@@ -165,8 +158,25 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-
-        .order-summary .amount span {
+        .order-summary .name-product img{
+            width: 45px;
+            height: 45px;
+            top: 57px;
+            left: 154px;
+            gap: 0px;
+            opacity: 0px;
+        }
+        .order-summary .name-product .info-name{
+            display: flex;
+            font-size: small;
+            padding-left: 40px;
+        }
+        .order-summary .name-product .info-name .icon-delete{
+            border:1px #dddddd solid;
+            background-color: #ffffff;
+            border-radius: 30%;
+        }
+        .order-summary .amount span{
             border: 1px #dddddd solid;
             border-radius: 30%;
             width: 30px;
@@ -174,60 +184,22 @@
             margin-left: 5px;
             margin-right: 5px;
         }
-
-        .order-summary .amount svg {
+        .order-summary .amount svg{
             border: 1px #dddddd solid;
             border-radius: 30%;
             width: 30px;
             height: 32px;
         }
-
-        .order-summary table {
-            width: 100%;
-            border-top: 1px solid #888;
-        }
-
-        .order-summary table thead tr th:first-child {
-            text-align: left;
-        }
-
-        .order-summary table td {
-            border-bottom: 1px solid #ddd;
-            padding: 12px 0;
-        }
-
-        .order-summary table thead tr th:last-child {
-            text-align: right;
-        }
-
-        .order-summary table tbody tr td:last-child {
-            text-align: center;
-        }
-
-        .order-summary table thead tr th {
-            border-right: 1px solid #888;
-            border-bottom: 1px solid #888;
-        }
-
-        .order-summary table tbody tr td {
-            border-right: 1px solid #888;
-        }
-
-
         .total {
             font-size: 1.5em;
             font-weight: bold;
         }
-
-
-
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .navbar-nav {
                 flex-direction: column;
             }
         }
-
     </style>
 
 </head>
@@ -313,56 +285,159 @@
                 <option value="laptops">Giá Giảm Dần</option>
             </select>
         </div>
-        <ul class="nav justify-content-end" style="padding-right: 24px">
-            <button class="nav-item" onclick="createNewInvoice()">Tạo hóa đơn mới</button>
-            <select class="nav-item" style="margin-left: 20px" id="invoiceSelector" onchange="selectInvoice()">
-                <option value="">Chọn hóa đơn</option>
-            </select>
-        </ul>
-        <div class="row" style="padding-top: 15px">
-            <div class="col-8" style="display: flex; max-height: 820px;">
+        <div class="row">
+            <div class="col-8" style="display: flex">
                 <div class="row">
-                    <c:forEach var="product" items="${productList}">
-                        <div class="col-3 listProduct">
-                            <div class="item">
-                                <span>-10%</span>
-                                <img src="/lib/logo_xanh.png" alt="${product.ten}" style="width: 90%;">
-                                <h2>${product.ten}</h2>
-                                <div class="price2">${product.giaBan}<sup>$</sup></div>
-                                <button class="add-product" onclick="addToInvoice('${product.ten}', ${product.giaBan})">Add</button>
-                            </div>
+                    <div class="col-3 listProduct">
+                        <div class="item">
+                            <span>-10%</span>
+                            <img src="/lib/logo_xanh.png" alt="">
+                            <h2>NAME PRODUCT</h2>
+                            <div class="price1">1.030.488<sup>$</sup></div>
+                            <div class="price2">927.440<sup>$</sup></div>
                         </div>
-                    </c:forEach>
-                    <div>
-                        <ul class="pagination justify-content-center" style="margin:20px 0">
-                            <li class="page-item">
-                            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                            <li class="page-item"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                            </li>
-                        </ul>
+                    </div>
+                    <div class="col-3 listProduct">
+                        <div class="item">
+                            <span>-10%</span>
+                            <img src="/lib/logo_xanh.png" alt="">
+                            <h2>NAME PRODUCT</h2>
+                            <div class="price1">1.030.488<sup>$</sup></div>
+                            <div class="price2">927.440<sup>$</sup></div>
+                        </div>
+                    </div>
+                    <div class="col-3 listProduct">
+                        <div class="item">
+                            <span>-10%</span>
+                            <img src="/lib/logo_xanh.png" alt="">
+                            <h2>NAME PRODUCT</h2>
+                            <div class="price1">1.030.488<sup>$</sup></div>
+                            <div class="price2">927.440<sup>$</sup></div>
+                        </div>
+                    </div>
+                    <div class="col-3 listProduct">
+                        <div class="item">
+                            <span>-10%</span>
+                            <img src="/lib/logo_xanh.png" alt="">
+                            <h2>NAME PRODUCT</h2>
+                            <div class="price1">1.030.488<sup>$</sup></div>
+                            <div class="price2">927.440<sup>$</sup></div>
+                        </div>
+                    </div>
+                    <div class="col-3 listProduct">
+                        <div class="item">
+                            <span>-10%</span>
+                            <img src="/lib/logo_xanh.png" alt="">
+                            <h2>NAME PRODUCT</h2>
+                            <div class="price1">1.030.488<sup>$</sup></div>
+                            <div class="price2">927.440<sup>$</sup></div>
+                        </div>
+                    </div>
+                    <div class="col-3 listProduct">
+                        <div class="item">
+                            <span>-10%</span>
+                            <img src="/lib/logo_xanh.png" alt="">
+                            <h2>NAME PRODUCT</h2>
+                            <div class="price1">1.030.488<sup>$</sup></div>
+                            <div class="price2">927.440<sup>$</sup></div>
+                        </div>
+                    </div>
+                    <div class="col-3 listProduct">
+                        <div class="item">
+                            <span>-10%</span>
+                            <img src="/lib/logo_xanh.png" alt="">
+                            <h2>NAME PRODUCT</h2>
+                            <div class="price1">1.030.488<sup>$</sup></div>
+                            <div class="price2">927.440<sup>$</sup></div>
+                        </div>
+                    </div>
+                    <div class="col-3 listProduct">
+                        <div class="item">
+                            <span>-10%</span>
+                            <img src="/lib/logo_xanh.png" alt="">
+                            <h2>NAME PRODUCT</h2>
+                            <div class="price1">1.030.488<sup>$</sup></div>
+                            <div class="price2">927.440<sup>$</sup></div>
+                        </div>
+                    </div>
+                    <div class="col-3 listProduct">
+                        <div class="item">
+                            <span>-10%</span>
+                            <img src="/lib/logo_xanh.png" alt="">
+                            <h2>NAME PRODUCT</h2>
+                            <div class="price1">1.030.488<sup>$</sup></div>
+                            <div class="price2">927.440<sup>$</sup></div>
+                        </div>
+                    </div>
+                    <div class="col-3 listProduct">
+                        <div class="item">
+                            <span>-10%</span>
+                            <img src="/lib/logo_xanh.png" alt="">
+                            <h2>NAME PRODUCT</h2>
+                            <div class="price1">1.030.488<sup>$</sup></div>
+                            <div class="price2">927.440<sup>$</sup></div>
+                        </div>
+                    </div>
+                    <div class="col-3 listProduct">
+                        <div class="item">
+                            <span>-10%</span>
+                            <img src="/lib/logo_xanh.png" alt="">
+                            <h2>NAME PRODUCT</h2>
+                            <div class="price1">1.030.488<sup>$</sup></div>
+                            <div class="price2">927.440<sup>$</sup></div>
+                        </div>
+                    </div>
+                    <div class="col-3 listProduct">
+                        <div class="item">
+                            <span>-10%</span>
+                            <img src="/lib/logo_xanh.png" alt="">
+                            <h2>NAME PRODUCT</h2>
+                            <div class="price1">1.030.488<sup>$</sup></div>
+                            <div class="price2">927.440<sup>$</sup></div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div id="invoices" class="col-4 order-summary">
-                <h2>Hóa đơn</h2>
-                <form action="">
-                    <table>
-                        <thead>
-                        <tr>
-                            <th>Sản Phẩm</th>
-                            <th>Giá</th>
-                            <th>Số Lượng</th>
-                            <th>Chọn</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <!--  -->
-                        </tbody>
-                    </table>
-                </form>
+            <div class="col-4 order-summary">
+                <h2>Thông tin đơn hàng</h2>
+                <div class="mb-3 name-product">
+                    <label class="form-label">
+                        Tên sản phẩm:
+                    </label>
+                    <div class="info-name">
+                        <img style="margin-right: 15px" src="/lib/logo_nau.png" alt="">
+                        <span style="margin-right: 5px">Trung Nguyen Legend Cappuccino Coconut</span>
+                        <button class="icon-delete">
+                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.6" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="mb-3 amount" style="display: flex;">
+                    <label class="form-label" style="padding-right: 228px">
+                        Số lượng
+                    </label>
+                        <svg style="top: 20px" class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>
+                        </svg>
+                        <span>1</span>
+                        <svg style="top: 30px" class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/>
+                        </svg>
+                </div>
+                <div class="mb-3" style="display: flex">
+                    <label class="form-label" style="padding-right: 271px">
+                        Giá tiền
+                    </label>
+                    <span>927.440 <sup>$</sup> </span>
+                </div>
+                <div class="mb-3" style="display: flex">
+                    <label class="form-label" style="padding-right: 259px">
+                        Tạm tính
+                    </label>
+                    <span style="font-weight: bold">927.440 <sup>$</sup> </span>
+                </div>
                 <div class="mb-3">
                     <h3>Khuyến mãi</h3>
                     <hr>
@@ -403,127 +478,6 @@
         </div>
     </div>
 </div>
-</div>
+
 </body>
-<script>
-    let invoiceCounter = 0;
-    let invoices = [];
-    let selectedInvoiceId = null;
-
-    function createNewInvoice() {
-        invoiceCounter++;
-        let newInvoice = {
-            id: invoiceCounter,
-            items: [],
-            totalAmount: 0
-        };
-        invoices.push(newInvoice);
-        updateInvoiceSelector();
-        selectInvoiceById(invoiceCounter);
-    }
-
-    function addToInvoice(ten, giaBan) {
-        if (!selectedInvoiceId) {
-            alert("Vui lòng chọn hóa đơn trước khi thêm sản phẩm.");
-            return;
-        }
-
-        const currentInvoice = invoices.find(invoice => invoice.id === parseInt(selectedInvoiceId));
-
-        // Kiểm tra xem sản phẩm đã tồn tại trong hóa đơn chưa
-        const existingItem = currentInvoice.items.find(item => item.product === ten);
-
-        if (existingItem) {
-            existingItem.quantity += 1; // Tăng số lượng nếu sản phẩm đã tồn tại
-        } else {
-            currentInvoice.items.push({ product: ten, price: giaBan, quantity: 1 });
-        }
-
-        currentInvoice.totalAmount += giaBan; // Cập nhật tổng tiền
-        console.log(ten,giaBan)
-        displayInvoices(); // Hiển thị hóa đơn
-    }
-
-
-
-    function deleteInvoice(id) {
-        invoices = invoices.filter(invoice => invoice.id !== id);
-        selectedInvoiceId = null;
-        updateInvoiceSelector();
-        displayInvoices();
-    }
-
-    function selectInvoice() {
-        const selector = document.getElementById('invoiceSelector');
-        selectedInvoiceId = selector.value;
-        displayInvoices();
-    }
-
-    function selectInvoiceById(id) {
-        const selector = document.getElementById('invoiceSelector');
-        selectedInvoiceId = id;
-        selector.value = id;
-        displayInvoices();
-    }
-
-    function updateInvoiceSelector() {
-        const selector = document.getElementById('invoiceSelector');
-        selector.innerHTML = '<option value="">Chọn hóa đơn</option>';
-        invoices.forEach(invoice => {
-            const option = document.createElement('option');
-            option.value = invoice.id;
-            option.textContent = `Hóa Đơn ${invoice.id}`;
-            selector.appendChild(option);
-        });
-    }
-
-    function displayInvoices() {
-        const tbody = document.querySelector("#invoices tbody");
-        tbody.innerHTML = ''; // Xóa nội dung hiện tại của tbody
-
-        if (!selectedInvoiceId) {
-            tbody.innerHTML = '<tr><td colspan="4">Chưa có hóa đơn nào được chọn.</td></tr>';
-            return;
-        }
-
-        let currentInvoice = invoices.find(invoice => invoice.id === parseInt(selectedInvoiceId));
-
-        if (currentInvoice) {
-            console.log(currentInvoice.items); // Thêm dòng này để kiểm tra items
-            console.log("Selected Invoice ID:", selectedInvoiceId);
-            currentInvoice.items.forEach(item => {
-                tbody.innerHTML += `
-                <tr>
-                    <td style="display: flex; font-size: small; align-items: center;">
-                        <img style="width: 70px; margin-right: 10px" src="/lib/logo_xanh.png" alt="${item.product}">${item.product}Cà phê Robusta
-                    </td>
-                    <td style="font-size: small; padding-top: 25px; padding-left: 5px; padding-right: 5px">
-                        <p><span>${item.price}150000</span><sup>$</sup></p>
-                    </td>
-                    <td style="font-size: small; padding-left: 25px;">
-                        <input style="width: 30px; outline: none;" type="number" value="${item.quantity}1" min="0">
-                    </td>
-                    <td>
-                        <button onclick="deleteItem('${item.product}')">Xóa</button>
-                    </td>
-                </tr>`;
-            });
-
-            // Cập nhật tổng tiền
-            const totalRow = document.createElement('tr');
-            totalRow.innerHTML = `<td colspan="3">Tạm tính: </td><td>${currentInvoice.totalAmount}<sup>$</sup></td>`;
-            tbody.appendChild(totalRow);
-        }
-    }
-
-    // Hàm xóa sản phẩm
-    function deleteItem(ten) {
-        let currentInvoice = invoices.find(invoice => invoice.id === parseInt(selectedInvoiceId));
-        currentInvoice.items = currentInvoice.items.filter(item => item.product !== ten);
-        currentInvoice.totalAmount -= currentInvoice.items.find(item => item.product === ten)?.price || 0;
-
-        displayInvoices();
-    }
-
-</script>
 </html>

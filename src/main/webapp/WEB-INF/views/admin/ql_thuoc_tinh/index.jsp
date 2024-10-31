@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <title>Quản Lý Thuộc Tính Sản Phẩm</title>
     <style>
         body {
@@ -34,6 +33,7 @@
     </style>
 </head>
 <body>
+<jsp:include page="../layout.jsp" />
 <div class="container mt-5">
     <h1 class="text-center mb-4 text-primary">Quản Lý Thuộc Tính Sản Phẩm</h1>
     <!-- Thông báo -->
@@ -42,7 +42,7 @@
                 ${message}
         </div>
     </c:if>
-    <div class="d-flex justify-content-start align-items-center mb-4">
+    <div class="d-flex justify-content-start align-items-center mb-4 filter-section">
         <form method="get" action="/thuoc-tinh" class="me-3">
             <select name="entity" id="entitySelect" class="form-select" onchange="this.form.submit()">
                 <option value="canNang" ${param.entity == 'canNang' ? 'selected' : ''}>Cân Nặng</option>
@@ -52,6 +52,7 @@
                 <option value="loaiTui" ${param.entity == 'loaiTui' ? 'selected' : ''}>Loại Túi</option>
                 <option value="mucDoRang" ${param.entity == 'mucDoRang' ? 'selected' : ''}>Mức Độ Rang</option>
                 <option value="thuongHieu" ${param.entity == 'thuongHieu' ? 'selected' : ''}>Thương Hiệu</option>
+                <option value="danhMuc" ${param.entity == 'danhMuc' ? 'selected' : ''}>Danh Mục</option>
             </select>
         </form>
 
@@ -59,14 +60,14 @@
             <input type="hidden" name="entity" value="${param.entity}"/>
             <div class="input-group">
                 <input type="text" name="propertyName" id="propertyName" class="form-control" placeholder="Tên thuộc tính mới" required/>
-                <button type="submit" class="btn btn-outline-primary">Thêm Thuộc Tính</button>
+                <button type="submit" class="btn btn-create">Thêm Thuộc Tính</button>
             </div>
         </form>
     </div>
 
     <!-- Bảng thuộc tính -->
-    <table class="table table-hover table-bordered text-center">
-        <thead class="table-dark">
+    <table class="table table-striped table-hover table-bordered text-center">
+        <thead>
         <tr>
             <th>ID</th>
             <th>Tên</th>
@@ -83,13 +84,13 @@
                         <input type="hidden" name="entity" value="${entity}"/>
                         <input type="hidden" name="id" value="${item.id}"/>
                         <input type="text" name="propertyName" value="${item.ten}" class="form-control d-inline-block w-50" required/>
-                        <button type="submit" class="btn btn-sm btn-warning">Sửa</button>
+                        <button type="submit" class="btn btn-outline-custom">Sửa</button>
                     </form>
-                    <form action="/thuoc-tinh/delete" method="post" class="d-inline">
-                        <input type="hidden" name="entity" value="${entity}"/>
-                        <input type="hidden" name="id" value="${item.id}"/>
-                        <button onclick="return confirm('Bạn có chắc muốn xóa?')" type="submit" class="btn btn-sm btn-danger">Xóa</button>
-                    </form>
+                        <%--                    <form action="/thuoc-tinh/delete" method="post" class="d-inline">--%>
+                        <%--                        <input type="hidden" name="entity" value="${entity}"/>--%>
+                        <%--                        <input type="hidden" name="id" value="${item.id}"/>--%>
+                        <%--&lt;%&ndash;            <button onclick="return confirm('Bạn có chắc muốn xóa?')" type="submit" class="btn btn-sm btn-danger">Xóa</button>&ndash;%&gt;--%>
+                        <%--                    </form>--%>
                 </td>
             </tr>
         </c:forEach>
