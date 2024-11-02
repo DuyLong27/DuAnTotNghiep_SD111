@@ -2,8 +2,10 @@ package com.example.demo.controller.customer;
 
 import com.example.demo.entity.HoaDon;
 import com.example.demo.entity.HoaDonChiTiet;
+import com.example.demo.entity.KhachHang;
 import com.example.demo.entity.SanPhamChiTiet;
 import com.example.demo.repository.*;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +22,8 @@ import java.util.Random;
 @Controller
 @RequestMapping("/danh-sach-san-pham")
 public class DanhSachSanPhamController {
+    @Autowired
+    private KhachHangRepo khachHangRepo;
     @Autowired
     HoaDonRepo hoaDonRepo;
 
@@ -106,66 +110,62 @@ public class DanhSachSanPhamController {
         model.addAttribute("sanPhamChiTiet", sanPhamChiTiet);
         List<SanPhamChiTiet> sanPhamList = sanPhamChiTietRepo.findAll();
         model.addAttribute("listSanPham", sanPhamList);
-
         return "customer/san_pham/index";
     }
 
     @PostMapping("/xac-nhan-hoa-don")
-    public String xacNhanHoaDon(@RequestParam String phuongThucThanhToan,
+    public String xacNhanHoaDon(HttpSession session,
+                                @RequestParam String phuongThucThanhToan,
                                 @RequestParam String phuongThucVanChuyen,
                                 @RequestParam String diaChi,
                                 @RequestParam String soDienThoai,
                                 @RequestParam int soLuong,
                                 @RequestParam int sanPhamId) {
 
-        // Lấy thông tin sản phẩm từ cơ sở dữ liệu
         SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamId).orElse(null);
         if (sanPhamChiTiet == null) {
-            // Xử lý nếu sản phẩm không tồn tại
-            return "redirect:/error"; // Ví dụ, chuyển hướng đến trang lỗi
+            return "redirect:/error";
         }
 
-        // Tính tổng tiền dựa trên số lượng và giá sản phẩm
         int tongTien = soLuong * sanPhamChiTiet.getGiaBan();
-
-        int phiVanChuyen = 0;
-        if (phuongThucVanChuyen.equals("Giao Hàng Tiêu Chuẩn")) {
-            phiVanChuyen = 20000;
-        } else if (phuongThucVanChuyen.equals("Giao Hàng Nhanh")) {
-            phiVanChuyen = 33000;
-        }
+        int phiVanChuyen = phuongThucVanChuyen.equals("Giao Hàng Tiêu Chuẩn") ? 20000 : 33000;
         tongTien += phiVanChuyen;
 
+        // Tạo mã số hóa đơn ngẫu nhiên
         String soHoaDon = "HD" + new Random().nextInt(90000);
 
-        // Tạo hóa đơn mới
+        // Tạo đối tượng HoaDon và thiết lập các thuộc tính
         HoaDon hoaDon = new HoaDon();
         hoaDon.setPhuong_thuc_thanh_toan(phuongThucThanhToan);
         hoaDon.setPhuongThucVanChuyen(phuongThucVanChuyen);
         hoaDon.setDiaChi(diaChi);
         hoaDon.setSoDienThoai(soDienThoai);
-        hoaDon.setNgay_tao(new Date()); // Ngày tạo là thời điểm hiện tại
-        hoaDon.setTong_tien(tongTien); // Sử dụng tổng tiền đã tính (bao gồm phí vận chuyển)
+        hoaDon.setNgay_tao(new Date());
+        hoaDon.setTong_tien(tongTien);
         hoaDon.setSo_hoa_don(soHoaDon);
         hoaDon.setTinh_trang(0);
+
+        // Kiểm tra người dùng đã đăng nhập hay chưa
+        KhachHang khachHang = (KhachHang) session.getAttribute("khachHang");
+        if (khachHang != null) {
+            hoaDon.setKhachHang(khachHang);
+        }
 
         // Lưu hóa đơn vào cơ sở dữ liệu
         hoaDonRepo.save(hoaDon);
 
-        // Tạo chi tiết hóa đơn và lưu
+        // Tạo và lưu chi tiết hóa đơn
         HoaDonChiTiet hoaDonChiTiet = new HoaDonChiTiet();
-        hoaDonChiTiet.setHoaDon(hoaDon); // Gán hóa đơn cho chi tiết
-        hoaDonChiTiet.setSanPhamChiTiet(sanPhamChiTiet); // Sử dụng sản phẩm đã lấy từ cơ sở dữ liệu
+        hoaDonChiTiet.setHoaDon(hoaDon);
+        hoaDonChiTiet.setSanPhamChiTiet(sanPhamChiTiet);
         hoaDonChiTiet.setSo_luong(soLuong);
         hoaDonChiTiet.setGia_san_pham(sanPhamChiTiet.getGiaBan());
-
         hoaDonChiTietRepo.save(hoaDonChiTiet);
 
-        // Trừ số lượng sản phẩm sau khi tạo hóa đơn thành công
+        // Cập nhật số lượng sản phẩm
         sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - soLuong);
         sanPhamChiTietRepo.save(sanPhamChiTiet);
 
-        // Chuyển hướng tới trang thành công hoặc trang khác
-        return "redirect:/danh-sach-san-pham/hien-thi"; // Chuyển hướng đến danh sách sản phẩm
+        return "redirect:/danh-sach-san-pham/hien-thi";
     }
 }

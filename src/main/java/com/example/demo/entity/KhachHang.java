@@ -20,8 +20,6 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@ToString
 @Entity
 @Table(name = "khach_hang")
 
@@ -58,6 +56,7 @@ public class KhachHang {
 
     @Column(name = "khuyen_mai_da_dung")
     private String khuyenMaiDaDung;
+
 
 //    @Column(name = "tinh_trang")
 //    private Integer tinhTrang;
