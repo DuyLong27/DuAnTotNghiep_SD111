@@ -19,7 +19,7 @@
                 </div>
                 <div class="modal-body">
                     <p hidden><strong>ID:</strong> ${hoaDon.id}</p>
-                    <p><strong>Số Hóa Đơn:</strong> ${hoaDon.so_hoa_don}</p>
+                    <p><strong>Số Hóa Đơn:</strong> ${hoaDon.soHoaDon}</p>
                     <p><strong>Phương Thức Thanh Toán:</strong> ${hoaDon.phuong_thuc_thanh_toan}</p>
                     <p><strong>Ghi Chú:</strong>
                         <c:choose>
@@ -31,7 +31,7 @@
                             </c:otherwise>
                         </c:choose>
                     </p>
-                    <p><strong>Ngày Tạo:</strong> ${hoaDon.ngay_tao}</p>
+                    <p><strong>Ngày Tạo:</strong> ${hoaDon.ngayTao}</p>
                     <h6>Chi Tiết Sản Phẩm:</h6>
                     <ul>
                         <c:forEach items="${chiTietList}" var="chiTiet">

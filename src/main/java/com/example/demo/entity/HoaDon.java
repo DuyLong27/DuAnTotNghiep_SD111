@@ -24,10 +24,14 @@ public class HoaDon {
 
     @ManyToOne
     @JoinColumn(name = "id_khach_hang")
-    private KhachHang id_khach_hang;
+    private KhachHang idKhachHang;
+
+    @ManyToOne
+    @JoinColumn(name = "id_nhan_vien")
+    private NhanVien idNhanVien;
 
     @Column(name = "so_hoa_don")
-    private String so_hoa_don;
+    private String soHoaDon;
 
     @Column(name = "tong_tien")
     private int tong_tien;
@@ -38,8 +42,20 @@ public class HoaDon {
     @Column(name = "ghi_chu")
     private String ghi_chu;
 
+<<<<<<< Updated upstream
+=======
+    @Column(name = "so_dien_thoai")
+    private String soDienThoai;
+
+    @Column(name = "dia_chi_cu_the")
+    private String diaChi;
+
+    @Column(name = "phuong_thuc_van_chuyen")
+    private String phuongThucVanChuyen;
+
+>>>>>>> Stashed changes
     @Column(name = "ngay_tao")
-    private Date ngay_tao;
+    private Date ngayTao;
 
     @Column(name = "tinh_trang")
     private Integer tinh_trang;

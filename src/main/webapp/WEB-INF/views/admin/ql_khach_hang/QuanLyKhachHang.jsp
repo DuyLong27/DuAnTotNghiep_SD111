@@ -184,7 +184,13 @@
                     <td>
                         <a onclick="openEditModal(${kh.idKhachHang}, '${kh.tenKhachHang}', '${kh.email}',
                                 '${kh.matKhau}', '${kh.soDienThoai}', '${kh.diaChi}', ${kh.diemTichLuy},
+<<<<<<< Updated upstream
                                 '${kh.ngayDangKy}', '${kh.lichSuMuaHang}', '${kh.khuyenMaiDaDung}', '${kh.tinhTrang}')"
+=======
+                                '${kh.ngayDangKy}', '${kh.lichSuMuaHang}', '${kh.khuyenMaiDaDung}'
+                                <%--, '${kh.tinhTrang}'--%>
+                                )"
+>>>>>>> Stashed changes
                            type="button" class="btn btn-outline-custom"><i class='bx bx-edit-alt'></i></a>
                     </td>
                 </tr>
@@ -267,8 +273,7 @@
 
 
     function resetFilters() {
-        // Reset các trường lọc về giá trị mặc định
-        document.querySelector('select[name="tinhTrang"]').value = '';
+        document.querySelector('input[name="tenKhachHang"]').value = '';
 
         // Gửi lại form để lấy lại danh sách sản phẩm gốc
         document.getElementById('filterSearchForm').submit();
