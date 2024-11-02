@@ -265,7 +265,7 @@
 
 <div class="container" id="container">
     <div class="form-container sign-up">
-        <form>
+        <form action="/auth/register" method="post">
             <h1>Create Account</h1>
             <div class="social-icons">
                 <a href="#" class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
@@ -276,21 +276,21 @@
             <span>or use your email for registeration</span>
             <div class="input-group">
                 <i class="fa-solid fa-signature"></i>
-                <input type="text" placeholder="Name">
+                <input type="text" name="tenKhachHang" placeholder="Tên khách hàng" required>
             </div>
             <div class="input-group">
                 <i class="fa-solid fa-envelope"></i>
-                <input type="email" placeholder="Email">
+                <input type="email" name="email" placeholder="Email" required>
             </div>
             <div class="input-group">
                 <i class="fa-solid fa-lock"></i>
-                <input type="password" placeholder="Password">
+                <input type="password" name="matKhau" placeholder="Mật khẩu" required>
             </div>
-            <button>Sign Up</button>
+            <button type="submit">Sign Up</button>
         </form>
     </div>
     <div class="form-container sign-in">
-        <form>
+        <form action="/auth/login" method="post">
             <h1>Sign In</h1>
             <div class="social-icons">
                 <a href="#" class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
@@ -301,14 +301,14 @@
             <span>or use your email password</span>
             <div class="input-group">
                 <i class="fa-solid fa-envelope"></i>
-                <input type="email" placeholder="Email">
+                <input type="email" name="email" placeholder="Email" required>
             </div>
             <div class="input-group">
                 <i class="fa-solid fa-lock"></i>
-                <input type="password" placeholder="Password">
+                <input type="password" name="matKhau" placeholder="Password" required>
             </div>
             <a href="#">Forget Your Password?</a>
-            <button>Sign In</button>
+            <button type="submit">Sign In</button>
         </form>
     </div>
     <div class="toggle-container">

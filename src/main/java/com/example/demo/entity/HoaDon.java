@@ -23,8 +23,9 @@ public class HoaDon {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "id_khach_hang")
-    private KhachHang id_khach_hang;
+    @JoinColumn(name = "id_khach_hang", referencedColumnName = "id_khach_hang")
+    private KhachHang khachHang;
+
 
     @Column(name = "so_hoa_don")
     private String so_hoa_don;
@@ -45,6 +46,9 @@ public class HoaDon {
 
     @Column(name = "phuong_thuc_van_chuyen")
     private String phuongThucVanChuyen;
+
+    @Column(name = "ly_do_doi_tra")
+    private String lyDo;
 
     @Column(name = "ngay_tao")
     private Date ngay_tao;

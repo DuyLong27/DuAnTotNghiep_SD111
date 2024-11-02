@@ -44,7 +44,7 @@
 <body>
 <div class="container mt-3">
     <div class="mt-3 mb-3">
-        <a href="/hoa-don/hien-thi" class="btn btn-outline-success">Quay lại</a>
+        <a href="/ban-hang" class="btn btn-outline-success">Quay lại</a>
     </div>
 
 
@@ -100,7 +100,7 @@
         <div class="card-body">
             <div class="row mb-2">
                 <div class="col-md-6">
-                    <p><strong>Tên khách hàng:</strong> ${hoaDon.id_khach_hang.tenKhachHang}</p>
+                    <p><strong>Tên khách hàng:</strong> ${hoaDon.khachHang.tenKhachHang}</p>
                 </div>
                 <div class="col-md-6">
                     <p><strong>Số hóa đơn:</strong> ${hoaDon.so_hoa_don}</p>
@@ -159,44 +159,16 @@
                 </c:forEach>
                 </tbody>
             </table>
-            <c:if test="${hoaDon.tinh_trang == 2}">
-                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#confirmPaymentModal">
-                    Xác nhận thanh toán
-                </button>
-            </c:if>
+            <form action="/hoa-don/cap-nhat-tinh-trang" method="post">
+                <input type="hidden" name="id" value="${hoaDon.id}" />
+                <c:if test="${hoaDon.tinh_trang == 2}">
+                    <button type="submit" name="tinhTrangMoi" value="3" class="btn btn-info">Xác nhận thanh toán</button>
+                </c:if>
+            </form>
             <p class="text-end fw-bold">Tổng tiền: ${tongTien} VND</p>
         </div>
     </div>
 </div>
-
-<!-- Modal Xác Nhận Thanh Toán -->
-<div class="modal fade" id="confirmPaymentModal" tabindex="-1" aria-labelledby="confirmPaymentModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmPaymentModalLabel">Xác Nhận Thanh Toán</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p><strong>Mã hóa đơn:</strong> <span id="invoiceCode">${hoaDon.so_hoa_don}</span></p>
-                <p><strong>Tổng tiền:</strong> <span id="totalAmount">${tongTien}</span> VNĐ</p>
-                <p><strong>Phương thức thanh toán:</strong> <span id="paymentMethod">${hoaDon.phuong_thuc_thanh_toan}</span></p>
-                <form action="/hoa-don/cap-nhat-tinh-trang" method="post">
-                    <input type="hidden" name="id" value="${hoaDon.id}" />
-                    <div class="mb-3">
-                        <label for="ghiChu" class="form-label"><strong>Ghi chú:</strong></label>
-                        <textarea name="ghiChu" id="ghiChu" class="form-control" rows="4" placeholder="Nhập ghi chú" style="resize: vertical;"></textarea>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <button type="submit" name="tinhTrangMoi" value="3" class="btn btn-info me-2">Xác nhận thanh toán</button>
-                        <button type="button" class="btn btn-secondary-outline" data-bs-dismiss="modal">Hủy</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
 </body>
 <script>
     function confirmCompletion(tinhTrang) {

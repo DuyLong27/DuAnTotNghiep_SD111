@@ -250,9 +250,7 @@
                     <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7H7.312"/>
                     </svg>
-                    <c:forEach var="item" items="${listGioHang}">
-                    <span>${item.gioHang.tongSoLuong}</span>
-                    </c:forEach>
+                    <span>${tongSoLuong}</span> <!-- Hiển thị tổng số lượng giỏ hàng -->
                 </a>
                 <ul class="dropdown-menu-custom">
                     <li>
@@ -280,17 +278,32 @@
                 </ul>
             </li>
         </ul>
-
         <ul class="navbar-nav float-end">
+            <%--            <li class="nav-item">--%>
+            <%--                <span class="btn rounded-pill text-white" style="padding: 10px 15px;"><i class="fa-solid fa-user"></i></span>--%>
+            <%--            </li>--%>
             <li class="nav-item dropdown-custom">
-                <a href="#" class="nav-link text-light">Tài khoản</a>
+                <a href="#" class="nav-link text-light">
+                    <c:choose>
+                        <c:when test="${not empty sessionScope.khachHang}">
+                            ${sessionScope.khachHang.tenKhachHang}
+                        </c:when>
+                        <c:otherwise>
+                            Tài khoản
+                        </c:otherwise>
+                    </c:choose>
+                </a>
                 <ul class="dropdown-menu-custom">
-                    <li><a class="dropdown-item" href="#">Thông tin</a></li>
-                    <li><a class="dropdown-item" href="#">Đăng xuất</a></li>
+                    <c:choose>
+                        <c:when test="${not empty sessionScope.khachHang}">
+                            <li><a class="dropdown-item" href="/doi-tra">Thông tin</a></li>
+                            <li><a class="dropdown-item" href="/auth/logout">Đăng xuất</a></li>
+                        </c:when>
+                        <c:otherwise>
+                            <li><a class="dropdown-item" href="/auth/login">Login/Register</a></li>
+                        </c:otherwise>
+                    </c:choose>
                 </ul>
-            </li>
-            <li class="nav-item">
-                <span class="btn rounded-pill text-white" style="padding: 10px 15px;"><i class="fa-solid fa-user"></i></span>
             </li>
         </ul>
     </div>
