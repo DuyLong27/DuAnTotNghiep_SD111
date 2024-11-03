@@ -19,6 +19,29 @@
             border-radius: 5px;
             background-color: #f8f9fa;
         }
+        .custom-option {
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            margin-top: 10px;
+            background-color: #f8f9fa;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .custom-option:hover {
+            background-color: #e9ecef;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .custom-option.selected {
+            background-color: #d1e7dd;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border: 1px solid #0d6efd;
+        }
+        .form-check-label {
+            margin-left: 10px;
+            font-weight: 500;
+            color: #495057;
+        }
     </style>
 </head>
 <body>
@@ -70,59 +93,75 @@
                 <ul class="list-group">
                     <c:forEach var="chiTiet" items="${hoaDon.hoaDonChiTietList}">
                         <li class="list-group-item d-flex justify-content-between align-items-center">
-                                ${chiTiet.sanPhamChiTiet.sanPham.ten}
+                            <div class="d-flex align-items-center">
+                                <img src="${pageContext.request.contextPath}/uploads/${chiTiet.sanPhamChiTiet.hinhAnh}"
+                                     alt="Hình ảnh sản phẩm" class="me-3" style="width: 100px; height: auto;">
+                                <div>
+                                    <span>${chiTiet.sanPhamChiTiet.sanPham.ten}</span>
+                                </div>
+                            </div>
                             <span>Số Lượng: ${chiTiet.so_luong}</span>
                         </li>
                     </c:forEach>
                 </ul>
-
-                <!-- Nút Quay Lại và Đổi Trả -->
                 <div class="mt-3">
                     <a href="/doi-tra" class="btn btn-warning">Quay Lại</a>
-                    <a href="#" class="btn btn-success" onclick="showDoiTraPopup()">Đổi Trả</a>
+                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#returnModal">Đổi Trả</button>
                 </div>
             </div>
         </div>
     </c:if>
 </div>
 
-<!-- Pop-up Đổi Trả -->
-<div id="doiTraPopup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);">
-    <div style="width: 400px; margin: 10% auto; background-color: white; padding: 20px; border-radius: 10px;">
-        <h5>Lý Do Đổi Trả</h5>
-        <form action="/doi-tra/ly-do-doi-tra" method="post">
-            <div class="form-group mb-3">
-                <label>Lý Do:</label><br>
-                <input type="radio" name="lyDo" value="Sản phẩm lỗi" required onclick="toggleTextarea(false)"> Sản phẩm lỗi<br>
-                <input type="radio" name="lyDo" value="Không đúng mô tả" onclick="toggleTextarea(false)"> Không đúng mô tả<br>
-                <input type="radio" name="lyDo" value="Giao hàng trễ" onclick="toggleTextarea(false)"> Giao hàng trễ<br>
-                <input type="radio" name="lyDo" value="Khác" onclick="toggleTextarea(true)"> Khác<br>
+<!-- Modal cho tùy chọn đổi trả -->
+<div class="modal fade" id="returnModal" tabindex="-1" aria-labelledby="returnModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success bg-gradient">
+                <h5 class="modal-title text-white" id="returnModalLabel">Lý Do Đổi Trả</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="form-group mb-3" id="textareaContainer" style="display: none;">
-                <label for="otherLyDo">Vui lòng nhập lý do:</label>
-                <textarea class="form-control" name="otherLyDo" id="otherLyDo"></textarea>
+            <div class="modal-body">
+                <label class="form-label">Chọn lý do đổi trả:</label>
+
+                <!-- Form ẩn để gửi lý do đổi trả -->
+                <form id="returnForm" action="/doi-tra/luu-ly-do-doi-tra" method="POST">
+                    <input type="hidden" name="hoaDonId" value="${hoaDon.id}">
+                    <input type="hidden" id="lyDo" name="lyDo" value="">
+
+                    <!-- Tùy chọn nút radio được ẩn -->
+                    <div class="form-check custom-option" onclick="submitReason('Hàng đã giao và đã thanh toán nhưng sản phẩm có vấn đề')">
+                        <label class="form-check-label">
+                            Hàng đã giao và đã thanh toán nhưng sản phẩm có vấn đề
+                        </label>
+                    </div>
+                    <div class="form-check custom-option" onclick="submitReason('Tôi chưa nhận được hàng hoặc nhận thiếu hàng')">
+                        <label class="form-check-label">
+                            Tôi chưa nhận được hàng hoặc nhận thiếu hàng
+                        </label>
+                    </div>
+                </form>
             </div>
-            <input type="hidden" name="hoaDonId" value="${hoaDon.id}" />
-            <button type="submit" class="btn btn-primary">Gửi Yêu Cầu</button>
-            <button type="button" class="btn btn-secondary" onclick="closeDoiTraPopup()">Hủy</button>
-        </form>
+        </div>
     </div>
 </div>
-
 <jsp:include page="../footer_user.jsp"/>
 <script>
-    function showDoiTraPopup() {
-        document.getElementById("doiTraPopup").style.display = "block";
+    function selectOption(selectedId) {
+        // Bỏ chọn tất cả các tùy chọn trước khi chọn cái mới
+        document.querySelectorAll('.custom-option').forEach(option => {
+            option.classList.remove('selected');
+        });
+
+        // Đánh dấu tùy chọn được chọn
+        document.getElementById(selectedId).checked = true;
+        document.querySelector(`label[for=${selectedId}]`).parentElement.classList.add('selected');
     }
 
-    function closeDoiTraPopup() {
-        document.getElementById("doiTraPopup").style.display = "none";
-    }
-
-    function toggleTextarea(show) {
-        document.getElementById("textareaContainer").style.display = show ? "block" : "none";
+    function submitReason(reason) {
+        document.getElementById('lyDo').value = reason;
+        document.getElementById('returnForm').submit();
     }
 </script>
-
 </body>
 </html>

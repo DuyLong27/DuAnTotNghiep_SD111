@@ -79,7 +79,6 @@
         <c:forEach var="hoaDon" items="${hoaDonList}">
             <div class="col-12">
                 <div class="card order-card">
-                    <!-- Position the "Xem Chi Tiết" button in the top-right corner -->
                     <div class="action-button">
                         <a href="/doi-tra/chi-tiet?id=${hoaDon.id}" class="btn btn-outline-primary btn-sm">Xem Chi Tiết</a>
                     </div>
@@ -101,15 +100,19 @@
                                 </c:otherwise>
                             </c:choose>
                         </p>
-
-                        <!-- Hiển thị chi tiết sản phẩm của hóa đơn -->
                         <h6>Chi Tiết Sản Phẩm:</h6>
                         <div class="product-list">
                             <c:forEach var="chiTiet" items="${hoaDon.hoaDonChiTietList}">
-                                <div class="product-item">
-                                    <span>${chiTiet.sanPhamChiTiet.sanPham.ten}</span>
-                                    <span>x ${chiTiet.so_luong}</span>
-                                </div>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <img src="${pageContext.request.contextPath}/uploads/${chiTiet.sanPhamChiTiet.hinhAnh}"
+                                             alt="Hình ảnh sản phẩm" class="me-3" style="width: 100px; height: auto;">
+                                        <div>
+                                            <span>${chiTiet.sanPhamChiTiet.sanPham.ten}</span>
+                                        </div>
+                                    </div>
+                                    <span>Số Lượng: ${chiTiet.so_luong}</span>
+                                </li>
                             </c:forEach>
                         </div>
                     </div>
