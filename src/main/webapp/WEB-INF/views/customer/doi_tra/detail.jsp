@@ -106,7 +106,9 @@
                 </ul>
                 <div class="mt-3">
                     <a href="/doi-tra" class="btn btn-warning">Quay Lại</a>
+                    <c:if test="${hoaDon.tinh_trang == 4}">
                     <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#returnModal">Đổi Trả</button>
+                    </c:if>
                 </div>
             </div>
         </div>

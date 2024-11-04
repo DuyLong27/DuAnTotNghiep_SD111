@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DoiTraRepo extends JpaRepository<DoiTra, Integer> {
+    DoiTra findFirstByHoaDon_Id(Integer idHoaDon);
 }

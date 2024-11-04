@@ -95,8 +95,11 @@
                                 <c:when test="${hoaDon.tinh_trang == 11}">
                                     <span class="order-status status-return-pending">Chờ Xác Nhận Đổi Trả</span>
                                 </c:when>
-                                <c:otherwise>
+                                <c:when test="${hoaDon.tinh_trang == 4}">
                                     <span class="order-status status-paid">Đã Thanh Toán</span>
+                                </c:when>
+                                <c:otherwise>
+                                    <span class="order-status status-paid">Đã Hủy</span>
                                 </c:otherwise>
                             </c:choose>
                         </p>
