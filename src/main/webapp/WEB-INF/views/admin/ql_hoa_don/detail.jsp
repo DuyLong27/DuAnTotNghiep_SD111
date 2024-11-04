@@ -38,13 +38,25 @@
             font-weight: bold;
             text-align: center;
         }
+        #alertMessage {
+            position: fixed;
+            right: -300px; /* Ẩn thông báo ra ngoài màn hình */
+            top: 20px;
+            width: 250px;
+            transition: right 0.5s ease-in-out;
+            z-index: 1050;
+        }
+
+        #alertMessage.show {
+            right: 20px; /* Di chuyển vào bên trong màn hình khi hiện */
+        }
     </style>
 </head>
 <jsp:include page="../layout.jsp" />
 <body>
 <div class="container mt-3">
     <div class="mt-3 mb-3">
-        <a href="/ban-hang" class="btn btn-outline-success">Quay lại</a>
+        <a href="/hoa-don/hien-thi" class="btn btn-outline-success">Quay lại</a>
     </div>
 
 
@@ -71,9 +83,23 @@
             <i class="fas fa-check-circle status-icon"></i>
             <p>Hoàn thành</p>
         </div>
+        <div class="status-item ${hoaDon.tinh_trang >= 11 ? 'active' : ''}">
+            <i class="fas fa-undo-alt status-icon"></i>
+            <p>Xác nhận đổi trả</p>
+        </div>
+        <div class="status-item ${hoaDon.tinh_trang >= 12 ? 'active' : ''}">
+            <i class="fas fa-times-circle status-icon"></i>
+            <p>Đã hủy</p>
+        </div>
+<%--        <div class="status-item ${hoaDon.tinh_trang == 13 ? 'active' : ''}">--%>
+<%--            <i class="fas fa-exchange-alt status-icon"></i>--%>
+<%--            <p>Hoàn một phần</p>--%>
+<%--        </div>--%>
     </div>
 
-    <div id="alertMessage" class="alert alert-warning d-none" role="alert"></div>
+    <div id="alertMessage" class="alert alert-warning" role="alert">
+        Phải xác nhận thanh toán trước khi hoàn thành đơn hàng.
+    </div>
 
     <form action="/hoa-don/cap-nhat-tinh-trang" method="post">
         <input type="hidden" name="id" value="${hoaDon.id}" />
@@ -95,7 +121,7 @@
     </form>
 
     <!-- Thông tin khách hàng -->
-    <div class="card mb-4">
+    <div class="card mb-4 mt-3">
         <div class="card-header">Thông tin khách hàng</div>
         <div class="card-body">
             <div class="row mb-2">
@@ -159,27 +185,116 @@
                 </c:forEach>
                 </tbody>
             </table>
-            <form action="/hoa-don/cap-nhat-tinh-trang" method="post">
-                <input type="hidden" name="id" value="${hoaDon.id}" />
-                <c:if test="${hoaDon.tinh_trang == 2}">
-                    <button type="submit" name="tinhTrangMoi" value="3" class="btn btn-info">Xác nhận thanh toán</button>
-                </c:if>
-            </form>
-            <p class="text-end fw-bold">Tổng tiền: ${tongTien} VND</p>
+            <c:if test="${hoaDon.tinh_trang == 2}">
+                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#confirmPaymentModal">
+                    Xác nhận thanh toán
+                </button>
+            </c:if>
+            <c:if test="${hoaDon.tinh_trang == 11}">
+            <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#doiTraModal">
+                Xem Thông tin Đổi Trả
+            </button>
+            </c:if>
+            <p class="text-end fw-bold">
+                Tổng tiền: ${hoaDonChiTiets[0].hoaDon.tong_tien} VND
+            </p>
         </div>
     </div>
 </div>
+
+<!-- Modal Xác Nhận Thanh Toán -->
+<div class="modal fade" id="confirmPaymentModal" tabindex="-1" aria-labelledby="confirmPaymentModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmPaymentModalLabel">Xác Nhận Thanh Toán</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Mã hóa đơn:</strong> <span id="invoiceCode">${hoaDon.so_hoa_don}</span></p>
+                <p><strong>Tổng tiền:</strong> <span id="totalAmount">${hoaDon.tong_tien}</span> VNĐ</p>
+                <p><strong>Phương thức thanh toán:</strong> <span id="paymentMethod">${hoaDon.phuong_thuc_thanh_toan}</span></p>
+                <form action="/hoa-don/cap-nhat-tinh-trang" method="post">
+                    <input type="hidden" name="id" value="${hoaDon.id}" />
+                    <div class="mb-3">
+                        <label for="ghiChu" class="form-label"><strong>Ghi chú:</strong></label>
+                        <textarea name="ghiChu" id="ghiChu" class="form-control" rows="4" placeholder="Nhập ghi chú" style="resize: vertical;">${hoaDon.ghi_chu}</textarea>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" name="tinhTrangMoi" value="3" class="btn btn-info me-2">Xác nhận thanh toán</button>
+                        <button type="button" class="btn btn-secondary-outline" data-bs-dismiss="modal">Hủy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="doiTraModal" tabindex="-1" aria-labelledby="doiTraModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="doiTraModalLabel">Thông tin Đổi Trả</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <tr>
+                        <th>ID Đổi Trả</th>
+                        <td>${doiTra.id}</td>
+                    </tr>
+                    <tr>
+                        <th>Lý Do Cụ Thể</th>
+                        <td>${doiTra.lyDoCuThe}</td>
+                    </tr>
+                    <tr>
+                        <th>Hình Thức Hoàn Trả</th>
+                        <td>${doiTra.hinhThuc}</td>
+                    </tr>
+                    <tr>
+                        <th>Số Tiền Hoàn Trả</th>
+                        <td>${doiTra.tienHoan} VND</td>
+                    </tr>
+                    <tr>
+                        <th>Phương Thức Thanh Toán</th>
+                        <td>${doiTra.phuongThucChuyenTien}</td>
+                    </tr>
+                    <tr>
+                        <th>Ngày yêu cầu</th>
+                        <td>${doiTra.ngayYeuCau}</td>
+                    </tr>
+                    <tr>
+                        <th>Hình Ảnh Sản Phẩm</th>
+                        <td>
+                        <img style="width: 90px" src="${pageContext.request.contextPath}/uploads/${doiTra.hinhAnh}">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary-outline" data-bs-dismiss="modal">Đóng</button>
+                <form action="/hoa-don/cap-nhat-tinh-trang" method="post">
+                    <input type="hidden" name="id" value="${hoaDon.id}" />
+                <button type="submit" name="tinhTrangMoi" value="12" class="btn btn-primary" >Xác Nhận Đổi Trả</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 </body>
 <script>
     function confirmCompletion(tinhTrang) {
         const alertBox = document.getElementById('alertMessage');
         if (tinhTrang < 3) {
             alertBox.textContent = 'Phải xác nhận thanh toán trước khi hoàn thành đơn hàng.';
-            alertBox.classList.remove('d-none');
-            alertBox.classList.add('alert', 'alert-warning');
+            alertBox.classList.add('show'); // Hiện thông báo
+            setTimeout(() => {
+                alertBox.classList.remove('show'); // Ẩn thông báo sau 3 giây
+            }, 3000);
             return false;
         }
-        alertBox.classList.add('d-none');
         return true;
     }
 </script>
