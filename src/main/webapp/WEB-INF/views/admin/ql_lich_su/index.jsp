@@ -55,7 +55,7 @@
     <c:if test="${not empty data.content}">
         <c:forEach items="${data.content}" var="item">
             <tr>
-                <td>${item.idKhachHang.tenKhachHang}</td>
+                <td>${item.khachHang.tenKhachHang}</td>
                 <td>${item.soHoaDon}</td>
                 <td>${item.tong_tien}</td>
                 <td>${item.ghi_chu}</td>
