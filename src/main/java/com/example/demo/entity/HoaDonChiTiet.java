@@ -39,7 +39,4 @@ public class HoaDonChiTiet {
     private int giam_gia;
 
 
-    @Column(name = "tinh_trang")
-    private Boolean tinhTrang;
-
 }

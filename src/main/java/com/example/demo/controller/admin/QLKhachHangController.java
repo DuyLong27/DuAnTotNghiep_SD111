@@ -34,31 +34,37 @@ public class QLKhachHangController {
     @GetMapping("/hien-thi")
     public String QuanLyKhachHang(@RequestParam(name = "page", defaultValue = "0") int pageNo,
                                   @RequestParam(name = "size", defaultValue = "5") int pageSize,
+<<<<<<< HEAD
                                   @RequestParam(name = "tinhTrang", required = false) Integer tinhTrang,
+=======
+//                        @RequestParam(name = "tinhTrang", required = false) Integer tinhTrang,
+>>>>>>> main
                                   @RequestParam(name = "tenKhachHang", required = false) String tenKhachHang,
                                   Model model) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<KhachHang> page;
 
-        // Xử lý đầu vào tìm kiếm tên nhà cung cấp
-        if (tenKhachHang != null) {
-            // Loại bỏ dấu cách ở đầu và cuối, và thay thế nhiều dấu cách liên tiếp
-            tenKhachHang = tenKhachHang.trim().replaceAll("\\s+", " ");
-        }
+//        // Xử lý đầu vào tìm kiếm tên nhà cung cấp
+//        if (tenKhachHang != null) {
+//            // Loại bỏ dấu cách ở đầu và cuối, và thay thế nhiều dấu cách liên tiếp
+//            tenKhachHang = tenKhachHang.trim().replaceAll("\\s+", " ");
+//        }
 
         // Tìm kiếm theo tên nhà cung cấp
         if (tenKhachHang != null && !tenKhachHang.isEmpty()) {
             page = repo.findBytenKhachHangContainingIgnoreCase(tenKhachHang, pageable);
-        } else if (tinhTrang != null) {
-            page = repo.findByTinhTrang(tinhTrang, pageable);
-        } else {
+        }
+//        else if (tinhTrang != null) {
+//            page = repo.findByTinhTrang(tinhTrang, pageable);
+//        }
+        else {
             page = repo.findAll(pageable);
         }
 
         model.addAttribute("data", page);
         model.addAttribute("currentPage", pageNo);
         model.addAttribute("totalPages", page.getTotalPages());
-        model.addAttribute("tinhTrang", tinhTrang);
+//        model.addAttribute("tinhTrang", tinhTrang);
         model.addAttribute("tenKhachHang", tenKhachHang); // Để giữ trạng thái tìm kiếm
         return "admin/ql_khach_hang/QuanLyKhachHang";
     }

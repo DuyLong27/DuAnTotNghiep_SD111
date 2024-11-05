@@ -13,4 +13,6 @@ public interface HoaDonChiTietRepo extends JpaRepository<HoaDonChiTiet, Integer>
     List<HoaDonChiTiet> findByHoaDonId(Integer hoaDonId);
     HoaDonChiTiet findByHoaDonIdAndSanPhamChiTietId(Integer hoaDonId, Integer sanPhamChiTietId);
     void deleteByHoaDonId(Integer hoaDonId);
+
+    List<HoaDonChiTiet> findByHoaDon(HoaDon hoaDon);
 }

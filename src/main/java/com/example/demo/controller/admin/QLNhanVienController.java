@@ -66,13 +66,13 @@ public class QLNhanVienController {
 
 
 
-
-    @GetMapping("delete")
-    public String delete(@RequestParam("id") Integer id, RedirectAttributes redirectAttributes) {
-        nhanVienRepo.deleteById(id);
-        redirectAttributes.addFlashAttribute("message", "Xóa thành công!");
-        return "redirect:/nhan-vien/hien-thi";
-    }
+//
+//    @GetMapping("delete")
+//    public String delete(@RequestParam("id") Integer id, RedirectAttributes redirectAttributes) {
+//        nhanVienRepo.deleteById(id);
+//        redirectAttributes.addFlashAttribute("message", "Xóa thành công!");
+//        return "redirect:/nhan-vien/hien-thi";
+//    }
 
 
 

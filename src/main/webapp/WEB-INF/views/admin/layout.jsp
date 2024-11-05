@@ -429,7 +429,7 @@
 
 <div class="sidebar" id="sidebar">
 
-    <img src="../../lib/logo_xanh.png" alt="Logo">
+    <img src="../../uploads/logo_xanh.png" alt="Logo">
 
     <a href="/bao-cao/hien-thi"><i class="fa-solid fa-chart-simple"></i>Tổng quan</a>
 
@@ -449,7 +449,7 @@
     <ul class="dropdown-menu">
         <li><a class="dropdown-item" href="/ban-hang"><i class="fas fa-shopping-cart"></i>Bán hàng</a></li>
         <li><a class="dropdown-item" href="#"><i class="fas fa-download"></i>Nhập hàng</a></li>
-        <li><a class="dropdown-item" href="#"><i class="fas fa-file-invoice"></i>Hóa đơn</a></li>
+        <li><a class="dropdown-item" href="/hoa-don/hien-thi"><i class="fas fa-file-invoice"></i>Hóa đơn</a></li>
     </ul>
 
     <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -469,7 +469,7 @@
 <div class="overlay" id="overlay"></div>
 
 
-<img src="/lib/background_quanly.png" alt="Background" class="img-fluid" style="width: 100%; height: auto;">
+<img src="/uploads/background_quanly.png" alt="Background" class="img-fluid" style="width: 100%; height: auto;">
 <div class="overlay-content">
     <div class="dropdown">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="accountDropdown" data-bs-toggle="dropdown" aria-expanded="false">

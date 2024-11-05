@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface SanPhamChiTietRepo extends JpaRepository<SanPhamChiTiet, Integer> {
     // Phương thức lọc theo tình trạng
@@ -17,4 +19,15 @@ public interface SanPhamChiTietRepo extends JpaRepository<SanPhamChiTiet, Intege
 //    @Modifying
 //    @Query("DELETE FROM SanPhamChiTiet s WHERE s.sanPham.id = :sanPhamId")
 //    void deleteBySanPhamId(@Param("sanPhamId") int sanPhamId);
+
+
+
+    List<SanPhamChiTiet> findByThuongHieuId(Integer thuongHieuId);
+    List<SanPhamChiTiet> findByLoaiCaPheId(Integer loaiCaPheId);
+    List<SanPhamChiTiet> findByHuongViId(Integer huongViId);
+    List<SanPhamChiTiet> findByLoaiHatId(Integer loaiHatId);
+    List<SanPhamChiTiet> findByMucDoRangId(Integer mucDoRangId);
+    List<SanPhamChiTiet> findByGiaBanBetween(Integer minPrice, Integer maxPrice);
+    List<SanPhamChiTiet> findAllByOrderByGiaBanAsc();
+    List<SanPhamChiTiet> findAllByOrderByGiaBanDesc();
 }
