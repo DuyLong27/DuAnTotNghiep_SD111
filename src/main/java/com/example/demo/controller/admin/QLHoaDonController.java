@@ -75,7 +75,7 @@ public class QLHoaDonController {
 
             // Kiểm tra ghi chú và chỉ cập nhật nếu không rỗng
             if (ghiChu != null && !ghiChu.trim().isEmpty()) {
-                hoaDon.setGhi_chu(ghiChu);
+                hoaDon.setGhiChu(ghiChu);
             }
 
             hoaDonRepo.save(hoaDon);

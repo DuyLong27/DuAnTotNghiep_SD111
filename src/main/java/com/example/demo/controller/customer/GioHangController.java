@@ -391,7 +391,7 @@ public class GioHangController {
 
             // Tạo hóa đơn mới
             HoaDon invoice = new HoaDon();
-            invoice.setTong_tien(totalAmount);
+            invoice.setTongTien(totalAmount);
             invoice.setNgayTao(new java.util.Date());
             invoice.setPhuong_thuc_thanh_toan(phuongThucThanhToan);
             invoice.setPhuongThucVanChuyen(phuongThucVanChuyen);
