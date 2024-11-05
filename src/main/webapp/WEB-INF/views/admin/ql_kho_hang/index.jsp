@@ -14,7 +14,7 @@
 </head>
 <body>
 <div class="container mt-3">
-    <!-- Bootstrap Modal -->
+    <!-- Modal -->
     <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -23,19 +23,19 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="productForm" action="/kho-hang/add" method="post">
+                    <form id="productForm" action="/kho-hang/update" method="post">
                         <input type="hidden" name="idKhoHang"/>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Tên Kho</label>
-                                    <input type="text" class="form-control" name="tenKho" value="${khoHang.tenKho}" required>
+                                    <input type="text" class="form-control" name="tenKho" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Sản Phẩm Tồn Kho</label>
-                                    <input type="text" class="form-control" name="spTonKho" value="${khoHang.spTonKho}" required>
+                                    <input type="text" class="form-control" name="spTrongKho" required>
                                 </div>
                             </div>
                         </div>
@@ -43,11 +43,20 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Số Lượng Tồn Hàng</label>
-                                    <input type="text" class="form-control" name="slTonHang" value="${khoHang.slTonHang}" required>
+                                    <div class="input-group">
+                                        <button class="btn btn-secondary" type="button" id="decrementBtn"
+                                                onclick="changeQuantity(-10)">-
+                                        </button>
+                                        <input type="text" class="form-control" name="slTonKho"
+                                               value="${khoHang.slTonKho}" id="slTonKhoInput" required>
+                                        <button class="btn btn-secondary" type="button" id="incrementBtn"
+                                                onclick="changeQuantity(10)">+
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary" id="submitButton">Lưu</button>
+                        <button type="submit" class="btn btn-primary">Lưu</button>
                     </form>
                 </div>
             </div>
@@ -82,10 +91,12 @@
                     <td>${kh.slTonKho}</td>
                     <td>${kh.ngayThayDoiTonKho}</td>
                     <td>
-                        <button type="button" class="btn btn-default bordervien table__logo" data-bs-toggle="modal" data-bs-target="#productModal" onclick="resetForm(); setModalTitle('Thêm Số Lượng');">
+                        <button type="button" class="btn btn-default bordervien table__logo"
+                                data-bs-toggle="modal"
+                                data-bs-target="#productModal"
+                                onclick="setModalData('${kh.id}', '${kh.tenKho}', '${kh.spTrongKho}', '${kh.slTonKho}')">
                             <i class='bx bx-edit-alt'></i>
                         </button>
-
                     </td>
                 </tr>
             </c:forEach>
@@ -133,6 +144,54 @@
     function resetForm() {
         document.getElementById('productForm').reset();
         document.getElementById('productId').value = '';
+    }
+
+    function setModalData(id, tenKho, spTrongKho, slTonKho) {
+        // Kiểm tra giá trị của các tham số khi hàm được gọi
+        console.log('ID Kho:', id);
+        console.log('Tên Kho:', tenKho);
+        console.log('Sản Phẩm Trong Kho:', spTrongKho);
+        console.log('Số Lượng Tồn Kho:', slTonKho);
+
+        // Cập nhật các trường input trong modal
+        document.querySelector('input[name="idKhoHang"]').value = id; // Thiết lập ID kho
+        document.querySelector('input[name="tenKho"]').value = tenKho; // Thiết lập tên kho
+        document.querySelector('input[name="spTrongKho"]').value = spTrongKho; // Thiết lập sản phẩm trong kho
+        document.querySelector('input[name="slTonKho"]').value = slTonKho; // Thiết lập số lượng tồn kho
+
+        // Thay đổi tiêu đề modal nếu cần
+        document.getElementById('productModalLabel').textContent = 'Chỉnh Sửa Số Lượng';
+    }
+
+    function changeQuantity(amount) {
+        var quantityInput = document.getElementById('slTonHangInput'); // Lấy ô input
+        var currentValue = parseInt(quantityInput.value); // Lấy giá trị hiện tại và chuyển thành số
+        if (isNaN(currentValue)) { // Nếu giá trị hiện tại không phải là số
+            currentValue = 0; // Thiết lập giá trị mặc định là 0
+        }
+        var newValue = currentValue + amount; // Thêm hoặc bớt 10
+        quantityInput.value = newValue; // Cập nhật giá trị mới vào ô input
+    }
+
+    function changeQuantity(amount) {
+        var quantityInput = document.getElementById('slTonHangInput');
+        var currentValue = parseInt(quantityInput.value);
+
+        if (isNaN(currentValue)) {
+            currentValue = 0;
+        }
+
+        var newValue = currentValue + amount;
+
+        // Giới hạn giá trị tối thiểu và tối đa
+        if (newValue < 0) {
+            newValue = 0; // Giới hạn không cho phép số âm
+        }
+        if (newValue > 1000) { // Ví dụ: Giới hạn số lượng tối đa là 1000
+            newValue = 1000;
+        }
+
+        quantityInput.value = newValue;
     }
 </script>
 
