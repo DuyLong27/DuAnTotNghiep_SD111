@@ -76,9 +76,9 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="khachHangMatKhau" class="form-label">Mật Khẩu</label>
-                                    <input type="text" class="form-control" id="khachHangMatKhau" name="matKhau"
-                                           required>
+                                    <input type="password" class="form-control" id="khachHangMatKhau" name="matKhau" required>
                                 </div>
+                            </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
