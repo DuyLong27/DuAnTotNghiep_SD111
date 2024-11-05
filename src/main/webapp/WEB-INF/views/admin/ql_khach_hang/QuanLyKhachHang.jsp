@@ -269,8 +269,7 @@
 
 
     function resetFilters() {
-        // Reset các trường lọc về giá trị mặc định
-        document.querySelector('select[name="tinhTrang"]').value = '';
+        document.querySelector('input[name="tenKhachHang"]').value = '';
 
         // Gửi lại form để lấy lại danh sách sản phẩm gốc
         document.getElementById('filterSearchForm').submit();
