@@ -107,9 +107,9 @@ public class BanHangController {
 
     @PostMapping("addHoaDon")
     public String addHoaDon(@ModelAttribute HoaDon hoaDon, Model model) {
-        hoaDon.setSo_hoa_don(generateRandomId());
+        hoaDon.setSoHoaDon(generateRandomId());
         hoaDon.setTinh_trang(0);
-        hoaDon.setNgay_tao(new Timestamp(System.currentTimeMillis()));
+        hoaDon.setNgayTao(new Timestamp(System.currentTimeMillis()));
         hoaDon.setPhuong_thuc_thanh_toan("Tiền mặt"); // Đặt mặc định là "Tiền mặt"
         hoaDonRepository.save(hoaDon);
 

@@ -29,9 +29,9 @@
     <li class="nav-item" role="presentation">
         <a class="nav-link" href="?tinhTrang=12" id="DaHuy" data-bs-toggle="tab" data-bs-target="#dahuy" role="tab" aria-controls="dahuy" aria-selected="false">Đã hủy</a>
     </li>
-<%--    <li class="nav-item" role="presentation">--%>
-<%--        <a class="nav-link" href="?tinhTrang=13" id="HoanMotPhan" data-bs-toggle="tab" data-bs-target="#hoanmotphan" role="tab" aria-controls="hoanmotphan" aria-selected="false">Hoàn một phần</a>--%>
-<%--    </li>--%>
+    <%--    <li class="nav-item" role="presentation">--%>
+    <%--        <a class="nav-link" href="?tinhTrang=13" id="HoanMotPhan" data-bs-toggle="tab" data-bs-target="#hoanmotphan" role="tab" aria-controls="hoanmotphan" aria-selected="false">Hoàn một phần</a>--%>
+    <%--    </li>--%>
 </ul>
 <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade show active" id="tatca" role="tabpanel" aria-labelledby="TatCa">
@@ -54,11 +54,11 @@
                 <tr>
                     <td>${item.id}</td>
                     <td>${item.khachHang.tenKhachHang}</td>
-                    <td>${item.so_hoa_don}</td>
+                    <td>${item.soHoaDon}</td>
                     <td>${item.tong_tien}</td>
                     <td>${item.phuong_thuc_thanh_toan}</td>
                     <td>${item.ghi_chu}</td>
-                    <td>${item.ngay_tao}</td>
+                    <td>${item.ngayTao}</td>
                     <td>
                         <c:choose>
                             <c:when test="${item.tinh_trang == 0}">
@@ -115,11 +115,11 @@
                     <tr>
                         <td>${item.id}</td>
                         <td>${item.khachHang.tenKhachHang}</td>
-                        <td>${item.so_hoa_don}</td>
+                        <td>${item.soHoaDon}</td>
                         <td>${item.tong_tien}</td>
                         <td>${item.phuong_thuc_thanh_toan}</td>
                         <td>${item.ghi_chu}</td>
-                        <td>${item.ngay_tao}</td>
+                        <td>${item.ngayTao}</td>
                         <td>
                             <c:choose>
                                 <c:when test="${item.tinh_trang == 0}">
@@ -177,11 +177,11 @@
                     <tr>
                         <td>${item.id}</td>
                         <td>${item.khachHang.tenKhachHang}</td>
-                        <td>${item.so_hoa_don}</td>
+                        <td>${item.soHoaDon}</td>
                         <td>${item.tong_tien}</td>
                         <td>${item.phuong_thuc_thanh_toan}</td>
                         <td>${item.ghi_chu}</td>
-                        <td>${item.ngay_tao}</td>
+                        <td>${item.ngayTao}</td>
                         <td>
                             <c:choose>
                                 <c:when test="${item.tinh_trang == 0}">
@@ -238,11 +238,11 @@
                     <tr>
                         <td>${item.id}</td>
                         <td>${item.khachHang.tenKhachHang}</td>
-                        <td>${item.so_hoa_don}</td>
+                        <td>${item.soHoaDon}</td>
                         <td>${item.tong_tien}</td>
                         <td>${item.phuong_thuc_thanh_toan}</td>
                         <td>${item.ghi_chu}</td>
-                        <td>${item.ngay_tao}</td>
+                        <td>${item.ngayTao}</td>
                         <td>
                             <c:choose>
                                 <c:when test="${item.tinh_trang == 0}">
@@ -299,11 +299,11 @@
                     <tr>
                         <td>${item.id}</td>
                         <td>${item.khachHang.tenKhachHang}</td>
-                        <td>${item.so_hoa_don}</td>
+                        <td>${item.soHoaDon}</td>
                         <td>${item.tong_tien}</td>
                         <td>${item.phuong_thuc_thanh_toan}</td>
                         <td>${item.ghi_chu}</td>
-                        <td>${item.ngay_tao}</td>
+                        <td>${item.ngayTao}</td>
                         <td>
                             <c:choose>
                                 <c:when test="${item.tinh_trang == 0}">
@@ -361,11 +361,11 @@
                     <tr>
                         <td>${item.id}</td>
                         <td>${item.khachHang.tenKhachHang}</td>
-                        <td>${item.so_hoa_don}</td>
+                        <td>${item.soHoaDon}</td>
                         <td>${item.tong_tien}</td>
                         <td>${item.phuong_thuc_thanh_toan}</td>
                         <td>${item.ghi_chu}</td>
-                        <td>${item.ngay_tao}</td>
+                        <td>${item.ngayTao}</td>
                         <td>
                             <c:choose>
                                 <c:when test="${item.tinh_trang == 0}">
@@ -422,11 +422,11 @@
                     <tr>
                         <td>${item.id}</td>
                         <td>${item.khachHang.tenKhachHang}</td>
-                        <td>${item.so_hoa_don}</td>
+                        <td>${item.soHoaDon}</td>
                         <td>${item.tong_tien}</td>
                         <td>${item.phuong_thuc_thanh_toan}</td>
                         <td>${item.ghi_chu}</td>
-                        <td>${item.ngay_tao}</td>
+                        <td>${item.ngayTao}</td>
                         <td>
                             <c:choose>
                                 <c:when test="${item.tinh_trang == 0}">

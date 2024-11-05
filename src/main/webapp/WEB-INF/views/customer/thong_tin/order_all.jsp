@@ -268,35 +268,35 @@
         <div class="col-md-9">
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <div class="container d-flex align-items-center">
-                        <ul class="navbar-nav mx-auto" style="flex-grow: 1; justify-content: center;">
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Tất cả đơn hàng</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Chờ xử lý</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Chờ lấy hàng</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Đang giao</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Đã giao</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Đã đánh giá</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Chưa đánh giá</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Đã hủy</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Trả lại</a>
-                            </li>
-                        </ul>
+                    <ul class="navbar-nav mx-auto" style="flex-grow: 1; justify-content: center;">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Tất cả đơn hàng</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Chờ xử lý</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Chờ lấy hàng</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Đang giao</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Đã giao</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Đã đánh giá</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Chưa đánh giá</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Đã hủy</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Trả lại</a>
+                        </li>
+                    </ul>
                 </div>
             </nav>
 

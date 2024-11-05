@@ -91,10 +91,10 @@
             <i class="fas fa-times-circle status-icon"></i>
             <p>Đã hủy</p>
         </div>
-<%--        <div class="status-item ${hoaDon.tinh_trang == 13 ? 'active' : ''}">--%>
-<%--            <i class="fas fa-exchange-alt status-icon"></i>--%>
-<%--            <p>Hoàn một phần</p>--%>
-<%--        </div>--%>
+        <%--        <div class="status-item ${hoaDon.tinh_trang == 13 ? 'active' : ''}">--%>
+        <%--            <i class="fas fa-exchange-alt status-icon"></i>--%>
+        <%--            <p>Hoàn một phần</p>--%>
+        <%--        </div>--%>
     </div>
 
     <div id="alertMessage" class="alert alert-warning" role="alert">
@@ -129,7 +129,7 @@
                     <p><strong>Tên khách hàng:</strong> ${hoaDon.khachHang.tenKhachHang}</p>
                 </div>
                 <div class="col-md-6">
-                    <p><strong>Số hóa đơn:</strong> ${hoaDon.so_hoa_don}</p>
+                    <p><strong>Số hóa đơn:</strong> ${hoaDon.soHoaDon}</p>
                 </div>
             </div>
             <div class="row mb-2">
@@ -137,7 +137,7 @@
                     <p><strong>Số điện thoại:</strong> ${hoaDon.soDienThoai}</p>
                 </div>
                 <div class="col-md-6">
-                    <p><strong>Ngày tạo:</strong> ${hoaDon.ngay_tao}</p>
+                    <p><strong>Ngày tạo:</strong> ${hoaDon.ngayTao}</p>
                 </div>
             </div>
             <div class="row mb-2">
@@ -191,9 +191,9 @@
                 </button>
             </c:if>
             <c:if test="${hoaDon.tinh_trang == 11}">
-            <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#doiTraModal">
-                Xem Thông tin Đổi Trả
-            </button>
+                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#doiTraModal">
+                    Xem Thông tin Đổi Trả
+                </button>
             </c:if>
             <p class="text-end fw-bold">
                 Tổng tiền: ${hoaDonChiTiets[0].hoaDon.tong_tien} VND
@@ -211,7 +211,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p><strong>Mã hóa đơn:</strong> <span id="invoiceCode">${hoaDon.so_hoa_don}</span></p>
+                <p><strong>Mã hóa đơn:</strong> <span id="invoiceCode">${hoaDon.soHoaDon}</span></p>
                 <p><strong>Tổng tiền:</strong> <span id="totalAmount">${hoaDon.tong_tien}</span> VNĐ</p>
                 <p><strong>Phương thức thanh toán:</strong> <span id="paymentMethod">${hoaDon.phuong_thuc_thanh_toan}</span></p>
                 <form action="/hoa-don/cap-nhat-tinh-trang" method="post">
@@ -266,7 +266,7 @@
                     <tr>
                         <th>Hình Ảnh Sản Phẩm</th>
                         <td>
-                        <img style="width: 90px" src="${pageContext.request.contextPath}/uploads/${doiTra.hinhAnh}">
+                            <img style="width: 90px" src="${pageContext.request.contextPath}/uploads/${doiTra.hinhAnh}">
                         </td>
                     </tr>
                 </table>
@@ -275,7 +275,7 @@
                 <button type="button" class="btn btn-secondary-outline" data-bs-dismiss="modal">Đóng</button>
                 <form action="/hoa-don/cap-nhat-tinh-trang" method="post">
                     <input type="hidden" name="id" value="${hoaDon.id}" />
-                <button type="submit" name="tinhTrangMoi" value="12" class="btn btn-primary" >Xác Nhận Đổi Trả</button>
+                    <button type="submit" name="tinhTrangMoi" value="12" class="btn btn-primary" >Xác Nhận Đổi Trả</button>
                 </form>
             </div>
         </div>
