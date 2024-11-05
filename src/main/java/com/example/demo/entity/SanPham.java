@@ -32,8 +32,6 @@ public class SanPham {
     @Column(name = "ten")
     private String ten;
 
-//    @Column(name = "so_luong")
-//    private int soLuong;
 
     @Column(name = "gia_ban")
     private int giaBan;

@@ -1,0 +1,121 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!doctype html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lịch Sử Hóa Đơn</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          crossorigin="anonymous">
+</head>
+<jsp:include page="../layout.jsp"/>
+<body>
+<h2 class="d-flex justify-content-center mt-3">Lịch Sử Hóa Đơn</h2>
+
+<form action="/lich-su/hien-thi" method="get" id="filterSearchForm">
+    <div class="row filter-section">
+        <div class="col-md-4">
+            <h5>Mã Số Hóa Đơn</h5>
+            <input type="text" name="soHoaDon" class="form-control" placeholder="Nhập Mã Số Hóa Đơn"
+                   value="${param.soHoaDon}">
+        </div>
+        <%--        <div class="col-md-4">--%>
+        <%--            <h5>Tên Khách Hàng</h5>--%>
+        <%--            <input type="text" name="tenKhachHang" class="form-control" placeholder="Nhập Tên Khách Hàng"--%>
+        <%--                   value="${param.tenKhachHang}">--%>
+        <%--        </div>--%>
+        <div class="col-md-4">
+            <h5>Ngày Tạo</h5>
+            <input type="date" name="ngayTao" class="form-control"
+                   value="${param.ngayTao}">
+        </div>
+        <div class="mt-2">
+            <button type="button" class="btn btn-secondary-outline ms-2" onclick="resetFilters();">Reset</button>
+        </div>
+    </div>
+</form>
+
+<table class="table table-hover table-bordered text-center">
+    <thead>
+    <tr>
+        <th>Tên khách hàng</th>
+        <th>Mã số hóa đơn</th>
+        <th>Tổng tiền</th>
+        <th>Ghi chú</th>
+        <th>Ngày tạo</th>
+        <th>Hàng động</th>
+    </tr>
+    </thead>
+    <tbody>
+    <c:if test="${empty data.content}">
+        <tr>
+            <td colspan="10">Không tìm thấy đối tượng nào.</td>
+        </tr>
+    </c:if>
+    <c:if test="${not empty data.content}">
+        <c:forEach items="${data.content}" var="item">
+            <tr>
+                <td>${item.idKhachHang.tenKhachHang}</td>
+                <td>${item.soHoaDon}</td>
+                <td>${item.tong_tien}</td>
+                <td>${item.ghi_chu}</td>
+                <td>${item.ngayTao}</td>
+                <td>
+                    <a href="detail/${item.id}" class="btn btn-outline-custom">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </a>
+                </td>
+            </tr>
+        </c:forEach>
+    </c:if>
+    </tbody>
+</table>
+
+<nav aria-label="Page navigation" class="mt-3">
+    <ul class="pagination justify-content-center">
+        <c:if test="${currentPage > 0}">
+            <li class="page-item">
+                <a class="page-link" href="/lich-su/hien-thi?page=0&size=${data.size}" aria-label="First">
+                    <span aria-hidden="true">&laquo;&laquo; First</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="/lich-su/hien-thi?page=${currentPage - 1}&size=${data.size}"
+                   aria-label="Previous">
+                    <span aria-hidden="true">&laquo; Previous</span>
+                </a>
+            </li>
+        </c:if>
+        <li class="page-item disabled">
+            <a class="page-link" href="#">Page ${currentPage + 1} of ${totalPages}</a>
+        </li>
+        <c:if test="${currentPage < totalPages - 1}">
+            <li class="page-item">
+                <a class="page-link" href="/lich-su/hien-thi?page=${currentPage + 1}&size=${data.size}"
+                   aria-label="Next">
+                    <span aria-hidden="true">Next &raquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="/lich-su/hien-thi?page=${totalPages - 1}&size=${data.size}"
+                   aria-label="Last">
+                    <span aria-hidden="true">Last &raquo;&raquo;</span>
+                </a>
+            </li>
+        </c:if>
+    </ul>
+</nav>
+
+<script>
+    function resetFilters() {
+        document.querySelector('input[name="soHoaDon"]').value = '';
+        // document.querySelector('input[name="tenKhachHang"]').value = '';
+        document.querySelector('input[name="ngayTao"]').value = '';
+
+        // Gửi lại form để lấy lại danh sách sản phẩm gốc
+        document.getElementById('filterSearchForm').submit();
+    }
+</script>
+
+</body>
+</html>

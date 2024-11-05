@@ -19,5 +19,5 @@ public class DanhMuc {
     private int id;
 
     @Column(name = "ten_danh_muc")
-    private String tenDanhMuc;
+    private String ten;
 }

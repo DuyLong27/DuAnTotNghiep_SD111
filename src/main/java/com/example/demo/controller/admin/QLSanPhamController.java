@@ -5,8 +5,9 @@ import com.example.demo.entity.NhaCungCap;
 import com.example.demo.entity.SanPham;
 import com.example.demo.repository.DanhMucRepo;
 import com.example.demo.repository.NhaCungCapRepo;
+import com.example.demo.repository.SanPhamChiTietRepo;
 import com.example.demo.repository.SanPhamRepo;
-import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+
 @Controller
 @RequestMapping("san-pham")
 public class QLSanPhamController {
@@ -31,6 +33,10 @@ public class QLSanPhamController {
 
     @Autowired
     private SanPhamRepo sanPhamRepo;
+
+
+    @Autowired
+    private SanPhamChiTietRepo sanPhamChiTietRepo;
     @PostMapping("/add")
     public String addProduct(Model model, @Valid @ModelAttribute("data") SanPham sanPham,
                              BindingResult validate, RedirectAttributes redirectAttributes) {
@@ -44,7 +50,7 @@ public class QLSanPhamController {
         }
         sanPhamRepo.save(sanPham);
         redirectAttributes.addFlashAttribute("message", "Thêm thành công!");
-        return "redirect:admin/ql_san_pham/index";
+        return "redirect:/san-pham/index";
     }
 
     @GetMapping("index")
@@ -93,12 +99,24 @@ public class QLSanPhamController {
 
 
 
-    @GetMapping("delete/{id}")
-    public String delete(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
-        sanPhamRepo.deleteById(id);
-        redirectAttributes.addFlashAttribute("message", "Xóa thành công!");
-        return "redirect:admin/ql_san_pham/index";
-    }
+//    @GetMapping("delete/{id}")
+//    @Transactional
+//    public String delete(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+//        // Xóa tất cả các bản ghi con trong bảng san_pham_chi_tiet trước
+//        sanPhamChiTietRepo.deleteBySanPhamId(id);
+//
+//        // Sau đó xóa sản phẩm
+//        if (sanPhamRepo.existsById(id)) {
+//            sanPhamRepo.deleteById(id);
+//            redirectAttributes.addFlashAttribute("message", "Xóa thành công!");
+//        } else {
+//            redirectAttributes.addFlashAttribute("message", "Sản phẩm không tồn tại!");
+//        }
+//        return "redirect:/san-pham/index";
+//    }
+
+
+
 
 
 
@@ -110,7 +128,7 @@ public class QLSanPhamController {
         model.addAttribute("data", sanPham);
         model.addAttribute("danhMucList", danhMucList);
         model.addAttribute("nhaCungCapList", nhaCungCapList);
-        return "admin/ql_san_pham/index"; // Tạo một trang mới hoặc trả về index với modal
+        return "admin/ql_san_pham/edit"; // Tạo một trang mới hoặc trả về index với modal
     }
 
     @PostMapping("/update")
@@ -125,6 +143,6 @@ public class QLSanPhamController {
         }
         sanPhamRepo.save(sanPham);
         redirectAttributes.addFlashAttribute("message", "Sửa thành công!");
-        return "redirect:admin/ql_san_pham/index";
+        return "redirect:/san-pham/index";
     }
 }

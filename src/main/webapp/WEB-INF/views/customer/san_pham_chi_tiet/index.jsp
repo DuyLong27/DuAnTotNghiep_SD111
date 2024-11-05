@@ -67,13 +67,13 @@
     </style>
 </head>
 <body>
-<%--<jsp:include page="../header_user.jsp" />--%>
+<jsp:include page="../header_user.jsp" />
 <div class="container mt-5">
     <div class="row">
         <div class="col-lg-9"> <!-- Increased size to 75% -->
             <div class="row">
                 <div class="col-md-6">
-                    <img src="${sanPhamChiTiet.hinhAnh}" alt="Product Image" class="img-fluid">
+                    <img src="${pageContext.request.contextPath}/uploads/${sanPhamChiTiet.hinhAnh}" class="card-img-top product-image">
                 </div>
                 <div class="col-md-6">
                     <input type="text" name="id" value="${sanPhamChiTiet.id}" hidden>
@@ -191,7 +191,77 @@
     $(document).ready(function() {
         changeProductsPeriodically(); // Bắt đầu
     });
+  
+    document.querySelector('.btn-dark').addEventListener('click', function() {
+        // Lấy thông tin sản phẩm từ trang
+        let productId = document.querySelector('input[name="id"]').value;
+        let productName = document.querySelector('.product-title').innerText;
+        let price = document.querySelector('.price').innerText;
+        let quantity = document.getElementById('quantity').value;
+
+        // Tạo đối tượng sản phẩm
+        let product = {
+            id: productId,
+            name: productName,
+            price: price,
+            quantity: quantity
+        };
+
+        // Lấy giỏ hàng từ localStorage (nếu có)
+        let cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
+
+        // Kiểm tra nếu sản phẩm đã có trong giỏ hàng
+        let existingProduct = cart.find(item => item.id === productId);
+
+        if (existingProduct) {
+            // Nếu sản phẩm đã có trong giỏ hàng, tăng số lượng
+            existingProduct.quantity = parseInt(existingProduct.quantity) + parseInt(quantity);
+        } else {
+            // Nếu sản phẩm chưa có, thêm sản phẩm mới vào giỏ hàng
+            cart.push(product);
+        }
+
+        // Lưu giỏ hàng lại vào localStorage
+        localStorage.setItem('cart', JSON.stringify(cart));
+
+        // Thông báo cho người dùng
+        alert('Sản phẩm đã được thêm vào giỏ hàng');
+    });
+    function displayCart() {
+        let cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
+
+        let cartTable = document.querySelector('tbody');
+        cartTable.innerHTML = ''; // Xóa nội dung cũ
+
+        cart.forEach((item, index) => {
+            let row = `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${item.name}</td>
+                <td>${item.price}</td>
+                <td>${item.quantity}</td>
+                <td><button class="btn btn-danger btn-sm" onclick="removeFromCart(${item.id})">Xóa</button></td>
+            </tr>
+        `;
+            cartTable.innerHTML += row;
+        });
+    }
+
+    // Gọi hàm displayCart khi trang tải
+    window.onload = displayCart;
+    function removeFromCart(productId) {
+        let cart = JSON.parse(localStorage.getItem('cart'));
+
+        // Loại bỏ sản phẩm khỏi giỏ hàng
+        cart = cart.filter(item => item.id != productId);
+
+        // Lưu lại giỏ hàng mới vào localStorage
+        localStorage.setItem('cart', JSON.stringify(cart));
+
+        // Cập nhật lại hiển thị giỏ hàng
+        displayCart();
+    }
 </script>
-<%--<jsp:include page="../header_user.jsp" />--%>
+ <jsp:include page="../footer_user.jsp" />
 </body>
 </html>

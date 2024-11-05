@@ -6,8 +6,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -17,34 +15,35 @@
     <title>Danh Sách Sản Phẩm</title>
 </head>
 <body>
+<jsp:include page="../layout.jsp" />
 <div class="container mt-3">
     <h1 class="text-center mt-3">Danh Sách Nhân Viên</h1>
-    <form action="/nhan-vien/hien-thi" method="get" id="filterSearchForm">
-        <div class="row">
-            <div class="col-md-4">
-                <h5>Lọc Theo Tình Trạng</h5>
-                <select name="tinhTrang" class="form-select" onchange="this.form.submit();">
-                    <option value="" ${param.tinhTrang == '' ? 'selected' : ''}>Tất Cả</option>
-                    <option value="1" ${param.tinhTrang == '1' ? 'selected' : ''}>Làm Việc</option>
-                    <option value="0" ${param.tinhTrang == '0' ? 'selected' : ''}>Tan Ca</option>
-                </select>
-            </div>
+    <div class="filter-section mb-3">
+        <form action="/nhan-vien/hien-thi" method="get" id="filterSearchForm">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Lọc Theo Tình Trạng</h5>
+                    <select name="tinhTrang" class="form-select" onchange="this.form.submit();">
+                        <option value="" ${param.tinhTrang == '' ? 'selected' : ''}>Tất Cả</option>
+                        <option value="1" ${param.tinhTrang == '1' ? 'selected' : ''}>Làm Việc</option>
+                        <option value="0" ${param.tinhTrang == '0' ? 'selected' : ''}>Tan Ca</option>
+                    </select>
+                </div>
 
-            <div class="col-md-4">
-                <h5>Tìm Kiếm Theo Tên Nhân Viên</h5>
-                <input type="text" name="tenNhanVien" class="form-control" placeholder="Nhập tên nhân viên"
-                       value="${param.tenNhanVien}">
+                <div class="col-md-4">
+                    <h5>Tìm Kiếm Theo Tên Nhân Viên</h5>
+                    <input type="text" name="tenNhanVien" class="form-control" placeholder="Nhập tên nhân viên"
+                           value="${param.tenNhanVien}">
+                </div>
             </div>
+        </form>
+        <div class="mt-2">
+            <button type="button" class="btn btn-create" data-bs-toggle="modal" data-bs-target="#productModal"
+                    onclick="resetForm(); setModalTitle('Thêm Nhân Viên');">
+                + Thêm Nhân Viên
+            </button>
+            <button type="button" class="btn btn-secondary-outline ms-2" onclick="resetFilters();">Reset</button>
         </div>
-    </form>
-
-
-    <div class="mt-3">
-        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#productModal"
-                onclick="resetForm(); setModalTitle('Thêm Nhân Viên');">
-            + Thêm Nhân Viên
-        </button>
-        <button type="button" class="btn btn-outline-danger ms-2" onclick="resetFilters();">Reset</button>
     </div>
 
     <!-- Bootstrap Modal -->
@@ -119,7 +118,7 @@
     </div>
 
     <!-- Bảng hiển thị danh sách sản phẩm -->
-    <table class="table table-hover table-bordered text-center mt-3">
+    <table class="table table-striped table-hover table-bordered text-center">
         <thead>
         <tr>
             <th>STT</th>
