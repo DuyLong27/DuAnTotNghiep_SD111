@@ -108,21 +108,12 @@
 
 <script>
     function resetFilters() {
-        // Reset các trường lọc
         document.querySelector('input[name="soHoaDon"]').value = '';
 
         // document.querySelector('input[name="tenKhachHang"]').value = '';
 
-        // Lấy ngày hiện tại dưới dạng chuỗi yyyy-mm-dd
-        const today = new Date();
-        const dd = String(today.getDate()).padStart(2, '0');
-        const mm = String(today.getMonth() + 1).padStart(2, '0'); // Tháng 0-11
-        const yyyy = today.getFullYear();
-
-        // Thiết lập giá trị cho trường ngày tạo
         document.querySelector('input[name="ngayTao"]').value = `${yyyy}-${mm}-${dd}`;
 
-        // Gửi biểu mẫu
         document.getElementById('filterSearchForm').submit();
     }
 </script>

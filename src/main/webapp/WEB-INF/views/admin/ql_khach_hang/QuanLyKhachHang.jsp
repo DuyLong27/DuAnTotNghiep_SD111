@@ -262,7 +262,7 @@
         }
 
         document.getElementById('submitButton').innerText = 'Cập Nhật Khách Hàng';
-        document.getElementById('productForm').action = `/khach-hang/update`; // Update action
+        document.getElementById('productForm').action = `/khach-hang/update`;
         var myModal = new bootstrap.Modal(document.getElementById('productModal'));
         myModal.show();
     }
@@ -271,7 +271,6 @@
     function resetFilters() {
         document.querySelector('input[name="tenKhachHang"]').value = '';
 
-        // Gửi lại form để lấy lại danh sách sản phẩm gốc
         document.getElementById('filterSearchForm').submit();
     }
 </script>
@@ -281,7 +280,7 @@
 
     body {
         background-color: #f8f9fa;
-        position: relative; /* Để thông báo được căn chỉnh đúng */
+        position: relative;
     }
 
     .bordervien {
