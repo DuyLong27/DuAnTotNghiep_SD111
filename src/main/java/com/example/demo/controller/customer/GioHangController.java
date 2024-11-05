@@ -392,12 +392,12 @@ public class GioHangController {
             // Tạo hóa đơn mới
             HoaDon invoice = new HoaDon();
             invoice.setTong_tien(totalAmount);
-            invoice.setNgay_tao(new java.util.Date());
+            invoice.setNgayTao(new java.util.Date());
             invoice.setPhuong_thuc_thanh_toan(phuongThucThanhToan);
             invoice.setPhuongThucVanChuyen(phuongThucVanChuyen);
             invoice.setDiaChi(diaChi);
             invoice.setSoDienThoai(soDienThoai);
-            invoice.setSo_hoa_don("HD" + new Random().nextInt(90000));
+            invoice.setSoHoaDon("HD" + new Random().nextInt(90000));
             invoice.setTinh_trang(0);
 
             // Gán khách hàng vào hóa đơn nếu khách hàng đăng nhập

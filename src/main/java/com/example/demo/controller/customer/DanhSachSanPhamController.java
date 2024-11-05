@@ -140,9 +140,9 @@ public class DanhSachSanPhamController {
         hoaDon.setPhuongThucVanChuyen(phuongThucVanChuyen);
         hoaDon.setDiaChi(diaChi);
         hoaDon.setSoDienThoai(soDienThoai);
-        hoaDon.setNgay_tao(new Date());
+        hoaDon.setNgayTao(new Date());
         hoaDon.setTong_tien(tongTien);
-        hoaDon.setSo_hoa_don(soHoaDon);
+        hoaDon.setSoHoaDon(soHoaDon);
         hoaDon.setTinh_trang(0);
 
         // Kiểm tra người dùng đã đăng nhập hay chưa

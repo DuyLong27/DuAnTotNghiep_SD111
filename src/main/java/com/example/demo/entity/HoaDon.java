@@ -28,7 +28,7 @@ public class HoaDon {
 
 
     @Column(name = "so_hoa_don")
-    private String so_hoa_don;
+    private String soHoaDon;
 
     @Column(name = "tong_tien")
     private int tong_tien;
@@ -51,7 +51,7 @@ public class HoaDon {
     private String lyDo;
 
     @Column(name = "ngay_tao")
-    private Date ngay_tao;
+    private Date ngayTao;
 
     @Column(name = "tinh_trang")
     private Integer tinh_trang;

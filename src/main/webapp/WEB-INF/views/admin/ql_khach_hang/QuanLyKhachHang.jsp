@@ -184,9 +184,19 @@
                     <td>
                         <a onclick="openEditModal(${kh.idKhachHang}, '${kh.tenKhachHang}', '${kh.email}',
                                 '${kh.matKhau}', '${kh.soDienThoai}', '${kh.diaChi}', ${kh.diemTichLuy},
+<<<<<<< HEAD
+<<<<<<< Updated upstream
+                                '${kh.ngayDangKy}', '${kh.lichSuMuaHang}', '${kh.khuyenMaiDaDung}', '${kh.tinhTrang}')"
+=======
+                                '${kh.ngayDangKy}', '${kh.lichSuMuaHang}', '${kh.khuyenMaiDaDung}'
+                                <%--, '${kh.tinhTrang}'--%>
+                                )"
+>>>>>>> Stashed changes
+=======
                                 '${kh.ngayDangKy}', '${kh.lichSuMuaHang}', '${kh.khuyenMaiDaDung}'
                             <%--, '${kh.tinhTrang}'--%>
                                 )"
+>>>>>>> main
                            type="button" class="btn btn-outline-custom"><i class='bx bx-edit-alt'></i></a>
                     </td>
                 </tr>
