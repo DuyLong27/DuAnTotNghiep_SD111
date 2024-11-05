@@ -34,11 +34,7 @@ public class QLKhachHangController {
     @GetMapping("/hien-thi")
     public String QuanLyKhachHang(@RequestParam(name = "page", defaultValue = "0") int pageNo,
                                   @RequestParam(name = "size", defaultValue = "5") int pageSize,
-<<<<<<< HEAD
-                                  @RequestParam(name = "tinhTrang", required = false) Integer tinhTrang,
-=======
 //                        @RequestParam(name = "tinhTrang", required = false) Integer tinhTrang,
->>>>>>> main
                                   @RequestParam(name = "tenKhachHang", required = false) String tenKhachHang,
                                   Model model) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);

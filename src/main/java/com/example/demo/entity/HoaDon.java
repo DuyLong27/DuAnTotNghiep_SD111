@@ -23,18 +23,9 @@ public class HoaDon {
     private Integer id;
 
     @ManyToOne
-<<<<<<< HEAD
-    @JoinColumn(name = "id_khach_hang")
-    private KhachHang idKhachHang;
-
-    @ManyToOne
-    @JoinColumn(name = "id_nhan_vien")
-    private NhanVien idNhanVien;
-=======
     @JoinColumn(name = "id_khach_hang", referencedColumnName = "id_khach_hang")
     private KhachHang khachHang;
 
->>>>>>> main
 
     @Column(name = "so_hoa_don")
     private String soHoaDon;
@@ -48,29 +39,17 @@ public class HoaDon {
     @Column(name = "ghi_chu")
     private String ghi_chu;
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
     @Column(name = "so_dien_thoai")
     private String soDienThoai;
-
-=======
-    @Column(name = "so_dien_thoai")
-    private String soDienThoai;
->>>>>>> main
     @Column(name = "dia_chi_cu_the")
     private String diaChi;
 
     @Column(name = "phuong_thuc_van_chuyen")
     private String phuongThucVanChuyen;
 
-<<<<<<< HEAD
->>>>>>> Stashed changes
-=======
     @Column(name = "ly_do_doi_tra")
     private String lyDo;
 
->>>>>>> main
     @Column(name = "ngay_tao")
     private Date ngayTao;
 

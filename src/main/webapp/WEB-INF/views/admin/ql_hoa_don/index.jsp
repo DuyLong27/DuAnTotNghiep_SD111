@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> main
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!doctype html>
@@ -10,11 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản lý hóa đơn</title>
-<<<<<<< HEAD
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-=======
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@12.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
->>>>>>> main
 </head>
 <jsp:include page="../layout.jsp" />
 <body class="">
@@ -33,22 +24,14 @@
         <a class="nav-link" href="?tinhTrang=2" id="HoanThanh" data-bs-toggle="tab" data-bs-target="#hoanthanh" role="tab" aria-controls="hoanthanh" aria-selected="false">Hoàn thành</a>
     </li>
     <li class="nav-item" role="presentation">
-<<<<<<< HEAD
-        <a class="nav-link" href="?tinhTrang=3" id="DaHuy" data-bs-toggle="tab" data-bs-target="#dahuy" role="tab" aria-controls="dahuy" aria-selected="false">Đã hủy</a>
-    </li>
-    <li class="nav-item" role="presentation">
-        <a class="nav-link" href="?tinhTrang=4" id="HoanMotPhan" data-bs-toggle="tab" data-bs-target="#hoanmotphan" role="tab" aria-controls="hoanmotphan" aria-selected="false">Hoàn một phần</a>
-    </li>
-=======
         <a class="nav-link" href="?tinhTrang=11" id="XacNhanDoiTra" data-bs-toggle="tab" data-bs-target="#xacnhandoitra" role="tab" aria-controls="xacnhandoitra" aria-selected="false">Chờ xác nhận đổi trả</a>
     </li>
     <li class="nav-item" role="presentation">
         <a class="nav-link" href="?tinhTrang=12" id="DaHuy" data-bs-toggle="tab" data-bs-target="#dahuy" role="tab" aria-controls="dahuy" aria-selected="false">Đã hủy</a>
     </li>
-<%--    <li class="nav-item" role="presentation">--%>
-<%--        <a class="nav-link" href="?tinhTrang=13" id="HoanMotPhan" data-bs-toggle="tab" data-bs-target="#hoanmotphan" role="tab" aria-controls="hoanmotphan" aria-selected="false">Hoàn một phần</a>--%>
-<%--    </li>--%>
->>>>>>> main
+    <%--    <li class="nav-item" role="presentation">--%>
+    <%--        <a class="nav-link" href="?tinhTrang=13" id="HoanMotPhan" data-bs-toggle="tab" data-bs-target="#hoanmotphan" role="tab" aria-controls="hoanmotphan" aria-selected="false">Hoàn một phần</a>--%>
+    <%--    </li>--%>
 </ul>
 <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade show active" id="tatca" role="tabpanel" aria-labelledby="TatCa">
@@ -70,21 +53,12 @@
             <c:forEach items="${list}" var="item">
                 <tr>
                     <td>${item.id}</td>
-<<<<<<< HEAD
-                    <td>${item.idKhachHang.tenKhachHang}</td>
+                    <td>${item.khachHang.tenKhachHang}</td>
                     <td>${item.soHoaDon}</td>
                     <td>${item.tong_tien}</td>
                     <td>${item.phuong_thuc_thanh_toan}</td>
                     <td>${item.ghi_chu}</td>
                     <td>${item.ngayTao}</td>
-                    <td>${item.tinh_trang == 0 ? "Chờ xác nhận" : (item.tinh_trang == 1 ? "Chờ giao" : (item.tinh_trang == 2 ? "Hoàn thành" : (item.tinh_trang == 3 ? "Đã hủy" : "Hoàn một phần")))}</td>
-=======
-                    <td>${item.khachHang.tenKhachHang}</td>
-                    <td>${item.so_hoa_don}</td>
-                    <td>${item.tong_tien}</td>
-                    <td>${item.phuong_thuc_thanh_toan}</td>
-                    <td>${item.ghi_chu}</td>
-                    <td>${item.ngay_tao}</td>
                     <td>
                         <c:choose>
                             <c:when test="${item.tinh_trang == 0}">
@@ -110,7 +84,6 @@
                             </c:otherwise>
                         </c:choose>
                     </td>
->>>>>>> main
                     <td>
                         <a href="detail/${item.id}" class="btn btn-outline-custom" >
                             <i class="fa-solid fa-circle-info"></i>
@@ -141,21 +114,12 @@
                 <c:if test="${item.tinh_trang == 0}">
                     <tr>
                         <td>${item.id}</td>
-<<<<<<< HEAD
-                        <td>${item.idKhachHang.tenKhachHang}</td>
+                        <td>${item.khachHang.tenKhachHang}</td>
                         <td>${item.soHoaDon}</td>
                         <td>${item.tong_tien}</td>
                         <td>${item.phuong_thuc_thanh_toan}</td>
                         <td>${item.ghi_chu}</td>
                         <td>${item.ngayTao}</td>
-                        <td>${item.tinh_trang == 0 ? "Chờ xác nhận" : (item.tinh_trang == 1 ? "Chờ giao" : (item.tinh_trang == 2 ? "Hoàn thành" : (item.tinh_trang == 3 ? "Đã hủy" : "Hoàn một phần")))}</td>
-=======
-                        <td>${item.khachHang.tenKhachHang}</td>
-                        <td>${item.so_hoa_don}</td>
-                        <td>${item.tong_tien}</td>
-                        <td>${item.phuong_thuc_thanh_toan}</td>
-                        <td>${item.ghi_chu}</td>
-                        <td>${item.ngay_tao}</td>
                         <td>
                             <c:choose>
                                 <c:when test="${item.tinh_trang == 0}">
@@ -181,7 +145,6 @@
                                 </c:otherwise>
                             </c:choose>
                         </td>
->>>>>>> main
                         <td>
                             <a href="detail/${item.id}" class="btn btn-outline-custom" >
                                 <i class="fa-solid fa-circle-info"></i>
@@ -210,27 +173,15 @@
             </thead>
             <tbody>
             <c:forEach items="${listHoaDon}" var="item">
-<<<<<<< HEAD
-                <c:if test="${item.tinh_trang == 1}">
+                <c:if test="${item.tinh_trang == 1 || item.tinh_trang == 2 || item.tinh_trang == 3}">
                     <tr>
                         <td>${item.id}</td>
-                        <td>${item.idKhachHang.tenKhachHang}</td>
+                        <td>${item.khachHang.tenKhachHang}</td>
                         <td>${item.soHoaDon}</td>
                         <td>${item.tong_tien}</td>
                         <td>${item.phuong_thuc_thanh_toan}</td>
                         <td>${item.ghi_chu}</td>
                         <td>${item.ngayTao}</td>
-                        <td>${item.tinh_trang == 0 ? "Chờ xác nhận" : (item.tinh_trang == 1 ? "Chờ giao" : (item.tinh_trang == 2 ? "Hoàn thành" : (item.tinh_trang == 3 ? "Đã hủy" : "Hoàn một phần")))}</td>
-=======
-                <c:if test="${item.tinh_trang == 1 || item.tinh_trang == 2 || item.tinh_trang == 3}">
-                    <tr>
-                        <td>${item.id}</td>
-                        <td>${item.khachHang.tenKhachHang}</td>
-                        <td>${item.so_hoa_don}</td>
-                        <td>${item.tong_tien}</td>
-                        <td>${item.phuong_thuc_thanh_toan}</td>
-                        <td>${item.ghi_chu}</td>
-                        <td>${item.ngay_tao}</td>
                         <td>
                             <c:choose>
                                 <c:when test="${item.tinh_trang == 0}">
@@ -256,7 +207,6 @@
                                 </c:otherwise>
                             </c:choose>
                         </td>
->>>>>>> main
                         <td>
                             <a href="detail/${item.id}" class="btn btn-outline-custom" >
                                 <i class="fa-solid fa-circle-info"></i>
@@ -284,27 +234,15 @@
             </thead>
             <tbody>
             <c:forEach items="${listHoaDon}" var="item">
-<<<<<<< HEAD
-                <c:if test="${item.tinh_trang == 2}">
+                <c:if test="${item.tinh_trang == 4}">
                     <tr>
                         <td>${item.id}</td>
-                        <td>${item.idKhachHang.tenKhachHang}</td>
+                        <td>${item.khachHang.tenKhachHang}</td>
                         <td>${item.soHoaDon}</td>
                         <td>${item.tong_tien}</td>
                         <td>${item.phuong_thuc_thanh_toan}</td>
                         <td>${item.ghi_chu}</td>
                         <td>${item.ngayTao}</td>
-                        <td>${item.tinh_trang == 0 ? "Chờ xác nhận" : (item.tinh_trang == 1 ? "Chờ giao" : (item.tinh_trang == 2 ? "Hoàn thành" : (item.tinh_trang == 3 ? "Đã hủy" : "Hoàn một phần")))}</td>
-=======
-                <c:if test="${item.tinh_trang == 4}">
-                    <tr>
-                        <td>${item.id}</td>
-                        <td>${item.khachHang.tenKhachHang}</td>
-                        <td>${item.so_hoa_don}</td>
-                        <td>${item.tong_tien}</td>
-                        <td>${item.phuong_thuc_thanh_toan}</td>
-                        <td>${item.ghi_chu}</td>
-                        <td>${item.ngay_tao}</td>
                         <td>
                             <c:choose>
                                 <c:when test="${item.tinh_trang == 0}">
@@ -330,7 +268,6 @@
                                 </c:otherwise>
                             </c:choose>
                         </td>
->>>>>>> main
                         <td>
                             <a href="detail/${item.id}" class="btn btn-outline-custom" >
                                 <i class="fa-solid fa-circle-info"></i>
@@ -341,8 +278,6 @@
             </c:forEach>
             </tbody>
         </table></div>
-<<<<<<< HEAD
-=======
     <div class="tab-pane fade" id="xacnhandoitra" role="tabpanel" aria-labelledby="XacNhanDoiTra">
         <table class="table table-striped table-hover table-bordered text-center">
             <thead>
@@ -364,11 +299,11 @@
                     <tr>
                         <td>${item.id}</td>
                         <td>${item.khachHang.tenKhachHang}</td>
-                        <td>${item.so_hoa_don}</td>
+                        <td>${item.soHoaDon}</td>
                         <td>${item.tong_tien}</td>
                         <td>${item.phuong_thuc_thanh_toan}</td>
                         <td>${item.ghi_chu}</td>
-                        <td>${item.ngay_tao}</td>
+                        <td>${item.ngayTao}</td>
                         <td>
                             <c:choose>
                                 <c:when test="${item.tinh_trang == 0}">
@@ -405,7 +340,6 @@
             </tbody>
         </table>
     </div>
->>>>>>> main
     <div class="tab-pane fade" id="dahuy" role="tabpanel" aria-labelledby="DaHuy">
         <table class="table table-striped table-hover table-bordered text-center">
             <thead>
@@ -423,27 +357,15 @@
             </thead>
             <tbody>
             <c:forEach items="${listHoaDon}" var="item">
-<<<<<<< HEAD
-                <c:if test="${item.tinh_trang == 3}">
+                <c:if test="${item.tinh_trang == 12}">
                     <tr>
                         <td>${item.id}</td>
-                        <td>${item.idKhachHang.tenKhachHang}</td>
+                        <td>${item.khachHang.tenKhachHang}</td>
                         <td>${item.soHoaDon}</td>
                         <td>${item.tong_tien}</td>
                         <td>${item.phuong_thuc_thanh_toan}</td>
                         <td>${item.ghi_chu}</td>
                         <td>${item.ngayTao}</td>
-                        <td>${item.tinh_trang == 0 ? "Chờ xác nhận" : (item.tinh_trang == 1 ? "Chờ giao" : (item.tinh_trang == 2 ? "Hoàn thành" : (item.tinh_trang == 3 ? "Đã hủy" : "Hoàn một phần")))}</td>
-=======
-                <c:if test="${item.tinh_trang == 12}">
-                    <tr>
-                        <td>${item.id}</td>
-                        <td>${item.khachHang.tenKhachHang}</td>
-                        <td>${item.so_hoa_don}</td>
-                        <td>${item.tong_tien}</td>
-                        <td>${item.phuong_thuc_thanh_toan}</td>
-                        <td>${item.ghi_chu}</td>
-                        <td>${item.ngay_tao}</td>
                         <td>
                             <c:choose>
                                 <c:when test="${item.tinh_trang == 0}">
@@ -469,7 +391,6 @@
                                 </c:otherwise>
                             </c:choose>
                         </td>
->>>>>>> main
                         <td>
                             <a href="detail/${item.id}" class="btn btn-outline-custom" >
                                 <i class="fa-solid fa-circle-info"></i>
@@ -497,27 +418,15 @@
             </thead>
             <tbody>
             <c:forEach items="${listHoaDon}" var="item">
-<<<<<<< HEAD
-                <c:if test="${item.tinh_trang == 4}">
+                <c:if test="${item.tinh_trang == 13}">
                     <tr>
                         <td>${item.id}</td>
-                        <td>${item.idKhachHang.tenKhachHang}</td>
+                        <td>${item.khachHang.tenKhachHang}</td>
                         <td>${item.soHoaDon}</td>
                         <td>${item.tong_tien}</td>
                         <td>${item.phuong_thuc_thanh_toan}</td>
                         <td>${item.ghi_chu}</td>
                         <td>${item.ngayTao}</td>
-                        <td>${item.tinh_trang == 0 ? "Chờ xác nhận" : (item.tinh_trang == 1 ? "Chờ giao" : (item.tinh_trang == 2 ? "Hoàn thành" : (item.tinh_trang == 3 ? "Đã hủy" : "Hoàn một phần")))}</td>
-=======
-                <c:if test="${item.tinh_trang == 13}">
-                    <tr>
-                        <td>${item.id}</td>
-                        <td>${item.khachHang.tenKhachHang}</td>
-                        <td>${item.so_hoa_don}</td>
-                        <td>${item.tong_tien}</td>
-                        <td>${item.phuong_thuc_thanh_toan}</td>
-                        <td>${item.ghi_chu}</td>
-                        <td>${item.ngay_tao}</td>
                         <td>
                             <c:choose>
                                 <c:when test="${item.tinh_trang == 0}">
@@ -543,7 +452,6 @@
                                 </c:otherwise>
                             </c:choose>
                         </td>
->>>>>>> main
                         <td>
                             <a href="detail/${item.id}" class="btn btn-outline-custom" >
                                 <i class="fa-solid fa-circle-info"></i>
@@ -557,9 +465,4 @@
     </div>
 </div>
 </body>
-<<<<<<< HEAD
 </html>
->>>>>>> Stashed changes
-=======
-</html>
->>>>>>> main
