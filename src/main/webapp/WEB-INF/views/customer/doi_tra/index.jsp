@@ -85,7 +85,7 @@
                     <div class="card-body">
                         <div class="order-header">Mã Hóa Đơn: ${hoaDon.soHoaDon}</div>
                         <p>Ngày Tạo: ${hoaDon.ngayTao}</p>
-                        <p>Tổng Tiền: <strong>${hoaDon.tong_tien} đ</strong></p>
+                        <p>Tổng Tiền: <strong>${hoaDon.tongTien} đ</strong></p>
                         <p>
                             Tình Trạng:
                             <c:choose>

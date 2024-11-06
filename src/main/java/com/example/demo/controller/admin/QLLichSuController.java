@@ -2,27 +2,20 @@ package com.example.demo.controller.admin;
 
 import com.example.demo.entity.HoaDon;
 import com.example.demo.entity.HoaDonChiTiet;
-import com.example.demo.entity.KhachHang;
 import com.example.demo.repository.HoaDonChiTietRepo;
 import com.example.demo.repository.HoaDonRepo;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -35,34 +28,53 @@ public class QLLichSuController {
     @Autowired
     private HoaDonChiTietRepo hoaDonChiTietRepository;
 
+
     @GetMapping("/hien-thi")
     public String hienThi(@RequestParam(name = "page", defaultValue = "0") int pageNo,
                           @RequestParam(name = "size", defaultValue = "5") int pageSize,
                           @RequestParam(name = "soHoaDon", required = false) String soHoaDon,
                           @RequestParam(name = "tenKhachHang", required = false) String tenKhachHang,
-                          @RequestParam(name = "ngayTao", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date ngayTao,
+                          @RequestParam(name = "ngayTao", required = false) String ngayTaoStr,
                           Model model) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Page<HoaDon> page ;
 
-        if (soHoaDon != null && !soHoaDon.isEmpty()) {
-            page = hoaDonRepo.findBySoHoaDon(soHoaDon, pageable);
-        } else if (ngayTao != null) {
-            page = hoaDonRepo.findByNgayTao(ngayTao, pageable);
+        java.sql.Date ngayTao = null;
+        if (ngayTaoStr != null && !ngayTaoStr.isEmpty()) {
+            try {
+                ngayTao = java.sql.Date.valueOf(ngayTaoStr);
+            } catch (IllegalArgumentException e) {
+
+            }
         } else {
-            page= hoaDonRepo.findAll(pageable);
+            LocalDate today = LocalDate.now();
+            ngayTao = java.sql.Date.valueOf(today);
         }
 
-        model.addAttribute("data", page);
-        model.addAttribute("currentPage", pageNo);
-        model.addAttribute("totalPages", page.getTotalPages());
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Page<HoaDon> hoaDonsPage;
+
+        if (soHoaDon == null && tenKhachHang == null && ngayTao == null) {
+            LocalDate today = LocalDate.now();
+            java.sql.Date todayDate = java.sql.Date.valueOf(today);
+            hoaDonsPage = hoaDonRepo.findByNgayTao(todayDate, pageable);
+        } else if (soHoaDon != null && !soHoaDon.isEmpty()) {
+            hoaDonsPage = hoaDonRepo.findBySoHoaDon(soHoaDon, pageable);
+        } else if (ngayTao != null) {
+            hoaDonsPage = hoaDonRepo.findByNgayTao(ngayTao, pageable);
+        } else {
+            hoaDonsPage = hoaDonRepo.findByFilters(soHoaDon, tenKhachHang, ngayTao, pageable);
+        }
+
+        System.out.println("Số hóa đơn lấy được: " + hoaDonsPage.getTotalElements());
+
+        model.addAttribute("data", hoaDonsPage.getContent());
+        model.addAttribute("currentPage", hoaDonsPage.getNumber());
+        model.addAttribute("totalPages", hoaDonsPage.getTotalPages());
         model.addAttribute("soHoaDon", soHoaDon);
-        model.addAttribute("tenKhachHang", tenKhachHang); // Có thể thêm thông tin về idKhachHang vào model nếu cần
-        model.addAttribute("ngayTao", ngayTao); // Đưa ngày tạo vào model để giữ giá trị khi quay lại trang
+        model.addAttribute("tenKhachHang", tenKhachHang);
+        model.addAttribute("ngayTao", ngayTaoStr);
 
         return "admin/ql_lich_su/index";
     }
-
 
     @GetMapping("/detail/{id}")
     public String chiTiet(@PathVariable("id") Integer id, Model model) {

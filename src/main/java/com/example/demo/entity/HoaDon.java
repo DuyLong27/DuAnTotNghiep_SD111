@@ -31,16 +31,17 @@ public class HoaDon {
     private String soHoaDon;
 
     @Column(name = "tong_tien")
-    private int tong_tien;
+    private int tongTien;
 
     @Column(name = "phuong_thuc_thanh_toan")
     private String phuong_thuc_thanh_toan;
 
     @Column(name = "ghi_chu")
-    private String ghi_chu;
+    private String ghiChu;
 
     @Column(name = "so_dien_thoai")
     private String soDienThoai;
+
     @Column(name = "dia_chi_cu_the")
     private String diaChi;
 
@@ -61,7 +62,7 @@ public class HoaDon {
 
     // Phương thức để tính tổng số tiền hóa đơn
     public void calculateTotalAmount() {
-        this.tong_tien = hoaDonChiTietList.stream()
+        this.tongTien = hoaDonChiTietList.stream()
                 .mapToInt(detail -> detail.getGia_san_pham() * detail.getSo_luong())
                 .sum();
     }

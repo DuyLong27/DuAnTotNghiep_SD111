@@ -98,11 +98,11 @@
                     <p><strong>Phương Thức Thanh Toán:</strong> ${hoaDon.phuong_thuc_thanh_toan}</p>
                     <p><strong>Ghi Chú:</strong>
                         <c:choose>
-                            <c:when test="${empty hoaDon.ghi_chu}">
+                            <c:when test="${empty hoaDon.ghiChu}">
                                 Không có ghi chú
                             </c:when>
                             <c:otherwise>
-                                ${hoaDon.ghi_chu}
+                                ${hoaDon.ghiChu}
                             </c:otherwise>
                         </c:choose>
                     </p>
@@ -116,7 +116,7 @@
                             </li>
                         </c:forEach>
                     </ul>
-                    <p class="total-price mt-2"><strong>Tổng Tiền:</strong> ${hoaDon.tong_tien} VNĐ</p>
+                    <p class="total-price mt-2"><strong>Tổng Tiền:</strong> ${hoaDon.tongTien} VNĐ</p>
                 </div>
                 <div class="modal-footer">
                     <form action="${pageContext.request.contextPath}/ban-hang/${hoaDon.id}/confirm-order" method="post">

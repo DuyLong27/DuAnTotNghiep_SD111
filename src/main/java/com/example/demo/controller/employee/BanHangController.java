@@ -55,7 +55,7 @@ public class BanHangController {
                 .mapToInt(detail -> detail.getGia_san_pham() * detail.getSo_luong())
                 .sum();
 
-        hoaDon.setTong_tien(totalAmount);
+        hoaDon.setTongTien(totalAmount);
         hoaDonRepository.save(hoaDon);
 
         String phuongThucThanhToan = hoaDon.getPhuong_thuc_thanh_toan();
@@ -188,13 +188,13 @@ public class BanHangController {
 
     @PostMapping("/{hoaDonId}/update-note")
     public String updateNote(@PathVariable("hoaDonId") Integer hoaDonId,
-                             @RequestParam("ghi_chu") String ghiChu) {
+                             @RequestParam("ghiChu") String ghiChu) {
         HoaDon hoaDon = hoaDonRepository.findById(hoaDonId).orElse(null);
         if (hoaDon != null) {
             if (ghiChu != null && !ghiChu.trim().isEmpty()) {
-                hoaDon.setGhi_chu(ghiChu);
+                hoaDon.setGhiChu(ghiChu);
             } else {
-                hoaDon.setGhi_chu(null);
+                hoaDon.setGhiChu(null);
             }
             hoaDonRepository.save(hoaDon);
         }
@@ -203,7 +203,7 @@ public class BanHangController {
 
 
     @PostMapping("/{id}/confirm")
-    public String goToConfirmOrder(@PathVariable Integer id, @RequestParam("ghi_chu") String ghiChu, Model model) {
+    public String goToConfirmOrder(@PathVariable Integer id, @RequestParam("ghiChu") String ghiChu, Model model) {
         HoaDon hoaDon1 = hoaDonRepository.findById(id).orElseThrow();
         List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findByHoaDonId(id);
         model.addAttribute("hoaDon", hoaDon1);
@@ -212,7 +212,7 @@ public class BanHangController {
         HoaDon hoaDon = hoaDonRepository.findById(id).orElse(null);
         if (hoaDon != null) {
             // Cập nhật ghi chú cho hóa đơn
-            hoaDon.setGhi_chu(ghiChu);
+            hoaDon.setGhiChu(ghiChu);
             hoaDonRepository.save(hoaDon);
         }
         model.addAttribute("hoaDon", hoaDon);
