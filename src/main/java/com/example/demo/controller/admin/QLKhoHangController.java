@@ -37,16 +37,22 @@ public class QLKhoHangController {
         return "admin/ql_kho_hang/index";
     }
 
-    @PostMapping("/add")
-    public String addNV(@PathVariable("id") Integer id, Model model , @Valid @ModelAttribute("data") KhoHang khoHang,
-                        BindingResult validate, RedirectAttributes redirectAttributes) {
-        model.addAttribute("gioHang", khoHangRepo.findById(id).get());
+    @GetMapping("edit/{id}")
+    public String editProduct(@PathVariable("id") Integer id, Model model) {
+        KhoHang khoHang= khoHangRepo.findById(id).orElse(null);
+        model.addAttribute("data", khoHang);
+        return "admin/ql_san_pham/index"; // Tạo một trang mới hoặc trả về index với modal
+    }
+
+    @PostMapping("/update")
+    public String updateProduct(@Valid @ModelAttribute("data") KhoHang khoHang, BindingResult validate, Model model, RedirectAttributes redirectAttributes) {
         if (validate.hasErrors()) {
             model.addAttribute("data", khoHang);
-            return "admin/ql_nhan_vien/index";
+
+            return "admin/ql_kho_hang/index"; // Hoặc trả về một trang cụ thể
         }
         khoHangRepo.save(khoHang);
-        redirectAttributes.addFlashAttribute("message", "Thêm số lượng thành công!");
+        redirectAttributes.addFlashAttribute("message", "Sửa thành công!");
         return "redirect:/kho-hang/hien-thi";
     }
 }

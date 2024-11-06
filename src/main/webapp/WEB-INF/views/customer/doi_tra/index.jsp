@@ -83,8 +83,8 @@
                         <a href="/doi-tra/chi-tiet?id=${hoaDon.id}" class="btn btn-outline-primary btn-sm">Xem Chi Tiết</a>
                     </div>
                     <div class="card-body">
-                        <div class="order-header">Mã Hóa Đơn: ${hoaDon.so_hoa_don}</div>
-                        <p>Ngày Tạo: ${hoaDon.ngay_tao}</p>
+                        <div class="order-header">Mã Hóa Đơn: ${hoaDon.soHoaDon}</div>
+                        <p>Ngày Tạo: ${hoaDon.ngayTao}</p>
                         <p>Tổng Tiền: <strong>${hoaDon.tong_tien} đ</strong></p>
                         <p>
                             Tình Trạng:

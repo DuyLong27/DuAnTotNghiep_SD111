@@ -8,6 +8,9 @@
     <title>Product Page</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         .product-title {
             font-size: 24px;
@@ -77,7 +80,7 @@
                     <h1 class="product-title">${sanPhamChiTiet.sanPham.ten}</h1>
                     <div class="price">
                         ${sanPhamChiTiet.giaBan} VNĐ
-<%--                        <span class="old-price">$${sanPhamChiTiet.giaBan} VNĐ</span>--%>
+                        <%--                        <span class="old-price">$${sanPhamChiTiet.giaBan} VNĐ</span>--%>
                     </div>
                     <hr>
                     <div class="quantity">
@@ -104,10 +107,6 @@
                         <a class="nav-link text-black" id="details-tab" data-toggle="tab" href="#details" role="tab"
                            aria-controls="details" aria-selected="false">Nhận xét</a>
                     </li>
-                    <%--                    <li class="nav-item">--%>
-                    <%--                        <a class="nav-link text-black" id="reviews-tab" data-toggle="tab" href="#reviews" role="tab"--%>
-                    <%--                           aria-controls="reviews" aria-selected="false">Nhận xét</a>--%>
-                    <%--                    </li>--%>
                 </ul>
                 <div class="tab-content" id="productTabContent">
                     <div class="tab-pane fade show active mt-3" id="description" role="tabpanel"
@@ -125,92 +124,74 @@
                             ${sanPhamChiTiet.danhGia}
                         </p>
                     </div>
-                    <%--                    <div class="tab-pane fade mt-5" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">--%>
-                    <%--                        <p>${sanPhamChiTiet.danhGia}</p>--%>
-                    <%--                    </div>--%>
                 </div>
             </div>
         </div>
         <div class="col-lg-3">
             <div class="related-products">
                 <h3 class="mb-3">Sản phẩm liên quan</h3>
-                <div class="row mb-3">
-                    <div class="col-4">
-                        <img src="related-product-1.jpg" alt="Related Product 1" class="img-fluid">
-                    </div>
-                    <div class="col-8">
-                        <p class="product-name">Trung Nguyên Legend Cà Phê Sữa Đá</p>
-                        <p class="product-price">88,879 ₫</p>
-                    </div>
-                </div>
-                <hr>
-                <div class="row mb-3">
-                    <div class="col-4">
-                        <img src="related-product-2.jpg" alt="Related Product 2" class="img-fluid">
-                    </div>
-                    <div class="col-8">
-                        <p class="product-name">Trung Nguyên Legend Special Edition</p>
-                        <p class="product-price">115,999 ₫</p>
-                    </div>
-                </div>
-                <hr>
-                <div class="row mb-3">
-                    <div class="col-4">
-                        <img src="related-product-3.jpg" alt="Related Product 3" class="img-fluid">
-                    </div>
-                    <div class="col-8">
-                        <p class="product-name">Trung Nguyên Legend Classic</p>
-                        <p class="product-price">60,000 ₫</p>
-                    </div>
-                </div>
-                <hr>
-                <div class="row mb-3">
-                    <div class="col-4">
-                        <img src="related-product-4.jpg" alt="Related Product 4" class="img-fluid">
-                    </div>
-                    <div class="col-8">
-                        <p class="product-name">Trung Nguyên Legend Special Edition</p>
-                        <p class="product-price">63,299 ₫</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Related items section-->
-        <section class="py-5 bg-light">
-            <div class="container px-4 px-lg-5 mt-5">
-                <h2 class="fw-bolder mb-4">Sản phẩm gợi ý</h2>
-                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-                    <c:forEach items="${listSanPham}" var="item">
-                        <div class="col mb-5">
-                            <div class="card h-100">
-                                <!-- Product image-->
-                                <img class="card-img-top" src="${item.hinhAnh}" alt="..."/>
-                                <!-- Product details-->
-                                <div class="card-body p-4">
-                                    <div class="text-center">
-                                        <!-- Product name-->
-                                        <h5 class="fw-bolder">${item.sanPham.ten}</h5>
-                                        <!-- Product price-->
-                                            ${item.giaBan} VNĐ
-                                    </div>
-                                </div>
-                                <!-- Product actions-->
-                                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#">Thêm vào giỏ hàng</a></div>
-                                </div>
+                <c:if test="${empty data.content}">
+                    <tr>
+                        <td colspan="10">Không tìm thấy đối tượng nào.</td>
+                    </tr>
+                </c:if>
+                <c:if test="${not empty data.content}">
+                    <c:forEach items="${data.content}" var="spct">
+                        <div class="row mb-3">
+                            <div class="col-4">
+                                <!-- Sửa 'item' thành 'spct' -->
+                                <img src="${pageContext.request.contextPath}/uploads/${spct.hinhAnh}"
+                                     alt="${spct.sanPham.ten}"
+                                     class="img-fluid">
+                            </div>
+                            <div class="col-8">
+                                <p class="product-name">${spct.sanPham.ten}</p>
+                                <p class="product-price">${spct.giaBan} VNĐ</p>
                             </div>
                         </div>
+                        <hr>
                     </c:forEach>
-                </div>
+                </c:if>
             </div>
-        </section>
+        </div>
     </div>
 </div>
-<jsp:include page="../footer_user.jsp" />
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
+    let currentPage = 0; // Trang bắt đầu
+
+    function loadRelatedProducts(page) {
+        // Sử dụng AJAX để tải các sản phẩm mới mỗi khi đổi trang
+        $.ajax({
+            url: '/danh-sach-san-pham-chi-tiet',
+            type: 'GET',
+            data: {
+                page: page, // Gửi thông tin trang hiện tại
+                size: 5 // Mỗi lần tải 5 sản phẩm
+            },
+            success: function(response) {
+                // Thay thế nội dung sản phẩm
+                const newProducts = $(response).find('.related-products').html();
+                $('.related-products').html(newProducts);
+            },
+            error: function() {
+                console.error('Error loading related products');
+            }
+        });
+    }
+
+    // Hàm thay đổi sản phẩm mỗi 20 giây
+    function changeProductsPeriodically() {
+        setInterval(function() {
+            currentPage = (currentPage + 1) % 10; // Giới hạn trang là 10 (hoặc số bạn muốn)
+            loadRelatedProducts(currentPage); // Tải sản phẩm từ trang tiếp theo
+        }, 20000); // Thay đổi mỗi 20 giây
+    }
+
+    // Bắt đầu thay đổi sản phẩm
+    $(document).ready(function() {
+        changeProductsPeriodically(); // Bắt đầu
+    });
+  
     document.querySelector('.btn-dark').addEventListener('click', function() {
         // Lấy thông tin sản phẩm từ trang
         let productId = document.querySelector('input[name="id"]').value;
@@ -280,7 +261,7 @@
         // Cập nhật lại hiển thị giỏ hàng
         displayCart();
     }
-
 </script>
+ <jsp:include page="../footer_user.jsp" />
 </body>
 </html>

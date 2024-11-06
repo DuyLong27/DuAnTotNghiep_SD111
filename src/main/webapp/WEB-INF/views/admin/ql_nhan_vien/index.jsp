@@ -86,6 +86,12 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
+                                    <label for="nhanVienNgayDiLam" class="form-label">NgayDiLam</label>
+                                    <input type="date" class="form-control" id="nhanVienNgayDiLam" name="ngayDiLam" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
                                     <label for="nhanVienChucVu" class="form-label">Chức Vụ</label>
                                     <input type="text" class="form-control" id="nhanVienChucVu" name="chucVu" required>
                                 </div>
@@ -104,7 +110,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-create" id="submitButton">Lưu Sản Phẩm</button>
+                        <button type="submit" class="btn btn-primary mt-3" id="submitButton">Lưu Nhân Viên</button>
                     </form>
                 </div>
             </div>
@@ -146,10 +152,10 @@
                             ${nv.tinhTrang == 1 ? "Đang làm" : "Tan ca"}
                     </td>
                     <td>
-                        <a onclick="openEditModal(${nv.id}, '${nv.tenNhanVien}', ${nv.email}, '${nv.matKhau}', ${nv.soDienThoai}, ${nv.chucVu}, ${nv.ngayDiLam}, ${nv.tinhTrang})"
-                           type="button" class="btn btn-outline-custom"><i class='bx bx-edit-alt'></i></a>
-                        <a onclick="return confirm('Bạn có chắc muốn xóa?')" href="/nhan-vien/delete?id=${nv.id}"
-                           class="btn btn-outline-custom"><i class='bx bx-trash' ></i></a>
+                        <a onclick="openEditModal(${nv.id}, '${nv.tenNhanVien}', '${nv.email}', '${nv.matKhau}', '${nv.soDienThoai}', '${nv.chucVu}', '${nv.ngayDiLam}', ${nv.tinhTrang})"
+                           type="button" class="btn btn-default bordervien table__logo">
+                            <i class='bx bx-edit-alt'></i>
+                        </a>
                     </td>
                 </tr>
             </c:forEach>
@@ -205,7 +211,7 @@
     }
 
     function openEditModal(id, tenNhanVien, email, matKhau, soDienThoai, chucVu, ngayDiLam, tinhTrang) {
-        setModalTitle('Cập Nhật Sản Phẩm');
+        setModalTitle('Cập Nhật Nhân Viên');
         document.getElementById('nhanVienId').value = id;
         document.getElementById('nhanVienName').value = tenNhanVien;
         document.getElementById('nhanVienEmail').value = email;
@@ -214,17 +220,20 @@
         document.getElementById('nhanVienChucVu').value = chucVu;
         document.getElementById('nhanVienNgayDiLam').value = ngayDiLam;
 
+        // Xử lý radio button tình trạng
         const tinhTrangRadios = document.getElementsByName('tinhTrang');
         for (let radio of tinhTrangRadios) {
             radio.checked = (radio.value == tinhTrang);
         }
 
+        // Cập nhật text button và action form
         document.getElementById('submitButton').innerText = 'Cập Nhật Nhân Viên';
-        document.getElementById('productForm').action = `/nhan-vien/update`; // Update action
+        document.getElementById('productForm').action = `/nhan-vien/update`; // Đổi action để gửi form cập nhật
+
+        // Mở modal bằng bootstrap
         var myModal = new bootstrap.Modal(document.getElementById('productModal'));
         myModal.show();
     }
-
 
     function resetFilters() {
         // Reset các trường lọc về giá trị mặc định

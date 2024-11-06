@@ -215,9 +215,9 @@
                                 <td>${item.id}</td>
                                 <td>${item.khachHang.tenKhachHang}</td>
                                 <td>${item.soHoaDon}</td>
-                                <td>${item.tongTien}</td>
+                                <td>${item.tong_tien}</td>
                                 <td>${item.phuong_thuc_thanh_toan}</td>
-                                <td>${item.ghiChu}</td>
+                                <td>${item.ghi_chu}</td>
                                 <td>${item.ngayTao}</td>
                                 <td>
                                     <c:choose>
@@ -273,9 +273,9 @@
                                     <td>${item.id}</td>
                                     <td>${item.khachHang.tenKhachHang}</td>
                                     <td>${item.soHoaDon}</td>
-                                    <td>${item.tongTien}</td>
+                                    <td>${item.tong_tien}</td>
                                     <td>${item.phuong_thuc_thanh_toan}</td>
-                                    <td>${item.ghiChu}</td>
+                                    <td>${item.ghi_chu}</td>
                                     <td>${item.ngayTao}</td>
                                     <td>
                                         <c:choose>
@@ -332,9 +332,9 @@
                                     <td>${item.id}</td>
                                     <td>${item.khachHang.tenKhachHang}</td>
                                     <td>${item.soHoaDon}</td>
-                                    <td>${item.tongTien}</td>
+                                    <td>${item.tong_tien}</td>
                                     <td>${item.phuong_thuc_thanh_toan}</td>
-                                    <td>${item.ghiChu}</td>
+                                    <td>${item.ghi_chu}</td>
                                     <td>${item.ngayTao}</td>
                                     <td>
                                         <c:choose>
@@ -390,9 +390,9 @@
                                     <td>${item.id}</td>
                                     <td>${item.khachHang.tenKhachHang}</td>
                                     <td>${item.soHoaDon}</td>
-                                    <td>${item.tongTien}</td>
+                                    <td>${item.tong_tien}</td>
                                     <td>${item.phuong_thuc_thanh_toan}</td>
-                                    <td>${item.ghiChu}</td>
+                                    <td>${item.ghi_chu}</td>
                                     <td>${item.ngayTao}</td>
                                     <td>
                                         <c:choose>
@@ -448,9 +448,9 @@
                                     <td>${item.id}</td>
                                     <td>${item.khachHang.tenKhachHang}</td>
                                     <td>${item.soHoaDon}</td>
-                                    <td>${item.tongTien}</td>
+                                    <td>${item.tong_tien}</td>
                                     <td>${item.phuong_thuc_thanh_toan}</td>
-                                    <td>${item.ghiChu}</td>
+                                    <td>${item.ghi_chu}</td>
                                     <td>${item.ngayTao}</td>
                                     <td>
                                         <c:choose>
@@ -506,9 +506,8 @@
                                     <td>${item.id}</td>
                                     <td>${item.khachHang.tenKhachHang}</td>
                                     <td>${item.soHoaDon}</td>
-                                    <td>${item.tongTien}</td>
+                                    <td>${item.tong_tien}</td>
                                     <td>${item.phuong_thuc_thanh_toan}</td>
-                                    <td>${item.ghiChu}</td>
                                     <td>${item.ngayTao}</td>
                                     <td>
                                         <c:choose>
