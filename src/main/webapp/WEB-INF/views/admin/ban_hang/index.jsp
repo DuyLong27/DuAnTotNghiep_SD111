@@ -36,14 +36,6 @@
 </head>
 <body>
 <jsp:include page="../layout.jsp" />
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-md-6 filter-section">
-=======
-=======
->>>>>>> main
 <div class="container mt-3">
     <h2>Trang Bán Hàng</h2>
     <br>
@@ -75,11 +67,7 @@
                                         <c:if test="${hoaDon.tinh_trang == 0}">
                                             <option value="${pageContext.request.contextPath}/ban-hang/${hoaDon.id}"
                                                     <c:if test="${hoaDon.id == selectedHoaDonId}">selected</c:if>>
-<<<<<<< HEAD
                                                     ${hoaDon.soHoaDon}
-=======
-                                                    ${hoaDon.so_hoa_don}
->>>>>>> main
                                             </option>
                                         </c:if>
                                     </c:forEach>
@@ -183,10 +171,6 @@
             </div>
         </div>
         <div id="danhsachhoadon" class="container tab-pane fade"><br>
-<<<<<<< HEAD
->>>>>>> Stashed changes
-=======
->>>>>>> main
             <h2 class="text-primary">Danh Sách Hóa Đơn</h2>
             <br>
             <ul class="nav nav-tabs d-flex justify-content-center mt-3" id="myTab" role="tablist">
@@ -230,11 +214,11 @@
                             <tr>
                                 <td>${item.id}</td>
                                 <td>${item.khachHang.tenKhachHang}</td>
-                                <td>${item.so_hoa_don}</td>
+                                <td>${item.soHoaDon}</td>
                                 <td>${item.tong_tien}</td>
                                 <td>${item.phuong_thuc_thanh_toan}</td>
                                 <td>${item.ghi_chu}</td>
-                                <td>${item.ngay_tao}</td>
+                                <td>${item.ngayTao}</td>
                                 <td>
                                     <c:choose>
                                         <c:when test="${item.tinh_trang == 0}">
@@ -288,11 +272,11 @@
                                 <tr>
                                     <td>${item.id}</td>
                                     <td>${item.khachHang.tenKhachHang}</td>
-                                    <td>${item.so_hoa_don}</td>
+                                    <td>${item.soHoaDon}</td>
                                     <td>${item.tong_tien}</td>
                                     <td>${item.phuong_thuc_thanh_toan}</td>
                                     <td>${item.ghi_chu}</td>
-                                    <td>${item.ngay_tao}</td>
+                                    <td>${item.ngayTao}</td>
                                     <td>
                                         <c:choose>
                                             <c:when test="${item.tinh_trang == 0}">
@@ -347,11 +331,11 @@
                                 <tr>
                                     <td>${item.id}</td>
                                     <td>${item.khachHang.tenKhachHang}</td>
-                                    <td>${item.so_hoa_don}</td>
+                                    <td>${item.soHoaDon}</td>
                                     <td>${item.tong_tien}</td>
                                     <td>${item.phuong_thuc_thanh_toan}</td>
                                     <td>${item.ghi_chu}</td>
-                                    <td>${item.ngay_tao}</td>
+                                    <td>${item.ngayTao}</td>
                                     <td>
                                         <c:choose>
                                             <c:when test="${item.tinh_trang == 0}">
@@ -405,11 +389,11 @@
                                 <tr>
                                     <td>${item.id}</td>
                                     <td>${item.khachHang.tenKhachHang}</td>
-                                    <td>${item.so_hoa_don}</td>
+                                    <td>${item.soHoaDon}</td>
                                     <td>${item.tong_tien}</td>
                                     <td>${item.phuong_thuc_thanh_toan}</td>
                                     <td>${item.ghi_chu}</td>
-                                    <td>${item.ngay_tao}</td>
+                                    <td>${item.ngayTao}</td>
                                     <td>
                                         <c:choose>
                                             <c:when test="${item.tinh_trang == 0}">
@@ -463,11 +447,11 @@
                                 <tr>
                                     <td>${item.id}</td>
                                     <td>${item.khachHang.tenKhachHang}</td>
-                                    <td>${item.so_hoa_don}</td>
+                                    <td>${item.soHoaDon}</td>
                                     <td>${item.tong_tien}</td>
                                     <td>${item.phuong_thuc_thanh_toan}</td>
                                     <td>${item.ghi_chu}</td>
-                                    <td>${item.ngay_tao}</td>
+                                    <td>${item.ngayTao}</td>
                                     <td>
                                         <c:choose>
                                             <c:when test="${item.tinh_trang == 0}">
@@ -521,11 +505,11 @@
                                 <tr>
                                     <td>${item.id}</td>
                                     <td>${item.khachHang.tenKhachHang}</td>
-                                    <td>${item.so_hoa_don}</td>
+                                    <td>${item.soHoaDon}</td>
                                     <td>${item.tong_tien}</td>
                                     <td>${item.phuong_thuc_thanh_toan}</td>
                                     <td>${item.ghi_chu}</td>
-                                    <td>${item.ngay_tao}</td>
+                                    <td>${item.ngayTao}</td>
                                     <td>
                                         <c:choose>
                                             <c:when test="${item.tinh_trang == 0}">
