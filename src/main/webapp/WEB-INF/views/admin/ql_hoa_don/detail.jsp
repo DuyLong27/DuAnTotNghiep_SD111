@@ -150,7 +150,7 @@
             </div>
             <div class="row mb-2">
                 <div class="col-md-6">
-                    <p><strong>Ghi chú:</strong> ${hoaDon.ghi_chu}</p>
+                    <p><strong>Ghi chú:</strong> ${hoaDon.ghiChu}</p>
                 </div>
                 <div class="col-md-6">
                     <p><strong>Phương thức thanh toán:</strong> ${hoaDon.phuong_thuc_thanh_toan}</p>
@@ -196,7 +196,7 @@
                 </button>
             </c:if>
             <p class="text-end fw-bold">
-                Tổng tiền: ${hoaDonChiTiets[0].hoaDon.tong_tien} VND
+                Tổng tiền: ${hoaDonChiTiets[0].hoaDon.tongTien} VND
             </p>
         </div>
     </div>
@@ -212,13 +212,13 @@
             </div>
             <div class="modal-body">
                 <p><strong>Mã hóa đơn:</strong> <span id="invoiceCode">${hoaDon.soHoaDon}</span></p>
-                <p><strong>Tổng tiền:</strong> <span id="totalAmount">${hoaDon.tong_tien}</span> VNĐ</p>
+                <p><strong>Tổng tiền:</strong> <span id="totalAmount">${hoaDon.tongTien}</span> VNĐ</p>
                 <p><strong>Phương thức thanh toán:</strong> <span id="paymentMethod">${hoaDon.phuong_thuc_thanh_toan}</span></p>
                 <form action="/hoa-don/cap-nhat-tinh-trang" method="post">
                     <input type="hidden" name="id" value="${hoaDon.id}" />
                     <div class="mb-3">
                         <label for="ghiChu" class="form-label"><strong>Ghi chú:</strong></label>
-                        <textarea name="ghiChu" id="ghiChu" class="form-control" rows="4" placeholder="Nhập ghi chú" style="resize: vertical;">${hoaDon.ghi_chu}</textarea>
+                        <textarea name="ghiChu" id="ghiChu" class="form-control" rows="4" placeholder="Nhập ghi chú" style="resize: vertical;">${hoaDon.ghiChu}</textarea>
                     </div>
                     <div class="d-flex justify-content-between">
                         <button type="submit" name="tinhTrangMoi" value="3" class="btn btn-info me-2">Xác nhận thanh toán</button>

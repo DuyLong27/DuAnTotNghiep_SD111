@@ -19,11 +19,11 @@
             <input type="text" name="soHoaDon" class="form-control" placeholder="Nhập Mã Số Hóa Đơn"
                    value="${param.soHoaDon}">
         </div>
-        <%--        <div class="col-md-4">--%>
-        <%--            <h5>Tên Khách Hàng</h5>--%>
-        <%--            <input type="text" name="tenKhachHang" class="form-control" placeholder="Nhập Tên Khách Hàng"--%>
-        <%--                   value="${param.tenKhachHang}">--%>
-        <%--        </div>--%>
+<%--        <div class="col-md-4">--%>
+<%--            <h5>Tên Khách Hàng</h5>--%>
+<%--            <input type="text" name="tenKhachHang" class="form-control" placeholder="Nhập Tên Khách Hàng"--%>
+<%--                   value="${param.tenKhachHang}">--%>
+<%--        </div>--%>
         <div class="col-md-4">
             <h5>Ngày Tạo</h5>
             <input type="date" name="ngayTao" class="form-control"
@@ -38,8 +38,8 @@
 <table class="table table-hover table-bordered text-center">
     <thead>
     <tr>
-        <th>Tên khách hàng</th>
         <th>Mã số hóa đơn</th>
+        <th>Tên khách hàng</th>
         <th>Tổng tiền</th>
         <th>Ghi chú</th>
         <th>Ngày tạo</th>
@@ -47,27 +47,25 @@
     </tr>
     </thead>
     <tbody>
-    <c:if test="${empty data.content}">
+    <c:if test="${empty data}">
         <tr>
-            <td colspan="10">Không tìm thấy đối tượng nào.</td>
+            <td colspan="6">Không có hóa đơn nào để hiển thị.</td>
         </tr>
     </c:if>
-    <c:if test="${not empty data.content}">
-        <c:forEach items="${data.content}" var="item">
-            <tr>
-                <td>${item.idKhachHang.tenKhachHang}</td>
-                <td>${item.soHoaDon}</td>
-                <td>${item.tong_tien}</td>
-                <td>${item.ghi_chu}</td>
-                <td>${item.ngayTao}</td>
-                <td>
-                    <a href="detail/${item.id}" class="btn btn-outline-custom">
-                        <i class="fa-solid fa-circle-info"></i>
-                    </a>
-                </td>
-            </tr>
-        </c:forEach>
-    </c:if>
+    <c:forEach items="${data}" var="item">
+        <tr>
+            <td>${item.soHoaDon}</td>
+            <td>${item.khachHang.tenKhachHang}</td>
+            <td>${item.tongTien}</td>
+            <td>${item.ghiChu}</td>
+            <td>${item.ngayTao}</td>
+            <td>
+                <a href="detail/${item.id}" class="btn btn-outline-custom">
+                    <i class="fa-solid fa-circle-info"></i>
+                </a>
+            </td>
+        </tr>
+    </c:forEach>
     </tbody>
 </table>
 
@@ -75,29 +73,31 @@
     <ul class="pagination justify-content-center">
         <c:if test="${currentPage > 0}">
             <li class="page-item">
-                <a class="page-link" href="/lich-su/hien-thi?page=0&size=${data.size}" aria-label="First">
+                <a class="page-link" href="/lich-su/hien-thi?page=0&size=${size}" aria-label="First">
                     <span aria-hidden="true">&laquo;&laquo; First</span>
                 </a>
             </li>
             <li class="page-item">
-                <a class="page-link" href="/lich-su/hien-thi?page=${currentPage - 1}&size=${data.size}"
+                <a class="page-link" href="/lich-su/hien-thi?page=${currentPage - 1}&size=${size}"
                    aria-label="Previous">
                     <span aria-hidden="true">&laquo; Previous</span>
                 </a>
             </li>
         </c:if>
+
         <li class="page-item disabled">
             <a class="page-link" href="#">Page ${currentPage + 1} of ${totalPages}</a>
         </li>
+
         <c:if test="${currentPage < totalPages - 1}">
             <li class="page-item">
-                <a class="page-link" href="/lich-su/hien-thi?page=${currentPage + 1}&size=${data.size}"
+                <a class="page-link" href="/lich-su/hien-thi?page=${currentPage + 1}&size=${size}"
                    aria-label="Next">
                     <span aria-hidden="true">Next &raquo;</span>
                 </a>
             </li>
             <li class="page-item">
-                <a class="page-link" href="/lich-su/hien-thi?page=${totalPages - 1}&size=${data.size}"
+                <a class="page-link" href="/lich-su/hien-thi?page=${totalPages - 1}&size=${size}"
                    aria-label="Last">
                     <span aria-hidden="true">Last &raquo;&raquo;</span>
                 </a>
@@ -109,13 +109,15 @@
 <script>
     function resetFilters() {
         document.querySelector('input[name="soHoaDon"]').value = '';
-        // document.querySelector('input[name="tenKhachHang"]').value = '';
-        document.querySelector('input[name="ngayTao"]').value = '';
 
-        // Gửi lại form để lấy lại danh sách sản phẩm gốc
+        // document.querySelector('input[name="tenKhachHang"]').value = '';
+
+        document.querySelector('input[name="ngayTao"]').value = `${yyyy}-${mm}-${dd}`;
+
         document.getElementById('filterSearchForm').submit();
     }
 </script>
+
 
 </body>
 </html>

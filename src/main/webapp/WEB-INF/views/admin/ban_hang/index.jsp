@@ -137,7 +137,7 @@
                             <h4 class="mt-4">Ghi chú</h4>
                             <form id="noteForm" action="${pageContext.request.contextPath}/ban-hang/${selectedHoaDonId}/confirm" method="post">
                                 <div class="form-group">
-                                    <textarea name="ghi_chu" class="form-control" rows="3">${hoaDon.ghi_chu}</textarea>
+                                    <textarea name="ghiChu" class="form-control" rows="3">${hoaDon.ghiChu}</textarea>
                                 </div>
                                 <button type="submit" class="btn btn-create mt-2">Xác nhận hóa đơn</button>
                             </form>
@@ -508,7 +508,6 @@
                                     <td>${item.soHoaDon}</td>
                                     <td>${item.tong_tien}</td>
                                     <td>${item.phuong_thuc_thanh_toan}</td>
-                                    <td>${item.ghi_chu}</td>
                                     <td>${item.ngayTao}</td>
                                     <td>
                                         <c:choose>

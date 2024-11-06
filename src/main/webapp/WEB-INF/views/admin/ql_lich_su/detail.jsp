@@ -10,11 +10,11 @@
 <jsp:include page="../layout.jsp" />
 <body>
 <div class="container mt-3">
-    <p><strong>Tên khách hàng:</strong> ${hoaDon.idKhachHang.tenKhachHang}</p>
+    <p><strong>Tên khách hàng:</strong> ${hoaDon.khachHang.tenKhachHang}</p>
     <p><strong>Số hóa đơn:</strong> ${hoaDon.soHoaDon}</p>
-    <p><strong>Số điện thoại:</strong> ${hoaDon.idKhachHang.soDienThoai}</p>
+    <p><strong>Số điện thoại:</strong> ${hoaDon.khachHang.soDienThoai}</p>
     <p><strong>Địa chỉ:</strong> ${hoaDon.diaChi}</p>
-    <p><strong>Ghi chú:</strong> ${hoaDon.ghi_chu}</p>
+    <p><strong>Ghi chú:</strong> ${hoaDon.ghiChu}</p>
     <p><strong>Phương thức vận chuyển:</strong> ${hoaDon.phuongThucVanChuyen}</p>
     <p><strong>Ngày tạo:</strong> ${hoaDon.ngayTao}</p>
     <p><strong>Phương thức thanh toán:</strong> ${hoaDon.phuong_thuc_thanh_toan}</p>
