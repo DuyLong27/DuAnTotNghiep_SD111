@@ -40,9 +40,7 @@ public class QLKhachHangController {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<KhachHang> page;
 
-//        // Xử lý đầu vào tìm kiếm tên nhà cung cấp
 //        if (tenKhachHang != null) {
-//            // Loại bỏ dấu cách ở đầu và cuối, và thay thế nhiều dấu cách liên tiếp
 //            tenKhachHang = tenKhachHang.trim().replaceAll("\\s+", " ");
 //        }
 
@@ -61,7 +59,7 @@ public class QLKhachHangController {
         model.addAttribute("currentPage", pageNo);
         model.addAttribute("totalPages", page.getTotalPages());
 //        model.addAttribute("tinhTrang", tinhTrang);
-        model.addAttribute("tenKhachHang", tenKhachHang); // Để giữ trạng thái tìm kiếm
+        model.addAttribute("tenKhachHang", tenKhachHang);
         return "admin/ql_khach_hang/QuanLyKhachHang";
     }
 
@@ -77,7 +75,7 @@ public class QLKhachHangController {
     public String updateProduct(@Valid @ModelAttribute("data") KhachHang khachHang, BindingResult validate, Model model, RedirectAttributes redirectAttributes) {
         if (validate.hasErrors()) {
             model.addAttribute("data", khachHang);
-            return "admin/ql_khach_hang/QuanLyKhachHang"; // Hoặc trả về một trang cụ thể
+            return "admin/ql_khach_hang/QuanLyKhachHang";
         }
         repo.save(khachHang);
         redirectAttributes.addFlashAttribute("message", "Sửa thành công!");

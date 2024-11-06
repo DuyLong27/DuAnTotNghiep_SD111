@@ -44,4 +44,5 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
 
     @Query("SELECT h FROM HoaDon h WHERE h.khachHang.tenKhachHang LIKE %:tenKhachHang%")
     Page<HoaDon> findByTenKhachHang(@Param("tenKhachHang") String tenKhachHang, Pageable pageable);
+
 }

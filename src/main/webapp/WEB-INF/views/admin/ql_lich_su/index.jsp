@@ -19,11 +19,11 @@
             <input type="text" name="soHoaDon" class="form-control" placeholder="Nhập Mã Số Hóa Đơn"
                    value="${param.soHoaDon}">
         </div>
-        <%--        <div class="col-md-4">--%>
-        <%--            <h5>Tên Khách Hàng</h5>--%>
-        <%--            <input type="text" name="tenKhachHang" class="form-control" placeholder="Nhập Tên Khách Hàng"--%>
-        <%--                   value="${param.tenKhachHang}">--%>
-        <%--        </div>--%>
+<%--        <div class="col-md-4">--%>
+<%--            <h5>Tên Khách Hàng</h5>--%>
+<%--            <input type="text" name="tenKhachHang" class="form-control" placeholder="Nhập Tên Khách Hàng"--%>
+<%--                   value="${param.tenKhachHang}">--%>
+<%--        </div>--%>
         <div class="col-md-4">
             <h5>Ngày Tạo</h5>
             <input type="date" name="ngayTao" class="form-control"
