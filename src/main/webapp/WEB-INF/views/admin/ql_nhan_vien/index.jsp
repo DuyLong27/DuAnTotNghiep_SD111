@@ -146,9 +146,9 @@
                             ${nv.tinhTrang == 1 ? "Đang làm" : "Tan ca"}
                     </td>
                     <td>
-                        <a onclick="openEditModal(${nv.idNhanVien}, '${nv.tenNhanVien}', ${nv.email}, '${nv.matKhau}', ${nv.soDienThoai}, ${nv.chucVu}, ${nv.ngayDiLam}, ${nv.tinhTrang})"
+                        <a onclick="openEditModal(${nv.id}, '${nv.tenNhanVien}', ${nv.email}, '${nv.matKhau}', ${nv.soDienThoai}, ${nv.chucVu}, ${nv.ngayDiLam}, ${nv.tinhTrang})"
                            type="button" class="btn btn-outline-custom"><i class='bx bx-edit-alt'></i></a>
-                        <a onclick="return confirm('Bạn có chắc muốn xóa?')" href="/nhan-vien/delete?id=${nv.idNhanVien}"
+                        <a onclick="return confirm('Bạn có chắc muốn xóa?')" href="/nhan-vien/delete?id=${nv.id}"
                            class="btn btn-outline-custom"><i class='bx bx-trash' ></i></a>
                     </td>
                 </tr>
