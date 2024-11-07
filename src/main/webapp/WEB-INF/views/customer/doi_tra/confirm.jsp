@@ -33,7 +33,11 @@
                                      alt="Hình ảnh sản phẩm" class="me-3" style="width: 100px; height: auto;">
                                 <span>${product.sanPham.ten}</span>
                             </div>
-                            <span>Số Lượng: ${soLuongMap[product.id]}</span>
+                            <div>
+                                <label>Số lượng: </label>
+                                <input type="number" name="soLuong_${product.id}" value="${soLuongMap[product.id]}"
+                                       min="1" max="${soLuongMap[product.id]}" class="form-control" style="width: 80px;">
+                            </div>
                         </li>
                     </c:forEach>
                 </ul>
@@ -58,7 +62,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="uploadImage" class="form-label">Tải Ảnh Chứng Minh:</label>
-                    <input type="file" id="uploadImage" name="uploadImage" class="form-control" accept="image/*">
+                    <input type="file" id="uploadImage" name="uploadImage" class="form-control" accept="image/*" required>
                 </div>
                 <div class="mt-3">
                     <a href="/doi-tra" class="btn btn-warning">Quay Lại</a>

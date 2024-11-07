@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 @Controller
@@ -113,28 +117,37 @@ public class DoiTraController {
                     selectedProducts.add(sanPhamChiTiet);
                     soLuongMap.put(id, soLuongHoan);
                     // Tính tiền hoàn
-                    tongTienHoan += sanPhamChiTiet.getGiaBan() * soLuongHoan; // Giả sử bạn có thuộc tính giá trong SanPhamChiTiet
+                    tongTienHoan += sanPhamChiTiet.getGiaBan() * soLuongHoan;
                 }
             }
 
             // Xác định hình thức hoàn trả
-            String hinhThucHoan;
-            int totalSoLuongHoan = 0;
-            for (Integer id : sanPhamChiTietIds) {
-                totalSoLuongHoan += soLuongMap.get(id); // Tổng số lượng hoàn
-            }
+            boolean isHoanToan = true; // Ban đầu giả định là hoàn toàn phần
+            boolean coHoanMotPhan = false; // Biến kiểm tra có hoàn một phần hay không
 
-            // Kiểm tra xem có hoàn tất số lượng sản phẩm hay không
-            boolean isHoanToan = true;
-            for (Integer id : sanPhamChiTietIds) {
-                if (soLuongDaMuaMap.get(id) != null && soLuongMap.get(id) != null) {
-                    if (soLuongMap.get(id) < soLuongDaMuaMap.get(id)) {
-                        isHoanToan = false;
-                        break;
+            for (HoaDonChiTiet chiTiet : hoaDonChiTietList) {
+                Integer sanPhamChiTietId = chiTiet.getSanPhamChiTiet().getId();
+                Integer soLuongDaMua = chiTiet.getSo_luong();
+                Integer soLuongHoan = soLuongMap.get(sanPhamChiTietId);
+
+                if (soLuongHoan != null && soLuongHoan > 0) {
+                    if (soLuongHoan < soLuongDaMua) {
+                        // Có ít nhất một sản phẩm chỉ hoàn một phần số lượng
+                        coHoanMotPhan = true;
                     }
+                } else {
+                    // Có sản phẩm không được hoàn trả, không phải hoàn toàn phần
+                    isHoanToan = false;
                 }
             }
-            hinhThucHoan = isHoanToan ? "Hoàn toàn phần" : "Hoàn một phần";
+
+            String hinhThucHoan;
+            if (coHoanMotPhan || !isHoanToan) {
+                hinhThucHoan = "Hoàn một phần";
+            } else {
+                hinhThucHoan = "Hoàn toàn phần";
+            }
+
             model.addAttribute("hinhThucHoan", hinhThucHoan); // Thêm vào model
             model.addAttribute("tongTienHoan", tongTienHoan); // Thêm tổng tiền hoàn vào model
             model.addAttribute("hoaDon", hoaDon);
@@ -152,6 +165,7 @@ public class DoiTraController {
         return "customer/doi_tra/detail";
     }
 
+
     @PostMapping("/xac-nhan")
     public String xacNhanDoiTra(@RequestParam("hoaDonId") Integer hoaDonId,
                                 @RequestParam("lyDo") String lyDo,
@@ -159,12 +173,39 @@ public class DoiTraController {
                                 @RequestParam("tongTienHoan") int tongTienHoan,
                                 @RequestParam("hinhThucHoan") String hinhThucHoan,
                                 @RequestParam("sanPhamChiTietIds") List<Integer> sanPhamChiTietIds,
+                                @RequestParam Map<String, String> requestParams,
                                 @RequestParam("phuongThucChuyenTien") String phuongThucChuyenTien,
                                 @RequestParam("moTa") String moTa,
                                 @RequestParam("uploadImage") MultipartFile uploadImage) {
 
         HoaDon hoaDon = hoaDonRepo.findById(hoaDonId).orElse(null);
         if (hoaDon != null) {
+            // Xử lý upload ảnh chứng minh lỗi hàng hóa
+            String fileName = null;
+            if (!uploadImage.isEmpty()) {
+                try {
+                    // Đường dẫn tương đối đến thư mục images
+                    String relativeFolder = "src/main/webapp/uploads/";
+
+                    // Tạo thư mục nếu chưa tồn tại
+                    Path folderPath = Paths.get(relativeFolder).toAbsolutePath();
+                    if (!Files.exists(folderPath)) {
+                        Files.createDirectories(folderPath);
+                    }
+
+                    // Tạo tên file duy nhất với timestamp
+                    fileName = System.currentTimeMillis() + "_" + uploadImage.getOriginalFilename();
+                    Path filePath = folderPath.resolve(fileName);
+
+                    // Lưu file vào thư mục
+                    Files.write(filePath, uploadImage.getBytes());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return "customer/doi_tra/error";
+                }
+            }
+
+            // Tạo đối tượng DoiTra
             DoiTra doiTra = new DoiTra();
             doiTra.setHoaDon(hoaDon);
             doiTra.setLyDoCuThe(lyDoDetail);
@@ -172,31 +213,36 @@ public class DoiTraController {
             doiTra.setTienHoan(tongTienHoan);
             doiTra.setPhuongThucChuyenTien(phuongThucChuyenTien);
             doiTra.setMoTa(moTa);
-            doiTra.setHinhAnh(uploadImage.getOriginalFilename());
+            doiTra.setHinhAnh(fileName); // Lưu tên file ảnh vào database
             doiTra.setNgayYeuCau(new Date());
             doiTra.setTinhTrang(11);
             doiTraRepo.save(doiTra);
-            hoaDon.setTinh_trang(11);
-            hoaDonRepo.save(hoaDon);
+
+            // Lưu từng chi tiết đổi trả
             for (Integer sanPhamChiTietId : sanPhamChiTietIds) {
-                DoiTraChiTiet doiTraChiTiet = new DoiTraChiTiet();
-                doiTraChiTiet.setDoiTra(doiTra);
                 SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamChiTietId).orElse(null);
                 if (sanPhamChiTiet != null) {
+                    Integer soLuongHoan = Integer.valueOf(requestParams.get("soLuong_" + sanPhamChiTietId));
+
+                    DoiTraChiTiet doiTraChiTiet = new DoiTraChiTiet();
+                    doiTraChiTiet.setDoiTra(doiTra);
                     doiTraChiTiet.setSanPhamChiTiet(sanPhamChiTiet);
-                    doiTraChiTiet.setGiaSanPham(sanPhamChiTiet.getGiaBan()); // Lấy giá sản phẩm
-                    doiTraChiTiet.setSoLuong(1); // Giả sử số lượng là 1
+                    doiTraChiTiet.setGiaSanPham(sanPhamChiTiet.getGiaBan());
+                    doiTraChiTiet.setSoLuong(soLuongHoan);
                     doiTraChiTietRepo.save(doiTraChiTiet);
                 }
             }
 
-            // Chuyển hướng đến trang xác nhận thành công
+            hoaDon.setTinh_trang(11);
+            hoaDonRepo.save(hoaDon);
+
             return "redirect:/doi-tra";
         }
 
-        // Thông báo lỗi nếu không tìm thấy hóa đơn
-        return "customer/doi_tra/error"; // Trang lỗi
+        return "customer/doi_tra/error";
     }
+
+
 
 
 
