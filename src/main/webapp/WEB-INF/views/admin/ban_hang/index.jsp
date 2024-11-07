@@ -9,8 +9,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Danh Sách Hóa Đơn</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYzIY0LIzj+PZrXsSOJo9ORpB0d6BSZ/S30R7rpkhwn/tI3oU7j7Sk" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         table {
             width: 100%;
@@ -82,6 +83,9 @@
 
                         <c:if test="${not empty selectedHoaDonId}">
                             <h3 class="text-primary">Hóa Đơn ID: ${selectedHoaDonId}</h3>
+                            <button onclick="startQrCodeScanner()">Quét QR</button>
+                            <div id="reader" style="width: 500px; margin-top: 20px;"></div>
+                            <input type="hidden" id="hoaDonId" value="${selectedHoaDonId}">
                             <table class="table table-striped table-bordered">
                                 <thead class="table-dark">
                                 <tr>
@@ -95,7 +99,7 @@
                                 <tbody>
                                 <c:set var="tongTien" value="0" /> <!-- Khởi tạo tổng tiền -->
                                 <c:forEach items="${hoaDonChiTiets}" var="item" varStatus="i">
-                                    <tr>
+                                    <tr type="hidden" id="hoaDonId" value="${selectedHoaDonId}">
                                         <td>${i.index + 1}</td>
                                         <td>${item.sanPhamChiTiet.sanPham.ten}</td>
                                         <td>${item.sanPhamChiTiet.giaBan}</td>
@@ -549,6 +553,8 @@
 </div>
 
 
+
+</body>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         // Kiểm tra và hiển thị phần thanh toán ban đầu
@@ -579,6 +585,72 @@
 
         document.getElementById("soTienPhaiBu").innerText = "Số tiền phải bù lại: " + Math.max(0, soTienPhaiBu) + " VNĐ";
     }
+
+    // Quét qr sản phẩm
+    function startQrCodeScanner() {
+        const qrCodeReader = new Html5Qrcode("reader");
+
+        qrCodeReader.start(
+            { facingMode: "environment" },
+            {
+                fps: 10,
+                qrbox: 250
+            },
+            (decodedText) => {
+                console.log("Decoded QR content:", decodedText);
+
+                try {
+                    // Giải mã dữ liệu JSON từ QR
+                    const qrData = JSON.parse(decodedText);
+
+                    if (qrData.sanPhamId && qrData.sanPhamTen && qrData.giaBan) {
+                        // Kiểm tra sự tồn tại của phần tử hoaDonId
+                        const hoaDonIdElement = document.getElementById("hoaDonId");
+                        if (!hoaDonIdElement) {
+                            alert("Không tìm thấy ID hóa đơn!");
+                            return;
+                        }
+
+                        const hoaDonId = hoaDonIdElement.value;
+
+                        // Kiểm tra hoaDonId hợp lệ
+                        if (!hoaDonId) {
+                            alert("Hóa đơn không hợp lệ!");
+                            return;
+                        }
+
+                        // Gửi yêu cầu POST để thêm sản phẩm vào hóa đơn
+                        fetch("/ban-hang/add-by-qr", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/x-www-form-urlencoded",
+                            },
+                            body: new URLSearchParams({
+                                hoaDonId: hoaDonId,
+                                sanPhamId: qrData.sanPhamId
+                            })
+                        })
+                            .then(response => response.text())
+                            .then(message => {
+                                alert(message);
+                                qrCodeReader.stop();  // Dừng scanner
+                            })
+                            .catch(error => {
+                                console.error("Error adding product:", error);
+                                qrCodeReader.stop();
+                            });
+                    } else {
+                        alert("QR không hợp lệ!");
+                    }
+                } catch (error) {
+                    console.error("QR scan failed:", error);
+                    alert("Dữ liệu QR không hợp lệ.");
+                }
+            },
+            (errorMessage) => {
+                console.log("QR scan failed:", errorMessage);
+            }
+        );
+    }
 </script>
-</body>
 </html>

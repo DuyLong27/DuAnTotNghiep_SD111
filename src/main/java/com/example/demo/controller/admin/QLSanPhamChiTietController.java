@@ -2,6 +2,8 @@ package com.example.demo.controller.admin;
 
 import com.example.demo.entity.SanPhamChiTiet;
 import com.example.demo.repository.*;
+import com.example.demo.utils.QRCodeGenerator;
+import com.google.zxing.WriterException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +19,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import java.util.Calendar;
+import java.util.List;
 
 @Controller
 @RequestMapping("spct")
@@ -51,7 +54,7 @@ public class QLSanPhamChiTietController {
     public String index(@RequestParam(name = "page", defaultValue = "0") int pageNo,
                         @RequestParam(name = "size", defaultValue = "5") int pageSize,
                         @RequestParam(name = "tinhTrang", required = false) String tinhTrang,
-                        Model model) {
+                        Model model) throws IOException, WriterException {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
 
         Page<SanPhamChiTiet> sanPhamChiTietPage;
@@ -61,6 +64,7 @@ public class QLSanPhamChiTietController {
         } else {
             sanPhamChiTietPage = sanPhamChiTietRepo.findAll(pageable);
         }
+
 
         model.addAttribute("sanPhamChiTietList", sanPhamChiTietPage.getContent());
         model.addAttribute("currentPage", sanPhamChiTietPage.getNumber());

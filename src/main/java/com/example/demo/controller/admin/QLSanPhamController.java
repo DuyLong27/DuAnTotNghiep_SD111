@@ -3,10 +3,13 @@ package com.example.demo.controller.admin;
 import com.example.demo.entity.DanhMuc;
 import com.example.demo.entity.NhaCungCap;
 import com.example.demo.entity.SanPham;
+import com.example.demo.entity.SanPhamChiTiet;
 import com.example.demo.repository.DanhMucRepo;
 import com.example.demo.repository.NhaCungCapRepo;
 import com.example.demo.repository.SanPhamChiTietRepo;
 import com.example.demo.repository.SanPhamRepo;
+import com.example.demo.utils.QRCodeGenerator;
+import com.google.zxing.WriterException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -59,7 +63,7 @@ public class QLSanPhamController {
                         @RequestParam(name = "tinhTrang", required = false) Integer tinhTrang,
                         @RequestParam(name = "danhMucId", required = false) Integer danhMucId,
                         @RequestParam(name = "nhaCungCapTen", required = false) String nhaCungCapTen,
-                        Model model) {
+                        Model model) throws IOException, WriterException {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<SanPham> page;
 
@@ -81,6 +85,7 @@ public class QLSanPhamController {
         } else {
             page = sanPhamRepo.findAll(pageable);
         }
+
 
         List<DanhMuc> danhMucList = danhMucRepo.findAll();
         List<NhaCungCap> nhaCungCapList = nhaCungCapRepo.findAll();
