@@ -59,8 +59,8 @@
     <c:if test="${not empty hoaDon}">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Mã Hóa Đơn: ${hoaDon.so_hoa_don}</h5>
-                <p>Ngày Tạo: ${hoaDon.ngay_tao}</p>
+                <h5 class="card-title">Mã Hóa Đơn: ${hoaDon.soHoaDon}</h5>
+                <p>Ngày Tạo: ${hoaDon.ngayTao}</p>
                 <p>Lý Do Đổi Trả: ${lyDo}</p>
                 <form id="reasonForm" action="/doi-tra/luu-thong-tin" method="post">
                     <input type="hidden" name="hoaDonId" value="${hoaDon.id}"/>

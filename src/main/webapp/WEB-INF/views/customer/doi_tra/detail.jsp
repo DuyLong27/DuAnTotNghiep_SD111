@@ -56,8 +56,8 @@
     <c:if test="${not empty hoaDon}">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Mã Hóa Đơn: ${hoaDon.so_hoa_don}</h5>
-                <p>Ngày Tạo: ${hoaDon.ngay_tao}</p>
+                <h5 class="card-title">Mã Hóa Đơn: ${hoaDon.soHoaDon}</h5>
+                <p>Ngày Tạo: ${hoaDon.ngayTao}</p>
 
                 <div class="info-row">
                     <div class="info-box">
@@ -71,7 +71,7 @@
                         <p>Phương Thức Thanh Toán: <strong>${hoaDon.phuong_thuc_thanh_toan}</strong></p>
                         <p>Phương Thức Vận Chuyển: <strong>${hoaDon.phuongThucVanChuyen}</strong></p>
                         <p>Tiền Vận Chuyển: <strong>${tienVanChuyen} đ</strong></p>
-                        <p>Tổng Tiền: <strong>${hoaDon.tong_tien} đ</strong></p>
+                        <p>Tổng Tiền: <strong>${hoaDon.tongTien} đ</strong></p>
                         <p>
                             Tình Trạng:
                             <c:choose>
@@ -107,7 +107,7 @@
                 <div class="mt-3">
                     <a href="/doi-tra" class="btn btn-warning">Quay Lại</a>
                     <c:if test="${hoaDon.tinh_trang == 4}">
-                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#returnModal">Đổi Trả</button>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#returnModal">Đổi Trả</button>
                     </c:if>
                 </div>
             </div>
