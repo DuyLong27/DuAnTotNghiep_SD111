@@ -5,7 +5,9 @@ import com.example.demo.entity.HoaDonChiTiet;
 import com.example.demo.entity.SanPhamChiTiet;
 import com.example.demo.repository.*;
 import jakarta.transaction.Transactional;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -239,5 +241,30 @@ public class BanHangController {
                 : "redirect:/ban-hang";
     }
 
+    // QR code
+    @PostMapping("/add-by-qr")
+    public ResponseEntity<String> addProductByQr(@RequestParam Integer hoaDonId, @RequestParam Integer sanPhamId) {
+        HoaDon hoaDon = hoaDonRepository.findById(hoaDonId).orElseThrow(() -> new RuntimeException("Hóa đơn không tồn tại"));
+        SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamId).orElseThrow(() -> new RuntimeException("Sản phẩm không tồn tại"));
+
+        // Kiểm tra số lượng sản phẩm
+        if (sanPhamChiTiet.getSoLuong() <= 0) {
+            return ResponseEntity.status(400).body("Sản phẩm không còn trong kho.");
+        }
+
+        // Thêm sản phẩm vào hóa đơn
+        HoaDonChiTiet hoaDonChiTiet = new HoaDonChiTiet();
+        hoaDonChiTiet.setHoaDon(hoaDon);
+        hoaDonChiTiet.setSanPhamChiTiet(sanPhamChiTiet);
+        hoaDonChiTiet.setSo_luong(1);  // Mặc định thêm 1 sản phẩm
+        hoaDonChiTiet.setGia_san_pham(sanPhamChiTiet.getGiaBan());
+        hoaDonChiTietRepository.save(hoaDonChiTiet);
+
+        // Giảm số lượng sản phẩm trong kho
+        sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - 1);
+        sanPhamChiTietRepo.save(sanPhamChiTiet);
+
+        return ResponseEntity.ok("Sản phẩm đã được thêm vào hóa đơn.");
+    }
 
 }
