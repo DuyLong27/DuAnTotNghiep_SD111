@@ -440,7 +440,7 @@
         <li><a class="dropdown-item" href="/san-pham/index"><i class="fas fa-cube"></i>Sản phẩm</a></li>
         <li><a class="dropdown-item" href="/spct/index"><i class="fas fa-cube"></i>CT Sản phẩm</a></li>
         <li><a class="dropdown-item" href="/thuoc-tinh"><i class="fas fa-cube"></i>Thuộc Tính</a></li>
-        <li><a class="dropdown-item" href="#"><i class="fas fa-warehouse"></i>Kho hàng</a></li>
+        <li><a class="dropdown-item" href="/kho-hang/hien-thi"><i class="fas fa-warehouse"></i>Kho hàng</a></li>
     </ul>
 
     <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -448,7 +448,7 @@
     </a>
     <ul class="dropdown-menu">
         <li><a class="dropdown-item" href="/ban-hang"><i class="fas fa-shopping-cart"></i>Bán hàng</a></li>
-        <li><a class="dropdown-item" href="#"><i class="fas fa-download"></i>Nhập hàng</a></li>
+        <li><a class="dropdown-item" href="/nhap-hang/hien-thi"><i class="fas fa-download"></i>Nhập hàng</a></li>
         <li><a class="dropdown-item" href="/hoa-don/hien-thi"><i class="fas fa-file-invoice"></i>Hóa đơn</a></li>
     </ul>
 
@@ -462,6 +462,7 @@
 
     <a href="/nhan-vien/hien-thi"><i class="fas fa-users"></i>Nhân viên</a>
     <a href="/khuyen-mai/hien-thi"><i class="fa-solid fa-tag"></i>Khuyến mãi</a>
+    <a href="/lich-su/hien-thi"><i class="fa-solid fa-receipt"></i>Lịch Sử</a>
 
 </div>
 

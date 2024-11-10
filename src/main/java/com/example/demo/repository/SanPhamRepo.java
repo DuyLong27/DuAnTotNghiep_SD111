@@ -13,5 +13,4 @@ public interface SanPhamRepo extends JpaRepository<SanPham, Integer> {
     Page<SanPham> findByTinhTrangAndDanhMucId(Integer tinhTrang, Integer danhMucId, Pageable pageable);
 
     Page<SanPham> findByNhaCungCap_TenNCCContainingIgnoreCase(String nhaCungCapTen, Pageable pageable);
-
 }

@@ -107,20 +107,6 @@
                                            required>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="khachHangLSM" class="form-label">Lịch Sử Mua Hàng</label>
-                                    <input type="text" class="form-control" id="khachHangLSM" name="lichSuMuaHang"
-                                           required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="khachHangKM" class="form-label">Khuyến Mãi Đa Dụng</label>
-                                    <input type="text" class="form-control" id="khachHangKM" name="khuyenMaiDaDung"
-                                           required>
-                                </div>
-                            </div>
                             <%--                            <div class="col-md-6">--%>
                             <%--                                <label class="form-label">Tình Trạng</label><br>--%>
                             <%--                                <div class="form-check form-check-inline">--%>
@@ -153,8 +139,6 @@
             <th>Địa Chỉ</th>
             <th>Điểm Tích Lũy</th>
             <th>Ngày Đăng Ký</th>
-            <th>Lịch Sử Mua Hàng</th>
-            <th>Khuyến Mãi Đa Dụng</th>
             <%--            <th>Tình Trạng</th>--%>
             <th>Thao Tác</th>
         </tr>
@@ -176,15 +160,13 @@
                     <td>${kh.diaChi}</td>
                     <td>${kh.diemTichLuy}</td>
                     <td>${kh.ngayDangKy}</td>
-                    <td>${kh.lichSuMuaHang}</td>
-                    <td>${kh.khuyenMaiDaDung}</td>
                         <%--                    <td class="${kh.tinhTrang == 1 ? 'text-success' : 'text-danger'}">--%>
                         <%--                            ${kh.tinhTrang == 1 ? "Hoạt Động" : "Ngừng Hoạt Động"}--%>
                         <%--                    </td>--%>
                     <td>
                         <a onclick="openEditModal(${kh.idKhachHang}, '${kh.tenKhachHang}', '${kh.email}',
                                 '${kh.matKhau}', '${kh.soDienThoai}', '${kh.diaChi}', ${kh.diemTichLuy},
-                                '${kh.ngayDangKy}', '${kh.lichSuMuaHang}', '${kh.khuyenMaiDaDung}'
+                                '${kh.ngayDangKy}'
                             <%--, '${kh.tinhTrang}'--%>
                                 )"
                            type="button" class="btn btn-outline-custom"><i class='bx bx-edit-alt'></i></a>
@@ -242,9 +224,8 @@
         document.getElementById('productModalLabel').innerText = title;
     }
 
-    function openEditModal(idKhachHang, tenKhachHang, email, matKhau, soDienThoai, diaChi, diemTichLuy, ngayDangKy,
-                           lichSuMuaHang, khuyenMaiDaDung, tinhTrang) {
-        setModalTitle('Cập Nhật Sản Phẩm');
+    function openEditModal(idKhachHang, tenKhachHang, email, matKhau, soDienThoai, diaChi, diemTichLuy, ngayDangKy, tinhTrang) {
+        setModalTitle('Cập Nhật Thông Tin');
         document.getElementById('khachHangId').value = idKhachHang;
         document.getElementById('khachHangName').value = tenKhachHang;
         document.getElementById('khachHangEmail').value = email;
@@ -253,8 +234,6 @@
         document.getElementById('khachHangDiaChi').value = diaChi;
         document.getElementById('khachHangDiem').value = diemTichLuy;
         document.getElementById('khachHangNgayDangKy').value = ngayDangKy;
-        document.getElementById('khachHangLSM').value = lichSuMuaHang;
-        document.getElementById('khachHangKM').value = khuyenMaiDaDung;
 
         const tinhTrangRadios = document.getElementsByName('tinhTrang');
         for (let radio of tinhTrangRadios) {
