@@ -60,10 +60,60 @@
             top: 10px;
             right: 10px;
         }
-        .status-return-pending {
-            background-color: #e6d1f2;
-            color: #6a1b9a;
+        /* Tình trạng Chờ xác nhận */
+        .status-pending {
+            background-color: #b3e5fc; /* Màu xanh dương nhạt */
+            color: #0277bd; /* Màu xanh dương đậm */
         }
+
+        /* Tình trạng Chờ giao */
+        .status-awaiting-delivery {
+            background-color: #ffecb3; /* Màu vàng nhạt */
+            color: #f57c00; /* Màu cam đậm */
+        }
+
+        /* Tình trạng Đang giao */
+        .status-delivering {
+            background-color: #a5d6a7; /* Màu xanh lá cây sáng */
+            color: #388e3c; /* Màu xanh lá đậm */
+        }
+
+        /* Tình trạng Hoàn thành */
+        .status-completed {
+            background-color: #c8e6c9; /* Màu xanh lá cây nhạt */
+            color: #2e7d32; /* Màu xanh lá đậm */
+        }
+
+        /* Tình trạng Chờ xác nhận đổi trả */
+        .status-return-pending {
+            background-color: #e1bee7; /* Màu tím nhạt */
+            color: #7b1fa2; /* Màu tím đậm */
+        }
+
+        /* Tình trạng Chờ đổi trả */
+        .status-returning {
+            background-color: #ffcc80; /* Màu cam sáng */
+            color: #d32f2f; /* Màu đỏ */
+        }
+
+        /* Tình trạng Đã đổi trả */
+        .status-returned {
+            background-color: #c5e1a5; /* Màu xanh lá cây nhạt */
+            color: #558b2f; /* Màu xanh lá cây đậm */
+        }
+
+        /* Tình trạng Đã hủy */
+        .status-cancelled {
+            background-color: #ffcdd2; /* Màu đỏ nhạt */
+            color: #d32f2f; /* Màu đỏ đậm */
+        }
+
+        /* Tình trạng Không xác định */
+        .status-unknown {
+            background-color: #e0e0e0; /* Màu xám nhạt */
+            color: #616161; /* Màu xám đậm */
+        }
+
 
     </style>
 </head>
@@ -90,16 +140,31 @@
                             Tình Trạng:
                             <c:choose>
                                 <c:when test="${hoaDon.tinh_trang == 0}">
-                                    <span class="order-status status-unpaid">Chưa Thanh Toán</span>
+                                    <span class="order-status status-pending">Chờ xác nhận</span>
                                 </c:when>
-                                <c:when test="${hoaDon.tinh_trang == 11}">
-                                    <span class="order-status status-return-pending">Chờ Xác Nhận Đổi Trả</span>
+                                <c:when test="${hoaDon.tinh_trang == 1}">
+                                    <span class="order-status status-awaiting-delivery">Chờ giao</span>
+                                </c:when>
+                                <c:when test="${hoaDon.tinh_trang == 2 || hoaDon.tinh_trang == 3}">
+                                    <span class="order-status status-delivering">Đang giao</span>
                                 </c:when>
                                 <c:when test="${hoaDon.tinh_trang == 4}">
-                                    <span class="order-status status-paid">Đã Thanh Toán</span>
+                                    <span class="order-status status-completed">Hoàn thành</span>
+                                </c:when>
+                                <c:when test="${hoaDon.tinh_trang == 11}">
+                                    <span class="order-status status-return-pending">Chờ xác nhận đổi trả</span>
+                                </c:when>
+                                <c:when test="${hoaDon.tinh_trang == 12}">
+                                    <span class="order-status status-returning">Chờ đổi trả</span>
+                                </c:when>
+                                <c:when test="${hoaDon.tinh_trang == 13}">
+                                    <span class="order-status status-returned">Đã đổi trả</span>
+                                </c:when>
+                                <c:when test="${hoaDon.tinh_trang == 14}">
+                                    <span class="order-status status-cancelled">Đã hủy</span>
                                 </c:when>
                                 <c:otherwise>
-                                    <span class="order-status status-paid">Đã Hủy</span>
+                                    <span class="order-status status-unknown">Không xác định</span>
                                 </c:otherwise>
                             </c:choose>
                         </p>

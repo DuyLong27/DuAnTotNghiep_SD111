@@ -51,7 +51,4 @@ public class KhachHang {
     @Column(name = "ngay_dang_ky")
     private LocalDate ngayDangKy;
 
-//    @Column(name = "tinh_trang")
-//    private Integer tinhTrang;
-
 }
