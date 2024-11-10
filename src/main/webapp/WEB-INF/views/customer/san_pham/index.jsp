@@ -466,17 +466,15 @@
                             <div class="product-buy position-absolute top-50 start-50 translate-middle">
                                 <form action="/danh-sach-san-pham/mua-ngay" method="get">
                                     <input type="hidden" name="productId" value="${item.id}">
-                                    <div class="product-cart position-absolute top-50 start-50 translate-middle">
                                         <button type="submit" class="btn-custom"><i class="fa-solid fa-money-bill"></i></button>
-                                    </div>
                                 </form>
                             </div>
+                            <div class="product-cart position-absolute top-50 start-50 translate-middle">
                             <form action="/gio-hang/add" method="post">
                                 <input type="hidden" name="sanPhamId" value="${item.id}">
-                                <div class="product-cart position-absolute top-50 start-50 translate-middle">
                                     <button type="submit" class="btn-custom"><i class="fa-solid fa-cart-shopping"></i></button>
-                                </div>
                             </form>
+                            </div>
                             <div class="product-quantity position-absolute top-50 start-50 translate-middle">
                                 <span class="quantity-text">${item.soLuong} sản phẩm</span>
                             </div>

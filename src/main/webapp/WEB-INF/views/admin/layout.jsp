@@ -449,7 +449,7 @@
     <ul class="dropdown-menu">
         <li><a class="dropdown-item" href="/ban-hang"><i class="fas fa-shopping-cart"></i>Bán hàng</a></li>
         <li><a class="dropdown-item" href="#"><i class="fas fa-download"></i>Nhập hàng</a></li>
-        <li><a class="dropdown-item" href="/hoa-don/hien-thi"><i class="fas fa-file-invoice"></i>Hóa đơn</a></li>
+        <li><a class="dropdown-item" href="/hoa-don/tinhTrang=all"><i class="fas fa-file-invoice"></i>Hóa đơn</a></li>
     </ul>
 
     <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">

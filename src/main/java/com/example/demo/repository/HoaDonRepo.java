@@ -19,6 +19,11 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
     @Query("SELECT h.id FROM HoaDon h WHERE h.id > :currentId ORDER BY h.id ASC")
     List<Integer> findNextId(@Param("currentId") Integer currentId);
 
+    @Query("SELECT h FROM HoaDon h WHERE h.tinh_trang IN :tinhTrangList")
+    Page<HoaDon> findByTinhTrangIn(@Param("tinhTrangList") List<Integer> tinhTrangList, Pageable pageable);
+
+    @Query("SELECT h FROM HoaDon h WHERE h.tinh_trang = :tinhTrang")
+    Page<HoaDon> findByTinhTrang(@Param("tinhTrang") Integer tinhTrang, Pageable pageable);
 
     @Query("SELECT h FROM HoaDon h WHERE h.tinh_trang = :tinhTrang")
     List<HoaDon> findByTinhTrang(@Param("tinhTrang") Integer tinhTrang);
