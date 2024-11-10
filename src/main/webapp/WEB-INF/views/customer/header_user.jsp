@@ -296,11 +296,11 @@
                 <ul class="dropdown-menu-custom">
                     <c:choose>
                         <c:when test="${not empty sessionScope.khachHang}">
-                            <li><a class="dropdown-item" href="/doi-tra">Thông tin</a></li>
+                            <li><a class="dropdown-item" href="/khach-hang">Thông tin</a></li>
                             <li><a class="dropdown-item" href="/auth/logout">Đăng xuất</a></li>
                         </c:when>
                         <c:otherwise>
-                            <li><a class="dropdown-item" href="/auth/login">Login/Register</a></li>
+                            <li><a class="dropdown-item" href="/auth/login">Đăng nhập</a></li>
                         </c:otherwise>
                     </c:choose>
                 </ul>
