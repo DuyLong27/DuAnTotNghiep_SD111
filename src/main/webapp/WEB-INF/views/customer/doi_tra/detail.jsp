@@ -76,13 +76,31 @@
                             Tình Trạng:
                             <c:choose>
                                 <c:when test="${hoaDon.tinh_trang == 0}">
-                                    <span class="order-status status-unpaid">Chưa Thanh Toán</span>
+                                    Chờ xác nhận
+                                </c:when>
+                                <c:when test="${hoaDon.tinh_trang == 1 }">
+                                    Chờ giao
+                                </c:when>
+                                <c:when test="${hoaDon.tinh_trang == 2 || hoaDon.tinh_trang == 3}">
+                                    Đang giao
+                                </c:when>
+                                <c:when test="${hoaDon.tinh_trang == 4}">
+                                    Hoàn thành
                                 </c:when>
                                 <c:when test="${hoaDon.tinh_trang == 11}">
-                                    <span class="order-status status-return-pending">Chờ Xác Nhận Đổi Trả</span>
+                                    Chờ xác nhận đổi trả
+                                </c:when>
+                                <c:when test="${hoaDon.tinh_trang == 12}">
+                                    Chờ đổi trả
+                                </c:when>
+                                <c:when test="${hoaDon.tinh_trang == 13}">
+                                    Đã đổi trả
+                                </c:when>
+                                <c:when test="${hoaDon.tinh_trang == 14}">
+                                    Đã hủy
                                 </c:when>
                                 <c:otherwise>
-                                    <span class="order-status status-paid">Đã Thanh Toán</span>
+                                    Không xác định
                                 </c:otherwise>
                             </c:choose>
                         </p>
