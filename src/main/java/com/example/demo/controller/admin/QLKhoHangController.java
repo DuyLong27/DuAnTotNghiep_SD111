@@ -37,11 +37,15 @@ public class QLKhoHangController {
         return "admin/ql_kho_hang/index";
     }
 
-    @GetMapping("edit/{id}")
+    @GetMapping("/edit/{id}")
     public String editProduct(@PathVariable("id") Integer id, Model model) {
-        KhoHang khoHang= khoHangRepo.findById(id).orElse(null);
-        model.addAttribute("data", khoHang);
-        return "admin/ql_san_pham/index"; // Tạo một trang mới hoặc trả về index với modal
+        KhoHang khoHang = khoHangRepo.findById(id).orElse(null);
+        if (khoHang == null) {
+            // Nếu không tìm thấy kho hàng, bạn có thể điều hướng đến trang lỗi hoặc trang danh sách kho hàng
+            return "redirect:/kho-hang/hien-thi"; // Quay lại trang danh sách
+        }
+        model.addAttribute("data", khoHang); // Truyền đối tượng kho hàng vào model
+        return "admin/ql_kho_hang/edit"; // Trang chỉnh sửa kho hàng (chắc chắn là form chỉnh sửa)
     }
 
     @PostMapping("/update")
