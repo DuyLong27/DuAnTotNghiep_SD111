@@ -23,11 +23,11 @@
         <form action="/nhap-hang/hien-thi" method="get" id="filterSearchForm">
             <div class="row">
                 <div class="col-md-4">
-                    <h5>Sản Phẩm</h5>
-                    <select name="sanPhamId" class="form-select" onchange="this.form.submit();">
-                        <option value="" ${param.sanPhamId == '' ? 'selected' : ''}>Tất Cả</option>
-                        <c:forEach var="sp" items="${sanPhamList}">
-                            <option value="${sp.id}" ${param.sanPhamId == sp.id ? 'selected' : ''}>${sp.ten}</option>
+                    <h5>Nhà Cung Cấp</h5>
+                    <select name="nhaCungCapId" class="form-select" onchange="this.form.submit();">
+                        <option value="" ${param.nhaCungCapId == '' ? 'selected' : ''}>Tất Cả</option>
+                        <c:forEach var="ncc" items="${nhaCungCapList}">
+                            <option value="${ncc.id}" ${param.nhaCungCapId == ncc.id ? 'selected' : ''}>${ncc.tenNCC}</option>
                         </c:forEach>
                     </select>
                 </div>
@@ -57,7 +57,7 @@
         <tr>
             <th>STT</th>
             <th>Mã Phiếu Nhập</th>
-            <th>Sản Phẩm</th>
+            <th>Nhà Cung Cấp</th>
             <th>Nhân Viên</th>
             <th>Ngày Nhập</th>
             <th>Ngày Tạo</th>
@@ -77,18 +77,18 @@
             <c:forEach items="${data.content}" var="nh" varStatus="i">
                 <tr>
                     <th>${i.index + 1}</th>
-                    <td>${nh.nhapHang.maPhieuNhap}</td>
-                    <td>${nh.sanPham.ten}</td>
-                    <td>${nh.nhapHang.nhanVien.tenNhanVien}</td>
-                    <td>${nh.nhapHang.ngayNhap}</td>
-                    <td>${nh.nhapHang.ngayTao}</td>
-                    <td>${nh.nhapHang.tongGiaTri}</td>
-                    <td>${nh.nhapHang.ghiChu}</td>
-                    <td class="${nh.nhapHang.tinhTrang == 1 ? 'text-success' : 'text-danger'}">
-                            ${nh.nhapHang.tinhTrang == 1 ? "Đã hoàn thành" : "Đang trên đường"}
+                    <td>${nh.maPhieuNhap}</td>
+                    <td>${nh.nhaCungCap.tenNCC}</td>
+                    <td>${nh.nhanVien.tenNhanVien}</td>
+                    <td>${nh.ngayNhap}</td>
+                    <td>${nh.ngayTao}</td>
+                    <td>${nh.tongGiaTri}</td>
+                    <td>${nh.ghiChu}</td>
+                    <td class="${nh.tinhTrang == 1 ? 'text-success' : 'text-danger'}">
+                            ${nh.tinhTrang == 1 ? "Đã hoàn thành" : "Đang trên đường"}
                     </td>
                     <td>
-                        <a href="chi-tiet/${nh.nhapHang.id}"><i class="fa-solid fa-circle-info"></i></a>
+                        <a href="chi-tiet/${nh.id}"><i class="fa-solid fa-circle-info"></i></a>
                     </td>
                 </tr>
             </c:forEach>
@@ -101,12 +101,12 @@
     <ul class="pagination justify-content-center">
         <c:if test="${currentPage > 0}">
             <li class="page-item">
-                <a class="page-link" href="/nhap-hang/hien-thi?page=0&size=${kh.size}" aria-label="First">
+                <a class="page-link" href="/nhap-hang/hien-thi?page=0&size=${nh.size}" aria-label="First">
                     <span aria-hidden="true">&laquo;&laquo; First</span>
                 </a>
             </li>
             <li class="page-item">
-                <a class="page-link" href="/nhap-hang/hien-thi?page=${currentPage - 1}&size=${kh.size}"
+                <a class="page-link" href="/nhap-hang/hien-thi?page=${currentPage - 1}&size=${nh.size}"
                    aria-label="Previous">
                     <span aria-hidden="true">&laquo; Previous</span>
                 </a>
@@ -117,13 +117,13 @@
         </li>
         <c:if test="${currentPage < totalPages - 1}">
             <li class="page-item">
-                <a class="page-link" href="/nhap-hang/hien-thi?page=${currentPage + 1}&size=${kh.size}"
+                <a class="page-link" href="/nhap-hang/hien-thi?page=${currentPage + 1}&size=${nh.size}"
                    aria-label="Next">
                     <span aria-hidden="true">Next &raquo;</span>
                 </a>
             </li>
             <li class="page-item">
-                <a class="page-link" href="/nhap-hang/hien-thi?page=${totalPages - 1}&size=${kh.size}"
+                <a class="page-link" href="/nhap-hang/hien-thi?page=${totalPages - 1}&size=${nh.size}"
                    aria-label="Last">
                     <span aria-hidden="true">Last &raquo;&raquo;</span>
                 </a>
@@ -145,7 +145,7 @@
 
     function resetFilters() {
         document.querySelector('input[name="tenNhanVien"]').value = '';
-        document.querySelector('select[name="sanPhamId"]').value = '';
+        document.querySelector('select[name="nhaCungCapId"]').value = '';
         document.querySelector('input[name="ngayTao"]').value = '';
         document.getElementById('filterSearchForm').submit();
     }

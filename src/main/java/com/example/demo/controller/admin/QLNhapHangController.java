@@ -80,45 +80,45 @@ public class QLNhapHangController {
     @GetMapping("/hien-thi")
     public String index(@RequestParam(name = "page", defaultValue = "0") int pageNo,
                         @RequestParam(name = "size", defaultValue = "5") int pageSize,
-                        @RequestParam(name = "sanPhamId", required = false) Integer sanPhamId,
-                        @RequestParam(name = "tenNhanVien", required = false) String tenNhanVien,
+                        @RequestParam(name = "nhaCungCapId", required = false) Integer nhaCungCapId,
+                        @RequestParam(name = "tenNhacungcap", required = false) String tenNhacungcap,
                         @RequestParam(name = "ngayTao", required = false) String ngayTao,
                         Model model) {
 
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Page<NhapHangChiTiet> page;
+        Page<NhapHang> page;
 
         try {
             // Tìm kiếm theo ngày tạo nếu có
             if (ngayTao != null && !ngayTao.isEmpty()) {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 Date date = sdf.parse(ngayTao);
-                page = nhapHangChiTietRepo.findByNhapHang_NgayTaoEquals(date, pageable);
+                page = repo.findByNgayTaoEquals(date, pageable);
             }
             // Tìm kiếm theo tên nhân viên nếu có
-            else if (tenNhanVien != null && !tenNhanVien.isEmpty()) {
-                page = nhapHangChiTietRepo.findByNhapHang_NhanVien_TenNhanVienContainingIgnoreCase(tenNhanVien, pageable);
+            else if (tenNhacungcap != null && !tenNhacungcap.isEmpty()) {
+                page = repo.findByNhanVien_TenNhanVienContainingIgnoreCase(tenNhacungcap, pageable);
             }
             // Tìm kiếm theo sanPhamId nếu có
-            else if (sanPhamId != null) {
-                page = nhapHangChiTietRepo.findBySanPhamId(sanPhamId, pageable);
+            else if (nhaCungCapId != null) {
+                page = repo.findByNhaCungCapId(nhaCungCapId, pageable);
             }
             // Nếu không có tham số nào, tìm tất cả
             else {
-                page = nhapHangChiTietRepo.findAll(pageable);
+                page = repo.findAll(pageable);
             }
         } catch (ParseException e) {
             model.addAttribute("error", "Ngày tạo không hợp lệ.");
             return "admin/ql_nhap_hang/index";
         }
 
-        List<SanPham> sanPhamList = sanPhamRepo.findAll();
+        List<NhaCungCap> nhaCungCapList = nhaCungCapRepo.findAll();
 
         model.addAttribute("data", page);
         model.addAttribute("currentPage", pageNo);
         model.addAttribute("totalPages", page.getTotalPages());
-        model.addAttribute("sanPhamList", sanPhamList);
-        model.addAttribute("sanPhamId", sanPhamId);
+        model.addAttribute("nhaCungCapList", nhaCungCapList);
+        model.addAttribute("nhaCungCapId", nhaCungCapId);
 
         return "admin/ql_nhap_hang/index";
     }

@@ -12,6 +12,22 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <style>
+        <%--   Modal    --%>
+        .modal.show {
+            display: block;
+            opacity: 1;
+        }
+
+        #soLuong::-webkit-outer-spin-button,
+        #soLuong::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        #soLuong {
+            -moz-appearance: textfield;
+        }
+
         .product-title {
             font-size: 24px;
             font-weight: bold;
@@ -24,10 +40,6 @@
             margin-top: 10px;
         }
 
-        .old-price {
-            text-decoration: line-through;
-            color: grey;
-        }
 
         /* Display old price on a new line */
         .quantity {
@@ -64,23 +76,38 @@
         .description {
             margin-top: 60px;
         }
+
+        /* Giảm khoảng cách giữa các nút */
+        .row {
+            margin-top: 20px; /* Nếu cần thêm khoảng cách với các phần tử khác */
+        }
+
+        /* Nếu bạn muốn khoảng cách tùy chỉnh giữa các nút */
+        .d-flex {
+            gap: 15px; /* Điều chỉnh giá trị này tùy ý để có khoảng cách phù hợp */
+        }
+
+        /* Căn chỉnh chữ trong nút */
+        .btn {
+            white-space: nowrap; /* Đảm bảo chữ không bị xuống dòng */
+        }
     </style>
 </head>
 <body>
-<jsp:include page="../header_user.jsp" />
+<jsp:include page="../header_user.jsp"/>
 <div class="container mt-5">
     <div class="row">
         <div class="col-lg-9"> <!-- Increased size to 75% -->
             <div class="row">
                 <div class="col-md-6">
-                    <img src="${pageContext.request.contextPath}/uploads/${sanPhamChiTiet.hinhAnh}" class="card-img-top product-image">
+                    <img src="${pageContext.request.contextPath}/uploads/${sanPhamChiTiet.hinhAnh}"
+                         class="card-img-top product-image">
                 </div>
                 <div class="col-md-6">
                     <input type="text" name="id" value="${sanPhamChiTiet.id}" hidden>
                     <h1 class="product-title">${sanPhamChiTiet.sanPham.ten}</h1>
                     <div class="price">
                         ${sanPhamChiTiet.giaBan} VNĐ
-                        <%--                        <span class="old-price">$${sanPhamChiTiet.giaBan} VNĐ</span>--%>
                     </div>
                     <hr>
                     <div class="quantity">
@@ -91,9 +118,19 @@
                         <p>Còn ${sanPhamChiTiet.soLuong} sản phẩm trong kho</p>
                     </div>
                     <hr>
-                    <div class="mt-3">
-                        <button class="btn btn-dark btn-lg text-white">Thêm vào giỏ hàng</button>
-                        <button class="btn btn-success btn-lg text-white">Mua ngay</button>
+                    <div class="row mt-3">
+                        <div class="col-12 d-flex justify-content-between gap-3">
+                            <form action="/gio-hang/add" method="post" class="w-50">
+                                <input type="hidden" name="sanPhamId" value="${item.id}">
+                                <button type="submit" class="btn btn-dark btn-lg w-100 text-center">Thêm vào giỏ hàng
+                                </button>
+                            </form>
+
+                            <form action="/danh-sach-san-pham-chi-tiet/mua-ngay" method="get" class="w-50">
+                                <input type="hidden" name="productId" value="${item.id}">
+                                <button type="submit" class="btn btn-success btn-lg w-100 text-center">Mua ngay</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -129,7 +166,7 @@
         </div>
         <div class="col-lg-3">
             <div class="related-products">
-                <h3 class="mb-3">Sản phẩm liên quan</h3>
+                <h3 class="mb-3">Sản phẩm bán chạy</h3>
                 <c:if test="${empty data.content}">
                     <tr>
                         <td colspan="10">Không tìm thấy đối tượng nào.</td>
@@ -156,6 +193,97 @@
         </div>
     </div>
 </div>
+
+<!-- Modal hiển thị thông tin sản phẩm (hiển thị nếu sản phẩm được chọn) -->
+<c:if test="${not empty sanPhamChiTiet}">
+    <div class="modal fade show" id="productPopup" tabindex="-1" aria-labelledby="productPopupLabel" aria-modal="true"
+         role="dialog" style="display: block;">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content shadow-lg border-0 rounded">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <h5 class="modal-title fw-bold text-success" id="productPopupLabel">Mua Ngay Tức Thì Nào
+                        HeHeBoizz!</h5>
+                    <a href="/danh-sach-san-pham-chi-tiet/hien-thi" class="btn-close" aria-label="Close"></a>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-4">
+                        <div class="col-md-6 d-flex flex-column align-items-center text-center">
+                            <a href="/danh-sach-san-pham-chi-tiet/view-sp/${sanPhamChiTiet.id}">
+                                <img src="${pageContext.request.contextPath}/uploads/${sanPhamChiTiet.hinhAnh}"
+                                     class="card-img-top product-image rounded mb-3 shadow-sm"
+                                     alt="${sanPhamChiTiet.sanPham.ten}">
+                            </a>
+                            <h5 class="fw-bold mb-2">${sanPhamChiTiet.sanPham.ten}</h5>
+                            <p class="text-danger fw-bold">Giá: <span id="giaBan">${sanPhamChiTiet.giaBan}</span> VNĐ
+                            </p>
+                            <p class="text-muted">Mô tả: ${sanPhamChiTiet.sanPham.moTa}</p>
+                            <div class="mb-3 d-flex align-items-center justify-content-center">
+                                <button type="button" class="btn btn-outline-secondary rounded-circle px-2"
+                                        onclick="changeQuantity(-1)">-
+                                </button>
+                                <input type="number" class="form-control mx-2 text-center" id="soLuong" name="soLuong"
+                                       min="1" value="1" required onchange="updateTotal()" style="width: 80px;">
+                                <button type="button" class="btn btn-outline-secondary rounded-circle px-2"
+                                        onclick="changeQuantity(1)">+
+                                </button>
+                            </div>
+                            <div>
+                                <label class="form-label fw-bold">Tổng tiền:</label>
+                                <p id="tongTien" class="text-success fw-bold">${sanPhamChiTiet.giaBan} VNĐ</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 border-start">
+                            <h3 class="text-center mb-4 text-secondary">Thông tin thanh toán</h3>
+                            <form action="/danh-sach-san-pham/xac-nhan-hoa-don" method="post">
+                                <input type="hidden" name="sanPhamId" value="${sanPhamChiTiet.id}">
+                                <input type="hidden" name="soLuong" id="soLuongInput" value="1">
+                                <input type="hidden" name="tongTien" id="tongTienInput"
+                                       value="${sanPhamChiTiet.giaBan}">
+                                <div class="mb-3">
+                                    <label for="phuongThucThanhToan" class="form-label fw-bold">Phương thức thanh
+                                        toán:</label>
+                                    <select class="form-select" id="phuongThucThanhToan" name="phuongThucThanhToan"
+                                            required>
+                                        <option value="Tiền mặt">Tiền mặt</option>
+                                        <option value="Chuyển khoản">Chuyển khoản</option>
+                                        <option value="Thẻ tín dụng">Thẻ tín dụng</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Phương thức vận chuyển:</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="phuongThucVanChuyen"
+                                               id="giaoHangNhanh" value="Giao Hàng Nhanh" required
+                                               onchange="updateTotal()">
+                                        <label class="form-check-label" for="giaoHangNhanh">Giao Hàng Nhanh</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="phuongThucVanChuyen"
+                                               id="giaoHangTieuChuan" value="Giao Hàng Tiêu Chuẩn"
+                                               onchange="updateTotal()">
+                                        <label class="form-check-label" for="giaoHangTieuChuan">Giao Hàng Tiêu
+                                            Chuẩn</label>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="diaChi" class="form-label fw-bold">Địa chỉ cụ thể:</label>
+                                    <input type="text" class="form-control" id="diaChi" name="diaChi" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="soDienThoai" class="form-label fw-bold">Số điện thoại:</label>
+                                    <input type="tel" class="form-control" id="soDienThoai" name="soDienThoai"
+                                           pattern="[0-9]{10}" required>
+                                </div>
+                                <button type="submit" class="btn btn-success w-100 py-2 mt-4">Xác nhận đơn hàng</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</c:if>
+
 <script>
     let currentPage = 0; // Trang bắt đầu
 
@@ -166,33 +294,20 @@
             type: 'GET',
             data: {
                 page: page, // Gửi thông tin trang hiện tại
-                size: 5 // Mỗi lần tải 5 sản phẩm
+                size: 4 // Mỗi lần tải 5 sản phẩm
             },
-            success: function(response) {
+            success: function (response) {
                 // Thay thế nội dung sản phẩm
                 const newProducts = $(response).find('.related-products').html();
                 $('.related-products').html(newProducts);
             },
-            error: function() {
+            error: function () {
                 console.error('Error loading related products');
             }
         });
     }
 
-    // Hàm thay đổi sản phẩm mỗi 20 giây
-    function changeProductsPeriodically() {
-        setInterval(function() {
-            currentPage = (currentPage + 1) % 10; // Giới hạn trang là 10 (hoặc số bạn muốn)
-            loadRelatedProducts(currentPage); // Tải sản phẩm từ trang tiếp theo
-        }, 20000); // Thay đổi mỗi 20 giây
-    }
-
-    // Bắt đầu thay đổi sản phẩm
-    $(document).ready(function() {
-        changeProductsPeriodically(); // Bắt đầu
-    });
-  
-    document.querySelector('.btn-dark').addEventListener('click', function() {
+    document.querySelector('.btn-dark').addEventListener('click', function () {
         // Lấy thông tin sản phẩm từ trang
         let productId = document.querySelector('input[name="id"]').value;
         let productName = document.querySelector('.product-title').innerText;
@@ -227,6 +342,7 @@
         // Thông báo cho người dùng
         alert('Sản phẩm đã được thêm vào giỏ hàng');
     });
+
     function displayCart() {
         let cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
 
@@ -249,6 +365,7 @@
 
     // Gọi hàm displayCart khi trang tải
     window.onload = displayCart;
+
     function removeFromCart(productId) {
         let cart = JSON.parse(localStorage.getItem('cart'));
 
@@ -261,7 +378,48 @@
         // Cập nhật lại hiển thị giỏ hàng
         displayCart();
     }
+
+    // Giá bán của sản phẩm
+    const giaBan = ${sanPhamChiTiet.giaBan};
+
+    // Hàm cập nhật tổng tiền
+    function updateTotal() {
+        const soLuong = parseInt(document.getElementById("soLuong").value) || 1; // Giá trị mặc định là 1
+        const selectedShipping = document.querySelector('input[name="phuongThucVanChuyen"]:checked');
+
+        // Đặt chi phí vận chuyển mặc định là 0
+        let shippingCost = 0;
+
+        // Nếu có phương thức vận chuyển được chọn, tính toán giá trị chi phí vận chuyển
+        if (selectedShipping) {
+            if (selectedShipping.value === "Giao Hàng Nhanh") {
+                shippingCost = 33000; // Chi phí cho giao hàng nhanh
+            } else if (selectedShipping.value === "Giao Hàng Tiêu Chuẩn") {
+                shippingCost = 20000; // Chi phí cho giao hàng tiêu chuẩn
+            }
+        }
+
+        // Tính tổng tiền
+        const tongTien = (giaBan * soLuong) + shippingCost;
+
+        // Cập nhật nội dung tổng tiền trong modal
+        document.getElementById("tongTien").innerText = tongTien.toLocaleString('vi-VN') + " VNĐ";
+    }
+
+    function changeQuantity(amount) {
+        const soLuongInput = document.getElementById("soLuong");
+        const soLuongHiddenInput = document.getElementById("soLuongInput"); // Thêm dòng này
+        let currentQuantity = parseInt(soLuongInput.value);
+        currentQuantity = isNaN(currentQuantity) ? 1 : currentQuantity;
+        currentQuantity = Math.max(1, currentQuantity + amount); // Đảm bảo số lượng tối thiểu là 1
+        soLuongInput.value = currentQuantity;
+
+        // Cập nhật giá trị cho trường ẩn
+        soLuongHiddenInput.value = currentQuantity; // Thêm dòng này
+
+        updateTotal(); // Cập nhật lại tổng tiền
+    }
 </script>
- <jsp:include page="../footer_user.jsp" />
+<jsp:include page="../footer_user.jsp"/>
 </body>
 </html>

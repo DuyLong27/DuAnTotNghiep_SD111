@@ -26,325 +26,296 @@
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <style>
-        /* Dropdown Custom */
-        .dropdown-custom {
-            position: relative;
+        /* Sidebar styling */
+        .sidebar {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px;
         }
 
-        .dropdown-custom .dropdown-menu-custom {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background-color: #532B0E; /* Đặt màu nền cho dropdown */
-            padding: 0px;
-            list-style: none;
-            margin: 0;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 5px;
-            min-width: 160px;
-        }
-
-        .dropdown-custom:hover .dropdown-menu-custom {
-            display: block;
-
-        }
-
-        .dropdown-custom .dropdown-item {
-            color: white; /* Đặt màu chữ */
-            padding: 10px;
-            text-decoration: none;
-            font-size: 16px;
-        }
-
-        .dropdown-custom .dropdown-item:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-        }
-
-        /* Submenu */
-        .dropdown-submenu .dropdown-menu {
-            background-color: #532B0E;
-            display: none;
-            position: absolute;
-            top: 0;
-            left: 100%;
-            padding: 0px;
-            list-style: none;
-            margin: 0;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 5px;
-            min-width: 160px;
-        }
-
-        .dropdown-submenu:hover .dropdown-menu {
-            display: block;
-        }
-
-        .dropdown-submenu .dropdown-item {
-            color: white;
-            padding: 10px;
-            text-decoration: none;
-            font-size: 16px;
-        }
-
-        .dropdown-submenu .dropdown-item:hover {
-            background-color: rgba(255, 255, 255, 0.1); /* Hiệu ứng hover giống menu chính */
-            border-radius: 5px;
-        }
-
-        .dropdown-menu-custom, .dropdown-menu {
-            pointer-events: auto;
-        }
-
-
-        /* Hover Effect for Nav Items */
-        .nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-        }
-
-        /* Logo Styling */
-        .navbar-brand {
-            font-size: 24px;
-            color: white;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .navbar-nav {
-                flex-direction: column;
-            }
-        }
-
-
-        .sublist {
-            list-style: none;
-            padding-left: 0;
-        }
-
-        .list-group-item {
+        .sidebar .list-group-item {
             border: none;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #495057;
+            transition: all 0.3s ease;
         }
 
+        .sidebar .list-group-item i {
+            font-size: 20px;
+            margin-right: 10px;
+            color: #6c757d;
+        }
+
+        .sidebar .list-group-item:hover {
+            background-color: #f8f9fa;
+            color: #007bff;
+            transform: scale(1.02);
+            border-radius: 8px;
+        }
+
+        .sidebar .list-group-item:hover i {
+            color: #007bff;
+        }
 
         .rotate-icon {
-            transition: transform 0.2s ease-in-out;
+            transition: transform 0.3s ease;
         }
 
-        .collapse.show + a .rotate-icon, /* Khi phần collapse được mở */
-        a[aria-expanded="true"] .rotate-icon {
-            transform: rotate(90deg); /* Xoay mũi tên 90 độ */
+        [data-bs-toggle="collapse"][aria-expanded="true"] .rotate-icon {
+            transform: rotate(90deg);
+        }
+
+        /* Card header gradient */
+        .card-header {
+            background: linear-gradient(45deg, #0B745E, #532B0E);
+            color: #fff;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .card-body .col {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .card-body p {
+            margin: 0;
+            color: #495057;
+        }
+
+        .card-body strong {
+            color: #343a40;
+            font-weight: 700;
         }
     </style>
 
 </head>
 <body>
-<%--header--%>
-<nav class="navbar navbar-expand-sm navbar-dark shadow-lg" style="background-color: #0B745E; height: 80px;">
-    <div class="container d-flex align-items-center">
-        <a href="#" class="navbar-brand d-flex align-items-center">
-            <img src="../../../lib/logo_xanh.png" style="height: 60px; margin-right: 10px;" alt="Logo">
-        </a>
-
-        <ul class="navbar-nav mx-auto" style="flex-grow: 1; justify-content: center; gap: 20px;">
-            <li class="nav-item">
-                <a class="nav-link text-light" href="#">Trang chủ</a>
-            </li>
-
-            <!-- Dropdown Custom -->
-            <li class="nav-item dropdown-custom">
-                <a href="#" class="nav-link text-light">Sản phẩm</a>
-                <ul class="dropdown-menu-custom">
-                    <li class="dropdown-submenu">
-                        <a class="dropdown-item" href="#">Cà phê</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Cà phê chuyên biệt</a></li>
-                            <li><a class="dropdown-item" href="#">Cà phê rang xay</a></li>
-                            <li><a class="dropdown-item" href="#">Cà phê hòa tan</a></li>
-                            <li><a class="dropdown-item" href="#">Cà phê hạt</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown-submenu">
-                        <a class="dropdown-item" href="#">Dụng cụ</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Dụng cụ hỗ trợ pha cà phê</a></li>
-                            <li><a class="dropdown-item" href="#">Máy pha cà phê</a></li>
-                            <li><a class="dropdown-item" href="#">Phụ kiện cà phê</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link text-light" href="#">Khuyến mãi</a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link text-light" href="#">Giới thiệu</a>
-            </li>
-
-
-            <li class="nav-item">
-                <a class="nav-link text-light" href="#">Tin tức</a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link text-light" href="#">Liên hệ</a>
-            </li>
-        </ul>
-
-        <ul class="navbar-nav">
-            <li class="nav-item dropdown-custom">
-                <a href="/khach-hang" class="nav-link text-light">Tài khoản</a>
-                <ul class="dropdown-menu-custom">
-                    <li><a class="dropdown-item" href="/khach-hang">Thông tin</a></li>
-                    <li><a class="dropdown-item" href="#">Đăng xuất</a></li>
-                </ul>
-            </li>
-            <li class="nav-item">
-                <span class="btn rounded-pill text-white" style="padding: 10px 15px;"><i class="fa-solid fa-user"></i></span>
-            </li>
-        </ul>
-    </div>
-</nav>
+<jsp:include page="../header_user.jsp"/>
 <img src="/lib/background_quanly.png" style="width: 100%; height: auto;">
-
-
 <%--body--%>
 <div class="container mt-5 mb-3">
     <div class="row">
-        <div class="col-md-3">
-            <div class="list-group">
-                <!-- Tài khoản của tôi -->
-                <a href="#collapseAccount" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-bs-toggle="collapse" aria-expanded="false">
-                    <h5><strong>Tài khoản của tôi</strong></h5>
-                    <i class="bi bi-chevron-right rotate-icon"></i> <!-- Icon mũi tên -->
-                </a>
-                <div class="collapse" id="collapseAccount">
-                    <ul class="list-group sublist">
-                        <li><a class="list-group-item" href="/khach-hang/thong-tin">Thông tin cá nhân</a></li>
-                        <li><a class="list-group-item" href="/khach-hang/doi-mat-khau">Thay đổi mật khẩu</a></li>
-                    </ul>
-                </div>
+        <!-- Sidebar -->
+        <div class="col-md-3 mb-3">
+            <div class="sidebar">
+                <div class="list-group">
+                    <a href="#collapseAccount" class="list-group-item d-flex justify-content-between align-items-center"
+                       data-bs-toggle="collapse" aria-expanded="false">
+                        <i class="bi bi-person-circle"></i> Tài khoản của tôi
+                        <i class="bi bi-chevron-right rotate-icon"></i>
+                    </a>
+                    <div class="collapse" id="collapseAccount">
+                        <a class="list-group-item" href="/khach-hang/thong-tin"><i class="bi bi-info-circle"></i> Thông
+                            tin cá nhân</a>
+                        <a class="list-group-item" href="/khach-hang/doi-mat-khau"><i class="bi bi-key"></i> Thay đổi
+                            mật khẩu</a>
+                    </div>
 
-                <!-- Khuyến mãi của tôi -->
-                <a href="#collapsePromotion" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-bs-toggle="collapse" aria-expanded="false">
-                    <h5><strong>Khuyến mãi của tôi</strong></h5>
-                    <i class="bi bi-chevron-right rotate-icon"></i> <!-- Icon mũi tên -->
-                </a>
-                <div class="collapse" id="collapsePromotion">
-                    <ul class="list-group sublist">
-                        <li><a class="list-group-item" href="/khach-hang/ma-giam-gia">Phiếu giảm giá</a></li>
-                        <li><a class="list-group-item" href="/khach-hang/diem-thuong">Điểm thưởng</a></li>
-                    </ul>
-                </div>
+                    <a href="#collapseOrders" class="list-group-item d-flex justify-content-between align-items-center"
+                       data-bs-toggle="collapse" aria-expanded="false">
+                        <i class="bi bi-box-seam"></i> Đơn hàng của tôi
+                        <i class="bi bi-chevron-right rotate-icon"></i>
+                    </a>
+                    <div class="collapse" id="collapseOrders">
+                        <a class="list-group-item" href="/doi-tra"><i class="bi bi-basket"></i> Đơn Hàng</a>
+                    </div>
 
-                <!-- Đơn hàng của tôi -->
-                <a href="#collapseOrders" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" data-bs-toggle="collapse" aria-expanded="false">
-                    <h5><strong>Đơn hàng của tôi</strong></h5>
-                    <i class="bi bi-chevron-right rotate-icon"></i> <!-- Icon mũi tên -->
-                </a>
-                <div class="collapse" id="collapseOrders">
-                    <ul class="list-group sublist">
-                        <li><a class="list-group-item" href="/khach-hang/tat-ca-don-hang">Tất cả đơn hàng</a></li>
-                        <li><a class="list-group-item" href="#">Đơn hàng xử lý</a></li>
-                        <li><a class="list-group-item" href="#">Đơn hàng chờ lấy hàng</a></li>
-                        <li><a class="list-group-item" href="#">Đơn hàng đang giao</a></li>
-                        <li><a class="list-group-item" href="#">Đơn hàng đã giao</a></li>
-                        <li><a class="list-group-item" href="#">Đã đánh giá</a></li>
-                        <li><a class="list-group-item" href="#">Chưa đánh giá</a></li>
-                        <li><a class="list-group-item" href="#">Đơn hàng đã hủy</a></li>
-                        <li><a class="list-group-item" href="#">Đơn hàng trả lại</a></li>
-                    </ul>
+                    <a class="list-group-item d-flex align-items-center" href="/auth/logout">
+                        <i class="bi bi-box-arrow-right"></i> <span class="ms-2">Đăng Xuất</span>
+                    </a>
                 </div>
-
-                <!-- Đăng xuất -->
-                <a class="list-group-item" href="#"><h5><strong>Đăng xuất</strong></h5></a>
             </div>
         </div>
 
         <div class="col-md-9">
-            <h5><strong>Đổi mật khẩu</strong></h5>
-            <form action="">
+            <form action="/khach-hang/doi-mat-khau" method="post">
                 <div class="mt-3">
                     <label class="form-label">Mật khẩu hiện tại</label>
-                    <input type="password" class="form-control">
+                    <input type="password" class="form-control" name="currentPassword" required>
                 </div>
                 <div class="mt-3">
                     <label class="form-label">Mật khẩu mới</label>
-                    <input type="password" class="form-control">
+                    <input type="password" class="form-control" name="newPassword" required>
                 </div>
                 <div class="mt-3">
                     <label class="form-label">Xác nhận mật khẩu</label>
-                    <input type="password" class="form-control">
+                    <input type="password" class="form-control" name="confirmPassword" required>
                 </div>
                 <div class="mt-3">
-                    <a href="">Quên mật khẩu ?</a>
+                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Quên mật khẩu?</a>
                 </div>
                 <div class="mt-3">
-                    <button class="btn btn-success">Lưu</button>
+                    <button type="submit" class="btn btn-success">Lưu</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-
-
-<%--footer--%>
-<footer style="background-color: #532B0E; color: white; padding: 40px 0;">
-    <div class="container">
-        <div class="row align-items-center">
-
-            <div class="col-md-3">
-                <img src="/lib/logo_nau.png" style="height: 250px; margin-bottom: 20px;" alt="Logo">
+<!-- Modal Quên mật khẩu -->
+<div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="forgotPasswordModalLabel">Khôi phục mật khẩu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+            <div class="modal-body">
+                <!-- Form nhập email -->
+                <div id="emailForm">
+                    <form id="forgotPasswordForm" method="POST">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Nhập email của bạn</label>
+                            <input type="email" class="form-control" id="email" name="email" required placeholder="Email của bạn">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Gửi mã OTP</button>
+                    </form>
+                </div>
 
-
-            <div class="col-md-3">
-                <h5>Về chúng tôi</h5>
-                <ul style="list-style: none; padding-left: 0;">
-                    <li><a href="#" style="color: white;">Giới thiệu</a></li>
-                    <li><a href="#" style="color: white;">Vị trí cửa hàng</a></li>
-                    <li><a href="#" style="color: white;">Câu hỏi thường gặp</a></li>
-                    <li><a href="#" style="color: white;">Chính sách và điều khoản</a></li>
-                    <li><a href="#" style="color: white;">Chính sách bảo mật</a></li>
-                    <li><a href="#" style="color: white;">Đăng ký trở thành đối tác</a></li>
-                </ul>
-            </div>
-
-            <div class="col-md-3">
-                <h5>Đối tác</h5>
-                <ul style="list-style: none; padding-left: 0;">
-                    <li><a href="#" style="color: white;">Đối tác thanh toán</a></li>
-                    <li><a href="#" style="color: white;">Cách thức thanh toán</a></li>
-                    <li><a href="#" style="color: white;">Đối tác vận chuyển</a></li>
-                    <li><a href="#" style="color: white;">Chính sách giao nhận</a></li>
-                    <li><a href="#" style="color: white;">Chính sách bảo hành</a></li>
-                    <li><a href="#" style="color: white;">Chính sách đổi trả</a></li>
-                </ul>
-            </div>
-
-            <div class="col-md-3">
-                <h5>Liên hệ</h5>
-                <p>Địa chỉ: Số 123 Tây Tựu, Bắc Từ Liêm, Hà Nội, Việt Nam</p>
-                <p>Điện thoại: 123456789</p>
-                <h5>Mạng xã hội</h5>
-                <a href="#" style="color: white;">Facebook</a>
-                <a href="#" style="color: white;">Twitter</a>
-                <a href="#" style="color: white;">Zalo</a>
-            </div>
-
-        </div>
-        <div class="row">
-
-            <div class="col-md-12 text-center">
-                <h5>The Nature Coffee</h5>
-                <p>Thưởng thức tinh túy thiên nhiên trong từng ngụm cà phê</p>
-                <p>&copy; 2023 The Nature Coffee</p>
+                <!-- Form xác nhận OTP -->
+                <div id="otpForm" style="display: none;">
+                    <form id="verifyOtpForm" method="POST">
+                        <div class="mb-3">
+                            <label for="otp" class="form-label">Nhập mã OTP đã gửi</label>
+                            <input type="text" class="form-control" id="otp" name="otp" required placeholder="Mã OTP">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Xác nhận OTP</button>
+                    </form>
+                </div>
+                <!-- Form nhập mật khẩu mới -->
+                <div id="newPasswordForm" style="display: none;">
+                    <form id="updatePasswordForm" method="POST">
+                        <div class="mb-3">
+                            <label for="newPassword" class="form-label">Mật khẩu mới</label>
+                            <input type="password" class="form-control" id="newPassword" name="newPassword" required placeholder="Mật khẩu mới">
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Xác nhận mật khẩu mới</label>
+                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required placeholder="Xác nhận mật khẩu mới">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Cập nhật mật khẩu</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</footer>
+</div>
+
+
+
+<script>
+    function showForgotPasswordModal() {
+        document.getElementById('forgotPasswordModal').style.display = 'block';
+    }
+    function closeModal() {
+        document.getElementById('forgotPasswordModal').style.display = 'none';
+    }
+    // Gửi form OTP
+    document.getElementById('forgotPasswordForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const email = document.getElementById('email').value;
+
+        fetch('/khach-hang/gui-ma-xac-minh', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'email=' + encodeURIComponent(email),
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Hiển thị thông báo đơn giản bằng alert
+                alert(data.message);
+
+                // Chuyển sang form xác nhận OTP nếu gửi OTP thành công
+                if (data.success) {
+                    document.getElementById('emailForm').style.display = 'none';
+                    document.getElementById('otpForm').style.display = 'block';
+                }
+            })
+            .catch(error => {
+                alert("Có lỗi xảy ra, vui lòng thử lại!");
+            });
+    });
+
+    // Xác nhận OTP và chuyển sang form nhập mật khẩu mới
+    document.getElementById('verifyOtpForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const otp = document.getElementById('otp').value;
+
+        fetch('/khach-hang/xac-nhan-otp', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'otp=' + encodeURIComponent(otp),
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Hiển thị thông báo đơn giản bằng alert
+                alert(data.message);
+
+                // Nếu OTP chính xác, chuyển sang form nhập mật khẩu mới
+                if (data.success) {
+                    document.getElementById('otpForm').style.display = 'none';
+                    document.getElementById('newPasswordForm').style.display = 'block';
+                }
+            })
+            .catch(error => {
+                alert("Có lỗi xảy ra, vui lòng thử lại!");
+            });
+    });
+
+    // Cập nhật mật khẩu mới
+    document.getElementById('updatePasswordForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        // Kiểm tra nếu mật khẩu và xác nhận mật khẩu trùng khớp
+        if (newPassword !== confirmPassword) {
+            alert("Mật khẩu và xác nhận mật khẩu không khớp!");
+            return;
+        }
+
+        // Gửi yêu cầu cập nhật mật khẩu mới
+        fetch('/khach-hang/cap-nhat-mat-khau', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'newPassword=' + encodeURIComponent(newPassword),
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Hiển thị thông báo đơn giản bằng alert
+                alert(data.message);
+
+                // Đóng modal sau khi cập nhật mật khẩu thành công
+                if (data.success) {
+                    setTimeout(() => {
+                        var modal = new bootstrap.Modal(document.getElementById('forgotPasswordModal'));
+                        modal.hide();
+                    }, 2000);
+                }
+            })
+            .catch(error => {
+                alert("Có lỗi xảy ra, vui lòng thử lại!");
+            });
+    });
+</script>
+<jsp:include page="../footer_user.jsp"/>
 </body>
 </html>

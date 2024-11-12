@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -59,7 +60,7 @@ public class DanhSachSPCTController {
 
     @GetMapping("/hien-thi")
     public String index(@RequestParam(name = "page", defaultValue = "0") int pageNo,
-                        @RequestParam(name = "size", defaultValue = "5") int pageSize,
+                        @RequestParam(name = "size", defaultValue = "4") int pageSize,
                         Model model) {
 
         Pageable pageable = PageRequest.of(pageNo, pageSize);
@@ -88,7 +89,7 @@ public class DanhSachSPCTController {
         }
 
         // Lấy danh sách sản phẩm liên quan
-        Pageable pageable = PageRequest.of(0, 5); // Giới hạn số lượng sản phẩm liên quan
+        Pageable pageable = PageRequest.of(0, 4); // Giới hạn số lượng sản phẩm liên quan
         Page<SanPhamChiTiet> relatedProductsPage = sanPhamChiTietRepo.findAll(pageable);
 
         // Thêm sản phẩm liên quan vào model
@@ -98,7 +99,7 @@ public class DanhSachSPCTController {
     }
 
     public String showProductList(@RequestParam(name = "page", defaultValue = "0") int pageNo,
-                                  @RequestParam(name = "size", defaultValue = "5") int pageSize,
+                                  @RequestParam(name = "size", defaultValue = "4") int pageSize,
                                   Model model) {
 
         Pageable pageable = PageRequest.of(pageNo, pageSize);
@@ -109,5 +110,14 @@ public class DanhSachSPCTController {
         model.addAttribute("totalPages", page.getTotalPages());
 
         return "customer/san_pham_chi_tiet/index"; // Trả về JSP
+    }
+
+    @GetMapping("/mua-ngay")
+    public String muaNgay(@RequestParam("productId") Integer productId, Model model) {
+        SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(productId).orElse(null);
+        model.addAttribute("sanPhamChiTiet", sanPhamChiTiet);
+        List<SanPhamChiTiet> sanPhamList = sanPhamChiTietRepo.findAll();
+        model.addAttribute("listSanPham", sanPhamList);
+        return "customer/san_pham/index";
     }
 }

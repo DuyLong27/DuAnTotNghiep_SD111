@@ -11,4 +11,11 @@ import java.util.Date;
 
 @Repository
 public interface NhapHangRepo extends JpaRepository<NhapHang, Integer> {
+
+    Page<NhapHang> findByNhanVien_TenNhanVienContainingIgnoreCase(String tenNhanVien, Pageable pageable);
+
+    Page<NhapHang> findByNgayTaoEquals(Date ngayTao, Pageable pageable);
+
+    Page<NhapHang> findByNhaCungCapId(Integer nhaCungCapId, Pageable pageable);
+
 }
