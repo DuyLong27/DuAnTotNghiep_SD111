@@ -21,9 +21,11 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+
 </head>
 <body>
-<jsp:include page="../layout.jsp" />
+<jsp:include page="../layout.jsp"/>
 <div class="row" style="padding-left: 100px;">
     <%--body--%>
     <div class="row" style="text-align: center">
@@ -32,96 +34,101 @@
 
     <br>
 
-    <div class="row">
-        <div class="col-3">
-            <div class="row">
+    <div class="container">
+        <!-- Phần nhập liệu báo cáo -->
+        <div class="row">
+            <!-- Loại báo cáo -->
+            <div class="col-md-3">
                 <label>Loại báo cáo</label>
-            </div>
-            <div class="row">
-                <select class="form-select" aria-label="Default select example">
+                <select class="form-select" id="reportSelect">
                     <option selected>Doanh thu theo thu ngân</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
+                    <option value="1">Doanh thu theo sản phẩm</option>
+                    <option value="2">Doanh thu theo dịch vụ</option>
+                    <option value="3">Doanh thu theo khu vực</option>
                 </select>
             </div>
-        </div>
 
-        <div class="col-3" style="padding-left: 100px">
-            <div class="row">
-                <label>Thời gian</label>
+            <!-- Thời gian -->
+            <div class="col-md-3">
+                <label>Ngày</label>
+                <input type="date" class="form-control" id="timeSelect">
             </div>
-            <div class="row">
-                <select class="form-select" aria-label="Default select example">
-                    <option selected>Tháng này</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                </select>
-            </div>
-        </div>
 
-        <div class="col-3" style="padding-left: 100px">
-            <div class="row">
+            <!-- Giờ -->
+            <div class="col-md-3">
                 <label>Giờ</label>
+                <input type="time" class="form-control" id="hourSelect">
             </div>
-            <div class="row">
-                <select class="form-select" aria-label="Default select example">
-                    <option selected>07:00 - 08:00 GMT+7</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                </select>
+
+            <!-- Nút xem báo cáo -->
+            <div class="col-md-3">
+                <button type="button" class="btn btn-primary mt-4" onclick="filterData()">Xem báo cáo</button>
             </div>
         </div>
+    </div>
 
-        <div class="col-3" style="padding-left: 100px">
-            <div class="row mt-4">
-                <div>
-                    <button type="button" class="btn btn-primary">Xem báo cáo</button>
+    <!-- Modal hiển thị báo cáo -->
+    <div class="modal" tabindex="-1" id="reportModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Báo cáo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="reportContent">Đang tải báo cáo...</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                 </div>
             </div>
         </div>
-
     </div>
 </div>
+
 <br>
 <div class="row" style="padding-left: 100px">
     <div class="col-3">
-        <H4 class="text-uppercase" style="font-weight: bold">Doanh thu tổng quan</H4>
-        <p class="fst-italic" style="color: #AFAFAF">Xem vào lúc 7:00 CH 10/07/2024</p>
+        <h4 class="text-uppercase" style="font-weight: bold">Doanh thu tổng quan</h4>
+        <p class="fst-italic" style="color: #AFAFAF">
+            Xem vào lúc ${currentTime}
+        </p>
     </div>
     <div class="col-6"></div>
-    <div class="col-3">
-        <button type="button" class="btn btn-success" style="margin-left: 70px">Xuất file Excel</button>
+    <div class="col-3 d-flex align-items-center">
+        <button type="button" class="btn btn-success" onclick="exportToExcel()">Xuất file Excel</button>
     </div>
 </div>
+
 <br>
-<div class="row" style="padding-left: 100px">
+<div class="row" style="padding-left: 100px; padding-right: 100px">
     <table class="table table-borderless">
         <thead>
         <tr>
-            <th scope="col" style="color: darkorchid">Tổng số hóa đơn</th>
-            <th scope="col" style="color: darkorchid">Số hóa đơn hủy</th>
-            <th scope="col" style="color: darkorchid">Số lượng mặt hàng</th>
-            <th scope="col" style="color: darkorchid">TB mặt hàng / HĐ</th>
-            <th scope="col" style="color: darkorchid">TB doanh thu / HĐ</th>
+            <th scope="col" style="text-align: center; color: darkorchid">Tổng số hóa đơn</th>
+            <th scope="col" style="text-align: center; color: darkorchid">Số hóa đơn hủy</th>
+            <th scope="col" style="text-align: center; color: darkorchid">Sản phẩm bán ra</th>
+            <th scope="col" style="text-align: center; color: darkorchid">Sản phẩm bán chạy nhất</th>
+            <th scope="col" style="text-align: center; color: darkorchid">TB doanh thu một ngày</th>
+            <th scope="col" style="text-align: center; color: darkorchid">Tổng doanh thu tháng</th>
         </tr>
         </thead>
         <tbody>
         <tr>
-            <th scope="row">0</th>
-            <td style="font-weight: bold">0</td>
-            <td style="font-weight: bold">0</td>
-            <td style="font-weight: bold">0</td>
-            <td style="font-weight: bold">0</td>
+            <td class="text-center"><p><strong>${completedInvoices}</strong></p></td>
+            <td class="text-center"><p><strong>${cancelledInvoices}</strong></p></td>
+            <td class="text-center"><p><strong>${totalItemsSold}</strong></p></td>
+            <td class="text-center"><p><strong>${bestProductName} - Đã bán ${bestProductQuantity}</strong></p></td>
+            <td class="text-center"><p><strong>${averageDailyRevenue}</strong></p></td>
+            <td class="text-center"><p><strong>${totalRevenue} VND</strong></p></td>
         </tr>
+
         </tbody>
     </table>
 </div>
 
-<div class="row" style="padding-left: 90px;  padding-right: 150px;">
-    <canvas id="myBarChart" width="900" height="300"></canvas>
+<div class="row" style="padding-left: 90px; padding-right: 150px;">
+    <canvas id="myLineChart" width="600" height="200"></canvas> <!-- Giảm chiều cao từ 300 xuống 200 -->
 </div>
 
 
@@ -184,59 +191,48 @@
 </style>
 
 <script>
-    var ctx = document.getElementById('myBarChart').getContext('2d');
-    var myBarChart = new Chart(ctx, {
-        type: 'bar',
+    // Dữ liệu doanh thu theo ngày được truyền từ controller
+    var dailyRevenue = ${dailyRevenue};  // Lấy dữ liệu doanh thu theo ngày từ model
+
+    // Lấy thời gian hiện tại từ model
+    var currentTime = "${currentTime}";
+
+    // Lấy thông tin ngày tháng từ dữ liệu doanh thu
+    var daysInMonth = dailyRevenue.length;  // Số ngày trong tháng (dựa trên độ dài của mảng dailyRevenue)
+
+    // Tạo mảng các ngày trong tháng (ví dụ: "01", "02", "03", ..., "30")
+    var daysLabels = [];
+    for (var i = 1; i <= daysInMonth; i++) {
+        daysLabels.push(i < 10 ? '0' + i : i.toString());
+    }
+
+    // Vẽ biểu đồ
+    var ctx = document.getElementById('myLineChart').getContext('2d');
+    var myLineChart = new Chart(ctx, {
+        type: 'line',  // Loại biểu đồ là line chart
         data: {
-            labels: ['07:00', '08:00', '09:00', '10:00', '11:00', '12:00','13:00','14:00','15:00','16:00','17:00'],
+            labels: daysLabels,  // Dữ liệu ngày (nhãn trên trục x)
             datasets: [{
-                label: 'Doanh thu (triệu VND)',
-                data: [12, 19, 3, 5, 2, 3],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderWidth: 3
+                label: 'Doanh thu (VND)',  // Chú thích biểu đồ
+                data: dailyRevenue,  // Dữ liệu doanh thu theo ngày
+                borderColor: 'rgba(75, 192, 192, 1)',  // Màu viền của đường biểu đồ
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',  // Màu nền của biểu đồ
+                borderWidth: 2  // Độ dày của viền đường biểu đồ
             }]
         },
         options: {
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        font: {
-                            weight: 'bold',
-                            size: 14
-                        }
-                    }
-                },
-                x: {
-                    ticks: {
-                        font: {
-                            weight: 'bold',
-                            size: 14
-                        }
-                    }
-                }
-            },
+            responsive: true,  // Biểu đồ sẽ tự động điều chỉnh kích thước theo kích thước màn hình
             plugins: {
                 legend: {
-                    labels: {
-                        font: {
-                            weight: 'bold',
-                            size: 16
+                    position: 'top',  // Vị trí của legend (chú thích biểu đồ)
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,  // Đặt trục y bắt đầu từ 0
+                    ticks: {
+                        callback: function (value) {
+                            return value.toLocaleString();  // Hiển thị số tiền với định dạng địa phương (VND)
                         }
                     }
                 }
@@ -244,5 +240,16 @@
         }
     });
 </script>
+
+<script>
+    // Hàm xuất dữ liệu ra Excel
+    function exportToExcel() {
+        var ws = XLSX.utils.table_to_sheet(document.querySelector("table"));
+        var wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Doanh Thu");
+        XLSX.writeFile(wb, "doanh_thu.xlsx");
+    }
+</script>
+
 
 </html>

@@ -4,8 +4,11 @@ import com.example.demo.entity.HoaDon;
 import com.example.demo.entity.HoaDonChiTiet;
 import com.example.demo.entity.SanPhamChiTiet;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -15,4 +18,7 @@ public interface HoaDonChiTietRepo extends JpaRepository<HoaDonChiTiet, Integer>
     void deleteByHoaDonId(Integer hoaDonId);
 
     List<HoaDonChiTiet> findByHoaDon(HoaDon hoaDon);
+
+    @Query("SELECT SUM(hdct.so_luong) FROM HoaDonChiTiet hdct JOIN hdct.hoaDon h WHERE h.ngayTao BETWEEN :startDate AND :endDate")
+    Integer tinhTongSoMatHangDaBan(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 }
