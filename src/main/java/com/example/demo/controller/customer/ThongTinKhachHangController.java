@@ -4,22 +4,24 @@ import com.example.demo.entity.HoaDon;
 import com.example.demo.entity.KhachHang;
 import com.example.demo.repository.HoaDonRepo;
 import com.example.demo.repository.KhachHangRepo;
+import com.example.demo.service.EmailService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 @Controller
 @RequestMapping("/khach-hang")
 public class ThongTinKhachHangController {
+    @Autowired
+    private EmailService emailService;
+
     @Autowired
     KhachHangRepo khachHangRepo;
 
@@ -131,5 +133,82 @@ public class ThongTinKhachHangController {
         return "customer/thong_tin/change_password";
     }
 
+    @PostMapping("/gui-ma-xac-minh")
+    @ResponseBody
+    public Map<String, Object> guiMaXacMinh(@RequestParam String email, HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+        KhachHang khachHang = khachHangRepo.findByEmail(email);
 
+        if (khachHang == null) {
+            response.put("success", false);
+            response.put("message", "Email không tồn tại trong hệ thống!");
+            return response;
+        }
+
+        String otp = generateOTP();
+        session.setAttribute("otp", otp);
+        session.setAttribute("email", email);
+
+        // Gửi OTP qua email
+        emailService.sendOtpEmail(email, otp);
+
+        response.put("success", true);
+        response.put("message", "Mã OTP đã được gửi! Hãy kiểm tra email của bạn.");
+        return response;
+    }
+
+
+    private String generateOTP() {
+        Random random = new Random();
+        int otp = 100000 + random.nextInt(900000);
+        return String.valueOf(otp);
+    }
+
+    @PostMapping("/xac-nhan-otp")
+    @ResponseBody
+    public Map<String, Object> xacNhanOTP(@RequestParam String otp, HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+        String sessionOtp = (String) session.getAttribute("otp");
+
+        if (sessionOtp == null || !sessionOtp.equals(otp)) {
+            response.put("success", false);
+            response.put("message", "Mã OTP không chính xác!");
+            return response;
+        }
+
+        // OTP chính xác, thực hiện các thao tác tiếp theo
+        response.put("success", true);
+        response.put("message", "Xác nhận OTP thành công!");
+        return response;
+    }
+
+    @PostMapping("/cap-nhat-mat-khau")
+    @ResponseBody
+    public Map<String, Object> capNhatMatKhau(@RequestParam String newPassword, HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+
+        // Lấy thông tin email từ session
+        String email = (String) session.getAttribute("email");
+        if (email == null) {
+            response.put("success", false);
+            response.put("message", "Không tìm thấy thông tin người dùng trong session!");
+            return response;
+        }
+
+        // Lấy khách hàng từ database
+        KhachHang khachHang = khachHangRepo.findByEmail(email);
+        if (khachHang == null) {
+            response.put("success", false);
+            response.put("message", "Không tìm thấy tài khoản!");
+            return response;
+        }
+
+        // Cập nhật mật khẩu mới
+        khachHang.setMatKhau(newPassword); // Giả sử bạn đã mã hóa mật khẩu trước khi lưu
+        khachHangRepo.save(khachHang); // Lưu thay đổi vào cơ sở dữ liệu
+
+        response.put("success", true);
+        response.put("message", "Mật khẩu đã được cập nhật thành công!");
+        return response;
+    }
 }
