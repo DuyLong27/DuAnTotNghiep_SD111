@@ -19,6 +19,6 @@ public interface HoaDonChiTietRepo extends JpaRepository<HoaDonChiTiet, Integer>
 
     List<HoaDonChiTiet> findByHoaDon(HoaDon hoaDon);
 
-    @Query("SELECT SUM(hdct.so_luong) FROM HoaDonChiTiet hdct JOIN hdct.hoaDon h WHERE h.ngayTao BETWEEN :startDate AND :endDate")
-    Integer tinhTongSoMatHangDaBan(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+    @Query("SELECT SUM(hdct.so_luong) FROM HoaDonChiTiet hdct JOIN hdct.hoaDon h WHERE h.tinh_trang = 4 AND h.ngayTao BETWEEN :startDate AND :endDate")
+    Integer tinhTongSoLuongSanPhamTrongHoaDonHoanThanh(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 }

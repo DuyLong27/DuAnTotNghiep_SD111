@@ -68,7 +68,7 @@ public class BaoCaoController {
 
 
         // Lấy tổng số mặt hàng bán được ra từ startDate đến endDate
-        Integer totalItemsSold = hoaDonChiTietRepo.tinhTongSoMatHangDaBan(startDate, endDate);
+        Integer totalItemsSold = hoaDonChiTietRepo.tinhTongSoLuongSanPhamTrongHoaDonHoanThanh(startDate, endDate);
 
         // Lấy doanh thu theo từng ngày trong khoảng thời gian
         List<Object[]> dailyRevenueData = hoaDonRepo.tinhDoanhThuTheoNgay(startDate, endDate);
