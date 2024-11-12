@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -30,4 +31,16 @@ public interface SanPhamChiTietRepo extends JpaRepository<SanPhamChiTiet, Intege
     List<SanPhamChiTiet> findByGiaBanBetween(Integer minPrice, Integer maxPrice);
     List<SanPhamChiTiet> findAllByOrderByGiaBanAsc();
     List<SanPhamChiTiet> findAllByOrderByGiaBanDesc();
+
+    @Query("SELECT sp.ten, SUM(hdct.so_luong) AS totalSold "
+            + "FROM HoaDonChiTiet hdct "
+            + "JOIN hdct.sanPhamChiTiet spct "
+            + "JOIN spct.sanPham sp "
+            + "JOIN hdct.hoaDon hd "
+            + "WHERE hd.ngayTao BETWEEN :startDate AND :endDate "
+            + "GROUP BY sp.ten "
+            + "ORDER BY totalSold DESC")
+    List<Object[]> findBestSellingProduct(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
+
 }

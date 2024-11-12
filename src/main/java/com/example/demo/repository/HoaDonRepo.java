@@ -53,4 +53,21 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
     @Query("SELECT h FROM HoaDon h WHERE h.khachHang.idKhachHang = :khachHangId")
     List<HoaDon> findByKhachHangId(@Param("khachHangId") Integer khachHangId);
 
+    // Truy vấn tổng doanh thu
+    @Query("SELECT SUM(h.tongTien) FROM HoaDon h WHERE h.ngayTao BETWEEN :startDate AND :endDate")
+    Integer tinhTongTienHoaDon(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
+    @Query("SELECT COUNT(h) FROM HoaDon h WHERE h.tinh_trang = 4 AND h.ngayTao BETWEEN :startDate AND :endDate")
+    Integer tinhTongSoHoaDonHoanThanh(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
+    @Query("SELECT COUNT(h) FROM HoaDon h WHERE h.tinh_trang = 2 AND h.ngayTao BETWEEN :startDate AND :endDate")
+    Integer tinhTongSoHoaDonHuy(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
+    @Query(value = "SELECT CONVERT(VARCHAR, h.ngay_tao, 23) AS date, SUM(hdct.gia_san_pham * hdct.so_luong) AS revenue " +
+            "FROM hoa_don h " +
+            "JOIN hoa_don_chi_tiet hdct ON h.id_hoa_don = hdct.id_hoa_don " +
+            "WHERE h.ngay_tao BETWEEN :startDate AND :endDate " +
+            "GROUP BY CONVERT(VARCHAR, h.ngay_tao, 23) " + // Chuyển đổi ngày sang định dạng yyyy-mm-dd
+            "ORDER BY date", nativeQuery = true)
+    List<Object[]> tinhDoanhThuTheoNgay(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 }
