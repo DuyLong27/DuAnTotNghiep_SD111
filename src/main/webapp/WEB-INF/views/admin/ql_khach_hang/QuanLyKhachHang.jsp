@@ -79,121 +79,103 @@
                                     <input type="password" class="form-control" id="khachHangMatKhau" name="matKhau" required>
                                 </div>
                             </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="khachHangSoDienThoai" class="form-label">Số Điện thoại</label>
-                                    <input type="text" class="form-control" id="khachHangSoDienThoai"
-                                           name="soDienThoai" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="khachHangDiaChi" class="form-label">Địa Chỉ</label>
-                                    <input type="text" class="form-control" id="khachHangDiaChi" name="diaChi" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="khachHangDiem" class="form-label">Điểm Tích Lũy</label>
-                                    <input type="number" class="form-control" id="khachHangDiem" name="diemTichLuy"
-                                           required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="khachHangNgayDangKy" class="form-label">Ngày Đăng Ký</label>
-                                    <input type="date" class="form-control" id="khachHangNgayDangKy" name="ngayDangKy"
-                                           required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="khachHangLSM" class="form-label">Lịch Sử Mua Hàng</label>
-                                    <input type="text" class="form-control" id="khachHangLSM" name="lichSuMuaHang"
-                                           required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="khachHangKM" class="form-label">Khuyến Mãi Đa Dụng</label>
-                                    <input type="text" class="form-control" id="khachHangKM" name="khuyenMaiDaDung"
-                                           required>
-                                </div>
-                            </div>
-                            <%--                            <div class="col-md-6">--%>
-                            <%--                                <label class="form-label">Tình Trạng</label><br>--%>
-                            <%--                                <div class="form-check form-check-inline">--%>
-                            <%--                                    <input class="form-check-input" type="radio" name="tinhTrang" id="tinhTrangHoatDong"--%>
-                            <%--                                           value="1" required>--%>
-                            <%--                                    <label class="form-check-label" for="tinhTrangHoatDong">Hoạt Động</label>--%>
-                            <%--                                </div>--%>
-                            <%--                                <div class="form-check form-check-inline">--%>
-                            <%--                                    <input class="form-check-input" type="radio" name="tinhTrang" id="tinhTrangNgung"--%>
-                            <%--                                           value="0" required>--%>
-                            <%--                                    <label class="form-check-label" for="tinhTrangNgung">Ngừng Hoạt Động</label>--%>
-                            <%--                                </div>--%>
-                            <%--                            </div>--%>
                         </div>
-                        <button type="submit" class="btn btn-create" id="submitButton">Lưu Khách Hàng</button>
-                    </form>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="khachHangSoDienThoai" class="form-label">Số Điện thoại</label>
+                                <input type="text" class="form-control" id="khachHangSoDienThoai"
+                                       name="soDienThoai" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="khachHangDiaChi" class="form-label">Địa Chỉ</label>
+                                <input type="text" class="form-control" id="khachHangDiaChi" name="diaChi" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="khachHangDiem" class="form-label">Điểm Tích Lũy</label>
+                                <input type="number" class="form-control" id="khachHangDiem" name="diemTichLuy"
+                                       required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="khachHangNgayDangKy" class="form-label">Ngày Đăng Ký</label>
+                                <input type="date" class="form-control" id="khachHangNgayDangKy" name="ngayDangKy"
+                                       required>
+                            </div>
+                        </div>
+                        <%--                            <div class="col-md-6">--%>
+                        <%--                                <label class="form-label">Tình Trạng</label><br>--%>
+                        <%--                                <div class="form-check form-check-inline">--%>
+                        <%--                                    <input class="form-check-input" type="radio" name="tinhTrang" id="tinhTrangHoatDong"--%>
+                        <%--                                           value="1" required>--%>
+                        <%--                                    <label class="form-check-label" for="tinhTrangHoatDong">Hoạt Động</label>--%>
+                        <%--                                </div>--%>
+                        <%--                                <div class="form-check form-check-inline">--%>
+                        <%--                                    <input class="form-check-input" type="radio" name="tinhTrang" id="tinhTrangNgung"--%>
+                        <%--                                           value="0" required>--%>
+                        <%--                                    <label class="form-check-label" for="tinhTrangNgung">Ngừng Hoạt Động</label>--%>
+                        <%--                                </div>--%>
+                        <%--                            </div>--%>
                 </div>
+                <button type="submit" class="btn btn-create" id="submitButton">Lưu Khách Hàng</button>
+                </form>
             </div>
         </div>
     </div>
+</div>
 
-    <table class="table table-striped table-hover table-bordered text-center">
-        <thead>
+<table class="table table-striped table-hover table-bordered text-center">
+    <thead>
+    <tr>
+        <th>STT</th>
+        <th>Tên Khách Hàng</th>
+        <th>Email</th>
+        <th>Mật Khẩu</th>
+        <th>Số Điện Thoại</th>
+        <th>Địa Chỉ</th>
+        <th>Điểm Tích Lũy</th>
+        <th>Ngày Đăng Ký</th>
+        <%--            <th>Tình Trạng</th>--%>
+        <th>Thao Tác</th>
+    </tr>
+    </thead>
+    <tbody>
+    <c:if test="${empty data.content}">
         <tr>
-            <th>STT</th>
-            <th>Tên Khách Hàng</th>
-            <th>Email</th>
-            <th>Mật Khẩu</th>
-            <th>Số Điện Thoại</th>
-            <th>Địa Chỉ</th>
-            <th>Điểm Tích Lũy</th>
-            <th>Ngày Đăng Ký</th>
-            <th>Lịch Sử Mua Hàng</th>
-            <th>Khuyến Mãi Đa Dụng</th>
-            <%--            <th>Tình Trạng</th>--%>
-            <th>Thao Tác</th>
+            <td colspan="10">Không tìm thấy đối tượng nào.</td>
         </tr>
-        </thead>
-        <tbody>
-        <c:if test="${empty data.content}">
+    </c:if>
+    <c:if test="${not empty data.content}">
+        <c:forEach items="${data.content}" var="kh" varStatus="i">
             <tr>
-                <td colspan="10">Không tìm thấy đối tượng nào.</td>
+                <th>${i.index + 1}</th>
+                <td>${kh.tenKhachHang}</td>
+                <td>${kh.email}</td>
+                <td>${kh.matKhau}</td>
+                <td>${kh.soDienThoai}</td>
+                <td>${kh.diaChi}</td>
+                <td>${kh.diemTichLuy}</td>
+                <td>${kh.ngayDangKy}</td>
+                    <%--                    <td class="${kh.tinhTrang == 1 ? 'text-success' : 'text-danger'}">--%>
+                    <%--                            ${kh.tinhTrang == 1 ? "Hoạt Động" : "Ngừng Hoạt Động"}--%>
+                    <%--                    </td>--%>
+                <td>
+                    <a onclick="openEditModal(${kh.idKhachHang}, '${kh.tenKhachHang}', '${kh.email}',
+                            '${kh.matKhau}', '${kh.soDienThoai}', '${kh.diaChi}', ${kh.diemTichLuy},
+                            '${kh.ngayDangKy}'
+                        <%--, '${kh.tinhTrang}'--%>
+                            )"
+                       type="button" class="btn btn-outline-custom"><i class='bx bx-edit-alt'></i></a>
+                </td>
             </tr>
-        </c:if>
-        <c:if test="${not empty data.content}">
-            <c:forEach items="${data.content}" var="kh" varStatus="i">
-                <tr>
-                    <th>${i.index + 1}</th>
-                    <td>${kh.tenKhachHang}</td>
-                    <td>${kh.email}</td>
-                    <td>${kh.matKhau}</td>
-                    <td>${kh.soDienThoai}</td>
-                    <td>${kh.diaChi}</td>
-                    <td>${kh.diemTichLuy}</td>
-                    <td>${kh.ngayDangKy}</td>
-                    <td>${kh.lichSuMuaHang}</td>
-                    <td>${kh.khuyenMaiDaDung}</td>
-                        <%--                    <td class="${kh.tinhTrang == 1 ? 'text-success' : 'text-danger'}">--%>
-                        <%--                            ${kh.tinhTrang == 1 ? "Hoạt Động" : "Ngừng Hoạt Động"}--%>
-                        <%--                    </td>--%>
-                    <td>
-                        <a onclick="openEditModal(${kh.idKhachHang}, '${kh.tenKhachHang}', '${kh.email}',
-                                '${kh.matKhau}', '${kh.soDienThoai}', '${kh.diaChi}', ${kh.diemTichLuy},
-                                '${kh.ngayDangKy}', '${kh.lichSuMuaHang}', '${kh.khuyenMaiDaDung}'
-                            <%--, '${kh.tinhTrang}'--%>
-                                )"
-                           type="button" class="btn btn-outline-custom"><i class='bx bx-edit-alt'></i></a>
-                    </td>
-                </tr>
-            </c:forEach>
-        </c:if>
-        </tbody>
-    </table>
+        </c:forEach>
+    </c:if>
+    </tbody>
+</table>
 </div>
 
 <nav aria-label="Page navigation" class="mt-3">
@@ -242,9 +224,8 @@
         document.getElementById('productModalLabel').innerText = title;
     }
 
-    function openEditModal(idKhachHang, tenKhachHang, email, matKhau, soDienThoai, diaChi, diemTichLuy, ngayDangKy,
-                           lichSuMuaHang, khuyenMaiDaDung, tinhTrang) {
-        setModalTitle('Cập Nhật Sản Phẩm');
+    function openEditModal(idKhachHang, tenKhachHang, email, matKhau, soDienThoai, diaChi, diemTichLuy, ngayDangKy, tinhTrang) {
+        setModalTitle('Cập Nhật Thông Tin');
         document.getElementById('khachHangId').value = idKhachHang;
         document.getElementById('khachHangName').value = tenKhachHang;
         document.getElementById('khachHangEmail').value = email;
@@ -253,8 +234,6 @@
         document.getElementById('khachHangDiaChi').value = diaChi;
         document.getElementById('khachHangDiem').value = diemTichLuy;
         document.getElementById('khachHangNgayDangKy').value = ngayDangKy;
-        document.getElementById('khachHangLSM').value = lichSuMuaHang;
-        document.getElementById('khachHangKM').value = khuyenMaiDaDung;
 
         const tinhTrangRadios = document.getElementsByName('tinhTrang');
         for (let radio of tinhTrangRadios) {
