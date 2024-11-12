@@ -448,7 +448,7 @@
     </a>
     <ul class="dropdown-menu">
         <li><a class="dropdown-item" href="/ban-hang"><i class="fas fa-shopping-cart"></i>Bán hàng</a></li>
-        <li><a class="dropdown-item" href="#"><i class="fas fa-download"></i>Nhập hàng</a></li>
+        <li><a class="dropdown-item" href="/nhap-hang/hien-thi"><i class="fas fa-download"></i>Nhập hàng</a></li>
         <li><a class="dropdown-item" href="/hoa-don/tinhTrang=all"><i class="fas fa-file-invoice"></i>Hóa đơn</a></li>
     </ul>
 
@@ -462,7 +462,7 @@
 
     <a href="/nhan-vien/hien-thi"><i class="fas fa-users"></i>Nhân viên</a>
     <a href="/khuyen-mai/hien-thi"><i class="fa-solid fa-tag"></i>Khuyến mãi</a>
-
+    <a href="/lich-su/hien-thi"><i class="fa-solid fa-receipt"></i>Lịch Sử</a>
 </div>
 
 
