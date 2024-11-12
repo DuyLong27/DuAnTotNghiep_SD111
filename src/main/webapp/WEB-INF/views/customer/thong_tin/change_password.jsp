@@ -152,7 +152,7 @@
                     <input type="password" class="form-control" name="confirmPassword" required>
                 </div>
                 <div class="mt-3">
-                    <a href="">Quên mật khẩu?</a>
+                    <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Quên mật khẩu?</a>
                 </div>
                 <div class="mt-3">
                     <button type="submit" class="btn btn-success">Lưu</button>
@@ -161,6 +161,161 @@
         </div>
     </div>
 </div>
+<!-- Modal Quên mật khẩu -->
+<div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="forgotPasswordModalLabel">Khôi phục mật khẩu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Form nhập email -->
+                <div id="emailForm">
+                    <form id="forgotPasswordForm" method="POST">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Nhập email của bạn</label>
+                            <input type="email" class="form-control" id="email" name="email" required placeholder="Email của bạn">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Gửi mã OTP</button>
+                    </form>
+                </div>
+
+                <!-- Form xác nhận OTP -->
+                <div id="otpForm" style="display: none;">
+                    <form id="verifyOtpForm" method="POST">
+                        <div class="mb-3">
+                            <label for="otp" class="form-label">Nhập mã OTP đã gửi</label>
+                            <input type="text" class="form-control" id="otp" name="otp" required placeholder="Mã OTP">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Xác nhận OTP</button>
+                    </form>
+                </div>
+                <!-- Form nhập mật khẩu mới -->
+                <div id="newPasswordForm" style="display: none;">
+                    <form id="updatePasswordForm" method="POST">
+                        <div class="mb-3">
+                            <label for="newPassword" class="form-label">Mật khẩu mới</label>
+                            <input type="password" class="form-control" id="newPassword" name="newPassword" required placeholder="Mật khẩu mới">
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Xác nhận mật khẩu mới</label>
+                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required placeholder="Xác nhận mật khẩu mới">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Cập nhật mật khẩu</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    function showForgotPasswordModal() {
+        document.getElementById('forgotPasswordModal').style.display = 'block';
+    }
+    function closeModal() {
+        document.getElementById('forgotPasswordModal').style.display = 'none';
+    }
+    // Gửi form OTP
+    document.getElementById('forgotPasswordForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const email = document.getElementById('email').value;
+
+        fetch('/khach-hang/gui-ma-xac-minh', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'email=' + encodeURIComponent(email),
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Hiển thị thông báo đơn giản bằng alert
+                alert(data.message);
+
+                // Chuyển sang form xác nhận OTP nếu gửi OTP thành công
+                if (data.success) {
+                    document.getElementById('emailForm').style.display = 'none';
+                    document.getElementById('otpForm').style.display = 'block';
+                }
+            })
+            .catch(error => {
+                alert("Có lỗi xảy ra, vui lòng thử lại!");
+            });
+    });
+
+    // Xác nhận OTP và chuyển sang form nhập mật khẩu mới
+    document.getElementById('verifyOtpForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const otp = document.getElementById('otp').value;
+
+        fetch('/khach-hang/xac-nhan-otp', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'otp=' + encodeURIComponent(otp),
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Hiển thị thông báo đơn giản bằng alert
+                alert(data.message);
+
+                // Nếu OTP chính xác, chuyển sang form nhập mật khẩu mới
+                if (data.success) {
+                    document.getElementById('otpForm').style.display = 'none';
+                    document.getElementById('newPasswordForm').style.display = 'block';
+                }
+            })
+            .catch(error => {
+                alert("Có lỗi xảy ra, vui lòng thử lại!");
+            });
+    });
+
+    // Cập nhật mật khẩu mới
+    document.getElementById('updatePasswordForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        // Kiểm tra nếu mật khẩu và xác nhận mật khẩu trùng khớp
+        if (newPassword !== confirmPassword) {
+            alert("Mật khẩu và xác nhận mật khẩu không khớp!");
+            return;
+        }
+
+        // Gửi yêu cầu cập nhật mật khẩu mới
+        fetch('/khach-hang/cap-nhat-mat-khau', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'newPassword=' + encodeURIComponent(newPassword),
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Hiển thị thông báo đơn giản bằng alert
+                alert(data.message);
+
+                // Đóng modal sau khi cập nhật mật khẩu thành công
+                if (data.success) {
+                    setTimeout(() => {
+                        var modal = new bootstrap.Modal(document.getElementById('forgotPasswordModal'));
+                        modal.hide();
+                    }, 2000);
+                }
+            })
+            .catch(error => {
+                alert("Có lỗi xảy ra, vui lòng thử lại!");
+            });
+    });
+</script>
 <jsp:include page="../footer_user.jsp"/>
 </body>
 </html>
