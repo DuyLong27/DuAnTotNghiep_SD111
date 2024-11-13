@@ -109,30 +109,34 @@
 
     <div class="order-status">
         <div class="status-group">
-            <div class="status-item ${hoaDon.tinh_trang >= 0 ? 'active' : ''}">
+            <div class="status-item ${hoaDon.tinh_trang >= 0 && hoaDon.tinh_trang != 14 ? 'active' : ''}">
                 <i class="fas fa-clock status-icon"></i>
                 <p>Chờ xác nhận</p>
             </div>
-            <div class="status-item ${hoaDon.tinh_trang >= 1 ? 'active' : ''}">
+
+            <div class="status-item ${hoaDon.tinh_trang >= 1 && hoaDon.tinh_trang != 14 ? 'active' : ''}">
                 <i class="fas fa-box status-icon"></i>
                 <p>Chờ giao</p>
             </div>
-            <div class="status-item ${hoaDon.tinh_trang >= 2 ? 'active' : ''}">
+
+            <div class="status-item ${hoaDon.tinh_trang >= 2 && hoaDon.tinh_trang != 14? 'active' : ''}">
                 <i class="fas fa-truck status-icon"></i>
                 <p>Đang giao</p>
             </div>
-            <div class="status-item ${hoaDon.tinh_trang >= 3 ? 'active' : ''}">
+
+            <div class="status-item ${hoaDon.tinh_trang >= 3 && hoaDon.tinh_trang != 14 ? 'active' : ''}">
                 <i class="fas fa-check-double status-icon"></i>
                 <p>Xác nhận thanh toán</p>
             </div>
-            <div class="status-item ${hoaDon.tinh_trang >= 4 ? 'active' : ''}">
+
+            <div class="status-item ${hoaDon.tinh_trang >= 4 && hoaDon.tinh_trang != 14 ? 'active' : ''}">
                 <i class="fas fa-check-circle status-icon"></i>
                 <p>Hoàn thành</p>
             </div>
         </div>
 
         <div class="status-group return-group">
-            <c:if test="${hoaDon.tinh_trang >= 11}">
+            <c:if test="${hoaDon.tinh_trang >= 11 && hoaDon.tinh_trang < 14}">
                 <div class="status-item return-item ${hoaDon.tinh_trang >= 11 ? 'active' : ''}">
                     <i class="fas fa-clock status-icon"></i>
                     <p>Chờ xác nhận đổi trả</p>
@@ -170,13 +174,14 @@
             <c:when test="${hoaDon.tinh_trang == 1}">
                 <button type="submit" name="tinhTrangMoi" value="2" class="btn btn-warning">Giao hàng</button>
             </c:when>
-
-            <c:when test="${hoaDon.tinh_trang == 2 || hoaDon.tinh_trang == 3}">
-                <button type="submit" name="tinhTrangMoi" value="4" class="btn btn-success"
-                        onclick="return confirmCompletion(${hoaDon.tinh_trang});">Hoàn thành</button>
-            </c:when>
         </c:choose>
     </form>
+    <c:if test="${hoaDon.tinh_trang == 2 || hoaDon.tinh_trang == 3}">
+        <form action="/hoa-don/hoan-thanh/${hoaDon.id}" method="post">
+            <button type="submit" class="btn btn-success"
+                    onclick="return confirmCompletion(${hoaDon.tinh_trang});">Hoàn thành</button>
+        </form>
+    </c:if>
 
     <div class="card mb-4 mt-3">
         <div class="card-header">Thông tin khách hàng</div>
@@ -217,7 +222,7 @@
     </div>
 
     <div class="card mb-4">
-        <div class="card-header">Chi tiết sản phẩm</div>
+        <div class="card-header">Danh sách sản phẩm</div>
         <div class="card-body">
             <table class="table table-striped">
                 <thead>
@@ -258,13 +263,40 @@
                     Xem chi tiết đổi trả
                 </button>
             </c:if>
-            <p class="text-end" style="color: #0B745E">
-                Phí vận chuyển: ${phiVanChuyen}
-            </p>
-            <p class="text-end fw-bold">
-                Tổng tiền: ${hoaDonChiTiets[0].hoaDon.tongTien} VND
-            </p>
         </div>
+        <c:if test="${hoaDon.tinh_trang == 13}">
+            <div class="card mb-4">
+                <div class="card-header">Sản phẩm đổi trả</div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Hình ảnh</th>
+                            <th>Tên Sản Phẩm</th>
+                            <th>Giá</th>
+                            <th>Số lượng</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <c:forEach var="doiTraChiTiet" items="${doiTraChiTiets}">
+                            <tr>
+                                <td><img style="width: 90px" src="${pageContext.request.contextPath}/uploads/${doiTraChiTiet.sanPhamChiTiet.hinhAnh}"></td>
+                                <td>${doiTraChiTiet.sanPhamChiTiet.sanPham.ten}</td>
+                                <td class="text-center">${doiTraChiTiet.giaSanPham} VNĐ</td>
+                                <td class="text-center">${doiTraChiTiet.soLuong}</td>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </c:if>
+        <p class="text-end" style="color: #0B745E">
+            Phí vận chuyển: ${phiVanChuyen} VNĐ
+        </p>
+        <p class="text-end fw-bold">
+            Tổng tiền: ${hoaDonChiTiets[0].hoaDon.tongTien} VNĐ
+        </p>
     </div>
 </div>
 
