@@ -32,6 +32,9 @@ public class QLHoaDonController {
     SanPhamChiTietRepo sanPhamChiTietRepo;
     @Autowired
     DoiTraChiTietRepo doiTraChiTietRepo;
+
+    @Autowired
+    KhachHangRepo khachHangRepo;
     @GetMapping("/tinhTrang={tinhTrang}")
     public String hienThi(Model model,
                           @PathVariable(required = false) String tinhTrang,
@@ -130,6 +133,7 @@ public class QLHoaDonController {
         }
 
         int tongTienHoan = hoaDon.getTongTien();
+        int diemHoan = 0;
 
         for (DoiTraChiTiet doiTraChiTiet : doiTraChiTietList) {
             SanPhamChiTiet sanPhamChiTiet = doiTraChiTiet.getSanPhamChiTiet();
@@ -138,26 +142,71 @@ public class QLHoaDonController {
             sanPhamChiTietRepo.save(sanPhamChiTiet);
 
             tongTienHoan -= doiTraChiTiet.getSoLuong() * sanPhamChiTiet.getGiaBan();
+
+            diemHoan += (doiTraChiTiet.getSoLuong() * sanPhamChiTiet.getGiaBan()) / 10000;
         }
 
         hoaDon.setTongTien(tongTienHoan);
         hoaDon.setTinh_trang(13);
         hoaDonRepo.save(hoaDon);
 
+        KhachHang khachHang = hoaDon.getKhachHang();
+        if (khachHang.getDiemTichLuy() >= diemHoan) {
+            khachHang.setDiemTichLuy(khachHang.getDiemTichLuy() - diemHoan);
+            khachHangRepo.save(khachHang);
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Khách hàng không có đủ điểm tích lũy để hoàn trả!");
+            return "redirect:/hoa-don/detail/" + id;
+        }
+
         List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepo.findByHoaDonId(id);
         for (HoaDonChiTiet hoaDonChiTiet : hoaDonChiTietList) {
             for (DoiTraChiTiet doiTraChiTiet : doiTraChiTietList) {
                 if (hoaDonChiTiet.getSanPhamChiTiet().equals(doiTraChiTiet.getSanPhamChiTiet())) {
-
-                    hoaDonChiTiet.setSo_luong(hoaDonChiTiet.getSo_luong() - doiTraChiTiet.getSoLuong());
+                    int newSoLuong = hoaDonChiTiet.getSo_luong() - doiTraChiTiet.getSoLuong();
+                    hoaDonChiTiet.setSo_luong(newSoLuong);
                     hoaDonChiTietRepo.save(hoaDonChiTiet);
+
+                    if (newSoLuong <= 0) {
+                        hoaDonChiTietRepo.delete(hoaDonChiTiet);
+                    }
                 }
             }
         }
 
-        doiTraChiTietRepo.deleteAll(doiTraChiTietList);
+        redirectAttributes.addFlashAttribute("message", "Hoàn hàng thành công và điểm tích lũy đã được trừ!");
+        return "redirect:/hoa-don/detail/" + id;
+    }
 
-        redirectAttributes.addFlashAttribute("message", "Hoàn hàng thành công!");
+    @PostMapping("/hoan-thanh/{id}")
+    public String hoanThanh(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+        HoaDon hoaDon = hoaDonRepo.findById(id).orElse(null);
+        if (hoaDon == null) {
+            redirectAttributes.addFlashAttribute("error", "Không tìm thấy hóa đơn!");
+            return "redirect:/hoa-don/detail/" + id;
+        }
+
+        List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepo.findByHoaDonId(id);
+        int tongTienSanPham = 0;
+        for (HoaDonChiTiet hoaDonChiTiet : hoaDonChiTietList) {
+            tongTienSanPham += hoaDonChiTiet.getSanPhamChiTiet().getGiaBan() * hoaDonChiTiet.getSo_luong();
+        }
+
+        hoaDon.setTinh_trang(4);
+
+        int diem = tongTienSanPham / 10000;
+
+        KhachHang khachHang = hoaDon.getKhachHang();
+
+        khachHang = khachHangRepo.findById(khachHang.getIdKhachHang()).orElse(khachHang);
+
+        int diemTichLuy = (khachHang.getDiemTichLuy() != null) ? khachHang.getDiemTichLuy() : 0;
+        khachHang.setDiemTichLuy(diemTichLuy + diem);
+
+        hoaDonRepo.save(hoaDon);
+        khachHangRepo.save(khachHang);
+
+        redirectAttributes.addFlashAttribute("message", "Hóa đơn đã hoàn thành và khách hàng đã nhận điểm!");
         return "redirect:/hoa-don/detail/" + id;
     }
 
