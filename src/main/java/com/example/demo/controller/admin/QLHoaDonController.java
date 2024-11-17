@@ -189,7 +189,9 @@ public class QLHoaDonController {
         List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepo.findByHoaDonId(id);
         int tongTienSanPham = 0;
         for (HoaDonChiTiet hoaDonChiTiet : hoaDonChiTietList) {
-            tongTienSanPham += hoaDonChiTiet.getSanPhamChiTiet().getGiaBan() * hoaDonChiTiet.getSo_luong();
+            if (hoaDonChiTiet.getSanPhamChiTiet() != null) {
+                tongTienSanPham += hoaDonChiTiet.getSanPhamChiTiet().getGiaBan() * hoaDonChiTiet.getSo_luong();
+            }
         }
 
         hoaDon.setTinh_trang(4);
@@ -198,15 +200,19 @@ public class QLHoaDonController {
 
         KhachHang khachHang = hoaDon.getKhachHang();
 
-        khachHang = khachHangRepo.findById(khachHang.getIdKhachHang()).orElse(khachHang);
+        if (khachHang != null) {
+            khachHang = khachHangRepo.findById(khachHang.getIdKhachHang()).orElse(khachHang);
 
-        int diemTichLuy = (khachHang.getDiemTichLuy() != null) ? khachHang.getDiemTichLuy() : 0;
-        khachHang.setDiemTichLuy(diemTichLuy + diem);
+            int diemTichLuy = (khachHang.getDiemTichLuy() != null) ? khachHang.getDiemTichLuy() : 0;
+            khachHang.setDiemTichLuy(diemTichLuy + diem);
+
+            khachHangRepo.save(khachHang);
+        }
 
         hoaDonRepo.save(hoaDon);
-        khachHangRepo.save(khachHang);
 
-        redirectAttributes.addFlashAttribute("message", "Hóa đơn đã hoàn thành và khách hàng đã nhận điểm!");
+        redirectAttributes.addFlashAttribute("message", "Hóa đơn đã hoàn thành!" +
+                (khachHang != null ? " Khách hàng đã nhận được điểm tích lũy." : " Hóa đơn không có thông tin khách hàng."));
         return "redirect:/hoa-don/detail/" + id;
     }
 
