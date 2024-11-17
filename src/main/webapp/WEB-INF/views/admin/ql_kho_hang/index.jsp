@@ -6,21 +6,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-
     <title>Quản Lý Kho Hàng</title>
 </head>
 <body>
-<jsp:include page="../layout.jsp"/>
+<jsp:include page="../layout.jsp" />
 <div class="container mt-3">
-    <!-- Modal -->
     <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="productModalLabel">Thêm Số Lượng</h5>
+                    <h5 class="modal-title" id="productModalLabel">Chỉnh Sửa Thông Tin Kho</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -30,31 +26,31 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Tên Kho</label>
-                                    <input type="text" class="form-control" name="tenKho" id="khName" required>
+                                    <input type="text" class="form-control" name="tenKho" id="khName" value="${kh.tenKho}" required readonly>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Địa Chỉ</label>
-                                    <input type="text" class="form-control" name="diaChi" id="khDiaChi" required>
+                                    <input type="text" class="form-control" name="diaChi" id="khDiaChi" value="${kh.diaChi}" required readonly>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Sản Phẩm Trong Kho</label>
-                                    <input type="text" class="form-control" name="spTrongKho" id="khSanPham" required>
+                                    <input type="text" class="form-control" name="spTrongKho" id="khSanPham" value="${kh.spTrongKho}" required readonly>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Số Lượng Tồn Kho</label>
-                                    <input type="number" class="form-control" name="slTonKho" id="khSoLuong" value="0" required>
+                                    <input type="number" class="form-control" name="slTonKho" id="khSoLuong" value="${kh.slTonKho}" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label class="form-label">Ngày Thay Đổi Tồn Kho</label>
-                                    <input type="date" class="form-control" name="ngayThayDoiTonKho" id="khNgayThayDoi" required>
+                                    <input type="date" class="form-control" name="ngayThayDoiTonKho" id="khNgayThayDoi" value="${kh.ngayThayDoiTonKho}" required>
                                 </div>
                             </div>
                         </div>
@@ -149,60 +145,28 @@
     }
 
     function setModalData(id, tenKho, diaChi, spTrongKho, slTonKho, ngayThayDoiTonKho) {
-        // Kiểm tra giá trị của các tham số khi hàm được gọi (Đảm bảo giá trị không rỗng)
-        console.log('ID Kho:', id);
+        // Đảm bảo các tham số không rỗng
+        console.log('Kho hàng ID:', id);
         console.log('Tên Kho:', tenKho);
         console.log('Địa Chỉ:', diaChi);
         console.log('Sản Phẩm Trong Kho:', spTrongKho);
         console.log('Số Lượng Tồn Kho:', slTonKho);
         console.log('Ngày Thay Đổi Tồn Kho:', ngayThayDoiTonKho);
 
-        // Cập nhật giá trị cho các trường trong modal
+        // Cập nhật các trường trong modal
         document.getElementById('khId').value = id;
         document.getElementById('khName').value = tenKho;
         document.getElementById('khDiaChi').value = diaChi;
         document.getElementById('khSanPham').value = spTrongKho;
-        document.getElementById('khSoLuong').value = slTonKho;
+        document.getElementById('khSoLuong').value = slTonKho;  // Chỉ cập nhật số lượng tồn kho
         document.getElementById('khNgayThayDoi').value = ngayThayDoiTonKho;
-        // document.querySelector('input[name="idKhoHang"]').value = id;
-        // document.querySelector('input[name="tenKho"]').value = tenKho;
-        // document.querySelector('input[name="diaChi"]').value = diaChi;
-        // document.querySelector('input[name="spTrongKho"]').value = spTrongKho;
-        // document.querySelector('input[name="slTonKho"]').value = slTonKho;
-        // document.querySelector('input[name="ngayThayDoiTonKho"]').value = ngayThayDoiTonKho;
 
-        // Đảm bảo tên của nút lưu thay đổi
-        document.getElementById('productModalLabel').textContent = 'Chỉnh Sửa Thông Tin Kho';
-
-        // Đặt method PUT/PATCH cho form khi sửa
-        document.getElementById('productForm').action = '/kho-hang/update';  // Chỉ định URL đúng cho action sửa
-        document.getElementById('productForm').method = 'POST';  // Hoặc 'PUT' nếu sử dụng phương thức PUT
+        // Đảm bảo modal dùng action đúng cho sửa
+        document.getElementById('productModalLabel').textContent = 'Chỉnh Sửa Số Lượng Tồn Kho';
+        document.getElementById('productForm').action = '/kho-hang/update';  // Đặt action là URL cho phương thức cập nhật
+        document.getElementById('productForm').method = 'POST';  // POST hoặc PUT nếu sử dụng PUT cho cập nhật
     }
 
-    // function changeQuantity(amount) {
-    //     // Lấy giá trị hiện tại của input số lượng tồn kho
-    //     var quantityInput = document.getElementById('slTonKhoInput');
-    //     var currentValue = parseInt(quantityInput.value);
-    //
-    //     // Nếu giá trị không phải là một số, gán giá trị mặc định là 0
-    //     if (isNaN(currentValue)) {
-    //         currentValue = 0;
-    //     }
-    //
-    //     // Tính toán giá trị mới sau khi thay đổi
-    //     var newValue = currentValue + amount;
-    //
-    //     // Giới hạn giá trị không được âm và không vượt quá 1000
-    //     if (newValue < 0) {
-    //         newValue = 0; // Không cho phép số lượng âm
-    //     }
-    //     if (newValue > 1000) {
-    //         newValue = 1000; // Giới hạn số lượng tối đa là 1000
-    //     }
-    //
-    //     // Cập nhật lại giá trị trong input
-    //     quantityInput.value = newValue;
-    // }
 </script>
 
 <style>
@@ -232,15 +196,6 @@
     .input-group .btn {
         white-space: nowrap;
         border-radius: 50%; /* Làm cho các nút có dạng hình tròn */
-    }
-
-    /* Giảm kích thước các nút + và - */
-    .btn-sm {
-        font-size: 14px; /* Giảm kích thước chữ */
-        padding: 5px 10px; /* Giảm padding */
-        width: 35px; /* Đặt chiều rộng cụ thể */
-        height: 35px; /* Đặt chiều cao cụ thể */
-        color: black; /* Màu chữ trắng */
     }
 </style>
 </body>
