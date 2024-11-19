@@ -88,6 +88,10 @@
                                    onclick="showPromotionEdits(${item.idKhuyenMai}, '${item.maKhuyenMai}', '${item.tenKhuyenMai}', ${item.giaTriKhuyenMai}, '${item.ngayBatDau}', '${item.ngayKetThuc}', ${item.tinhTrang})">
                                     <i class="fa fa-edit"></i>
                                 </a>
+                                <a class="btn btn-outline-custom"
+                                   href="/khuyen-mai/chi-tiet?id=${item.idKhuyenMai}" class="btn btn-outline-success">
+                                    <i class="fa-solid fa-hand-point-right"></i>
+                                </a>
                             </div>
                         </td>
                     </tr>
