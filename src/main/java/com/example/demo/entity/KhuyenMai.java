@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,16 +20,22 @@ public class KhuyenMai {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_khuyen_mai")
     private Integer idKhuyenMai;
+
     @Column(name = "ma_khuyen_mai")
     private String maKhuyenMai;
+
     @Column(name = "ten_khuyen_mai")
     private String tenKhuyenMai;
+
     @Column(name = "gia_tri_khuyen_mai")
     private Integer giaTriKhuyenMai;
+
     @Column(name = "ngay_bat_dau")
     private LocalDate ngayBatDau;
+
     @Column(name = "ngay_ket_thuc")
     private LocalDate ngayKetThuc;
+
     @Column(name = "tinh_trang")
     private Integer tinhTrang;
 }

@@ -461,7 +461,13 @@
     </ul>
 
     <a href="/nhan-vien/hien-thi"><i class="fas fa-users"></i>Nhân viên</a>
-    <a href="/khuyen-mai/hien-thi"><i class="fa-solid fa-tag"></i>Khuyến mãi</a>
+    <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fa-solid fa-ticket"></i>Khuyến mãi
+    </a>
+    <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="/khuyen-mai/hien-thi"><i class="fa-regular fa-percent"></i>Khuyến mãi</a></li>
+        <li><a class="dropdown-item" href="/khuyen-mai/chi-tiet"><i class="fa-solid fa-clipboard"></i>CT Khuyến mãi</a></li>
+    </ul>
     <a href="/lich-su/hien-thi"><i class="fa-solid fa-receipt"></i>Lịch Sử</a>
 </div>
 
