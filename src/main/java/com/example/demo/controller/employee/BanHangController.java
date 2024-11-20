@@ -2,8 +2,10 @@ package com.example.demo.controller.employee;
 
 import com.example.demo.entity.HoaDon;
 import com.example.demo.entity.HoaDonChiTiet;
+import com.example.demo.entity.KhachHang;
 import com.example.demo.entity.SanPhamChiTiet;
 import com.example.demo.repository.*;
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +15,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 @Controller
 @RequestMapping("/ban-hang")
 public class BanHangController {
+    @Autowired
+    private KhachHangRepo khachHangRepo;
     @Autowired
     private SanPhamRepo sanPhamRepository;
 
@@ -29,6 +35,10 @@ public class BanHangController {
 
     @Autowired
     private HoaDonChiTietRepo hoaDonChiTietRepository;
+
+    public List<SanPhamChiTiet> getSanPhamWithKhuyenMai() {
+        return sanPhamChiTietRepo.findAllWithPromotions();
+    }
 
     @GetMapping("")
     public String showHoaDon(Model model,
@@ -66,7 +76,7 @@ public class BanHangController {
         model.addAttribute("hoaDonChiTiets", hoaDonChiTiets);
         model.addAttribute("sanPhams", sanPhamChiTietList);
         model.addAttribute("phuongThucThanhToan", phuongThucThanhToan);
-        model.addAttribute("tongTien", totalAmount); // Truyền tổng tiền vào model
+        model.addAttribute("tongTien", totalAmount);
         return "admin/ban_hang/index";
     }
 
@@ -76,14 +86,14 @@ public class BanHangController {
         HoaDon hoaDon = hoaDonRepository.findById(id).orElseThrow();
         SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamId).orElseThrow();
         HoaDonChiTiet existingDetail = hoaDonChiTietRepository.findByHoaDonIdAndSanPhamChiTietId(id, sanPhamChiTiet.getId());
-
         if (sanPhamChiTiet.getSoLuong() <= 0) {
-            // Nếu không còn đủ số lượng sản phẩm trong kho thì báo lỗi
             return "redirect:/ban-hang/" + id + "?error=InsufficientStock";
         }
+        int giaApDung = (sanPhamChiTiet.getGiaGiamGia() != null && sanPhamChiTiet.getGiaGiamGia() > 0)
+                ? sanPhamChiTiet.getGiaGiamGia()
+                : sanPhamChiTiet.getGiaBan();
 
         if (existingDetail != null) {
-            // Tăng số lượng sản phẩm chi tiết
             existingDetail.setSo_luong(existingDetail.getSo_luong() + 1);
             hoaDonChiTietRepository.save(existingDetail);
         } else {
@@ -91,16 +101,15 @@ public class BanHangController {
             hoaDonChiTiet.setHoaDon(hoaDon);
             hoaDonChiTiet.setSanPhamChiTiet(sanPhamChiTiet);
             hoaDonChiTiet.setSo_luong(1);
-            hoaDonChiTiet.setGia_san_pham(sanPhamChiTiet.getGiaBan());
+            hoaDonChiTiet.setGia_san_pham(giaApDung);
             hoaDonChiTietRepository.save(hoaDonChiTiet);
         }
-
-        // Trừ số lượng sản phẩm trong kho sau khi thêm vào hóa đơn
         sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - 1);
         sanPhamChiTietRepo.save(sanPhamChiTiet);
-
         return "redirect:/ban-hang/" + id;
     }
+
+
 
 
     public String generateRandomId() {
@@ -145,8 +154,6 @@ public class BanHangController {
                 nextHoaDonId = remainingHoaDons.get(0).getId();
             }
         }
-
-        // Nếu còn hóa đơn, chuyển hướng đến hóa đơn đó
         return nextHoaDonId != null
                 ? "redirect:/ban-hang/" + nextHoaDonId
                 : "redirect:/ban-hang";
@@ -158,22 +165,14 @@ public class BanHangController {
         HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietRepository.findByHoaDonIdAndSanPhamChiTietId(hoaDonId, sanPhamChiTietId);
         if (hoaDonChiTiet != null) {
             SanPhamChiTiet sanPhamChiTiet = hoaDonChiTiet.getSanPhamChiTiet();
-
-            if (hoaDonChiTiet.getSo_luong() > 1) {
-                hoaDonChiTiet.setSo_luong(hoaDonChiTiet.getSo_luong() - 1);
-                hoaDonChiTiet.setGia_san_pham(hoaDonChiTiet.getSo_luong() * sanPhamChiTiet.getGiaBan());
-                hoaDonChiTietRepository.save(hoaDonChiTiet);
-            } else {
-                hoaDonChiTietRepository.delete(hoaDonChiTiet);
-            }
-
-            // Cộng lại số lượng sản phẩm khi xóa khỏi hóa đơn
-            sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() + 1);
+            int soLuong = hoaDonChiTiet.getSo_luong();
+            hoaDonChiTietRepository.delete(hoaDonChiTiet);
+            sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() + soLuong);
             sanPhamChiTietRepo.save(sanPhamChiTiet);
         }
-
         return "redirect:/ban-hang/" + hoaDonId;
     }
+
 
 
     @PostMapping("/{hoaDonId}/update-all-payment-method")
@@ -205,66 +204,101 @@ public class BanHangController {
 
 
     @PostMapping("/{id}/confirm")
-    public String goToConfirmOrder(@PathVariable Integer id, @RequestParam("ghiChu") String ghiChu, Model model) {
-        HoaDon hoaDon1 = hoaDonRepository.findById(id).orElseThrow();
-        List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findByHoaDonId(id);
-        model.addAttribute("hoaDon", hoaDon1);
-        model.addAttribute("chiTietList", hoaDonChiTietList);
-        // Tìm hóa đơn theo ID
+    public String goToConfirmOrder(@PathVariable Integer id, @RequestParam("ghiChu") String ghiChu,
+                                   @RequestParam("soDienThoai") String soDienThoai, HttpSession session, Model model) {
         HoaDon hoaDon = hoaDonRepository.findById(id).orElse(null);
         if (hoaDon != null) {
-            // Cập nhật ghi chú cho hóa đơn
             hoaDon.setGhiChu(ghiChu);
+            KhachHang khachHang = khachHangRepo.findBySoDienThoai(soDienThoai);
+            if (khachHang != null) {
+                hoaDon.setKhachHang(khachHang);
+            } else {
+                hoaDon.setKhachHang(null);
+            }
             hoaDonRepository.save(hoaDon);
         }
+        // Lưu số điện thoại và ghi chú vào session
+        session.setAttribute("soDienThoai", soDienThoai);
+        session.setAttribute("ghiChu", ghiChu);
+
+        List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findByHoaDonId(id);
         model.addAttribute("hoaDon", hoaDon);
+        model.addAttribute("chiTietList", hoaDonChiTietList);
+
         return "admin/ban_hang/confirm-order";
     }
 
 
+
+
+
+
     @PostMapping("/{id}/confirm-order")
-    public String confirmOrder(@PathVariable Integer id) {
+    public String confirmOrder(@PathVariable Integer id, @RequestParam("ghiChu") String ghiChu,
+                               @RequestParam("soDienThoai") String soDienThoai) {
         HoaDon hoaDon = hoaDonRepository.findById(id).orElseThrow();
-        List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findByHoaDonId(id);
-        // Cập nhật trạng thái hóa đơn
-        hoaDon.setTinh_trang(4);  // Đánh dấu hóa đơn đã xác nhận
+        hoaDon.setGhiChu(ghiChu);
+        KhachHang khachHang = khachHangRepo.findBySoDienThoai(soDienThoai);
+        if (khachHang != null) {
+            hoaDon.setKhachHang(khachHang);
+        } else {
+            hoaDon.setKhachHang(null);
+        }
+        hoaDon.setTinh_trang(4);
         hoaDonRepository.save(hoaDon);
-        // Tìm hóa đơn tiếp theo có tình trạng là 0
         List<HoaDon> remainingHoaDons = hoaDonRepository.findAll();
         Integer nextHoaDonId = remainingHoaDons.stream()
                 .filter(hd -> hd.getTinh_trang() == 0)
                 .map(HoaDon::getId)
                 .findFirst()
                 .orElse(null);
+
         return nextHoaDonId != null
                 ? "redirect:/ban-hang/" + nextHoaDonId
                 : "redirect:/ban-hang";
     }
 
-    // QR code
-//    @PostMapping("/add-by-qr")
-//    public ResponseEntity<String> addProductByQr(@RequestParam Integer hoaDonId, @RequestParam Integer sanPhamId) {
-//        HoaDon hoaDon = hoaDonRepository.findById(hoaDonId).orElseThrow(() -> new RuntimeException("Hóa đơn không tồn tại"));
-//        SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamId).orElseThrow(() -> new RuntimeException("Sản phẩm không tồn tại"));
-//
-//        // Kiểm tra số lượng sản phẩm
-//        if (sanPhamChiTiet.getSoLuong() <= 0) {
-//            return ResponseEntity.status(400).body("Sản phẩm không còn trong kho.");
-//        }
-//
-//        // Thêm sản phẩm vào hóa đơn
-//        HoaDonChiTiet hoaDonChiTiet = new HoaDonChiTiet();
-//        hoaDonChiTiet.setHoaDon(hoaDon);
-//        hoaDonChiTiet.setSanPhamChiTiet(sanPhamChiTiet);
-//        hoaDonChiTiet.setSo_luong(1);  // Mặc định thêm 1 sản phẩm
-//        hoaDonChiTiet.setGia_san_pham(sanPhamChiTiet.getGiaBan());
-//        hoaDonChiTietRepository.save(hoaDonChiTiet);
-//
-//        // Giảm số lượng sản phẩm trong kho
-//        sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - 1);
-//        sanPhamChiTietRepo.save(sanPhamChiTiet);
-//
-//        return ResponseEntity.ok("Sản phẩm đã được thêm vào hóa đơn.");
-//    }
+
+
+
+    @PostMapping("/{id}/update-quantity/{sanPhamChiTietId}")
+    public String updateQuantityInInvoice(@PathVariable Integer id,
+                                          @PathVariable Integer sanPhamChiTietId,
+                                          @RequestParam Integer soLuong) {
+        HoaDon hoaDon = hoaDonRepository.findById(id).orElseThrow();
+        SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamChiTietId).orElseThrow();
+        HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietRepository.findByHoaDonIdAndSanPhamChiTietId(id, sanPhamChiTiet.getId());
+        if (hoaDonChiTiet != null) {
+            int oldQuantity = hoaDonChiTiet.getSo_luong();
+            if (soLuong < 1 || soLuong > sanPhamChiTiet.getSoLuong() + oldQuantity) {
+                return "redirect:/ban-hang/" + id + "?error=InvalidQuantity";
+            }
+            hoaDonChiTiet.setSo_luong(soLuong);
+            hoaDonChiTietRepository.save(hoaDonChiTiet);
+            int quantityChange = soLuong - oldQuantity;
+            if (quantityChange > 0) {
+                sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - quantityChange);
+            } else {
+                sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - quantityChange);
+            }
+            sanPhamChiTietRepo.save(sanPhamChiTiet);
+        }
+        return "redirect:/ban-hang/" + id;
+    }
+
+
+    @GetMapping("/check-phone")
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> checkPhone(@RequestParam String soDienThoai) {
+        Map<String, String> response = new HashMap<>();
+        KhachHang khachHang = khachHangRepo.findBySoDienThoai(soDienThoai);
+        if (khachHang != null) {
+            response.put("tenKhachHang", khachHang.getTenKhachHang());
+        } else {
+            response.put("tenKhachHang", "Khách lẻ");
+        }
+        return ResponseEntity.ok(response);
+    }
+
 
 }

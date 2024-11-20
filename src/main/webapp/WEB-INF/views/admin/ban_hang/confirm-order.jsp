@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
     <style>
         body {
-            background-color: #f0f2f5;
+            background: linear-gradient(to right, #0B745E, #4CAF50); /* Chuyển từ màu xanh sang vàng */
             font-family: 'Arial', sans-serif;
         }
         .modal-content {
@@ -21,7 +21,7 @@
             transition: transform 0.3s ease;
         }
         .modal-header {
-            background: linear-gradient(135deg, #6f86d6, #48c6ef);
+            background: linear-gradient(135deg, #0B745E, #532B0E);
             color: #fff;
             border-top-left-radius: 15px;
             border-top-right-radius: 15px;
@@ -64,11 +64,11 @@
             transition: background-color 0.3s ease, transform 0.3s ease;
         }
         .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
+            background: linear-gradient(135deg, #0B745E, #532B0E);
+            border-color: #532B0E;
         }
         .btn-primary:hover {
-            background-color: #0056b3;
+            background-color: #4CAF50;
             transform: translateY(-2px);
         }
         .btn-secondary {
@@ -82,6 +82,7 @@
         .container {
             margin-top: 30px;
         }
+
     </style>
 </head>
 <body>
@@ -107,6 +108,19 @@
                         </c:choose>
                     </p>
                     <p><strong>Ngày Tạo:</strong> ${hoaDon.ngayTao}</p>
+
+                    <p><strong>Tên Khách Hàng:</strong>
+                        <c:choose>
+                            <c:when test="${empty hoaDon.khachHang}">
+                                Khách lẻ
+                            </c:when>
+                            <c:otherwise>
+                                ${hoaDon.khachHang.tenKhachHang}
+                            </c:otherwise>
+                        </c:choose>
+                    </p>
+
+
                     <h6>Chi Tiết Sản Phẩm:</h6>
                     <ul class="list-group product-list">
                         <c:forEach items="${chiTietList}" var="chiTiet">
@@ -119,7 +133,10 @@
                     <p class="total-price mt-2"><strong>Tổng Tiền:</strong> ${hoaDon.tongTien} VNĐ</p>
                 </div>
                 <div class="modal-footer">
+                    <!-- Form để xác nhận đơn hàng và lưu dữ liệu -->
                     <form action="${pageContext.request.contextPath}/ban-hang/${hoaDon.id}/confirm-order" method="post">
+                        <input type="hidden" name="ghiChu" value="${hoaDon.ghiChu}">
+                        <input type="hidden" name="soDienThoai" value="${soDienThoai}">
                         <button type="submit" class="btn btn-primary">
                             <i class="bi bi-check-circle"></i> Xác nhận Đơn hàng
                         </button>
