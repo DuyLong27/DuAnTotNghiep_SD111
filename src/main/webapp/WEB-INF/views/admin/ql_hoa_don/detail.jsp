@@ -240,10 +240,32 @@
                     <tr>
                         <td><img style="width: 90px" src="${pageContext.request.contextPath}/uploads/${item.sanPhamChiTiet.hinhAnh}"></td>
                         <td>${item.sanPhamChiTiet.sanPham.ten}</td>
-                        <td>${item.sanPhamChiTiet.giaBan} VND</td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${item.sanPhamChiTiet.giaGiamGia != null and item.sanPhamChiTiet.giaGiamGia > 0}">
+                                        <span style="text-decoration: line-through; color: gray;">
+                                            ${item.sanPhamChiTiet.giaBan} VNĐ
+                                        </span>
+                                    <br>
+                                    <span style="color: green;">
+                                        ${item.sanPhamChiTiet.giaGiamGia} VNĐ
+                                        </span>
+                                </c:when>
+                                <c:otherwise>
+                                    <span>${item.sanPhamChiTiet.giaBan} VNĐ</span>
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
                         <td>${item.so_luong}</td>
                     </tr>
-                    <c:set var="tongGiaSanPham" value="${tongGiaSanPham + (item.so_luong * item.sanPhamChiTiet.giaBan)}" />
+                    <c:choose>
+                        <c:when test="${item.sanPhamChiTiet.giaGiamGia != null and item.sanPhamChiTiet.giaGiamGia > 0}">
+                            <c:set var="tongGiaSanPham" value="${tongGiaSanPham + (item.so_luong * item.sanPhamChiTiet.giaGiamGia)}" />
+                        </c:when>
+                        <c:otherwise>
+                            <c:set var="tongGiaSanPham" value="${tongGiaSanPham + (item.so_luong * item.sanPhamChiTiet.giaBan)}" />
+                        </c:otherwise>
+                    </c:choose>
                     <c:set var="phiVanChuyen" value="${hoaDon.tongTien - tongGiaSanPham}" />
                 </c:forEach>
                 </tbody>

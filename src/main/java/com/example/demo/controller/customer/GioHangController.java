@@ -72,7 +72,12 @@ public class GioHangController {
             newDetail.setGioHang(cart);
             newDetail.setSanPhamChiTiet(sanPhamChiTiet);
             newDetail.setSoLuong(1); // Số lượng ban đầu
-            newDetail.setGiaBan(sanPhamChiTiet.getGiaBan());
+
+            // Kiểm tra giá giảm, nếu có thì dùng giaGiamGia, nếu không thì dùng giaBan
+            int giaSanPham = (sanPhamChiTiet.getGiaGiamGia() != null && sanPhamChiTiet.getGiaGiamGia() > 0)
+                    ? sanPhamChiTiet.getGiaGiamGia()
+                    : sanPhamChiTiet.getGiaBan();
+            newDetail.setGiaBan(giaSanPham); // Set giá bán
 
             gioHangChiTietRepo.save(newDetail);
         }
