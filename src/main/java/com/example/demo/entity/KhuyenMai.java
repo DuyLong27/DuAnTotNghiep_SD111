@@ -38,4 +38,7 @@ public class KhuyenMai {
 
     @Column(name = "tinh_trang")
     private Integer tinhTrang;
+
+    @OneToMany(mappedBy = "khuyenMai", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<KhuyenMaiChiTiet> khuyenMaiChiTietList;
 }

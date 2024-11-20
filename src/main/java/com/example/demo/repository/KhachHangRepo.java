@@ -12,6 +12,7 @@ import java.util.Optional;
 @Repository
 public interface KhachHangRepo extends JpaRepository<KhachHang, Integer> {
     //    Page<KhachHang> findByTinhTrang(Integer tinhTrang, Pageable pageable);
+    KhachHang findBySoDienThoai(String soDienThoai);
     Page<KhachHang> findBytenKhachHangContainingIgnoreCase(String tenKhachHang, Pageable pageable);
     KhachHang findByEmail(String email);
 }

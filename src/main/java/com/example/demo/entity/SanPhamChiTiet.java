@@ -78,4 +78,8 @@ public class SanPhamChiTiet {
     @ManyToOne
     @JoinColumn(name = "id_thuong_hieu", referencedColumnName = "id_thuong_hieu")
     private ThuongHieu thuongHieu;
+
+
+    @OneToMany(mappedBy = "sanPhamChiTiet", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<KhuyenMaiChiTiet> khuyenMaiChiTietList;
 }
