@@ -51,6 +51,10 @@ public class DanhSachSanPhamController {
     @Autowired
     private GioHangChiTietRepo gioHangChiTietRepo;
 
+    public List<SanPhamChiTiet> getSanPhamWithKhuyenMai() {
+        return sanPhamChiTietRepo.findAllWithPromotions();
+    }
+
     @GetMapping("/hien-thi")
     public String hienThi(Model model,
                           @RequestParam(required = false) Integer thuongHieuId,
@@ -127,7 +131,13 @@ public class DanhSachSanPhamController {
             return "redirect:/error";
         }
 
-        int tongTien = soLuong * sanPhamChiTiet.getGiaBan();
+        // Kiểm tra giaGiamGia
+        int giaSanPham = (sanPhamChiTiet.getGiaGiamGia() != null && sanPhamChiTiet.getGiaGiamGia() > 0)
+                ? sanPhamChiTiet.getGiaGiamGia()
+                : sanPhamChiTiet.getGiaBan();
+
+        // Tính tổng tiền
+        int tongTien = soLuong * giaSanPham;
         int phiVanChuyen = phuongThucVanChuyen.equals("Giao Hàng Tiêu Chuẩn") ? 20000 : 33000;
         tongTien += phiVanChuyen;
 
@@ -159,7 +169,7 @@ public class DanhSachSanPhamController {
         hoaDonChiTiet.setHoaDon(hoaDon);
         hoaDonChiTiet.setSanPhamChiTiet(sanPhamChiTiet);
         hoaDonChiTiet.setSo_luong(soLuong);
-        hoaDonChiTiet.setGia_san_pham(sanPhamChiTiet.getGiaBan());
+        hoaDonChiTiet.setGia_san_pham(giaSanPham); // Cập nhật giá sản phẩm
         hoaDonChiTietRepo.save(hoaDonChiTiet);
 
         // Cập nhật số lượng sản phẩm

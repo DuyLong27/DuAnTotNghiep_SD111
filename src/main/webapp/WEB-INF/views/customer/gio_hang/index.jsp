@@ -139,7 +139,22 @@
                                         ${item.sanPhamChiTiet.sanPham.ten}
                                 </div>
                             </td>
-                            <td>${item.sanPhamChiTiet.giaBan} đ</td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${item.sanPhamChiTiet.giaGiamGia != null and item.sanPhamChiTiet.giaGiamGia > 0}">
+                                        <span style="text-decoration: line-through; color: gray;">
+                                            ${item.sanPhamChiTiet.giaBan} VNĐ
+                                        </span>
+                                        <br>
+                                        <span style="color: green; font-weight: bold;">
+                                        ${item.sanPhamChiTiet.giaGiamGia} VNĐ
+                                        </span>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span>${item.sanPhamChiTiet.giaBan} VNĐ</span>
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
                     </form>
                     <td class="text-center">
                         <div class="d-flex align-items-center justify-content-center">
@@ -166,7 +181,16 @@
                             </form>
                         </div>
                     </td>
-                    <td>${item.sanPhamChiTiet.giaBan * item.soLuong}</td>
+                    <td>
+                        <c:choose>
+                            <c:when test="${item.sanPhamChiTiet.giaGiamGia != null and item.sanPhamChiTiet.giaGiamGia > 0}">
+                                ${item.sanPhamChiTiet.giaGiamGia * item.soLuong} VNĐ
+                            </c:when>
+                            <c:otherwise>
+                                ${item.sanPhamChiTiet.giaBan * item.soLuong} VNĐ
+                            </c:otherwise>
+                        </c:choose>
+                    </td>
                     <td>
                         <form action="${pageContext.request.contextPath}/gio-hang/remove" method="post">
                             <input type="hidden" name="sanPhamId" value="${item.sanPhamChiTiet.id}"/>
