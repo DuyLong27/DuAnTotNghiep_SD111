@@ -69,7 +69,7 @@ public class LoginController {
         khachHang.setMatKhau(matKhau);
         khachHang.setSoDienThoai(soDienThoai);
         khachHang.setDiaChi(diaChi);
-
+        khachHang.setDiemTichLuy(0);
         khachHangService.registerCustomer(khachHang);
         return "redirect:/auth/login";
     }
