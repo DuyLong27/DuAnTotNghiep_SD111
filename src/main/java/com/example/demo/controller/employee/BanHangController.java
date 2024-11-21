@@ -234,29 +234,36 @@ public class BanHangController {
 
 
     @PostMapping("/{id}/confirm-order")
-    public String confirmOrder(@PathVariable Integer id, @RequestParam("ghiChu") String ghiChu,
+    public String confirmOrder(@PathVariable Integer id,
+                               @RequestParam("ghiChu") String ghiChu,
                                @RequestParam("soDienThoai") String soDienThoai) {
         HoaDon hoaDon = hoaDonRepository.findById(id).orElseThrow();
         hoaDon.setGhiChu(ghiChu);
+        hoaDon.setSoDienThoai(soDienThoai);
         KhachHang khachHang = khachHangRepo.findBySoDienThoai(soDienThoai);
         if (khachHang != null) {
             hoaDon.setKhachHang(khachHang);
+            int totalOriginalPrice = hoaDon.getHoaDonChiTietList().stream()
+                    .mapToInt(detail -> detail.getSanPhamChiTiet().getGiaBan() * detail.getSo_luong())
+                    .sum();
+            int pointsToAdd = totalOriginalPrice / 10000;
+            khachHang.setDiemTichLuy(khachHang.getDiemTichLuy() + pointsToAdd);
+            khachHangRepo.save(khachHang);
         } else {
             hoaDon.setKhachHang(null);
         }
         hoaDon.setTinh_trang(4);
         hoaDonRepository.save(hoaDon);
-        List<HoaDon> remainingHoaDons = hoaDonRepository.findAll();
-        Integer nextHoaDonId = remainingHoaDons.stream()
+        Integer nextHoaDonId = hoaDonRepository.findAll().stream()
                 .filter(hd -> hd.getTinh_trang() == 0)
                 .map(HoaDon::getId)
                 .findFirst()
                 .orElse(null);
-
         return nextHoaDonId != null
                 ? "redirect:/ban-hang/" + nextHoaDonId
                 : "redirect:/ban-hang";
     }
+
 
 
 
