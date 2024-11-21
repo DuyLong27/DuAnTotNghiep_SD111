@@ -222,70 +222,65 @@
     </div>
 
     <div class="card mb-4">
-        <div class="card-header">Danh sách sản phẩm</div>
-        <div class="card-body">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Hình ảnh</th>
-                    <th>Tên Sản Phẩm</th>
-                    <th>Giá</th>
-                    <th>Số lượng</th>
-                </tr>
-                </thead>
-                <tbody>
-                <c:set var="phiVanChuyen" value="0" />
-                <c:set var="tongGiaSanPham" value="0" />
-                <c:forEach items="${hoaDonChiTiets}" var="item">
+        <c:if test="${not empty hoaDonChiTiets}">
+            <div class="card-header">Danh sách sản phẩm</div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
                     <tr>
-                        <td><img style="width: 90px" src="${pageContext.request.contextPath}/uploads/${item.sanPhamChiTiet.hinhAnh}"></td>
-                        <td>${item.sanPhamChiTiet.sanPham.ten}</td>
-                        <td>
-                            <c:choose>
-                                <c:when test="${item.sanPhamChiTiet.giaGiamGia != null and item.sanPhamChiTiet.giaGiamGia > 0}">
-                                        <span style="text-decoration: line-through; color: gray;">
-                                            ${item.sanPhamChiTiet.giaBan} VNĐ
-                                        </span>
-                                    <br>
-                                    <span style="color: green;">
-                                        ${item.sanPhamChiTiet.giaGiamGia} VNĐ
-                                        </span>
-                                </c:when>
-                                <c:otherwise>
-                                    <span>${item.sanPhamChiTiet.giaBan} VNĐ</span>
-                                </c:otherwise>
-                            </c:choose>
-                        </td>
-                        <td>${item.so_luong}</td>
+                        <th>Hình ảnh</th>
+                        <th>Tên Sản Phẩm</th>
+                        <th>Giá</th>
+                        <th>Số lượng</th>
                     </tr>
-                    <c:choose>
-                        <c:when test="${item.sanPhamChiTiet.giaGiamGia != null and item.sanPhamChiTiet.giaGiamGia > 0}">
-                            <c:set var="tongGiaSanPham" value="${tongGiaSanPham + (item.so_luong * item.sanPhamChiTiet.giaGiamGia)}" />
-                        </c:when>
-                        <c:otherwise>
-                            <c:set var="tongGiaSanPham" value="${tongGiaSanPham + (item.so_luong * item.sanPhamChiTiet.giaBan)}" />
-                        </c:otherwise>
-                    </c:choose>
-                    <c:set var="phiVanChuyen" value="${hoaDon.tongTien - tongGiaSanPham}" />
-                </c:forEach>
-                </tbody>
-            </table>
-            <c:if test="${hoaDon.tinh_trang == 2}">
-                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#confirmPaymentModal">
-                    Xác nhận thanh toán
-                </button>
-            </c:if>
-            <c:if test="${hoaDon.tinh_trang == 11}">
-                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#doiTraModal">
-                    Xem Thông tin Đổi Trả
-                </button>
-            </c:if>
-            <c:if test="${hoaDon.tinh_trang == 12}">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#doiTraChiTietModal">
-                    Xem chi tiết đổi trả
-                </button>
-            </c:if>
-        </div>
+                    </thead>
+                    <tbody>
+                    <c:set var="phiVanChuyen" value="0" />
+                    <c:set var="tongGiaSanPham" value="0" />
+                    <c:forEach items="${hoaDonChiTiets}" var="item">
+                        <tr>
+                            <td><img style="width: 90px" src="${pageContext.request.contextPath}/uploads/${item.sanPhamChiTiet.hinhAnh}"></td>
+                            <td>${item.sanPhamChiTiet.sanPham.ten}</td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${item.gia_san_pham != item.sanPhamChiTiet.giaBan}">
+                                <span style="text-decoration: line-through; color: gray;">
+                                    ${item.sanPhamChiTiet.giaBan} VNĐ
+                                </span>
+                                        <br>
+                                        <span style="color: green;">
+                                    ${item.gia_san_pham} VNĐ
+                                </span>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span>${item.gia_san_pham} VNĐ</span>
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
+                            <td>${item.so_luong}</td>
+                        </tr>
+                        <c:set var="tongGiaSanPham" value="${tongGiaSanPham + (item.so_luong * item.gia_san_pham)}" />
+                        <c:set var="phiVanChuyen" value="${hoaDon.tongTien - tongGiaSanPham}" />
+                    </c:forEach>
+                    </tbody>
+                </table>
+                <c:if test="${hoaDon.tinh_trang == 2}">
+                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#confirmPaymentModal">
+                        Xác nhận thanh toán
+                    </button>
+                </c:if>
+                <c:if test="${hoaDon.tinh_trang == 11}">
+                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#doiTraModal">
+                        Xem Thông tin Đổi Trả
+                    </button>
+                </c:if>
+                <c:if test="${hoaDon.tinh_trang == 12}">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#doiTraChiTietModal">
+                        Xem chi tiết đổi trả
+                    </button>
+                </c:if>
+            </div>
+        </c:if>
         <c:if test="${hoaDon.tinh_trang == 13}">
             <div class="card mb-4">
                 <div class="card-header">Sản phẩm đổi trả</div>
@@ -304,8 +299,23 @@
                             <tr>
                                 <td><img style="width: 90px" src="${pageContext.request.contextPath}/uploads/${doiTraChiTiet.sanPhamChiTiet.hinhAnh}"></td>
                                 <td>${doiTraChiTiet.sanPhamChiTiet.sanPham.ten}</td>
-                                <td class="text-center">${doiTraChiTiet.giaSanPham} VNĐ</td>
-                                <td class="text-center">${doiTraChiTiet.soLuong}</td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${doiTraChiTiet.giaSanPham == doiTraChiTiet.sanPhamChiTiet.giaBan}">
+                                            ${doiTraChiTiet.giaSanPham} VNĐ
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span style="text-decoration: line-through; color: gray;">
+                                                    ${doiTraChiTiet.sanPhamChiTiet.giaBan} VNĐ
+                                            </span>
+                                            <br>
+                                            <span style="color: green;">
+                                                    ${doiTraChiTiet.giaSanPham} VNĐ
+                                            </span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td>${doiTraChiTiet.soLuong}</td>
                             </tr>
                         </c:forEach>
                         </tbody>
