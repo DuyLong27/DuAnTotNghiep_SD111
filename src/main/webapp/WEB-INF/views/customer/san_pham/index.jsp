@@ -318,6 +318,13 @@
             z-index: 1;
         }
 
+        .card-body {
+            min-height: 150px; /* Đặt chiều cao tối thiểu để đồng bộ */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Đảm bảo các phần tử được sắp xếp gọn */
+        }
+
 
     </style>
 </head>

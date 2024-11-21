@@ -115,8 +115,13 @@ public class DoiTraController {
                 if (sanPhamChiTiet != null) {
                     selectedProducts.add(sanPhamChiTiet);
                     soLuongMap.put(id, soLuongHoan);
-                    // Tính tiền hoàn
-                    tongTienHoan += sanPhamChiTiet.getGiaBan() * soLuongHoan;
+                    // Sử dụng giaSanPham của HoaDonChiTiet thay vì giaBan của SanPhamChiTiet
+                    HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietList.stream()
+                            .filter(ct -> ct.getSanPhamChiTiet().getId().equals(id))
+                            .findFirst().orElse(null);
+                    if (hoaDonChiTiet != null) {
+                        tongTienHoan += hoaDonChiTiet.getGia_san_pham() * soLuongHoan;
+                    }
                 }
             }
 
@@ -217,18 +222,29 @@ public class DoiTraController {
             doiTra.setTinhTrang(11);
             doiTraRepo.save(doiTra);
 
+            // Lấy danh sách HoaDonChiTiet để sử dụng giaSanPham
+            List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepo.findByHoaDon(hoaDon);
+
             // Lưu từng chi tiết đổi trả
             for (Integer sanPhamChiTietId : sanPhamChiTietIds) {
                 SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamChiTietId).orElse(null);
                 if (sanPhamChiTiet != null) {
                     Integer soLuongHoan = Integer.valueOf(requestParams.get("soLuong_" + sanPhamChiTietId));
 
-                    DoiTraChiTiet doiTraChiTiet = new DoiTraChiTiet();
-                    doiTraChiTiet.setDoiTra(doiTra);
-                    doiTraChiTiet.setSanPhamChiTiet(sanPhamChiTiet);
-                    doiTraChiTiet.setGiaSanPham(sanPhamChiTiet.getGiaBan());
-                    doiTraChiTiet.setSoLuong(soLuongHoan);
-                    doiTraChiTietRepo.save(doiTraChiTiet);
+                    // Tìm HoaDonChiTiet tương ứng với sanPhamChiTietId
+                    HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietList.stream()
+                            .filter(chiTiet -> chiTiet.getSanPhamChiTiet().getId().equals(sanPhamChiTietId))
+                            .findFirst().orElse(null);
+
+                    if (hoaDonChiTiet != null) {
+                        // Tạo đối tượng DoiTraChiTiet với giaSanPham từ HoaDonChiTiet
+                        DoiTraChiTiet doiTraChiTiet = new DoiTraChiTiet();
+                        doiTraChiTiet.setDoiTra(doiTra);
+                        doiTraChiTiet.setSanPhamChiTiet(sanPhamChiTiet);
+                        doiTraChiTiet.setGiaSanPham(hoaDonChiTiet.getGia_san_pham()); // Sử dụng giaSanPham từ HoaDonChiTiet
+                        doiTraChiTiet.setSoLuong(soLuongHoan);
+                        doiTraChiTietRepo.save(doiTraChiTiet);
+                    }
                 }
             }
 

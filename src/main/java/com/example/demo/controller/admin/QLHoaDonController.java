@@ -141,10 +141,14 @@ public class QLHoaDonController {
             sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() + doiTraChiTiet.getSoLuong());
             sanPhamChiTietRepo.save(sanPhamChiTiet);
 
-            tongTienHoan -= doiTraChiTiet.getSoLuong() * sanPhamChiTiet.getGiaBan();
+            HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietRepo.findByHoaDonAndSanPhamChiTiet(hoaDon, sanPhamChiTiet);
+            if (hoaDonChiTiet != null) {
+                tongTienHoan -= doiTraChiTiet.getSoLuong() * hoaDonChiTiet.getGia_san_pham();
+            }
 
             diemHoan += (doiTraChiTiet.getSoLuong() * sanPhamChiTiet.getGiaBan()) / 10000;
         }
+
 
         hoaDon.setTongTien(tongTienHoan);
         hoaDon.setTinh_trang(13);

@@ -107,21 +107,41 @@
                     </div>
                 </div>
 
-                <h6>Danh Sách Sản Phẩm:</h6>
-                <ul class="list-group">
-                    <c:forEach var="chiTiet" items="${hoaDon.hoaDonChiTietList}">
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div class="d-flex align-items-center">
-                                <img src="${pageContext.request.contextPath}/uploads/${chiTiet.sanPhamChiTiet.hinhAnh}"
-                                     alt="Hình ảnh sản phẩm" class="me-3" style="width: 100px; height: auto;">
-                                <div>
-                                    <span>${chiTiet.sanPhamChiTiet.sanPham.ten}</span>
+                <c:if test="${not empty hoaDon.hoaDonChiTietList}">
+                    <h6>Danh Sách Sản Phẩm:</h6>
+                    <ul class="list-group">
+                        <c:forEach var="chiTiet" items="${hoaDon.hoaDonChiTietList}">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <img src="${pageContext.request.contextPath}/uploads/${chiTiet.sanPhamChiTiet.hinhAnh}"
+                                         alt="Hình ảnh sản phẩm" class="me-3" style="width: 100px; height: auto;">
+                                    <div>
+                                        <span>${chiTiet.sanPhamChiTiet.sanPham.ten}</span>
+                                    </div>
                                 </div>
-                            </div>
-                            <span>Số Lượng: ${chiTiet.so_luong}</span>
-                        </li>
-                    </c:forEach>
-                </ul>
+                                <div>
+                                    <c:choose>
+                                        <c:when test="${chiTiet.gia_san_pham != chiTiet.sanPhamChiTiet.giaBan}">
+                                <span style="text-decoration: line-through; color: gray;">
+                                    ${chiTiet.sanPhamChiTiet.giaBan} VNĐ
+                                </span>
+                                            <br>
+                                            <span style="color: green;">
+                                    ${chiTiet.gia_san_pham} VNĐ
+                                </span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span>${chiTiet.gia_san_pham} VNĐ</span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
+                                <div>
+                                    <span>Số Lượng: ${chiTiet.so_luong}</span>
+                                </div>
+                            </li>
+                        </c:forEach>
+                    </ul>
+                </c:if>
                 <c:if test="${hoaDon.tinh_trang == 13}">
                     <h6 class="mt-3">Sản phẩm đổi trả:</h6>
                     <ul class="list-group mt-3 ">
@@ -134,7 +154,25 @@
                                         <span>${doiTraChiTiet.sanPhamChiTiet.sanPham.ten}</span>
                                     </div>
                                 </div>
-                                <span>Số Lượng: ${doiTraChiTiet.soLuong}</span>
+                                <div>
+                                    <c:choose>
+                                        <c:when test="${doiTraChiTiet.giaSanPham != doiTraChiTiet.sanPhamChiTiet.giaBan}">
+                                <span style="text-decoration: line-through; color: gray;">
+                                    ${doiTraChiTiet.sanPhamChiTiet.giaBan} VNĐ
+                                </span>
+                                            <br>
+                                            <span style="color: green;">
+                                    ${doiTraChiTiet.giaSanPham} VNĐ
+                                </span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span>${doiTraChiTiet.giaSanPham} VNĐ</span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
+                                <div>
+                                    <span>Số Lượng: ${doiTraChiTiet.soLuong}</span>
+                                </div>
                             </li>
                         </c:forEach>
                     </ul>
