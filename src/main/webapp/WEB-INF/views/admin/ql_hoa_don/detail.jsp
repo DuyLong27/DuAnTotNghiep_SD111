@@ -163,19 +163,16 @@
         Phải xác nhận thanh toán trước khi hoàn thành đơn hàng.
     </div>
 
-    <form action="/hoa-don/cap-nhat-tinh-trang" method="post">
-        <input type="hidden" name="id" value="${hoaDon.id}" />
-
-        <c:choose>
-            <c:when test="${hoaDon.tinh_trang == 0}">
-                <button type="submit" name="tinhTrangMoi" value="1" class="btn btn-primary">Xác nhận</button>
-            </c:when>
-
-            <c:when test="${hoaDon.tinh_trang == 1}">
-                <button type="submit" name="tinhTrangMoi" value="2" class="btn btn-warning">Giao hàng</button>
-            </c:when>
-        </c:choose>
+    <c:if test="${hoaDon.tinh_trang == 0}">
+    <form action="/hoa-don/xac-nhan-hoa-don/${hoaDon.id}" method="post">
+        <button type="submit" class="btn btn-primary">Xác nhận</button>
     </form>
+    </c:if>
+    <c:if test="${hoaDon.tinh_trang == 1}">
+        <form action="/hoa-don/ban-giao-van-chuyen/${hoaDon.id}" method="post">
+            <button type="submit" class="btn btn-warning">Giao hàng</button>
+        </form>
+    </c:if>
     <c:if test="${hoaDon.tinh_trang == 2 || hoaDon.tinh_trang == 3}">
         <form action="/hoa-don/hoan-thanh/${hoaDon.id}" method="post">
             <button type="submit" class="btn btn-success"
@@ -199,7 +196,7 @@
                     <p><strong>Số điện thoại:</strong> ${hoaDon.soDienThoai}</p>
                 </div>
                 <div class="col-md-6">
-                    <p><strong>Ngày tạo:</strong> ${hoaDon.ngayTao}</p>
+                    <p><strong>Ngày tạo:</strong> ${thoiGianTao}</p>
                 </div>
             </div>
             <div class="row mb-2">

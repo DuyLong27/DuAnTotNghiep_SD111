@@ -23,4 +23,7 @@ public interface HoaDonChiTietRepo extends JpaRepository<HoaDonChiTiet, Integer>
     Integer tinhTongSoLuongSanPhamTrongHoaDonHoanThanh(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
     HoaDonChiTiet findByHoaDonAndSanPhamChiTiet(HoaDon hoaDon, SanPhamChiTiet sanPhamChiTiet);
+
+    List<HoaDonChiTiet> findByHoaDon_Id(Integer idHoaDon);
+
 }

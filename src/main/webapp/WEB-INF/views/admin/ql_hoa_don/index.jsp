@@ -26,7 +26,7 @@
             </tr>
             </thead>
             <tbody>
-            <c:forEach items="${listHoaDon}" var="item">
+            <c:forEach items="${listHoaDon}" var="item" varStatus="status">
                 <c:if test="${tinhTrang == 'all' || item.tinh_trang == 0 || item.tinh_trang == 1
                 || item.tinh_trang == 2 || item.tinh_trang == 3 || item.tinh_trang == 4
                 || item.tinh_trang == 11 || item.tinh_trang == 12 || item.tinh_trang == 13 || item.tinh_trang == 14}">
@@ -37,7 +37,16 @@
                         <td>${item.tongTien} VNĐ</td>
                         <td>${item.phuong_thuc_thanh_toan}</td>
                         <td>${item.ghiChu}</td>
-                        <td>${item.ngayTao}</td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${not empty thoiGianTaoList[status.index]}">
+                                    ${thoiGianTaoList[status.index]}
+                                </c:when>
+                                <c:otherwise>
+                                    Không có thông tin
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
                         <td>
                             <c:choose>
                                 <c:when test="${item.tinh_trang == 0}">

@@ -235,13 +235,12 @@
                 <a class="nav-link text-light" href="#">Giới thiệu</a>
             </li>
 
-
             <li class="nav-item">
-                <a class="nav-link text-light" href="#">Tin tức</a>
+                <a class="nav-link text-light" href="#">Liên hệ</a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link text-light" href="#">Liên hệ</a>
+                <a class="nav-link text-light" href="/tra-cuu/tim-kiem">Tra cứu đơn hàng</a>
             </li>
         </ul>
         <ul class="navbar-nav icon-cart">
