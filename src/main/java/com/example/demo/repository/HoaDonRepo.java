@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
@@ -70,4 +71,6 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
             "GROUP BY CONVERT(VARCHAR, h.ngay_tao, 23) " + // Chuyển đổi ngày sang định dạng yyyy-mm-dd
             "ORDER BY date", nativeQuery = true)
     List<Object[]> tinhDoanhThuTheoNgay(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
+    Optional<HoaDon> findBySoHoaDon(String soHoaDon);
 }

@@ -450,6 +450,7 @@
         <li><a class="dropdown-item" href="/ban-hang"><i class="fas fa-shopping-cart"></i>Bán hàng</a></li>
         <li><a class="dropdown-item" href="/nhap-hang/hien-thi"><i class="fas fa-download"></i>Nhập hàng</a></li>
         <li><a class="dropdown-item" href="/hoa-don/tinhTrang=all"><i class="fas fa-file-invoice"></i>Hóa đơn</a></li>
+        <li><a href="/lich-su/hien-thi"><i class="fa-solid fa-clock-rotate-left"></i>Lịch Sử</a></li>
     </ul>
 
     <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -468,7 +469,6 @@
         <li><a class="dropdown-item" href="/khuyen-mai/hien-thi"><i class="fa-regular fa-percent"></i>Khuyến mãi</a></li>
         <li><a class="dropdown-item" href="/khuyen-mai/chi-tiet"><i class="fa-solid fa-clipboard"></i>CT Khuyến mãi</a></li>
     </ul>
-    <a href="/lich-su/hien-thi"><i class="fa-solid fa-receipt"></i>Lịch Sử</a>
 </div>
 
 
@@ -499,6 +499,10 @@
         sidebar.classList.toggle('open');
         overlay.classList.toggle('show'); // Hiển thị hoặc ẩn overlay
     }
+
+    document.getElementById('overlay').addEventListener('click', function() {
+        toggleSidebar(); // Gọi lại hàm toggle để đóng sidebar
+    });
 
 </script>
 </html>

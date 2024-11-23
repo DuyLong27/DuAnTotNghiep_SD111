@@ -609,11 +609,10 @@
     </div>
 </div>
 <jsp:include page="../footer_user.jsp" />
+</body>
 <script>
-    // Giá bán của sản phẩm
-    const giaBan = ${sanPhamChiTiet.giaBan};
-    // Giá giảm giá của sản phẩm (ví dụ)
-    const giaGiamGia = ${sanPhamChiTiet.giaGiamGia};
+    const giaBan = ${sanPhamChiTiet.giaBan != null ? sanPhamChiTiet.giaBan : 0};
+    const giaGiamGia = ${sanPhamChiTiet.giaGiamGia != null ? sanPhamChiTiet.giaGiamGia : 0};
 
     // Hàm cập nhật tổng tiền
     function updateTotal() {
@@ -656,5 +655,4 @@
         updateTotal(); // Cập nhật lại tổng tiền
     }
 </script>
-</body>
 </html>

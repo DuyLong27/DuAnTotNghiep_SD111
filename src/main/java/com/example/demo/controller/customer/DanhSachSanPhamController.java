@@ -1,9 +1,6 @@
 package com.example.demo.controller.customer;
 
-import com.example.demo.entity.HoaDon;
-import com.example.demo.entity.HoaDonChiTiet;
-import com.example.demo.entity.KhachHang;
-import com.example.demo.entity.SanPhamChiTiet;
+import com.example.demo.entity.*;
 import com.example.demo.repository.*;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -50,6 +48,9 @@ public class DanhSachSanPhamController {
 
     @Autowired
     private GioHangChiTietRepo gioHangChiTietRepo;
+
+    @Autowired
+    private ThoiGianDonHangRepo thoiGianDonHangRepo;
 
     public List<SanPhamChiTiet> getSanPhamWithKhuyenMai() {
         return sanPhamChiTietRepo.findAllWithPromotions();
@@ -175,6 +176,12 @@ public class DanhSachSanPhamController {
         // Cập nhật số lượng sản phẩm
         sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - soLuong);
         sanPhamChiTietRepo.save(sanPhamChiTiet);
+
+        // Cập nhật thời gian tạo trong thoiGianDonHang (thời gian hiện tại)
+        ThoiGianDonHang thoiGianDonHang = new ThoiGianDonHang();
+        thoiGianDonHang.setHoaDon(hoaDon);
+        thoiGianDonHang.setThoiGianTao(LocalDateTime.now()); // Lưu thời gian hiện tại
+        thoiGianDonHangRepo.save(thoiGianDonHang);
 
         return "redirect:/danh-sach-san-pham/hien-thi";
     }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Controller
@@ -25,6 +26,9 @@ public class GioHangController {
 
     @Autowired
     private SanPhamChiTietRepo sanPhamChiTietRepo;
+
+    @Autowired
+    private ThoiGianDonHangRepo thoiGianDonHangRepo;
 
     @PostMapping("/add")
     public String addCart(@RequestParam("sanPhamId") int sanPhamId, HttpSession session, Model model) {
@@ -411,6 +415,14 @@ public class GioHangController {
             }
 
             hoaDonRepo.save(invoice);
+
+            // Tạo đối tượng ThoiGianDonHang và set thoiGianTao
+            ThoiGianDonHang thoiGianDonHang = new ThoiGianDonHang();
+            thoiGianDonHang.setHoaDon(invoice);
+            thoiGianDonHang.setThoiGianTao(LocalDateTime.now());  // Set thời gian hiện tại
+
+            // Lưu thông tin ThoiGianDonHang vào cơ sở dữ liệu
+            thoiGianDonHangRepo.save(thoiGianDonHang);
 
             // Gán hóa đơn cho chi tiết hóa đơn và lưu
             for (HoaDonChiTiet invoiceDetail : invoiceDetails) {
