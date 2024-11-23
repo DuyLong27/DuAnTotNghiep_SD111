@@ -55,17 +55,8 @@ public class DanhSachSPCTController {
     @Autowired
     MucDoRangRepo mucDoRangRepo;
 
-    // Helper method to add common attributes to the model
-    private void addCommonAttributes(Model model) {
-        model.addAttribute("loaiCaPheList", loaiCaPheRepo.findAll());
-        model.addAttribute("sanPhamList", sanPhamRepo.findAll());
-        model.addAttribute("canNangList", canNangRepo.findAll());
-        model.addAttribute("loaiHatList", loaiHatRepo.findAll());
-        model.addAttribute("loaiTuiList", loaiTuiRepo.findAll());
-        model.addAttribute("mucDoRangList", mucDoRangRepo.findAll());
-        model.addAttribute("huongViList", huongViRepo.findAll());
-        model.addAttribute("thuongHieuList", thuongHieuRepo.findAll());
-    }
+    @Autowired
+    GioHangChiTietRepo gioHangChiTietRepo;
 
     @GetMapping("/view-sp/{id}")
     public String viewProduct(@PathVariable("id") Integer id, Model model) {
@@ -84,6 +75,7 @@ public class DanhSachSPCTController {
 
         // Thêm sản phẩm liên quan vào model
         model.addAttribute("data", relatedProductsPage);
+        model.addAttribute("listGioHang",gioHangChiTietRepo.findAll());
 
         return "customer/san_pham_chi_tiet/index";
     }
