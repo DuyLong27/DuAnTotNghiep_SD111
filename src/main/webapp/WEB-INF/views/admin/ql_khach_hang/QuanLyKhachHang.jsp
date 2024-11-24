@@ -91,7 +91,8 @@
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label for="khachHangDiaChi" class="form-label">Địa Chỉ</label>
-                                <input type="text" class="form-control" id="khachHangDiaChi" name="diaChi" required style="width: 100%;">
+                                <input type="text" class="form-control" id="khachHangDiaChi" name="diaChi" required
+                                       style="width: 100%;">
                             </div>
                         </div>
 
@@ -149,32 +150,35 @@
                                            required>
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="soDienThoai" class="form-label">Số Điện thoại</label>
+                                    <input type="text" class="form-control" id="soDienThoai"
+                                           name="soDienThoai" required>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="soDienThoai" class="form-label">Số Điện thoại</label>
-                                <input type="text" class="form-control" id="soDienThoai"
-                                       name="soDienThoai" required>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="diemTichLuy" class="form-label">Điểm Tích Lũy</label>
+                                    <input type="number" class="form-control" id="diemTichLuy" name="diemTichLuy"
+                                           required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="ngayDangKy" class="form-label">Ngày Đăng Ký</label>
+                                    <input type="date" class="form-control" id="ngayDangKy" name="ngayDangKy"
+                                           required>
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="diaChi" class="form-label">Địa Chỉ</label>
-                                <input type="text" class="form-control" id="diaChi" name="diaChi" required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="diemTichLuy" class="form-label">Điểm Tích Lũy</label>
-                                <input type="number" class="form-control" id="diemTichLuy" name="diemTichLuy"
-                                       required>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="ngayDangKy" class="form-label">Ngày Đăng Ký</label>
-                                <input type="date" class="form-control" id="ngayDangKy" name="ngayDangKy"
-                                       required>
+                                <input type="text" class="form-control" id="diaChi" name="diaChi" required
+                                       style="width: 200%;">
                             </div>
                         </div>
                         <button type="submit" class="btn btn-create" id="submitButton2">Lưu Khách Hàng</button>
