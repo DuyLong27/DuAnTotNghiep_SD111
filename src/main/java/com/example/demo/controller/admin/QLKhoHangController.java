@@ -14,6 +14,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+import java.time.LocalDate;
+
 @Controller
 @RequestMapping("/kho-hang")
 public class QLKhoHangController {
@@ -40,23 +43,36 @@ public class QLKhoHangController {
     @GetMapping("/edit/{id}")
     public String editProduct(@PathVariable("id") Integer id, Model model) {
         KhoHang khoHang = khoHangRepo.findById(id).orElse(null);
-        if (khoHang == null) {
-            // Nếu không tìm thấy kho hàng, bạn có thể điều hướng đến trang lỗi hoặc trang danh sách kho hàng
-            return "redirect:/kho-hang/hien-thi"; // Quay lại trang danh sách
-        }
+        List<KhoHang> khoHangList = khoHangRepo.findAll();
         model.addAttribute("data", khoHang); // Truyền đối tượng kho hàng vào model
+        model.addAttribute("khoHangList", khoHangList);
         return "admin/ql_kho_hang/edit"; // Trang chỉnh sửa kho hàng (chắc chắn là form chỉnh sửa)
     }
 
     @PostMapping("/update")
-    public String updateProduct(@Valid @ModelAttribute("data") KhoHang khoHang, BindingResult validate, Model model, RedirectAttributes redirectAttributes) {
-        if (validate.hasErrors()) {
-            model.addAttribute("data", khoHang);
+    public String updateProduct(@RequestParam("idKhoHang") Integer idKhoHang,
+                                @RequestParam("slTonKho") Integer slTonKho,
+                                @RequestParam("ngayThayDoiTonKho") String ngayThayDoiTonKho,
+                                RedirectAttributes redirectAttributes) {
+        // Tìm kho hàng theo ID
+        KhoHang khoHang = khoHangRepo.findById(idKhoHang).orElse(null);
 
-            return "admin/ql_kho_hang/index"; // Hoặc trả về một trang cụ thể
+        if (khoHang == null) {
+            redirectAttributes.addFlashAttribute("error", "Kho hàng không tồn tại!");
+            return "redirect:/kho-hang/hien-thi";
         }
+
+        // Chuyển đổi ngày từ String thành LocalDate
+        LocalDate ngayThayDoi = LocalDate.parse(ngayThayDoiTonKho);  // Chuyển đổi từ String sang LocalDate
+
+        // Cập nhật số lượng tồn kho và ngày thay đổi
+        khoHang.setSlTonKho(slTonKho);
+        khoHang.setNgayThayDoiTonKho(ngayThayDoi);
+
+        // Lưu lại kho hàng đã sửa
         khoHangRepo.save(khoHang);
-        redirectAttributes.addFlashAttribute("message", "Sửa thành công!");
+
+        redirectAttributes.addFlashAttribute("message", "Cập nhật số lượng tồn kho thành công!");
         return "redirect:/kho-hang/hien-thi";
     }
 }

@@ -235,13 +235,12 @@
                 <a class="nav-link text-light" href="#">Giới thiệu</a>
             </li>
 
-
             <li class="nav-item">
-                <a class="nav-link text-light" href="#">Tin tức</a>
+                <a class="nav-link text-light" href="#">Liên hệ</a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link text-light" href="#">Liên hệ</a>
+                <a class="nav-link text-light" href="/tra-cuu/tim-kiem">Tra cứu đơn hàng</a>
             </li>
         </ul>
         <ul class="navbar-nav icon-cart">
@@ -267,7 +266,16 @@
                                 <c:forEach var="item" items="${listGioHang}">
                                     <tr>
                                         <td>${item.sanPhamChiTiet.sanPham.ten}</td>
-                                        <td>${item.sanPhamChiTiet.giaBan}</td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${item.sanPhamChiTiet.giaGiamGia != null and item.sanPhamChiTiet.giaGiamGia > 0}">
+                                                    ${item.sanPhamChiTiet.giaGiamGia} VNĐ
+                                                </c:when>
+                                                <c:otherwise>
+                                                    ${item.sanPhamChiTiet.giaBan} VNĐ
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </td>
                                         <td>${item.soLuong}</td>
                                     </tr>
                                 </c:forEach>

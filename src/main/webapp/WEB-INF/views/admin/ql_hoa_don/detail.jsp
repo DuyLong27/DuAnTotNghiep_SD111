@@ -109,30 +109,34 @@
 
     <div class="order-status">
         <div class="status-group">
-            <div class="status-item ${hoaDon.tinh_trang >= 0 ? 'active' : ''}">
+            <div class="status-item ${hoaDon.tinh_trang >= 0 && hoaDon.tinh_trang != 14 ? 'active' : ''}">
                 <i class="fas fa-clock status-icon"></i>
                 <p>Chờ xác nhận</p>
             </div>
-            <div class="status-item ${hoaDon.tinh_trang >= 1 ? 'active' : ''}">
+
+            <div class="status-item ${hoaDon.tinh_trang >= 1 && hoaDon.tinh_trang != 14 ? 'active' : ''}">
                 <i class="fas fa-box status-icon"></i>
                 <p>Chờ giao</p>
             </div>
-            <div class="status-item ${hoaDon.tinh_trang >= 2 ? 'active' : ''}">
+
+            <div class="status-item ${hoaDon.tinh_trang >= 2 && hoaDon.tinh_trang != 14? 'active' : ''}">
                 <i class="fas fa-truck status-icon"></i>
                 <p>Đang giao</p>
             </div>
-            <div class="status-item ${hoaDon.tinh_trang >= 3 ? 'active' : ''}">
+
+            <div class="status-item ${hoaDon.tinh_trang >= 3 && hoaDon.tinh_trang != 14 ? 'active' : ''}">
                 <i class="fas fa-check-double status-icon"></i>
                 <p>Xác nhận thanh toán</p>
             </div>
-            <div class="status-item ${hoaDon.tinh_trang >= 4 ? 'active' : ''}">
+
+            <div class="status-item ${hoaDon.tinh_trang >= 4 && hoaDon.tinh_trang != 14 ? 'active' : ''}">
                 <i class="fas fa-check-circle status-icon"></i>
                 <p>Hoàn thành</p>
             </div>
         </div>
 
         <div class="status-group return-group">
-            <c:if test="${hoaDon.tinh_trang >= 11}">
+            <c:if test="${hoaDon.tinh_trang >= 11 && hoaDon.tinh_trang < 14}">
                 <div class="status-item return-item ${hoaDon.tinh_trang >= 11 ? 'active' : ''}">
                     <i class="fas fa-clock status-icon"></i>
                     <p>Chờ xác nhận đổi trả</p>
@@ -159,24 +163,22 @@
         Phải xác nhận thanh toán trước khi hoàn thành đơn hàng.
     </div>
 
-    <form action="/hoa-don/cap-nhat-tinh-trang" method="post">
-        <input type="hidden" name="id" value="${hoaDon.id}" />
-
-        <c:choose>
-            <c:when test="${hoaDon.tinh_trang == 0}">
-                <button type="submit" name="tinhTrangMoi" value="1" class="btn btn-primary">Xác nhận</button>
-            </c:when>
-
-            <c:when test="${hoaDon.tinh_trang == 1}">
-                <button type="submit" name="tinhTrangMoi" value="2" class="btn btn-warning">Giao hàng</button>
-            </c:when>
-
-            <c:when test="${hoaDon.tinh_trang == 2 || hoaDon.tinh_trang == 3}">
-                <button type="submit" name="tinhTrangMoi" value="4" class="btn btn-success"
-                        onclick="return confirmCompletion(${hoaDon.tinh_trang});">Hoàn thành</button>
-            </c:when>
-        </c:choose>
+    <c:if test="${hoaDon.tinh_trang == 0}">
+    <form action="/hoa-don/xac-nhan-hoa-don/${hoaDon.id}" method="post">
+        <button type="submit" class="btn btn-primary">Xác nhận</button>
     </form>
+    </c:if>
+    <c:if test="${hoaDon.tinh_trang == 1}">
+        <form action="/hoa-don/ban-giao-van-chuyen/${hoaDon.id}" method="post">
+            <button type="submit" class="btn btn-warning">Giao hàng</button>
+        </form>
+    </c:if>
+    <c:if test="${hoaDon.tinh_trang == 2 || hoaDon.tinh_trang == 3}">
+        <form action="/hoa-don/hoan-thanh/${hoaDon.id}" method="post">
+            <button type="submit" class="btn btn-success"
+                    onclick="return confirmCompletion(${hoaDon.tinh_trang});">Hoàn thành</button>
+        </form>
+    </c:if>
 
     <div class="card mb-4 mt-3">
         <div class="card-header">Thông tin khách hàng</div>
@@ -194,7 +196,7 @@
                     <p><strong>Số điện thoại:</strong> ${hoaDon.soDienThoai}</p>
                 </div>
                 <div class="col-md-6">
-                    <p><strong>Ngày tạo:</strong> ${hoaDon.ngayTao}</p>
+                    <p><strong>Ngày tạo:</strong> ${thoiGianTao}</p>
                 </div>
             </div>
             <div class="row mb-2">
@@ -217,54 +219,113 @@
     </div>
 
     <div class="card mb-4">
-        <div class="card-header">Chi tiết sản phẩm</div>
-        <div class="card-body">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Hình ảnh</th>
-                    <th>Tên Sản Phẩm</th>
-                    <th>Giá</th>
-                    <th>Số lượng</th>
-                </tr>
-                </thead>
-                <tbody>
-                <c:set var="phiVanChuyen" value="0" />
-                <c:set var="tongGiaSanPham" value="0" />
-                <c:forEach items="${hoaDonChiTiets}" var="item">
+        <c:if test="${not empty hoaDonChiTiets}">
+            <div class="card-header">Danh sách sản phẩm</div>
+            <div class="card-body">
+                <table class="table table-striped">
+                    <thead>
                     <tr>
-                        <td><img style="width: 90px" src="${pageContext.request.contextPath}/uploads/${item.sanPhamChiTiet.hinhAnh}"></td>
-                        <td>${item.sanPhamChiTiet.sanPham.ten}</td>
-                        <td>${item.sanPhamChiTiet.giaBan} VND</td>
-                        <td>${item.so_luong}</td>
+                        <th>Hình ảnh</th>
+                        <th>Tên Sản Phẩm</th>
+                        <th>Giá</th>
+                        <th>Số lượng</th>
                     </tr>
-                    <c:set var="tongGiaSanPham" value="${tongGiaSanPham + (item.so_luong * item.sanPhamChiTiet.giaBan)}" />
-                    <c:set var="phiVanChuyen" value="${hoaDon.tongTien - tongGiaSanPham}" />
-                </c:forEach>
-                </tbody>
-            </table>
-            <c:if test="${hoaDon.tinh_trang == 2}">
-                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#confirmPaymentModal">
-                    Xác nhận thanh toán
-                </button>
-            </c:if>
-            <c:if test="${hoaDon.tinh_trang == 11}">
-                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#doiTraModal">
-                    Xem Thông tin Đổi Trả
-                </button>
-            </c:if>
-            <c:if test="${hoaDon.tinh_trang == 12}">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#doiTraChiTietModal">
-                    Xem chi tiết đổi trả
-                </button>
-            </c:if>
-            <p class="text-end" style="color: #0B745E">
-                Phí vận chuyển: ${phiVanChuyen}
-            </p>
-            <p class="text-end fw-bold">
-                Tổng tiền: ${hoaDonChiTiets[0].hoaDon.tongTien} VND
-            </p>
-        </div>
+                    </thead>
+                    <tbody>
+                    <c:set var="phiVanChuyen" value="0" />
+                    <c:set var="tongGiaSanPham" value="0" />
+                    <c:forEach items="${hoaDonChiTiets}" var="item">
+                        <tr>
+                            <td><img style="width: 90px" src="${pageContext.request.contextPath}/uploads/${item.sanPhamChiTiet.hinhAnh}"></td>
+                            <td>${item.sanPhamChiTiet.sanPham.ten}</td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${item.gia_san_pham != item.sanPhamChiTiet.giaBan}">
+                                <span style="text-decoration: line-through; color: gray;">
+                                    ${item.sanPhamChiTiet.giaBan} VNĐ
+                                </span>
+                                        <br>
+                                        <span style="color: green;">
+                                    ${item.gia_san_pham} VNĐ
+                                </span>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span>${item.gia_san_pham} VNĐ</span>
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
+                            <td>${item.so_luong}</td>
+                        </tr>
+                        <c:set var="tongGiaSanPham" value="${tongGiaSanPham + (item.so_luong * item.gia_san_pham)}" />
+                        <c:set var="phiVanChuyen" value="${hoaDon.tongTien - tongGiaSanPham}" />
+                    </c:forEach>
+                    </tbody>
+                </table>
+                <c:if test="${hoaDon.tinh_trang == 2}">
+                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#confirmPaymentModal">
+                        Xác nhận thanh toán
+                    </button>
+                </c:if>
+                <c:if test="${hoaDon.tinh_trang == 11}">
+                    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#doiTraModal">
+                        Xem Thông tin Đổi Trả
+                    </button>
+                </c:if>
+                <c:if test="${hoaDon.tinh_trang == 12}">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#doiTraChiTietModal">
+                        Xem chi tiết đổi trả
+                    </button>
+                </c:if>
+            </div>
+        </c:if>
+        <c:if test="${hoaDon.tinh_trang == 13}">
+            <div class="card mb-4">
+                <div class="card-header">Sản phẩm đổi trả</div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Hình ảnh</th>
+                            <th>Tên Sản Phẩm</th>
+                            <th>Giá</th>
+                            <th>Số lượng</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <c:forEach var="doiTraChiTiet" items="${doiTraChiTiets}">
+                            <tr>
+                                <td><img style="width: 90px" src="${pageContext.request.contextPath}/uploads/${doiTraChiTiet.sanPhamChiTiet.hinhAnh}"></td>
+                                <td>${doiTraChiTiet.sanPhamChiTiet.sanPham.ten}</td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${doiTraChiTiet.giaSanPham == doiTraChiTiet.sanPhamChiTiet.giaBan}">
+                                            ${doiTraChiTiet.giaSanPham} VNĐ
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span style="text-decoration: line-through; color: gray;">
+                                                    ${doiTraChiTiet.sanPhamChiTiet.giaBan} VNĐ
+                                            </span>
+                                            <br>
+                                            <span style="color: green;">
+                                                    ${doiTraChiTiet.giaSanPham} VNĐ
+                                            </span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td>${doiTraChiTiet.soLuong}</td>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </c:if>
+        <p class="text-end" style="color: #0B745E">
+            Phí vận chuyển: ${phiVanChuyen} VNĐ
+        </p>
+        <p class="text-end fw-bold">
+            Tổng tiền: ${hoaDonChiTiets[0].hoaDon.tongTien} VNĐ
+        </p>
     </div>
 </div>
 

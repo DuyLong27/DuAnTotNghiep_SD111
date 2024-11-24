@@ -1,7 +1,12 @@
 package com.example.demo.controller.admin;
 
 import com.example.demo.entity.KhuyenMai;
+import com.example.demo.entity.KhuyenMaiChiTiet;
+import com.example.demo.entity.SanPhamChiTiet;
+import com.example.demo.repository.KhuyenMaiChiTietRepo;
 import com.example.demo.repository.KhuyenMaiRepo;
+import com.example.demo.repository.SanPhamChiTietRepo;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,10 +17,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/khuyen-mai")
 public class QLKhuyenMaiController {
+    @Autowired
+    KhuyenMaiChiTietRepo khuyenMaiChiTietRepo;
+    @Autowired
+    SanPhamChiTietRepo sanPhamChiTietRepo;
     @Autowired
     KhuyenMaiRepo khuyenMaiRepo;
 
@@ -30,16 +42,13 @@ public class QLKhuyenMaiController {
                        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate ngayKetThuc,
                        Model model) {
         Pageable pageable = PageRequest.of(page, size);
-
         Page<KhuyenMai> khuyenMaiPage = khuyenMaiRepo.findFiltered(maKhuyenMai, tenKhuyenMai, giaTriMin, giaTriMax, ngayBatDau, ngayKetThuc, pageable);
-
         model.addAttribute("maKhuyenMai", maKhuyenMai);
         model.addAttribute("tenKhuyenMai", tenKhuyenMai);
         model.addAttribute("giaTriMin", giaTriMin);
         model.addAttribute("giaTriMax", giaTriMax);
         model.addAttribute("ngayBatDau", ngayBatDau);
         model.addAttribute("ngayKetThuc", ngayKetThuc);
-
         model.addAttribute("listKhuyenMai", khuyenMaiPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", khuyenMaiPage.getTotalPages());
@@ -48,34 +57,119 @@ public class QLKhuyenMaiController {
     }
 
 
+
+
     @PostMapping("/them")
     public String add(KhuyenMai khuyenMai){
-         khuyenMaiRepo.save(khuyenMai);
+        khuyenMaiRepo.save(khuyenMai);
         return "redirect:/khuyen-mai/hien-thi";
     }
+
+
+
 
     @PostMapping("/sua")
     public String update(@RequestParam("id") Integer id, @ModelAttribute KhuyenMai khuyenMai) {
         KhuyenMai existingKhuyenMai = khuyenMaiRepo.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid khuyen mai id: " + id));
-
-        // except id
         existingKhuyenMai.setMaKhuyenMai(khuyenMai.getMaKhuyenMai());
         existingKhuyenMai.setTenKhuyenMai(khuyenMai.getTenKhuyenMai());
         existingKhuyenMai.setGiaTriKhuyenMai(khuyenMai.getGiaTriKhuyenMai());
         existingKhuyenMai.setNgayBatDau(khuyenMai.getNgayBatDau());
         existingKhuyenMai.setNgayKetThuc(khuyenMai.getNgayKetThuc());
         existingKhuyenMai.setTinhTrang(khuyenMai.getTinhTrang());
-
         khuyenMaiRepo.save(existingKhuyenMai);
         return "redirect:/khuyen-mai/hien-thi";
     }
 
-    @GetMapping("/xoa")
-    public String delete(@RequestParam("id") Integer id){
-        khuyenMaiRepo.deleteById(id);
-        return "redirect:/khuyen-mai/hien-thi";
+    @GetMapping("/chi-tiet")
+    public String chiTietKhuyenMai(
+            @RequestParam(required = false) String tenKhuyenMai,
+            @RequestParam(required = false) Integer giaTriFrom,
+            @RequestParam(required = false) Integer giaTriTo,
+            Model model) {
+        List<KhuyenMai> listKhuyenMai = khuyenMaiRepo.findAll();
+        if (tenKhuyenMai != null && !tenKhuyenMai.isEmpty()) {
+            listKhuyenMai = listKhuyenMai.stream()
+                    .filter(km -> km.getTenKhuyenMai().toLowerCase().contains(tenKhuyenMai.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+        if (giaTriFrom != null) {
+            listKhuyenMai = listKhuyenMai.stream()
+                    .filter(km -> km.getGiaTriKhuyenMai() >= giaTriFrom)
+                    .collect(Collectors.toList());
+        }
+        if (giaTriTo != null) {
+            listKhuyenMai = listKhuyenMai.stream()
+                    .filter(km -> km.getGiaTriKhuyenMai() <= giaTriTo)
+                    .collect(Collectors.toList());
+        }
+        List<SanPhamChiTiet> listSanPhamChiTiet = sanPhamChiTietRepo.findAll();
+        List<KhuyenMaiChiTiet> listKhuyenMaiChiTiet = khuyenMaiChiTietRepo.findAll();
+
+        Map<Integer, Long> khuyenMaiCounts = listKhuyenMai.stream()
+                .collect(Collectors.toMap(
+                        km -> km.getIdKhuyenMai(),
+                        km -> listKhuyenMaiChiTiet.stream()
+                                .filter(kmct -> kmct.getKhuyenMai().getIdKhuyenMai().equals(km.getIdKhuyenMai()))
+                                .count(),
+                        (existing, replacement) -> existing));
+        model.addAttribute("listKhuyenMai", listKhuyenMai);
+        model.addAttribute("listSanPhamChiTiet", listSanPhamChiTiet);
+        model.addAttribute("listKhuyenMaiChiTiet", listKhuyenMaiChiTiet);
+        model.addAttribute("khuyenMaiCounts", khuyenMaiCounts);
+        model.addAttribute("tenKhuyenMai", tenKhuyenMai);
+        model.addAttribute("giaTriFrom", giaTriFrom);
+        model.addAttribute("giaTriTo", giaTriTo);
+
+        return "admin/ql_khuyen_mai/detail";
     }
 
-}
 
+
+
+    @PostMapping("/apply")
+    public String applyKhuyenMai(@RequestParam("khuyenMaiId") Integer khuyenMaiId,
+                                 @RequestParam List<Integer> sanPhamChiTietIds) {
+        KhuyenMai khuyenMai = khuyenMaiRepo.findById(khuyenMaiId)
+                .orElseThrow(() -> new IllegalArgumentException("Khuyến mãi không hợp lệ"));
+        for (Integer sanPhamId : sanPhamChiTietIds) {
+            SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamId)
+                    .orElseThrow(() -> new IllegalArgumentException("Sản phẩm không hợp lệ"));
+            if (!khuyenMaiChiTietRepo.existsByKhuyenMaiAndSanPhamChiTiet(khuyenMai, sanPhamChiTiet)) {
+                int giaTriKhuyenMai = khuyenMai.getGiaTriKhuyenMai();
+                int giaBan = sanPhamChiTiet.getGiaBan();
+
+                if (giaBan <= 0) {
+                    throw new IllegalArgumentException("Giá bán không hợp lệ cho sản phẩm có ID: " + sanPhamId);
+                }
+                double giaGiamGia = giaBan * (giaTriKhuyenMai / 100.0);
+                int giaGiamGiaInt = (int) Math.round(giaGiamGia);
+                int giaSauKhuyenMai = giaBan - giaGiamGiaInt;
+                sanPhamChiTiet.setGiaGiamGia(giaGiamGiaInt);
+                sanPhamChiTiet.setGiaGiamGia(giaSauKhuyenMai);
+                sanPhamChiTietRepo.save(sanPhamChiTiet);
+                KhuyenMaiChiTiet khuyenMaiChiTiet = new KhuyenMaiChiTiet();
+                khuyenMaiChiTiet.setKhuyenMai(khuyenMai);
+                khuyenMaiChiTiet.setSanPhamChiTiet(sanPhamChiTiet);
+                khuyenMaiChiTietRepo.save(khuyenMaiChiTiet);
+            }
+        }
+        return "redirect:/khuyen-mai/chi-tiet";
+    }
+
+
+    @PostMapping("/xoa-san-pham")
+    public String deleteSanPhamFromKhuyenMai(@RequestParam("khuyenMaiChiTietId") Integer khuyenMaiChiTietId) {
+        KhuyenMaiChiTiet khuyenMaiChiTiet = khuyenMaiChiTietRepo.findById(khuyenMaiChiTietId)
+                .orElseThrow(() -> new IllegalArgumentException("Sản phẩm không hợp lệ"));
+        SanPhamChiTiet sanPhamChiTiet = khuyenMaiChiTiet.getSanPhamChiTiet();
+        sanPhamChiTiet.setGiaGiamGia(0);
+        sanPhamChiTietRepo.save(sanPhamChiTiet);
+        khuyenMaiChiTietRepo.delete(khuyenMaiChiTiet);
+        return "redirect:/khuyen-mai/chi-tiet";
+    }
+
+
+
+}

@@ -14,8 +14,7 @@ import java.util.List;
 
 @Repository
 public interface SanPhamChiTietRepo extends JpaRepository<SanPhamChiTiet, Integer> {
-    // Phương thức lọc theo tình trạng
-    Page<SanPhamChiTiet> findByTinhTrang(Integer tinhTrang, Pageable pageable); // Chỉnh sửa kiểu dữ liệu
+    Page<SanPhamChiTiet> findByTinhTrang(Integer tinhTrang, Pageable pageable);
 
 //    @Modifying
 //    @Query("DELETE FROM SanPhamChiTiet s WHERE s.sanPham.id = :sanPhamId")
@@ -42,5 +41,11 @@ public interface SanPhamChiTietRepo extends JpaRepository<SanPhamChiTiet, Intege
             + "ORDER BY totalSold DESC")
     List<Object[]> findBestSellingProduct(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
+
+    @Query("SELECT sp FROM SanPhamChiTiet sp " +
+            "LEFT JOIN FETCH sp.khuyenMaiChiTietList kmct " +
+            "LEFT JOIN FETCH kmct.khuyenMai " +
+            "WHERE sp.tinhTrang = 1")
+    List<SanPhamChiTiet> findAllWithPromotions();
 
 }

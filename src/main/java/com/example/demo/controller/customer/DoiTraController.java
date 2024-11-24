@@ -6,10 +6,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -64,6 +61,8 @@ public class DoiTraController {
             model.addAttribute("diaChiKhachHang", khachHang.getDiaChi());
             int tienVanChuyen = "Giao Hàng Nhanh".equals(hoaDon.getPhuongThucVanChuyen()) ? 33000 : 20000;
             model.addAttribute("tienVanChuyen", tienVanChuyen);
+            List<DoiTraChiTiet> doiTraChiTietList = doiTraChiTietRepo.findByDoiTra_HoaDon_Id(id);
+            model.addAttribute("doiTraChiTiets", doiTraChiTietList);
         } else {
             model.addAttribute("errorMessage", "Không tìm thấy hóa đơn.");
         }
@@ -116,8 +115,13 @@ public class DoiTraController {
                 if (sanPhamChiTiet != null) {
                     selectedProducts.add(sanPhamChiTiet);
                     soLuongMap.put(id, soLuongHoan);
-                    // Tính tiền hoàn
-                    tongTienHoan += sanPhamChiTiet.getGiaBan() * soLuongHoan;
+                    // Sử dụng giaSanPham của HoaDonChiTiet thay vì giaBan của SanPhamChiTiet
+                    HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietList.stream()
+                            .filter(ct -> ct.getSanPhamChiTiet().getId().equals(id))
+                            .findFirst().orElse(null);
+                    if (hoaDonChiTiet != null) {
+                        tongTienHoan += hoaDonChiTiet.getGia_san_pham() * soLuongHoan;
+                    }
                 }
             }
 
@@ -218,18 +222,29 @@ public class DoiTraController {
             doiTra.setTinhTrang(11);
             doiTraRepo.save(doiTra);
 
+            // Lấy danh sách HoaDonChiTiet để sử dụng giaSanPham
+            List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepo.findByHoaDon(hoaDon);
+
             // Lưu từng chi tiết đổi trả
             for (Integer sanPhamChiTietId : sanPhamChiTietIds) {
                 SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamChiTietId).orElse(null);
                 if (sanPhamChiTiet != null) {
                     Integer soLuongHoan = Integer.valueOf(requestParams.get("soLuong_" + sanPhamChiTietId));
 
-                    DoiTraChiTiet doiTraChiTiet = new DoiTraChiTiet();
-                    doiTraChiTiet.setDoiTra(doiTra);
-                    doiTraChiTiet.setSanPhamChiTiet(sanPhamChiTiet);
-                    doiTraChiTiet.setGiaSanPham(sanPhamChiTiet.getGiaBan());
-                    doiTraChiTiet.setSoLuong(soLuongHoan);
-                    doiTraChiTietRepo.save(doiTraChiTiet);
+                    // Tìm HoaDonChiTiet tương ứng với sanPhamChiTietId
+                    HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietList.stream()
+                            .filter(chiTiet -> chiTiet.getSanPhamChiTiet().getId().equals(sanPhamChiTietId))
+                            .findFirst().orElse(null);
+
+                    if (hoaDonChiTiet != null) {
+                        // Tạo đối tượng DoiTraChiTiet với giaSanPham từ HoaDonChiTiet
+                        DoiTraChiTiet doiTraChiTiet = new DoiTraChiTiet();
+                        doiTraChiTiet.setDoiTra(doiTra);
+                        doiTraChiTiet.setSanPhamChiTiet(sanPhamChiTiet);
+                        doiTraChiTiet.setGiaSanPham(hoaDonChiTiet.getGia_san_pham()); // Sử dụng giaSanPham từ HoaDonChiTiet
+                        doiTraChiTiet.setSoLuong(soLuongHoan);
+                        doiTraChiTietRepo.save(doiTraChiTiet);
+                    }
                 }
             }
 
@@ -242,11 +257,29 @@ public class DoiTraController {
         return "customer/doi_tra/error";
     }
 
+    @PostMapping("/huy-don/{id}")
+    public String huyDon(@PathVariable("id") Integer id, Model model) {
+        HoaDon hoaDon = hoaDonRepo.findById(id).orElse(null);
+        if (hoaDon != null) {
+            List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepo.findByHoaDon(hoaDon);
 
+            for (HoaDonChiTiet hoaDonChiTiet : hoaDonChiTietList) {
+                SanPhamChiTiet sanPhamChiTiet = hoaDonChiTiet.getSanPhamChiTiet();
+                int soLuongHoan = hoaDonChiTiet.getSo_luong();
 
+                sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() + soLuongHoan);
+                sanPhamChiTietRepo.save(sanPhamChiTiet);
+            }
 
+            hoaDon.setTinh_trang(14);  // Cập nhật trạng thái đơn hàng
+            hoaDonRepo.save(hoaDon);
 
+            model.addAttribute("message", "Đơn hàng đã được hủy thành công và sản phẩm đã được hoàn lại.");
+            return "redirect:/doi-tra/chi-tiet?id=" + id;
+        }
 
-
+        model.addAttribute("errorMessage", "Không tìm thấy hóa đơn.");
+        return "customer/doi_tra/error";
+    }
 
 }

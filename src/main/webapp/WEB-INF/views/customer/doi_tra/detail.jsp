@@ -107,25 +107,103 @@
                     </div>
                 </div>
 
-                <h6>Danh Sách Sản Phẩm:</h6>
-                <ul class="list-group">
-                    <c:forEach var="chiTiet" items="${hoaDon.hoaDonChiTietList}">
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <div class="d-flex align-items-center">
-                                <img src="${pageContext.request.contextPath}/uploads/${chiTiet.sanPhamChiTiet.hinhAnh}"
-                                     alt="Hình ảnh sản phẩm" class="me-3" style="width: 100px; height: auto;">
-                                <div>
-                                    <span>${chiTiet.sanPhamChiTiet.sanPham.ten}</span>
+                <c:if test="${not empty hoaDon.hoaDonChiTietList}">
+                    <h6>Danh Sách Sản Phẩm:</h6>
+                    <ul class="list-group">
+                        <c:forEach var="chiTiet" items="${hoaDon.hoaDonChiTietList}">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <img src="${pageContext.request.contextPath}/uploads/${chiTiet.sanPhamChiTiet.hinhAnh}"
+                                         alt="Hình ảnh sản phẩm" class="me-3" style="width: 100px; height: auto;">
+                                    <div>
+                                        <span>${chiTiet.sanPhamChiTiet.sanPham.ten}</span>
+                                    </div>
                                 </div>
-                            </div>
-                            <span>Số Lượng: ${chiTiet.so_luong}</span>
-                        </li>
-                    </c:forEach>
-                </ul>
-                <div class="mt-3">
+                                <div>
+                                    <c:choose>
+                                        <c:when test="${chiTiet.gia_san_pham != chiTiet.sanPhamChiTiet.giaBan}">
+                                <span style="text-decoration: line-through; color: gray;">
+                                    ${chiTiet.sanPhamChiTiet.giaBan} VNĐ
+                                </span>
+                                            <br>
+                                            <span style="color: green;">
+                                    ${chiTiet.gia_san_pham} VNĐ
+                                </span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span>${chiTiet.gia_san_pham} VNĐ</span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
+                                <div>
+                                    <span>Số Lượng: ${chiTiet.so_luong}</span>
+                                </div>
+                            </li>
+                        </c:forEach>
+                    </ul>
+                </c:if>
+                <c:if test="${hoaDon.tinh_trang == 13}">
+                    <h6 class="mt-3">Sản phẩm đổi trả:</h6>
+                    <ul class="list-group mt-3 ">
+                        <c:forEach var="doiTraChiTiet" items="${doiTraChiTiets}">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <img src="${pageContext.request.contextPath}/uploads/${doiTraChiTiet.sanPhamChiTiet.hinhAnh}"
+                                         alt="Hình ảnh sản phẩm" class="me-3" style="width: 100px; height: auto;">
+                                    <div>
+                                        <span>${doiTraChiTiet.sanPhamChiTiet.sanPham.ten}</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <c:choose>
+                                        <c:when test="${doiTraChiTiet.giaSanPham != doiTraChiTiet.sanPhamChiTiet.giaBan}">
+                                <span style="text-decoration: line-through; color: gray;">
+                                    ${doiTraChiTiet.sanPhamChiTiet.giaBan} VNĐ
+                                </span>
+                                            <br>
+                                            <span style="color: green;">
+                                    ${doiTraChiTiet.giaSanPham} VNĐ
+                                </span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span>${doiTraChiTiet.giaSanPham} VNĐ</span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
+                                <div>
+                                    <span>Số Lượng: ${doiTraChiTiet.soLuong}</span>
+                                </div>
+                            </li>
+                        </c:forEach>
+                    </ul>
+                </c:if>
+                <div class="d-inline-flex mt-3 gap-2">
                     <a href="/doi-tra" class="btn btn-warning">Quay Lại</a>
                     <c:if test="${hoaDon.tinh_trang == 4}">
                         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#returnModal">Đổi Trả</button>
+                    </c:if>
+                    <c:if test="${hoaDon.tinh_trang <= 1}">
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmCancelModal">Hủy đơn</button>
+
+                        <div class="modal fade" id="confirmCancelModal" tabindex="-1" aria-labelledby="confirmCancelModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="confirmCancelModalLabel">Xác nhận hủy đơn</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Bạn có chắc chắn muốn hủy đơn này không?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                        <form action="/doi-tra/huy-don/${hoaDon.id}" method="post">
+                                            <button type="submit" class="btn btn-danger">Xác nhận hủy</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </c:if>
                 </div>
             </div>

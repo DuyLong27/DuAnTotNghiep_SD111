@@ -234,7 +234,7 @@
         }
 
         .product-quantity.top-50 {
-            top: 40% !important;
+            top: 35% !important;
         }
 
         .product-buy, .product-cart {
@@ -251,7 +251,7 @@
 
 
         .product-cart.top-50, .product-buy.top-50 {
-            top: 60% !important;
+            top: 50% !important;
         }
 
         .product-cart.start-50 {
@@ -304,6 +304,25 @@
 
         #soLuong {
             -moz-appearance: textfield;
+        }
+
+        .discount-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: red;
+            color: white;
+            padding: 5px 10px;
+            font-size: 12px;
+            border-bottom-left-radius: 8px;
+            z-index: 1;
+        }
+
+        .card-body {
+            min-height: 150px; /* Đặt chiều cao tối thiểu để đồng bộ */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Đảm bảo các phần tử được sắp xếp gọn */
         }
 
 
@@ -451,12 +470,28 @@
                 <c:forEach items="${listSanPham}" var="item">
                     <div class="col-md-4 mb-4">
                         <div class="card h-100 shadow-sm position-relative">
+                            <c:if test="${item.giaGiamGia != null && item.giaGiamGia > 0}">
+                            <span class="discount-badge">
+                                ${item.khuyenMaiChiTietList[0].khuyenMai.giaTriKhuyenMai}%
+                            </span>
+                            </c:if>
                             <a href="/danh-sach-san-pham-chi-tiet/view-sp/${item.id}">
                                 <img src="${pageContext.request.contextPath}/uploads/${item.hinhAnh}" class="card-img-top product-image" alt="${item.sanPham.ten}">
                             </a>
                             <div class="card-body text-center">
                                 <h5 class="card-title">${item.sanPham.ten}</h5>
-                                <p class="card-text">${item.giaBan} VNĐ</p>
+                                <p class="card-text">
+                                    <c:choose>
+                                        <c:when test="${item.giaGiamGia != null and item.giaGiamGia > 0}">
+                                            <span style="color: red; text-decoration: line-through;">${item.giaBan} VNĐ</span>
+                                            <br>
+                                            <span style="color: green;">${item.giaGiamGia} VNĐ</span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            ${item.giaBan} VNĐ
+                                        </c:otherwise>
+                                    </c:choose>
+                                </p>
                                 <div class="product-detail-link rounded-bottom-3" style="background-color: #0B745E; border-radius: 5px;">
                                     <a class="nav-link text-light" href="/danh-sach-san-pham-chi-tiet/view-sp/${item.id}">
                                         <i class="fa-solid fa-link"></i> Chi Tiết Sản Phẩm
@@ -466,14 +501,14 @@
                             <div class="product-buy position-absolute top-50 start-50 translate-middle">
                                 <form action="/danh-sach-san-pham/mua-ngay" method="get">
                                     <input type="hidden" name="productId" value="${item.id}">
-                                        <button type="submit" class="btn-custom"><i class="fa-solid fa-money-bill"></i></button>
+                                    <button type="submit" class="btn-custom"><i class="fa-solid fa-money-bill"></i></button>
                                 </form>
                             </div>
                             <div class="product-cart position-absolute top-50 start-50 translate-middle">
-                            <form action="/gio-hang/add" method="post">
-                                <input type="hidden" name="sanPhamId" value="${item.id}">
+                                <form action="/gio-hang/add" method="post">
+                                    <input type="hidden" name="sanPhamId" value="${item.id}">
                                     <button type="submit" class="btn-custom"><i class="fa-solid fa-cart-shopping"></i></button>
-                            </form>
+                                </form>
                             </div>
                             <div class="product-quantity position-absolute top-50 start-50 translate-middle">
                                 <span class="quantity-text">${item.soLuong} sản phẩm</span>
@@ -487,7 +522,7 @@
                         <div class="modal-dialog modal-lg">
                             <div class="modal-content shadow-lg border-0 rounded">
                                 <div class="modal-header border-bottom-0 pb-0">
-                                    <h5 class="modal-title fw-bold text-success" id="productPopupLabel">Mua Ngay Tức Thì Nào HeHeBoizz!</h5>
+                                    <h5 class="modal-title fw-bold text-success" id="productPopupLabel">Mua Ngay</h5>
                                     <a href="/danh-sach-san-pham/hien-thi" class="btn-close" aria-label="Close"></a>
                                 </div>
                                 <div class="modal-body">
@@ -497,7 +532,18 @@
                                                 <img src="${pageContext.request.contextPath}/uploads/${sanPhamChiTiet.hinhAnh}" class="card-img-top product-image rounded mb-3 shadow-sm" alt="${sanPhamChiTiet.sanPham.ten}">
                                             </a>
                                             <h5 class="fw-bold mb-2">${sanPhamChiTiet.sanPham.ten}</h5>
-                                            <p class="text-danger fw-bold">Giá: <span id="giaBan">${sanPhamChiTiet.giaBan}</span> VNĐ</p>
+                                            <p class="fw-bold">Giá:
+                                                <c:choose>
+                                                    <c:when test="${sanPhamChiTiet.giaGiamGia != null and sanPhamChiTiet.giaGiamGia > 0}">
+                                                        <span id="giaBan" style="text-decoration: line-through; color: red">${sanPhamChiTiet.giaBan}</span> VNĐ
+                                                        <br>
+                                                        <span id="giaGiamGia" style="color: green">${sanPhamChiTiet.giaGiamGia}</span> VNĐ
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <span id="giaBan">${sanPhamChiTiet.giaBan}</span> VNĐ
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </p>
                                             <p class="text-muted">Mô tả: ${sanPhamChiTiet.sanPham.moTa}</p>
                                             <div class="mb-3 d-flex align-items-center justify-content-center">
                                                 <button type="button" class="btn btn-outline-secondary rounded-circle px-2" onclick="changeQuantity(-1)">-</button>
@@ -506,7 +552,14 @@
                                             </div>
                                             <div>
                                                 <label class="form-label fw-bold">Tổng tiền:</label>
-                                                <p id="tongTien" class="text-success fw-bold">${sanPhamChiTiet.giaBan} VNĐ</p>
+                                                <c:choose>
+                                                    <c:when test="${sanPhamChiTiet.giaGiamGia != null and sanPhamChiTiet.giaGiamGia > 0}">
+                                                        <p id="tongTien" class="text-success fw-bold">${sanPhamChiTiet.giaGiamGia} VNĐ</p>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <p id="tongTien" class="text-success fw-bold">${sanPhamChiTiet.giaBan} VNĐ</p>
+                                                    </c:otherwise>
+                                                </c:choose>
                                             </div>
                                         </div>
                                         <div class="col-md-6 border-start">
@@ -556,9 +609,10 @@
     </div>
 </div>
 <jsp:include page="../footer_user.jsp" />
+</body>
 <script>
-    // Giá bán của sản phẩm
-    const giaBan = ${sanPhamChiTiet.giaBan};
+    const giaBan = ${sanPhamChiTiet.giaBan != null ? sanPhamChiTiet.giaBan : 0};
+    const giaGiamGia = ${sanPhamChiTiet.giaGiamGia != null ? sanPhamChiTiet.giaGiamGia : 0};
 
     // Hàm cập nhật tổng tiền
     function updateTotal() {
@@ -577,8 +631,11 @@
             }
         }
 
+        // Kiểm tra giá giảm giá (giaGiamGia) và sử dụng giá phù hợp
+        const giaSuDung = (giaGiamGia && giaGiamGia > 0) ? giaGiamGia : giaBan;
+
         // Tính tổng tiền
-        const tongTien = (giaBan * soLuong) + shippingCost;
+        const tongTien = (giaSuDung * soLuong) + shippingCost;
 
         // Cập nhật nội dung tổng tiền trong modal
         document.getElementById("tongTien").innerText = tongTien.toLocaleString('vi-VN') + " VNĐ";
@@ -598,5 +655,4 @@
         updateTotal(); // Cập nhật lại tổng tiền
     }
 </script>
-</body>
 </html>
