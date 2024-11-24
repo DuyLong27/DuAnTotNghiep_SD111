@@ -19,11 +19,11 @@
             <input type="text" name="soHoaDon" class="form-control" placeholder="Nhập Mã Số Hóa Đơn"
                    value="${param.soHoaDon}">
         </div>
-<%--        <div class="col-md-4">--%>
-<%--            <h5>Tên Khách Hàng</h5>--%>
-<%--            <input type="text" name="tenKhachHang" class="form-control" placeholder="Nhập Tên Khách Hàng"--%>
-<%--                   value="${param.tenKhachHang}">--%>
-<%--        </div>--%>
+        <%--        <div class="col-md-4">--%>
+        <%--            <h5>Tên Khách Hàng</h5>--%>
+        <%--            <input type="text" name="tenKhachHang" class="form-control" placeholder="Nhập Tên Khách Hàng"--%>
+        <%--                   value="${param.tenKhachHang}">--%>
+        <%--        </div>--%>
         <div class="col-md-4">
             <h5>Ngày Tạo</h5>
             <input type="date" name="ngayTao" class="form-control"
@@ -43,6 +43,7 @@
         <th>Tổng tiền</th>
         <th>Ghi chú</th>
         <th>Ngày tạo</th>
+        <th>Trạng Thái</th>
         <th>Hàng động</th>
     </tr>
     </thead>
@@ -59,6 +60,7 @@
             <td>${item.tongTien}</td>
             <td>${item.ghiChu}</td>
             <td>${item.ngayTao}</td>
+            <td>${item.tinh_trang == 4 ? "Hoàn Thành" : "Đã Hủy"}</td>
             <td>
                 <a href="detail/${item.id}" class="btn btn-outline-custom">
                     <i class="fa-solid fa-circle-info"></i>
