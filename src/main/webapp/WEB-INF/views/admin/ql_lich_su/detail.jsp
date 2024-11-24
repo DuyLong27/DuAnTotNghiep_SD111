@@ -18,7 +18,7 @@
     <p><strong>Phương thức vận chuyển:</strong> ${hoaDon.phuongThucVanChuyen}</p>
     <p><strong>Ngày tạo:</strong> ${hoaDon.ngayTao}</p>
     <p><strong>Phương thức thanh toán:</strong> ${hoaDon.phuong_thuc_thanh_toan}</p>
-    <p><strong>Tình trạng:</strong> ${hoaDon.tinh_trang == 0 ? "Chờ xác nhận" : (hoaDon.tinh_trang == 1 ? "Chờ giao" : (hoaDon.tinh_trang == 2 ? "Hoàn thành" : (hoaDon.tinh_trang == 3 ? "Đã hủy" : "Hoàn một phần")))}</p>
+    <p><strong>Tình trạng:</strong> ${hoaDon.tinh_trang == 4 ? "Hoàn Thành" : "Đã hủy"}</p>
 
     <h6>Chi tiết sản phẩm:</h6>
     <table class="table">

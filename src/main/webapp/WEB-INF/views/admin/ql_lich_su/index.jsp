@@ -43,6 +43,7 @@
         <th>Tổng tiền</th>
         <th>Ghi chú</th>
         <th>Ngày tạo</th>
+        <th>Trạng Thái</th>
         <th>Hàng động</th>
     </tr>
     </thead>
@@ -59,6 +60,7 @@
             <td>${item.tongTien}</td>
             <td>${item.ghiChu}</td>
             <td>${item.ngayTao}</td>
+            <td>${item.tinh_trang == 4 ? "Hoàn Thành" : "Đã Hủy"}</td>
             <td>
                 <a href="detail/${item.id}" class="btn btn-outline-custom">
                     <i class="fa-solid fa-circle-info"></i>

@@ -36,20 +36,27 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
             "JOIN h.khachHang k " +
             "WHERE (:soHoaDon IS NULL OR h.soHoaDon LIKE %:soHoaDon%) " +
             "AND (:tenKhachHang IS NULL OR k.tenKhachHang LIKE %:tenKhachHang%) " +
-            "AND (:ngayTao IS NULL OR h.ngayTao = :ngayTao)")
+            "AND (:ngayTao IS NULL OR h.ngayTao = :ngayTao) " +
+            "AND (:dsTinhTrang IS NULL OR h.tinh_trang IN :dsTinhTrang)")
     Page<HoaDon> findByFilters(@Param("soHoaDon") String soHoaDon,
                                @Param("tenKhachHang") String tenKhachHang,
                                @Param("ngayTao") java.sql.Date ngayTao,
+                               @Param("dsTinhTrang") List<Integer> dsTinhTrang,
                                Pageable pageable);
 
-    @Query("SELECT h FROM HoaDon h WHERE h.ngayTao = :ngayTao")
-    Page<HoaDon> findByNgayTao(@Param("ngayTao") Date ngayTao, Pageable pageable);
+    @Query("SELECT h FROM HoaDon h WHERE h.ngayTao = :ngayTao AND h.tinh_trang IN :tinhTrang")
+    Page<HoaDon> findByNgayTao(@Param("ngayTao") java.sql.Date ngayTao,
+                               @Param("tinhTrang") List<Integer> tinhTrang,
+                               Pageable pageable);
 
     @Query("SELECT h FROM HoaDon h WHERE h.soHoaDon LIKE %:soHoaDon%")
     Page<HoaDon> findBySoHoaDon(@Param("soHoaDon") String soHoaDon, Pageable pageable);
 
-    @Query("SELECT h FROM HoaDon h WHERE h.khachHang.tenKhachHang LIKE %:tenKhachHang%")
-    Page<HoaDon> findByTenKhachHang(@Param("tenKhachHang") String tenKhachHang, Pageable pageable);
+    @Query("SELECT h FROM HoaDon h WHERE (:soHoaDon IS NULL OR h.soHoaDon LIKE %:soHoaDon%) " +
+            "AND (:ngayTao IS NULL OR h.ngayTao = :ngayTao)")
+    Page<HoaDon> findBySoHoaDonAndNgayTao(@Param("soHoaDon") String soHoaDon,
+                                          @Param("ngayTao") java.sql.Date ngayTao,
+                                          Pageable pageable);
 
     @Query("SELECT h FROM HoaDon h WHERE h.khachHang.idKhachHang = :khachHangId")
     List<HoaDon> findByKhachHangId(@Param("khachHangId") Integer khachHangId);
