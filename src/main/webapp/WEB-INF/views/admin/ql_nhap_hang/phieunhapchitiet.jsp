@@ -6,8 +6,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản lý nhập hàng</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha384-dyB3z1Vv3Pq9xJHqGZEXr2O6bUJ1FglF8fx7IDzW3a0BIcGoZsI6T3ez3/1p7byC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+          integrity="sha384-dyB3z1Vv3Pq9xJHqGZEXr2O6bUJ1FglF8fx7IDzW3a0BIcGoZsI6T3ez3/1p7byC" crossorigin="anonymous">
     <style>
         .order-status {
             display: flex;
@@ -17,27 +19,32 @@
             background-color: #f8f9fa;
             border-radius: 5px;
         }
+
         .status-item {
             text-align: center;
             color: #6c757d;
             font-size: 14px;
             flex: 1;
         }
+
         .status-item.active {
             color: #28a745;
             font-weight: bold;
         }
+
         .status-icon {
             font-size: 24px;
             display: block;
             margin-bottom: 5px;
         }
+
         .card-header {
             background-color: #0B745E !important;
             color: white;
             font-weight: bold;
             text-align: center;
         }
+
         #alertMessage {
             position: fixed;
             right: -300px; /* Ẩn thông báo ra ngoài màn hình */
@@ -52,12 +59,40 @@
         }
     </style>
 </head>
-<jsp:include page="../layout.jsp" />
+<jsp:include page="../layout.jsp"/>
 <body>
 <div class="container mt-3">
-    <div class="mt-3 mb-3">
-        <a href="/nhap-hang/hien-thi" class="btn btn-outline-success">Quay lại</a>
+
+    <div class="container mt-3">
+        <!-- Hiển thị thông báo thành công -->
+        <c:if test="${not empty successMessage}">
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Thành công!</strong> ${successMessage}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </c:if>
+
+        <!-- Hiển thị thông báo lỗi -->
+        <c:if test="${not empty errorMessage}">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Lỗi!</strong> ${errorMessage}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </c:if>
     </div>
+
+
+    <div class="col-md-6">
+        <a href="/nhap-hang/hien-thi" class="btn btn-outline-success me-2">Quay lại</a>
+
+        <c:if test="${nhapHang.tinhTrang == 0}">
+            <form action="/nhap-hang/da-nhan-hang/${nhapHang.id}" method="post" style="display: inline;">
+                <button type="submit" class="btn btn-warning">Đã Nhận Hàng</button>
+            </form>
+        </c:if>
+    </div>
+
+
     <!-- Thông tin phiếu nhập -->
     <div class="card mb-4 mt-3">
         <div class="card-header">Thông tin phiếu nhập</div>

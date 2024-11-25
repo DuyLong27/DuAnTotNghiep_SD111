@@ -1,8 +1,5 @@
 package com.example.demo.controller.admin;
 
-import com.example.demo.entity.DoiTra;
-import com.example.demo.entity.HoaDon;
-import com.example.demo.entity.HoaDonChiTiet;
 import com.example.demo.entity.NhaCungCap;
 import com.example.demo.entity.NhapHang;
 import com.example.demo.entity.NhapHangChiTiet;
@@ -24,10 +21,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -123,8 +124,6 @@ public class QLNhapHangController {
         return "admin/ql_nhap_hang/index";
     }
 
-
-
     @PostMapping("/add")
     public String addNhapHang(@RequestParam Map<String, String> formData, @RequestParam(value = "selectedItems", required = false) List<String> selectedItems) {
         // Debug: Kiểm tra formData và selectedItems
@@ -133,44 +132,59 @@ public class QLNhapHangController {
             selectedItems.forEach(itemId -> System.out.println("Selected Product ID: " + itemId));
         }
 
-        // Tạo đối tượng NhapHang
-        NhapHang nhapHang = new NhapHang();
-        nhapHang.setMaPhieuNhap(generateMaPhieuNhap());
-        nhapHang.setNgayNhap(new Date());
-        nhapHang.setNgayTao(new Date());
-        nhapHang.setTinhTrang(0); // Tình trạng mặc định
+        // Nhóm sản phẩm theo nhà cung cấp
+        Map<NhaCungCap, List<String>> productsBySupplier = new HashMap<>();
+        for (String productIdStr : selectedItems) {
+            Integer productId = Integer.valueOf(productIdStr);
+            SanPham sanPham = sanPhamRepo.findById(productId).orElse(null);
+            if (sanPham != null) {
+                NhaCungCap nhaCungCap = sanPham.getNhaCungCap();
+                productsBySupplier.computeIfAbsent(nhaCungCap, k -> new ArrayList<>()).add(productIdStr);
+            }
+        }
 
-        // Lấy giá trị ghi chú từ form
-        String ghiChu = formData.get("ghiChu");
-        nhapHang.setGhiChu(ghiChu);  // Lưu ghi chú vào đối tượng nhapHang (nếu có)
+        // Xử lý từng nhóm sản phẩm theo nhà cung cấp
+        for (Map.Entry<NhaCungCap, List<String>> entry : productsBySupplier.entrySet()) {
+            NhaCungCap nhaCungCap = entry.getKey();
+            List<String> productIds = entry.getValue();
 
-        // Khởi tạo tổng giá trị
-        int tongGiaTri = 0;
+            // Tạo đối tượng NhapHang cho từng nhóm sản phẩm
+            NhapHang nhapHang = new NhapHang();
+            nhapHang.setMaPhieuNhap(generateMaPhieuNhap());
+            nhapHang.setNgayTao(new Date());
+            nhapHang.setTinhTrang(0); // Tình trạng mặc định
+            nhapHang.setNhaCungCap(nhaCungCap); // Gán nhà cung cấp cho phiếu nhập
 
-        // Khởi tạo nhà cung cấp từ sản phẩm đầu tiên (giả sử sản phẩm có cùng nhà cung cấp)
-        NhaCungCap nhaCungCap = null;
+            // Lấy giá trị ghi chú từ form
+            String ghiChu = formData.get("ghiChu");
+            nhapHang.setGhiChu(ghiChu);  // Lưu ghi chú vào đối tượng nhapHang (nếu có)
 
-        // Lưu phiếu nhập hàng
-        nhapHang = repo.save(nhapHang);
+            // Khởi tạo tổng giá trị
+            int tongGiaTri = 0;
 
-        // Xử lý các chi tiết nhập hàng
-        if (selectedItems != null) {
-            for (String productIdStr : selectedItems) {
+            // Lưu phiếu nhập hàng
+            nhapHang = repo.save(nhapHang);
+
+            // Xử lý các chi tiết nhập hàng cho nhóm sản phẩm
+            for (String productIdStr : productIds) {
                 Integer productId = Integer.valueOf(productIdStr);
 
                 // Lấy giá nhập và số lượng từ form
-                Integer giaNhap = Integer.valueOf(formData.get("giaNhap_" + productId));
-                Integer soLuong = Integer.valueOf(formData.get("soLuong_" + productId));
+                String giaNhapStr = formData.get("giaNhap_" + productId); // Lấy giá nhập từ formData
+                String soLuongStr = formData.get("soLuong_" + productId); // Lấy số lượng từ formData
+
+                // Kiểm tra giá nhập và số lượng có hợp lệ hay không
+                Integer giaNhap = (giaNhapStr != null && !giaNhapStr.isEmpty()) ? Integer.valueOf(giaNhapStr) : 0;  // Nếu giá nhập là null hoặc rỗng, gán giá trị mặc định là 0
+                Integer soLuong = (soLuongStr != null && !soLuongStr.isEmpty()) ? Integer.valueOf(soLuongStr) : 0;  // Nếu số lượng là null hoặc rỗng, gán giá trị mặc định là 0
 
                 // Lấy sản phẩm và nhà cung cấp
                 SanPham sanPham = sanPhamRepo.findById(productId).orElse(null);
                 if (sanPham != null) {
-                    if (nhaCungCap == null) {
-                        nhaCungCap = sanPham.getNhaCungCap(); // Gán nhà cung cấp từ sản phẩm đầu tiên
-                    }
+                    // Lấy giá nhập từ thẻ span (data-giaban)
+                    Integer giaNhapFromSpan = sanPham.getGiaBan();  // Sử dụng giá bán từ sanPham
 
                     // Tính tổng tiền cho từng sản phẩm
-                    Integer tongTien = giaNhap * soLuong;
+                    Integer tongTien = giaNhapFromSpan * soLuong;
 
                     // Cộng tổng tiền vào tổng giá trị của phiếu nhập
                     tongGiaTri += tongTien;
@@ -179,7 +193,7 @@ public class QLNhapHangController {
                     NhapHangChiTiet chiTiet = new NhapHangChiTiet();
                     chiTiet.setNhapHang(nhapHang);
                     chiTiet.setSanPham(sanPham);
-                    chiTiet.setGiaNhap(giaNhap);
+                    chiTiet.setGiaNhap(giaNhapFromSpan);  // Sử dụng giaNhapFromSpan đã lấy từ sản phẩm
                     chiTiet.setSoLuong(soLuong);
                     chiTiet.setTongTien(tongTien);
                     chiTiet.setNgaySanXuat(new Date()); // Cập nhật ngày sản xuất nếu có
@@ -188,20 +202,17 @@ public class QLNhapHangController {
                     nhapHangChiTietRepo.save(chiTiet); // Lưu chi tiết nhập hàng vào cơ sở dữ liệu
                 }
             }
+
+            // Sau khi tính tổng giá trị, cập nhật vào phiếu nhập
+            nhapHang.setTongGiaTri(tongGiaTri); // Lưu tổng giá trị
+
+            // Lưu lại phiếu nhập với tổng giá trị và nhà cung cấp
+            repo.save(nhapHang);
         }
 
-        // Sau khi tính tổng giá trị, cập nhật vào phiếu nhập và nhà cung cấp
-        nhapHang.setTongGiaTri(tongGiaTri); // Lưu tổng giá trị
-        nhapHang.setNhaCungCap(nhaCungCap); // Lưu nhà cung cấp (nếu có)
-
-        // Lưu lại phiếu nhập với tổng giá trị và nhà cung cấp
-        repo.save(nhapHang);
-
-        // Sau khi lưu tất cả các chi tiết, điều hướng đến trang hiển thị danh sách phiếu nhập
+        // Sau khi lưu tất cả các phiếu nhập, điều hướng đến trang hiển thị danh sách phiếu nhập
         return "redirect:/nhap-hang/hien-thi";
     }
-
-
 
     @GetMapping("/chi-tiet/{id}")
     public String chiTiet(@PathVariable("id") Integer id, Model model) {
@@ -218,4 +229,44 @@ public class QLNhapHangController {
             return "/admin/ql_nhap_hang/index"; // Hoặc trang lỗi phù hợp
         }
     }
+
+    @PostMapping("/da-nhan-hang/{id}")
+    public String daNhanHang(
+            @PathVariable("id") Integer nhapHangId,
+            RedirectAttributes redirectAttributes) {
+
+        Optional<NhapHang> optionalNhapHang = repo.findById(nhapHangId);
+        if (!optionalNhapHang.isPresent()) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Phiếu nhập không tồn tại!");
+            return "redirect:/nhap-hang/hien-thi";
+        }
+
+        NhapHang nhapHang = optionalNhapHang.get();
+
+        // Truy vấn danh sách các chi tiết nhập hàng cho phiếu nhập này
+        List<NhapHangChiTiet> danhSachSanPham = nhapHangChiTietRepo.findByNhapHangId(nhapHangId);
+
+        // Duyệt qua danh sách chi tiết nhập hàng để cập nhật số lượng tồn kho
+        for (NhapHangChiTiet chiTiet : danhSachSanPham) {
+            Optional<SanPhamChiTiet> optionalSanPhamChiTiet = sanPhamChiTietRepo.findById(chiTiet.getSanPham().getId());
+            if (optionalSanPhamChiTiet.isPresent()) {
+                SanPhamChiTiet sanPhamChiTiet = optionalSanPhamChiTiet.get();
+                // Cập nhật số lượng tồn kho của sản phẩm
+                sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() + chiTiet.getSoLuong());
+                sanPhamChiTietRepo.save(sanPhamChiTiet); // Lưu lại sản phẩm đã cập nhật
+            }
+        }
+
+        // Cập nhật trạng thái phiếu nhập và ngày nhập
+        nhapHang.setTinhTrang(1);  // Đánh dấu phiếu nhập đã nhận hàng
+        nhapHang.setNgayNhap(new Date());
+        repo.save(nhapHang);
+
+        // Thêm thông báo thành công
+        redirectAttributes.addFlashAttribute("successMessage", "Đã nhận hàng và cập nhật tồn kho thành công!");
+
+        // Quay lại trang chi tiết phiếu nhập
+        return "redirect:/nhap-hang/chi-tiet/" + nhapHangId;
+    }
+
 }
