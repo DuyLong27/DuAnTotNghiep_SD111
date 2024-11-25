@@ -263,7 +263,7 @@ public class QLNhapHangController {
         repo.save(nhapHang);
 
         // Thêm thông báo thành công
-        redirectAttributes.addFlashAttribute("successMessage", "Đã nhận hàng và cập nhật tồn kho thành công!");
+        redirectAttributes.addFlashAttribute("successMessage", "Hàng đã vào cửa hàng!");
 
         // Quay lại trang chi tiết phiếu nhập
         return "redirect:/nhap-hang/chi-tiet/" + nhapHangId;
