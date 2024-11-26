@@ -53,5 +53,4 @@ public class NhapHang {
 
     @Column(name = "tinh_trang")
     private Integer tinhTrang;
-
 }

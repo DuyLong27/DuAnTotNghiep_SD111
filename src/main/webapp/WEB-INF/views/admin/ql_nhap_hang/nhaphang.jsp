@@ -111,18 +111,22 @@
                 <c:forEach var="item" items="${listSanPhamChiTiet}">
                     <tr data-id="${item.id}">
                         <td>
-                            <input type="checkbox" name="selectedItems" value="${item.id}" />
+                            <input type="checkbox" name="selectedItems" value="${item.id}"/>
                         </td>
                         <td class="cart-item">
-                            <img src="${pageContext.request.contextPath}/uploads/${item.hinhAnh}" alt="${item.sanPham.ten}">
+                            <img src="${pageContext.request.contextPath}/uploads/${item.hinhAnh}"
+                                 alt="${item.sanPham.ten}">
                             <div class="product-name">${item.sanPham.ten}</div>
                         </td>
                         <td>
-                            <input type="number" name="giaNhap_${item.id}" value="0" class="form-control giaNhapInput" style="width: 100px; text-align: center;" min="0" required/>
+                            <span class="giaNhapSpan" data-giaban="${item.sanPham.giaBan}">
+                                ${item.sanPham.giaBan} đ
+                            </span>
                         </td>
                         <td>${item.sanPham.nhaCungCap.tenNCC}</td> <!-- Hiển thị nhà cung cấp -->
                         <td>
-                            <input type="number" name="soLuong_${item.id}" value="0" class="form-control soLuongInput" style="width: 60px; text-align: center;" min="0" required/>
+                            <input type="number" name="soLuong_${item.id}" value="0" class="form-control soLuongInput"
+                                   style="width: 60px; text-align: center;" min="0" required/>
                         </td>
                         <td>
                         <span class="tongTien_${item.id}">
@@ -171,19 +175,19 @@
     function saveCartToLocalStorage() {
         let cartItems = [];
 
-        document.querySelectorAll('tr').forEach(function(row) {
-            const giaNhapInput = row.querySelector('.giaNhapInput');
+        document.querySelectorAll('tr').forEach(function (row) {
+            const giaNhapSpan = row.querySelector('.giaNhapSpan');
             const soLuongInput = row.querySelector('.soLuongInput');
             const checkbox = row.querySelector('input[type="checkbox"]');
 
             // Nếu không tìm thấy các phần tử cần thiết, bỏ qua dòng này
-            if (!giaNhapInput || !soLuongInput || !checkbox) {
+            if (!giaNhapSpan || !soLuongInput || !checkbox) {
                 return;
             }
 
             const item = {
                 id: checkbox.value,
-                giaNhap: parseFloat(giaNhapInput.value) || 0,
+                giaNhap: parseFloat(giaNhapSpan.getAttribute('data-giaban')) || 0, // lấy giá từ data-giaban
                 soLuong: parseInt(soLuongInput.value) || 0,
                 checked: checkbox.checked
             };
@@ -199,12 +203,12 @@
     function loadCartFromLocalStorage() {
         const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
 
-        document.querySelectorAll('tr').forEach(function(row) {
+        document.querySelectorAll('tr').forEach(function (row) {
             const checkbox = row.querySelector('input[type="checkbox"]');
-            const giaNhapInput = row.querySelector('.giaNhapInput');
+            const giaNhapSpan = row.querySelector('.giaNhapSpan');
             const soLuongInput = row.querySelector('.soLuongInput');
 
-            if (!checkbox || !giaNhapInput || !soLuongInput) {
+            if (!checkbox || !giaNhapSpan || !soLuongInput) {
                 return;
             }
 
@@ -213,7 +217,7 @@
 
             if (item) {
                 // Cập nhật giá trị từ giỏ hàng đã lưu
-                giaNhapInput.value = item.giaNhap;
+                giaNhapSpan.setAttribute('data-giaban', item.giaNhap); // Cập nhật giá nhập vào data-giaban
                 soLuongInput.value = item.soLuong;
                 checkbox.checked = item.checked;
             }
@@ -223,68 +227,65 @@
     // Cập nhật tổng tiền
     function updateTotal() {
         let totalValue = 0;
-        let isAnyCheckboxChecked = false; // Kiểm tra có checkbox nào được chọn
+        let isAnyCheckboxChecked = false;
 
-        // Lặp qua từng sản phẩm để tính tổng tiền
-        document.querySelectorAll('tr').forEach(function(row) {
-            const giaNhapInput = row.querySelector('.giaNhapInput');
+        // Lặp qua từng dòng để tính toán tổng tiền
+        document.querySelectorAll('tr').forEach(function (row) {
+            const giaNhapSpan = row.querySelector('.giaNhapSpan'); // Thẻ chứa giá nhập
             const soLuongInput = row.querySelector('.soLuongInput');
             const checkbox = row.querySelector('input[type="checkbox"]');
 
-            // Nếu không tìm thấy các phần tử cần thiết, bỏ qua dòng này
-            if (!giaNhapInput || !soLuongInput || !checkbox) {
-                return;
+            if (!giaNhapSpan || !soLuongInput || !checkbox) {
+                return; // Nếu không tìm thấy các phần tử, bỏ qua dòng này
             }
 
             const tongTienElement = row.querySelector('.tongTien_' + checkbox.value);
 
-            // Nếu không tìm thấy phần tử hiển thị tổng tiền, bỏ qua dòng này
             if (!tongTienElement) {
-                return;
+                return; // Nếu không tìm thấy phần tử tổng tiền, bỏ qua dòng này
             }
 
-            const giaNhap = parseFloat(giaNhapInput.value) || 0;
+            const giaNhap = parseFloat(giaNhapSpan.getAttribute('data-giaban')) || 0; // Lấy giá nhập từ data-giaban
             const soLuong = parseInt(soLuongInput.value) || 0;
             const tongTien = giaNhap * soLuong;
 
             tongTienElement.textContent = tongTien + ' đ';
 
-            // Cập nhật tổng giá trị của giỏ hàng nếu sản phẩm được chọn
+            // Nếu checkbox được chọn, cộng tổng tiền
             if (checkbox.checked) {
                 totalValue += tongTien;
-                isAnyCheckboxChecked = true; // Đánh dấu rằng có ít nhất 1 checkbox được chọn
+                isAnyCheckboxChecked = true;
             }
         });
 
-        // Hiển thị tổng giá trị của giỏ hàng chỉ khi có checkbox được chọn
+        // Hiển thị tổng giá trị
         const totalValueElement = document.getElementById('totalValue');
         if (totalValueElement) {
             totalValueElement.textContent = totalValue + ' đ';
-            totalValueElement.style.display = isAnyCheckboxChecked ? 'inline' : 'none'; // Ẩn/hiện tổng giá trị
+            totalValueElement.style.display = isAnyCheckboxChecked ? 'inline' : 'none';
         }
 
-        // Kích hoạt nút "Gửi phiếu nhập" nếu có ít nhất 1 sản phẩm được chọn và tổng giá trị > 0
+        // Kích hoạt nút gửi nếu có ít nhất 1 checkbox được chọn và tổng giá trị > 0
         const checkoutBtn = document.getElementById('checkoutBtn');
-        const selectedItems = document.querySelectorAll('input[name="selectedItems"]:checked').length;
         if (checkoutBtn) {
-            checkoutBtn.disabled = selectedItems === 0 || totalValue === 0;
+            checkoutBtn.disabled = !isAnyCheckboxChecked || totalValue === 0;
         }
     }
 
     // Lắng nghe sự kiện khi người dùng thay đổi giá trị
-    document.querySelectorAll('.giaNhapInput, .soLuongInput, input[type="checkbox"]').forEach(function(input) {
-        input.addEventListener('input', function() {
+    document.querySelectorAll('.giaNhapInput, .soLuongInput, input[type="checkbox"]').forEach(function (input) {
+        input.addEventListener('input', function () {
             updateTotal();
             saveCartToLocalStorage(); // Lưu lại giỏ hàng sau mỗi thay đổi
         });
-        input.addEventListener('change', function() {
+        input.addEventListener('change', function () {
             updateTotal();
             saveCartToLocalStorage(); // Lưu lại giỏ hàng sau mỗi thay đổi
         });
     });
 
     // Chạy khi trang được tải để khôi phục giỏ hàng từ localStorage
-    window.onload = function() {
+    window.onload = function () {
         loadCartFromLocalStorage();
         updateTotal();
     };
