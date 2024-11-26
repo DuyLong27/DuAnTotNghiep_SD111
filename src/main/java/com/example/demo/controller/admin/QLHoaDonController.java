@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -69,12 +70,19 @@ public class QLHoaDonController {
 
         List<HoaDon> hoaDonList = hoaDonPage.getContent();
 
+        List<ThoiGianDonHang> thoiGianDonHangList = thoiGianDonHangRepo.findByHoaDonIn(hoaDonList);
+
+        Map<HoaDon, ThoiGianDonHang> hoaDonThoiGianMap = thoiGianDonHangList.stream()
+                .collect(Collectors.toMap(ThoiGianDonHang::getHoaDon, tgdh -> tgdh));
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
         List<String> thoiGianTaoFormattedList = hoaDonList.stream()
-                .map(hoaDon -> thoiGianDonHangRepo.findByHoaDon(hoaDon))
-                .filter(thoiGianDonHang -> thoiGianDonHang != null)
-                .map(ThoiGianDonHang::getThoiGianTao)
-                .map(thoiGianTao -> thoiGianTao != null ? thoiGianTao.format(formatter) : "Không có thông tin")
+                .map(hoaDon -> {
+                    ThoiGianDonHang thoiGianDonHang = hoaDonThoiGianMap.get(hoaDon);
+                    return thoiGianDonHang != null && thoiGianDonHang.getThoiGianTao() != null
+                            ? thoiGianDonHang.getThoiGianTao().format(formatter)
+                            : "Không có thông tin";
+                })
                 .collect(Collectors.toList());
 
         model.addAttribute("listHoaDon", hoaDonList);
@@ -204,6 +212,10 @@ public class QLHoaDonController {
             }
         }
 
+        ThoiGianDonHang thoiGianDonHang = thoiGianDonHangRepo.findByHoaDon_Id(id);
+        thoiGianDonHang.setDaHoanTra(LocalDateTime.now());
+        thoiGianDonHangRepo.save(thoiGianDonHang);
+
         redirectAttributes.addFlashAttribute("message", "Hoàn hàng thành công và điểm tích lũy đã được trừ!");
         return "redirect:/hoa-don/detail/" + id;
     }
@@ -314,5 +326,37 @@ public class QLHoaDonController {
 
         return "redirect:/hoa-don/detail/" + id;
     }
+
+    @PostMapping("/xac-nhan-hoan-tra/{id}")
+    public String xacNhanHoanTra(
+            @PathVariable("id") Integer hoaDonId,
+            Model model) {
+
+        Optional<HoaDon> optionalHoaDon = hoaDonRepo.findById(hoaDonId);
+        if (!optionalHoaDon.isPresent()) {
+            model.addAttribute("errorMessage", "Hóa đơn không tồn tại.");
+            return "redirect:/danh-sach-hoa-don";
+        }
+
+        HoaDon hoaDon = optionalHoaDon.get();
+
+        hoaDon.setTinh_trang(12);
+
+        ThoiGianDonHang thoiGianDonHang = thoiGianDonHangRepo.findByHoaDon_Id(hoaDonId);
+        if (thoiGianDonHang == null) {
+            model.addAttribute("errorMessage", "Không tìm thấy thời gian cho hóa đơn này.");
+            return "redirect:/hoa-don/detail/" + hoaDonId;
+        }
+
+        thoiGianDonHang.setXacNhanHoanTra(LocalDateTime.now());
+
+        thoiGianDonHangRepo.save(thoiGianDonHang);
+        hoaDonRepo.save(hoaDon);
+
+        model.addAttribute("successMessage", "Hóa đơn đã được xác nhận hoàn trả thành công.");
+
+        return "redirect:/hoa-don/detail/" + hoaDon.getId();
+    }
+
 
 }

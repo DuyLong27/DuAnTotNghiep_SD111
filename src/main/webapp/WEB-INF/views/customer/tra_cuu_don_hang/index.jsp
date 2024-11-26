@@ -45,7 +45,7 @@
     </form>
 
     <c:if test="${not empty error}">
-        <div class="alert alert-danger text-center">${error}</div>
+        <div class="alert text-center">${error}</div>
     </c:if>
 
     <c:if test="${not empty hoaDon}">
@@ -57,7 +57,7 @@
                     <p><strong>${thoiGianTao}</strong> Đơn hàng đã được đặt </p>
                     </c:if>
                     <c:if test="${hoaDon.tinh_trang >= 1}">
-                    <p><strong>${thoiGianXacNhan}</strong> Đã xác nhận đơn hàng</p>
+                    <p><strong>${thoiGianXacNhan}</strong> Đơn hàng đã được xác nhận</p>
                     </c:if>
                     <c:if test="${hoaDon.tinh_trang >= 2}">
                     <p><strong>${banGiaoVanChuyen}</strong> Đơn hàng đã được bàn giao cho đơn vị vận chuyển </p>
@@ -66,6 +66,15 @@
                      </c:if>
                     <c:if test="${hoaDon.tinh_trang >= 4}">
                     <p><strong>${hoanThanh}</strong> Đơn hàng đã được giao thành công </p>
+                    </c:if>
+                    <c:if test="${hoaDon.tinh_trang >= 11}">
+                        <p><strong>${hoanTra}</strong>: Yêu cầu đổi trả</p>
+                    </c:if>
+                    <c:if test="${hoaDon.tinh_trang >= 12}">
+                        <p><strong>${xacNhanHoanTra}</strong>: Đã xác nhận yêu cầu đổi trả</p>
+                    </c:if>
+                    <c:if test="${hoaDon.tinh_trang >= 13}">
+                        <p><strong>${daHoanTra}</strong>: Đổi trả thành công</p>
                     </c:if>
                 </div>
             </div>
@@ -85,6 +94,20 @@
                         </c:choose>
                     </p>
                     <p><strong>Tổng tiền:</strong> ${hoaDon.tongTien} VNĐ</p>
+                    <p>
+                        <strong>Trạng thái đơn hàng:</strong>
+                        <c:choose>
+                            <c:when test="${hoaDon.tinh_trang == 0}">Chờ xác nhận<</c:when>
+                            <c:when test="${hoaDon.tinh_trang == 1}">Chờ giao</c:when>
+                            <c:when test="${hoaDon.tinh_trang == 2 || hoaDon.tinh_trang == 3}">Đang giao</c:when>
+                            <c:when test="${hoaDon.tinh_trang == 4}">Hoàn thành</c:when>
+                            <c:when test="${hoaDon.tinh_trang == 11}">Chờ xác nhận đổi trả</c:when>
+                            <c:when test="${hoaDon.tinh_trang == 12}">Chờ đổi trả</c:when>
+                            <c:when test="${hoaDon.tinh_trang == 13}">Đã đổi trả</c:when>
+                            <c:when test="${hoaDon.tinh_trang == 14}">Đã hủy</c:when>
+                            <c:otherwise>Không xác định</c:otherwise>
+                        </c:choose>
+                    </p>
                 </div>
 
                 <div class="info-card mt-4">
@@ -103,7 +126,22 @@
                             <tr>
                                 <td><img style="width: 90px" src="/uploads/${item.sanPhamChiTiet.hinhAnh}" alt="${item.sanPhamChiTiet.sanPham.ten}"></td>
                                 <td>${item.sanPhamChiTiet.sanPham.ten}</td>
-                                <td>${item.gia_san_pham} VNĐ</td>
+                                <td>
+                                        <c:choose>
+                                            <c:when test="${item.gia_san_pham != item.sanPhamChiTiet.giaBan}">
+                            <span style="text-decoration: line-through; color: gray;">
+                                ${item.sanPhamChiTiet.giaBan} VNĐ
+                            </span>
+                                                <br>
+                                                <span style="color: green;">
+                                ${item.gia_san_pham} VNĐ
+                            </span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <span>${item.gia_san_pham} VNĐ</span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                </td>
                                 <td>${item.so_luong}</td>
                             </tr>
                         </c:forEach>

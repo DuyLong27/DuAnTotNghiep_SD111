@@ -5,6 +5,7 @@ import com.example.demo.entity.ThoiGianDonHang;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -14,5 +15,7 @@ public interface ThoiGianDonHangRepo extends JpaRepository<ThoiGianDonHang, Inte
     Optional<ThoiGianDonHang> findByHoaDonId(Integer hoaDonId);
 
     ThoiGianDonHang findByHoaDon(HoaDon hoaDon);
+
+    List<ThoiGianDonHang> findByHoaDonIn(List<HoaDon> hoaDons);
 
 }

@@ -177,10 +177,9 @@ public class DanhSachSanPhamController {
         sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - soLuong);
         sanPhamChiTietRepo.save(sanPhamChiTiet);
 
-        // Cập nhật thời gian tạo trong thoiGianDonHang (thời gian hiện tại)
         ThoiGianDonHang thoiGianDonHang = new ThoiGianDonHang();
         thoiGianDonHang.setHoaDon(hoaDon);
-        thoiGianDonHang.setThoiGianTao(LocalDateTime.now()); // Lưu thời gian hiện tại
+        thoiGianDonHang.setThoiGianTao(LocalDateTime.now());
         thoiGianDonHangRepo.save(thoiGianDonHang);
 
         return "redirect:/danh-sach-san-pham/hien-thi";
