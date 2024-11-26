@@ -59,7 +59,16 @@ public class DoiTraController {
             hoaDonList.sort((h1, h2) -> {
                 LocalDateTime thoiGianTao1 = thoiGianTaoMap.get(h1.getId());
                 LocalDateTime thoiGianTao2 = thoiGianTaoMap.get(h2.getId());
-                return thoiGianTao2.compareTo(thoiGianTao1);
+
+                if (thoiGianTao1 == null && thoiGianTao2 == null) {
+                    return 0;
+                } else if (thoiGianTao1 == null) {
+                    return 1;
+                } else if (thoiGianTao2 == null) {
+                    return -1;
+                } else {
+                    return thoiGianTao2.compareTo(thoiGianTao1);
+                }
             });
 
             model.addAttribute("hoaDonList", hoaDonList);
@@ -99,6 +108,7 @@ public class DoiTraController {
                 model.addAttribute("hoanTra", thoiGianDonHang.getHoanTra() != null ? thoiGianDonHang.getHoanTra().format(formatter) : "Chưa có thời gian hoàn trả");
                 model.addAttribute("xacNhanHoanTra", thoiGianDonHang.getXacNhanHoanTra() != null ? thoiGianDonHang.getXacNhanHoanTra().format(formatter) : "Chưa có thời gian xác nhận hoàn trả");
                 model.addAttribute("daHoanTra", thoiGianDonHang.getDaHoanTra() != null ? thoiGianDonHang.getDaHoanTra().format(formatter) : "Chưa có thời gian đã hoàn trả");
+                model.addAttribute("daHuy", thoiGianDonHang.getDaHuy() != null ? thoiGianDonHang.getDaHuy().format(formatter) : "Chưa có thời gian đã hoàn trả");
 
                 if (thoiGianDonHang.getBanGiaoVanChuyen() != null) {
                     LocalDateTime banGiaoVanChuyen = thoiGianDonHang.getBanGiaoVanChuyen();
@@ -332,8 +342,12 @@ public class DoiTraController {
                 sanPhamChiTietRepo.save(sanPhamChiTiet);
             }
 
-            hoaDon.setTinh_trang(14);  // Cập nhật trạng thái đơn hàng
+            hoaDon.setTinh_trang(14);
             hoaDonRepo.save(hoaDon);
+
+            ThoiGianDonHang thoiGianDonHang = thoiGianDonHangRepo.findByHoaDon_Id(id);
+            thoiGianDonHang.setDaHuy(LocalDateTime.now());
+            thoiGianDonHangRepo.save(thoiGianDonHang);
 
             model.addAttribute("message", "Đơn hàng đã được hủy thành công và sản phẩm đã được hoàn lại.");
             return "redirect:/doi-tra/chi-tiet?id=" + id;

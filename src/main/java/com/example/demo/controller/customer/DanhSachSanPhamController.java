@@ -2,6 +2,7 @@ package com.example.demo.controller.customer;
 
 import com.example.demo.entity.*;
 import com.example.demo.repository.*;
+import com.example.demo.service.EmailService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -51,6 +52,8 @@ public class DanhSachSanPhamController {
 
     @Autowired
     private ThoiGianDonHangRepo thoiGianDonHangRepo;
+    @Autowired
+    private EmailService emailService;
 
     public List<SanPhamChiTiet> getSanPhamWithKhuyenMai() {
         return sanPhamChiTietRepo.findAllWithPromotions();
@@ -125,27 +128,25 @@ public class DanhSachSanPhamController {
                                 @RequestParam String diaChi,
                                 @RequestParam String soDienThoai,
                                 @RequestParam int soLuong,
-                                @RequestParam int sanPhamId) {
+                                @RequestParam int sanPhamId,
+                                @RequestParam(required = false) String email) {
 
         SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamId).orElse(null);
         if (sanPhamChiTiet == null) {
             return "redirect:/error";
         }
 
-        // Kiểm tra giaGiamGia
+        String tenSanPham = sanPhamChiTiet.getSanPham().getTen();
+
         int giaSanPham = (sanPhamChiTiet.getGiaGiamGia() != null && sanPhamChiTiet.getGiaGiamGia() > 0)
                 ? sanPhamChiTiet.getGiaGiamGia()
                 : sanPhamChiTiet.getGiaBan();
-
-        // Tính tổng tiền
         int tongTien = soLuong * giaSanPham;
         int phiVanChuyen = phuongThucVanChuyen.equals("Giao Hàng Tiêu Chuẩn") ? 20000 : 33000;
         tongTien += phiVanChuyen;
 
-        // Tạo mã số hóa đơn ngẫu nhiên
         String soHoaDon = "HD" + new Random().nextInt(90000);
 
-        // Tạo đối tượng HoaDon và thiết lập các thuộc tính
         HoaDon hoaDon = new HoaDon();
         hoaDon.setPhuong_thuc_thanh_toan(phuongThucThanhToan);
         hoaDon.setPhuongThucVanChuyen(phuongThucVanChuyen);
@@ -156,24 +157,35 @@ public class DanhSachSanPhamController {
         hoaDon.setSoHoaDon(soHoaDon);
         hoaDon.setTinh_trang(0);
 
-        // Kiểm tra người dùng đã đăng nhập hay chưa
         KhachHang khachHang = (KhachHang) session.getAttribute("khachHang");
         if (khachHang != null) {
             hoaDon.setKhachHang(khachHang);
+        } else if (email != null && !email.isEmpty()) {
+            emailService.sendHoaDonMuaNgayEmail(
+                    email,
+                    soHoaDon,
+                    phuongThucThanhToan,
+                    phuongThucVanChuyen,
+                    diaChi,
+                    soDienThoai,
+                    soLuong,
+                    tenSanPham,
+                    giaSanPham,
+                    tongTien
+            );
+        } else {
+            return "redirect:/error";
         }
 
-        // Lưu hóa đơn vào cơ sở dữ liệu
         hoaDonRepo.save(hoaDon);
 
-        // Tạo và lưu chi tiết hóa đơn
         HoaDonChiTiet hoaDonChiTiet = new HoaDonChiTiet();
         hoaDonChiTiet.setHoaDon(hoaDon);
         hoaDonChiTiet.setSanPhamChiTiet(sanPhamChiTiet);
         hoaDonChiTiet.setSo_luong(soLuong);
-        hoaDonChiTiet.setGia_san_pham(giaSanPham); // Cập nhật giá sản phẩm
+        hoaDonChiTiet.setGia_san_pham(giaSanPham);
         hoaDonChiTietRepo.save(hoaDonChiTiet);
 
-        // Cập nhật số lượng sản phẩm
         sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - soLuong);
         sanPhamChiTietRepo.save(sanPhamChiTiet);
 

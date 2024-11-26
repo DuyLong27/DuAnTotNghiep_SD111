@@ -568,6 +568,14 @@
                                                 <input type="hidden" name="sanPhamId" value="${sanPhamChiTiet.id}">
                                                 <input type="hidden" name="soLuong" id="soLuongInput" value="1">
                                                 <input type="hidden" name="tongTien" id="tongTienInput" value="${sanPhamChiTiet.giaBan}">
+                                                <c:choose>
+                                                    <c:when test="${empty khachHang}">
+                                                        <div class="mb-3">
+                                                            <label for="email" class="form-label fw-bold">Email:</label>
+                                                            <input type="email" class="form-control" id="email" name="email" placeholder="Nhập email của bạn" required>
+                                                        </div>
+                                                    </c:when>
+                                                </c:choose>
                                                 <div class="mb-3">
                                                     <label for="phuongThucThanhToan" class="form-label fw-bold">Phương thức thanh toán:</label>
                                                     <select class="form-select" id="phuongThucThanhToan" name="phuongThucThanhToan" required>

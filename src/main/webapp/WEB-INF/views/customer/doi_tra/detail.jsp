@@ -94,28 +94,35 @@
                 <div class="info-row">
                     <div class="info-box">
                         <h6>Xử Lý Đơn Hàng:</h6>
-                        <c:if test="${hoaDon.tinh_trang >= 0}">
-                        <p><strong>${thoiGianTao}</strong>: Đơn hàng đã được đặt</p>
+                        <c:if test="${hoaDon.tinh_trang == 14}">
+                            <p><strong>${thoiGianTao}</strong>: Đơn hàng đã được đặt</p>
+                            <p><strong>${daHuy}</strong>: Đã hủy đơn hàng</p>
                         </c:if>
-                        <c:if test="${hoaDon.tinh_trang >= 1}">
-                        <p><strong>${thoiGianXacNhan}</strong>: Đơn hàng đã được xác nhận</p>
+                        <c:if test="${hoaDon.tinh_trang != 14}">
+                            <c:if test="${hoaDon.tinh_trang >= 0}">
+                                <p><strong>${thoiGianTao}</strong>: Đơn hàng đã được đặt</p>
+                            </c:if>
+                            <c:if test="${hoaDon.tinh_trang >= 1}">
+                                <p><strong>${thoiGianXacNhan}</strong>: Đơn hàng đã được xác nhận</p>
+                            </c:if>
+                            <c:if test="${hoaDon.tinh_trang >= 2}">
+                                <p><strong>${banGiaoVanChuyen}</strong>: Đơn hàng đã được bàn giao cho đơn vị vận chuyển</p>
+                                <p>Thời gian nhận hàng dự kiến: <strong>${thoiGianDuKien}</strong></p>
+                            </c:if>
+                            <c:if test="${hoaDon.tinh_trang >= 4}">
+                                <p><strong>${hoanThanh}</strong>: Đơn hàng đã được giao thành công</p>
+                            </c:if>
+                            <c:if test="${hoaDon.tinh_trang >= 11}">
+                                <p><strong>${hoanTra}</strong>: Yêu cầu đổi trả</p>
+                            </c:if>
+                            <c:if test="${hoaDon.tinh_trang >= 12}">
+                                <p><strong>${xacNhanHoanTra}</strong>: Đã xác nhận yêu cầu đổi trả</p>
+                            </c:if>
+                            <c:if test="${hoaDon.tinh_trang >= 13}">
+                                <p><strong>${daHoanTra}</strong>: Đổi trả thành công</p>
+                            </c:if>
                         </c:if>
-                        <c:if test="${hoaDon.tinh_trang >= 2}">
-                        <p><strong>${banGiaoVanChuyen}</strong>: Đơn hàng đã được bàn giao cho đơn vị vận chuyển</p>
-                        <p>Thời gian nhận hàng dự kiến: <strong>${thoiGianDuKien}</strong></p>
-                        </c:if>
-                        <c:if test="${hoaDon.tinh_trang >= 4}">
-                        <p><strong>${hoanThanh}</strong>: Đơn hàng đã được giao thành công</p>
-                        </c:if>
-                        <c:if test="${hoaDon.tinh_trang >= 11}">
-                            <p><strong>${hoanTra}</strong>: Yêu cầu đổi trả</p>
-                        </c:if>
-                        <c:if test="${hoaDon.tinh_trang >= 12}">
-                            <p><strong>${xacNhanHoanTra}</strong>: Đã xác nhận yêu cầu đổi trả</p>
-                        </c:if>
-                        <c:if test="${hoaDon.tinh_trang >= 13}">
-                            <p><strong>${daHoanTra}</strong>: Đổi trả thành công</p>
-                        </c:if>
+
                     </div>
                 </div>
 

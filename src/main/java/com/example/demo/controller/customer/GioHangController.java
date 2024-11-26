@@ -2,6 +2,7 @@ package com.example.demo.controller.customer;
 
 import com.example.demo.entity.*;
 import com.example.demo.repository.*;
+import com.example.demo.service.EmailService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,6 +30,9 @@ public class GioHangController {
 
     @Autowired
     private ThoiGianDonHangRepo thoiGianDonHangRepo;
+
+    @Autowired
+    private EmailService emailService;
 
     @PostMapping("/add")
     public String addCart(@RequestParam("sanPhamId") int sanPhamId, HttpSession session, Model model) {
@@ -338,6 +342,7 @@ public class GioHangController {
             @RequestParam("phuongThucVanChuyen") String phuongThucVanChuyen,
             @RequestParam("diaChi") String diaChi,
             @RequestParam("soDienThoai") String soDienThoai,
+            @RequestParam(value = "email", required = false) String email, // Trường email nếu khách hàng không có tài khoản
             HttpSession session,
             Model model) {
 
@@ -429,6 +434,12 @@ public class GioHangController {
                 invoiceDetail.setHoaDon(invoice);
             }
             hoaDonChiTietRepo.saveAll(invoiceDetails);
+
+            // Gửi email cho khách hàng nếu là khách vãng lai
+            if (email != null && !email.isEmpty()) {
+                emailService.sendHoaDonMuaNhieuSanPhamEmail(email, invoice.getSoHoaDon(), phuongThucThanhToan,
+                        phuongThucVanChuyen, diaChi, soDienThoai, invoiceDetails, totalAmount);
+            }
         }
 
         return "redirect:/danh-sach-san-pham/hien-thi";
