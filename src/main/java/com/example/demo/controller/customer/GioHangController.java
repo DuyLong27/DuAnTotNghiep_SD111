@@ -251,35 +251,35 @@ public class GioHangController {
     @ResponseBody
     public int calculateTotal(HttpSession session, @RequestParam("selectedIds") List<Integer> selectedIds) {
         int totalValue = 0;
-
-        // Kiểm tra người dùng đã đăng nhập hay chưa
-        KhachHang khachHang = (KhachHang) session.getAttribute("khachHang"); // Giả sử session này lưu khách hàng đã đăng nhập
+        KhachHang khachHang = (KhachHang) session.getAttribute("khachHang");
         GioHang cart;
 
-        // Lấy giỏ hàng dựa trên trạng thái đăng nhập
         if (khachHang != null) {
             Optional<GioHang> existingCart = gioHangRepo.findByKhachHang(khachHang);
             if (!existingCart.isPresent()) {
-                return totalValue; // Nếu không có giỏ hàng, trả về 0
+                return totalValue;
             }
             cart = existingCart.get();
         } else {
             Optional<GioHang> existingCart = gioHangRepo.findByKhachHangIsNull();
             if (!existingCart.isPresent()) {
-                return totalValue; // Nếu không có giỏ hàng, trả về 0
+                return totalValue;
             }
             cart = existingCart.get();
         }
 
-        // Tính tổng giá trị dựa trên các sản phẩm đã chọn
         List<GioHangChiTiet> cartDetails = gioHangChiTietRepo.findByGioHang(cart);
         for (GioHangChiTiet detail : cartDetails) {
             if (selectedIds.contains(detail.getSanPhamChiTiet().getId())) {
-                totalValue += detail.getSoLuong() * detail.getGiaBan(); // Tính tổng giá trị tạm tính
+                int giaBanThucTe = (detail.getSanPhamChiTiet().getGiaGiamGia() != null
+                        && detail.getSanPhamChiTiet().getGiaGiamGia() > 0)
+                        ? detail.getSanPhamChiTiet().getGiaGiamGia()
+                        : detail.getSanPhamChiTiet().getGiaBan();
+
+                totalValue += detail.getSoLuong() * giaBanThucTe;
             }
         }
-
-        return totalValue; // Trả về tổng giá trị
+        return totalValue;
     }
 
 
