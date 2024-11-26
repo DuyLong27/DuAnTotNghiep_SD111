@@ -97,7 +97,7 @@
                     <p>
                         <strong>Trạng thái đơn hàng:</strong>
                         <c:choose>
-                            <c:when test="${hoaDon.tinh_trang == 0}">Chờ xác nhận<</c:when>
+                            <c:when test="${hoaDon.tinh_trang == 0}">Chờ xác nhận</c:when>
                             <c:when test="${hoaDon.tinh_trang == 1}">Chờ giao</c:when>
                             <c:when test="${hoaDon.tinh_trang == 2 || hoaDon.tinh_trang == 3}">Đang giao</c:when>
                             <c:when test="${hoaDon.tinh_trang == 4}">Hoàn thành</c:when>

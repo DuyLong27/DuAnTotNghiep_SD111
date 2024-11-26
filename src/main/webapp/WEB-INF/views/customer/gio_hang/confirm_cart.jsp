@@ -69,7 +69,13 @@
                     <label for="soDienThoai" class="form-label">Số điện thoại:</label>
                     <input type="tel" class="form-control" id="soDienThoai" name="soDienThoai" pattern="[0-9]{10}" required>
                 </div>
-
+                <c:if test="${empty khachHang}">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                        <small class="form-text text-muted">Nếu bạn không có tài khoản, vui lòng nhập email để nhận hóa đơn.</small>
+                    </div>
+                </c:if>
                 <c:forEach var="item" items="${selectedItems}">
                     <input type="hidden" name="selectedItems" value="${item.sanPhamChiTiet.id}">
                 </c:forEach>
