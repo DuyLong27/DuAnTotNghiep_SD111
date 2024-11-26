@@ -68,7 +68,7 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
     @Query("SELECT COUNT(h) FROM HoaDon h WHERE h.tinh_trang = 4 AND h.ngayTao BETWEEN :startDate AND :endDate")
     Integer tinhTongSoHoaDonHoanThanh(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
-    @Query("SELECT COUNT(h) FROM HoaDon h WHERE h.tinh_trang = 2 AND h.ngayTao BETWEEN :startDate AND :endDate")
+    @Query("SELECT COUNT(h) FROM HoaDon h WHERE h.tinh_trang = 14 AND h.ngayTao BETWEEN :startDate AND :endDate")
     Integer tinhTongSoHoaDonHuy(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
     @Query(value = "SELECT CONVERT(VARCHAR, h.ngay_tao, 23) AS date, SUM(hdct.gia_san_pham * hdct.so_luong) AS revenue " +
