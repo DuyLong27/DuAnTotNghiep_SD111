@@ -421,9 +421,8 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary-outline" data-bs-dismiss="modal">Đóng</button>
-                <form action="/hoa-don/cap-nhat-tinh-trang" method="post">
-                    <input type="hidden" name="id" value="${hoaDon.id}" />
-                    <button type="submit" name="tinhTrangMoi" value="12" class="btn btn-primary">Xác Nhận Đổi Trả</button>
+                <form action="/hoa-don/xac-nhan-hoan-tra/${hoaDon.id}" method="post">
+                    <button type="submit"class="btn btn-primary">Xác Nhận Đổi Trả</button>
                 </form>
             </div>
         </div>

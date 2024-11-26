@@ -93,8 +93,8 @@
                         </c:forEach>
                     </ul>
                     <div class="mt-3">
+                        <a href="/doi-tra/chi-tiet?id=${hoaDon.id}" class="btn btn-warning">Quay Lại</a>
                         <button type="button" class="btn btn-success" onclick="showReasonModal(event)">Tiếp Tục</button>
-                        <a href="/doi-tra" class="btn btn-warning">Quay Lại</a>
                     </div>
                 </form>
             </div>

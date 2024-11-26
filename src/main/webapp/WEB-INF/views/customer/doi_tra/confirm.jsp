@@ -65,7 +65,7 @@
                     <input type="file" id="uploadImage" name="uploadImage" class="form-control" accept="image/*" required>
                 </div>
                 <div class="mt-3">
-                    <a href="/doi-tra" class="btn btn-warning">Quay Lại</a>
+                    <a href="/doi-tra/chi-tiet?id=${hoaDon.id}" class="btn btn-warning">Quay Lại</a>
                     <button type="submit" class="btn btn-success">Xác Nhận Đổi Trả</button>
                 </div>
             </form>

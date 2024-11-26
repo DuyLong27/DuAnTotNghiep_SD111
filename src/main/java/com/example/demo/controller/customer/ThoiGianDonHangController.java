@@ -1,4 +1,4 @@
-package com.example.demo.controller.admin;
+package com.example.demo.controller.customer;
 
 import com.example.demo.repository.HoaDonChiTietRepo;
 import com.example.demo.repository.HoaDonRepo;
@@ -36,11 +36,13 @@ public class ThoiGianDonHangController {
                 var thoiGianDonHang = thoiGianDonHangRepo.findByHoaDon_Id(hoaDon.getId());
                 var chiTietHoaDons = hoaDonChiTietRepo.findByHoaDon_Id(hoaDon.getId());
 
-                // Kiểm tra giá trị null và gán mặc định nếu cần
                 LocalDateTime thoiGianTao = thoiGianDonHang != null ? thoiGianDonHang.getThoiGianTao() : null;
                 LocalDateTime thoiGianXacNhan = thoiGianDonHang != null ? thoiGianDonHang.getThoiGianXacNhan() : null;
                 LocalDateTime banGiaoVanChuyenDate = thoiGianDonHang != null ? thoiGianDonHang.getBanGiaoVanChuyen() : null;
                 LocalDateTime hoanThanhDate = thoiGianDonHang != null ? thoiGianDonHang.getHoanThanh() : null;
+                LocalDateTime hoanTraDate = thoiGianDonHang != null ? thoiGianDonHang.getHoanTra() : null;
+                LocalDateTime xacNhanHoanTraDate = thoiGianDonHang != null ? thoiGianDonHang.getXacNhanHoanTra() : null;
+                LocalDateTime daHoanTraDate = thoiGianDonHang != null ? thoiGianDonHang.getDaHoanTra() : null;
 
                 DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
                 DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm , dd-MM-yyyy ");
@@ -49,6 +51,9 @@ public class ThoiGianDonHangController {
                 String thoiGianXacNhanFormatted = (thoiGianXacNhan != null) ? thoiGianXacNhan.format(dateTimeFormatter) : "Chưa có thông tin";
                 String banGiaoVanChuyenFormatted = (banGiaoVanChuyenDate != null) ? banGiaoVanChuyenDate.format(dateTimeFormatter) : "Chưa có thông tin";
                 String hoanThanhFormatted = (hoanThanhDate != null) ? hoanThanhDate.format(dateTimeFormatter) : "Chưa có thông tin";
+                String hoanTraFormatted = (hoanTraDate != null) ? hoanTraDate.format(dateTimeFormatter) : "Chưa có thông tin";
+                String xacNhanHoanTraFormatted = (xacNhanHoanTraDate != null) ? xacNhanHoanTraDate.format(dateTimeFormatter) : "Chưa có thông tin";
+                String daHoanTraFormatted = (daHoanTraDate != null) ? daHoanTraDate.format(dateTimeFormatter) : "Chưa có thông tin";
 
                 LocalDateTime thoiGianDuKien = null;
                 if (banGiaoVanChuyenDate != null) {
@@ -60,7 +65,6 @@ public class ThoiGianDonHangController {
                 }
                 String thoiGianDuKienFormatted = (thoiGianDuKien != null) ? thoiGianDuKien.format(dateFormatter) : "Chưa có thông tin";
 
-                // Thêm các biến đã định dạng vào model
                 model.addAttribute("hoaDon", hoaDon);
                 model.addAttribute("thoiGianDonHang", thoiGianDonHang);
                 model.addAttribute("chiTietHoaDons", chiTietHoaDons);
@@ -69,6 +73,9 @@ public class ThoiGianDonHangController {
                 model.addAttribute("banGiaoVanChuyen", banGiaoVanChuyenFormatted);
                 model.addAttribute("hoanThanh", hoanThanhFormatted);
                 model.addAttribute("thoiGianDuKien", thoiGianDuKienFormatted);
+                model.addAttribute("hoanTra", hoanTraFormatted);
+                model.addAttribute("xacNhanHoanTra", xacNhanHoanTraFormatted);
+                model.addAttribute("daHoanTra", daHoanTraFormatted);
             }
         } else {
             model.addAttribute("error", "Vui lòng nhập số hóa đơn để tìm kiếm.");
