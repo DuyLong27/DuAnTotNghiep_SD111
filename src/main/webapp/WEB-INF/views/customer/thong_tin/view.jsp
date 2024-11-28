@@ -167,11 +167,33 @@
                         </div>
                         <div class="col">
                             <p><strong>Hạng bậc (Rank)</strong></p>
-                            <p>Bạc</p>
+                            <p>
+                                <c:choose>
+                                    <c:when test="${khachHang.diemTichLuy < 1000}">
+                                        Bạc
+                                    </c:when>
+                                    <c:when test="${khachHang.diemTichLuy >= 1000 && khachHang.diemTichLuy < 2000}">
+                                        Vàng
+                                    </c:when>
+                                    <c:when test="${khachHang.diemTichLuy >= 2000 && khachHang.diemTichLuy < 3000}">
+                                        Lục bảo
+                                    </c:when>
+                                    <c:when test="${khachHang.diemTichLuy >= 3000 && khachHang.diemTichLuy < 4000}">
+                                        Bạch kim
+                                    </c:when>
+                                    <c:when test="${khachHang.diemTichLuy >= 4000 && khachHang.diemTichLuy < 5000}">
+                                        Kim cương
+                                    </c:when>
+                                    <c:otherwise>
+                                        VIP
+                                    </c:otherwise>
+                                </c:choose>
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
+
 
             <!-- Orders Card -->
             <div class="card">
@@ -203,6 +225,14 @@
                         <div class="col">
                             <p><strong>Hoàn thành</strong></p>
                             <p>${orderStats.hoanThanh}</p>
+                        </div>
+                        <div class="col">
+                            <p><strong>Đã Hủy</strong></p>
+                            <p>${orderStats.daHuy}</p>
+                        </div>
+                        <div class="col">
+                            <p><strong>Đã Đổi Trả</strong></p>
+                            <p>${orderStats.daDoiTra}</p>
                         </div>
                     </div>
                 </div>
