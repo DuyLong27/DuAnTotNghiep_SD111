@@ -37,7 +37,31 @@
                 </c:forEach>
                 </tbody>
             </table>
-            <h3 class="text-center">Tổng tiền: <span id="totalPrice" class="text-danger">${tongTien} đ</span></h3>
+
+
+
+            <div>
+                <h3 class="text-center">Tổng tiền sản phẩm: <span class="text-danger">${tongTienCuThe} đ</span></h3>
+                <h3 class="text-center">Số tiền cần trả: <span id="totalPrice" class="text-danger">${tongTienSauGiam} đ</span></h3>
+                <div id="customerInfo">
+                    <c:choose>
+                        <c:when test="${not empty khachHang}">
+                            <p>Rank (Hạng Bậc): <span id="rank">${rank}</span></p>
+                            <p>Số Điểm tích lũy: <span id="diemTichLuy">${diemTichLuy}</span></p>
+                            <p>Giá Trị Giảm giá: <span id="giamGia">${phanTramGiam}%</span></p>
+                            <p>Số tiền được giảm: <span id="giamTien">${giamGia} đ</span></p>
+                        </c:when>
+                        <c:otherwise>
+                            <p class="text-warning">Hãy tạo tài khoản để chuẩn bị cho món quà dài hạn nào!</p>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+            </div>
+
+
+
+
+
         </div>
         <div class="col-md-4">
             <h2 class="text-center mb-4">Thông tin thanh toán</h2>
@@ -87,17 +111,19 @@
 </div>
 <jsp:include page="../footer_user.jsp" />
 <script>
-    // Hàm cập nhật tổng tiền
     function updateTotal() {
-        // Lấy tổng tiền ban đầu
-        let totalPrice = parseInt('${tongTien}');
-        // Lấy giá trị phí vận chuyển
-        let shippingFee = document.querySelector('input[name="phuongThucVanChuyen"]:checked') ? (document.querySelector('input[name="phuongThucVanChuyen"]:checked').value === "Giao Hàng Nhanh" ? 33000 : 20000) : 0;
-        // Cập nhật tổng tiền
-        let finalTotal = totalPrice + shippingFee;
-        // Hiển thị tổng tiền mới
-        document.getElementById('totalPrice').innerText = finalTotal + ' đ';
+        let basePrice = parseInt('${tongTien}');
+        let discount = parseInt('${giamGia}');
+        let shippingFee = document.querySelector('input[name="phuongThucVanChuyen"]:checked')
+            ? (document.querySelector('input[name="phuongThucVanChuyen"]:checked').value === "Giao Hàng Nhanh" ? 33000 : 20000)
+            : 0;
+        let totalPrice = basePrice + shippingFee;
+        let totalPriceAfterDiscount = (basePrice - discount) + shippingFee;
+        document.getElementById('totalPrice').innerText = totalPriceAfterDiscount + ' đ';
+        document.getElementById('giamTien').innerText = discount + ' đ';
+        document.querySelector('h3.text-center span.text-danger').innerText = totalPrice + ' đ';
     }
 </script>
+
 </body>
 </html>
