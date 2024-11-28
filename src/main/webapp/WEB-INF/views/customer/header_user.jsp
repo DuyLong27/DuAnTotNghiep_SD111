@@ -194,13 +194,13 @@
 <%--header--%>
 <nav class="navbar navbar-expand-sm navbar-dark sticky-top" style="background-color: #0B745E; height: 80px;">
     <div class="container d-flex align-items-center">
-        <a href="#" class="navbar-brand d-flex align-items-center">
+        <a href="/trang-chu" class="navbar-brand d-flex align-items-center">
             <img src="../../uploads/logo_xanh.png" style="height: 60px; margin-right: 10px;" alt="Logo">
         </a>
 
         <ul class="navbar-nav mx-auto" style="flex-grow: 1; justify-content: center; gap: 20px;">
             <li class="nav-item">
-                <a class="nav-link text-light" href="#">Trang chủ</a>
+                <a class="nav-link text-light" href="/trang-chu">Trang chủ</a>
             </li>
 
             <!-- Dropdown Custom -->
@@ -216,27 +216,19 @@
                             <li><a class="dropdown-item" href="#">Cà phê hạt</a></li>
                         </ul>
                     </li>
-                    <li class="dropdown-submenu">
-                        <a class="dropdown-item" href="#">Dụng cụ</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Dụng cụ hỗ trợ pha cà phê</a></li>
-                            <li><a class="dropdown-item" href="#">Máy pha cà phê</a></li>
-                            <li><a class="dropdown-item" href="#">Phụ kiện cà phê</a></li>
-                        </ul>
-                    </li>
                 </ul>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link text-light" href="#">Khuyến mãi</a>
+                <a class="nav-link text-light" href="/khuyen-mai">Khuyến mãi</a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link text-light" href="#">Giới thiệu</a>
+                <a class="nav-link text-light" href="/gioi-thieu">Giới thiệu</a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link text-light" href="#">Liên hệ</a>
+                <a class="nav-link text-light" href="/lien-he">Liên hệ</a>
             </li>
 
             <li class="nav-item">

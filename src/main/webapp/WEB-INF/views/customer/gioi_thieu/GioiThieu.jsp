@@ -594,36 +594,7 @@
     </style>
 </head>
 <body>
-<header>
-    <nav class="navbar section-content">
-        <a href="#" class="nav-logo">
-            <h2 class="logo-text"> The Nature Coffee</h2>
-        </a>
-        <ul class="nav-menu">
-            <button id="menu-close-button" class="fas fa-times"></button>
-            <li class="nav-item">
-                <a href="#" class="nav-link">Home</a>
-            </li>
-            <li class="nav-item">
-                <a href="#about" class="nav-link">About</a>
-            </li>
-            <li class="nav-item">
-                <a href="#testimonials" class="nav-link">Review</a>
-            </li>
-            <li class="nav-item">
-                <a href="#gallery" class="nav-link">Bundled</a>
-            </li>
-            <li class="nav-item">
-                <a href="#contact" class="nav-link">Contact</a>
-            </li>
-            <li class="nav-item">
-                <a href="#" class="nav-link">Shopping</a>
-            </li>
-        </ul>
-
-        <button id="menu-open-button" class="fas fa-bars"></button>
-    </nav>
-</header>
+<jsp:include page="../header_user.jsp" />
 <main>
 <%--header--%>
     <section class="hero-section">
@@ -794,51 +765,7 @@
             </ul>
         </div>
     </section>
-<%--    Contact Us--%>
-    <section class="contact-section" id="contact">
-        <h2 class="section-title">Contact Us</h2>
-        <div class="section-content">
-            <ul class="contact-info-list">
-                <li class="contact-info">
-                    <i class="fa-solid fa-location-crosshairs"></i>
-                    <p>123 Campsite Avenue, Wilderness, CA 98765</p>
-                </li>
-                <li class="contact-info">
-                    <i class="fa-regular fa-envelope"></i>
-                    <p>info@coffeeshopwebsite.com</p>
-                </li>
-                <li class="contact-info">
-                    <i class="fa-solid fa-phone"></i>
-                    <p>(123) 456-78909</p>
-                </li>
-                <li class="contact-info">
-                    <i class="fa-regular fa-clock"></i>
-                    <p>Monday - Friday: 9:00 AM - 5:00 PM</p>
-                </li><li class="contact-info">
-                    <i class="fa-regular fa-clock"></i>
-                    <p>Saturday: 10:00 AM - 3:00 PM</p>
-                </li>
-                <li class="contact-info">
-                    <i class="fa-regular fa-clock"></i>
-                    <p>Sunday: Closed</p>
-                </li>
-                <li class="contact-info">
-                    <i class="fa-solid fa-globe"></i>
-                    <p>www.codingnepalweb.com</p>
-                </li>
-            </ul>
-
-            <form action="#" class="contact-form">
-                <input type="text" placeholder="Your name" class="form-input"
-                       required>
-                <input type="email" placeholder="Your email" class="form-input"
-                       required>
-                <textarea placeholder="Your message" class="form-input"
-                          required></textarea>
-                <button class="submit-button">Submit</button>
-            </form>
-        </div>
-    </section>
+    <jsp:include page="../footer_user.jsp" />
 </main>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
