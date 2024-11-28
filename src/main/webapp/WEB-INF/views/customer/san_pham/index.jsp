@@ -568,14 +568,6 @@
                                                 <input type="hidden" name="sanPhamId" value="${sanPhamChiTiet.id}">
                                                 <input type="hidden" name="soLuong" id="soLuongInput" value="1">
                                                 <input type="hidden" name="tongTien" id="tongTienInput" value="${sanPhamChiTiet.giaBan}">
-                                                <c:choose>
-                                                    <c:when test="${empty khachHang}">
-                                                        <div class="mb-3">
-                                                            <label for="email" class="form-label fw-bold">Email:</label>
-                                                            <input type="email" class="form-control" id="email" name="email" placeholder="Nhập email của bạn" required>
-                                                        </div>
-                                                    </c:when>
-                                                </c:choose>
                                                 <div class="mb-3">
                                                     <label for="phuongThucThanhToan" class="form-label fw-bold">Phương thức thanh toán:</label>
                                                     <select class="form-select" id="phuongThucThanhToan" name="phuongThucThanhToan" required>
@@ -603,6 +595,14 @@
                                                     <label for="soDienThoai" class="form-label fw-bold">Số điện thoại:</label>
                                                     <input type="tel" class="form-control" id="soDienThoai" name="soDienThoai" pattern="[0-9]{10}" required>
                                                 </div>
+                                                <c:choose>
+                                                    <c:when test="${empty khachHang}">
+                                                        <div class="mb-3">
+                                                            <label for="email" class="form-label fw-bold">Email:</label>
+                                                            <input type="email" class="form-control" id="email" name="email" placeholder="Vui lòng nhập email để nhận mã đơn hàng" required>
+                                                        </div>
+                                                    </c:when>
+                                                </c:choose>
                                                 <button type="submit" class="btn btn-success w-100 py-2 mt-4">Xác nhận đơn hàng</button>
                                             </form>
                                         </div>

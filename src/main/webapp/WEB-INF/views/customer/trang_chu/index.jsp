@@ -238,8 +238,47 @@
                 </div>
             </c:forEach>
         </div>
+        <h2 class="text-success mb-3" data-aos="fade-up">Sản phẩm đang khuyến mãi</h2>
+        <div class="row" data-aos="fade-up" data-aos-delay="100">
+            <c:set var="hasPromotion" value="false" />
+            <c:forEach var="product" items="${allProducts}">
+                <c:if test="${product.giaGiamGia != null && product.giaGiamGia > 0}">
+                    <c:set var="hasPromotion" value="true" />
+                    <div class="col-md-3 mb-4">
+                        <div class="card">
+                    <span class="discount-badge">
+                        ${product.khuyenMaiChiTietList[0].khuyenMai.giaTriKhuyenMai}%
+                    </span>
+                            <img src="${pageContext.request.contextPath}/uploads/${product.hinhAnh}" class="card-img-top" alt="${product.sanPham.ten}">
+                            <div class="card-body">
+                                <h5 class="card-title">${product.sanPham.ten}</h5>
+                                <p class="card-text text-success">
+                                    <c:choose>
+                                        <c:when test="${product.giaGiamGia != null && product.giaGiamGia > 0}">
+                                            <span style="color: red; text-decoration: line-through;">${product.giaBan} VNĐ</span>
+                                            <br>
+                                            <span style="color: green;">${product.giaGiamGia} VNĐ</span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            ${product.giaBan} VNĐ
+                                        </c:otherwise>
+                                    </c:choose>
+                                </p>
+                                <a href="/danh-sach-san-pham-chi-tiet/view-sp/${product.id}" class="btn btn-outline-success">Xem chi tiết</a>
+                            </div>
+                        </div>
+                    </div>
+                </c:if>
+            </c:forEach>
+            <c:if test="${!hasPromotion}">
+                <p class="text-center text-danger">Chưa có sản phẩm nào đang trong chương trình khuyến mãi</p>
+            </c:if>
+        </div>
         <h2 class="text-success mb-4" data-aos="fade-up" data-aos-delay="200">Chương trình khuyến mãi</h2>
         <div class="row" data-aos="fade-up" data-aos-delay="300">
+            <c:if test="${empty validKhuyenMais}">
+                <p class="text-center text-danger">Hiện chưa có chương trình khuyến mãi nào</p>
+            </c:if>
             <c:forEach var="khuyenMai" items="${validKhuyenMais}">
                 <div class="col-md-4 mb-4">
                     <div class="card custom-card">

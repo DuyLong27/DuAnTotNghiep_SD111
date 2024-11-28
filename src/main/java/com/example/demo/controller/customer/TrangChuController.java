@@ -4,6 +4,7 @@ import com.example.demo.entity.KhuyenMai;
 import com.example.demo.entity.SanPhamChiTiet;
 import com.example.demo.repository.HoaDonChiTietRepo;
 import com.example.demo.repository.KhuyenMaiRepo;
+import com.example.demo.repository.SanPhamChiTietRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +26,9 @@ public class TrangChuController {
     @Autowired
     private KhuyenMaiRepo khuyenMaiRepository;
 
+    @Autowired
+    private SanPhamChiTietRepo sanPhamChiTietRepository;
+
 
     @GetMapping("/trang-chu")
     public String homePage(Model model) {
@@ -35,6 +39,8 @@ public class TrangChuController {
                 .map(obj -> (SanPhamChiTiet) obj[0])
                 .collect(Collectors.toList());
 
+        List<SanPhamChiTiet> allProducts = sanPhamChiTietRepository.findAll();
+
         List<KhuyenMai> khuyenMais = khuyenMaiRepository.findAll();
         List<KhuyenMai> validKhuyenMais = khuyenMais.stream()
                 .filter(khuyenMai -> khuyenMai.getKhuyenMaiChiTietList() != null && !khuyenMai.getKhuyenMaiChiTietList().isEmpty())
@@ -42,8 +48,10 @@ public class TrangChuController {
 
         model.addAttribute("bestSellers", bestSellers);
         model.addAttribute("validKhuyenMais", validKhuyenMais);
+        model.addAttribute("allProducts", allProducts);
 
         return "customer/trang_chu/index";
     }
+
 
 }
