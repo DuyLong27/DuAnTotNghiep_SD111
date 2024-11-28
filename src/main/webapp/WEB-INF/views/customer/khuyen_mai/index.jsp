@@ -88,7 +88,7 @@
                             </div>
                         </div>
                         <div class="promo-card-footer">
-                            <button class="btn btn-sm btn-success" onclick="showDetails(${khuyenMai.tenKhuyenMai})">Xem chi tiết</button>
+
                         </div>
                     </div>
                 </div>
@@ -98,14 +98,5 @@
 </div>
 
 <jsp:include page="../footer_user.jsp" />
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    function showDetails(tenKhuyenMai) {
-        alert('Thông tin khuyến mãi: ' + tenKhuyenMai);
-    }
-</script>
-
 </body>
 </html>
