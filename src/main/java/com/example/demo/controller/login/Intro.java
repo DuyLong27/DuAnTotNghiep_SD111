@@ -5,10 +5,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("Gioi-Thieu")
+@RequestMapping("")
 public class Intro {
-    @GetMapping("main")
+    @GetMapping("/gioi-thieu")
     public String gioithieu() {
-        return "view/GioiThieu";
+        return "customer/gioi_thieu/GioiThieu";
+    }
+
+    @GetMapping("/lien-he")
+    public String lienHe(){
+        return "customer/lien_he/index";
     }
 }

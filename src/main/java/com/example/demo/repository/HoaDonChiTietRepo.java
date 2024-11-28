@@ -3,6 +3,7 @@ package com.example.demo.repository;
 import com.example.demo.entity.HoaDon;
 import com.example.demo.entity.HoaDonChiTiet;
 import com.example.demo.entity.SanPhamChiTiet;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -25,5 +26,12 @@ public interface HoaDonChiTietRepo extends JpaRepository<HoaDonChiTiet, Integer>
     HoaDonChiTiet findByHoaDonAndSanPhamChiTiet(HoaDon hoaDon, SanPhamChiTiet sanPhamChiTiet);
 
     List<HoaDonChiTiet> findByHoaDon_Id(Integer idHoaDon);
+
+
+    @Query("SELECT h.sanPhamChiTiet, SUM(h.so_luong) AS total " +
+            "FROM HoaDonChiTiet h " +
+            "GROUP BY h.sanPhamChiTiet " +
+            "ORDER BY total DESC")
+    List<Object[]> findTopSellingProducts(Pageable pageable);
 
 }
