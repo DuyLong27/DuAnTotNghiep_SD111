@@ -431,7 +431,13 @@
 
     <img src="../../uploads/logo_xanh.png" alt="Logo">
 
-    <a href="/bao-cao/hien-thi"><i class="fa-solid fa-chart-simple"></i>Tổng quan</a>
+    <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fa-solid fa-chart-simple"></i>Tổng quan
+    </a>
+    <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="/bao-cao/hien-thi"><i class="fa-solid fa-chart-simple"></i>Thống kê</a></li>
+        <li><a class="dropdown-item" href="/bao-cao/hang-ngay"><i class="fa-solid fa-clipboard"></i></i>Báo cáo</a></li>
+    </ul>
 
     <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
         <i class="fas fa-box"></i>Hàng hóa
