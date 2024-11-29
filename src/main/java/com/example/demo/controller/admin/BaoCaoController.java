@@ -4,27 +4,23 @@ import com.example.demo.repository.HoaDonChiTietRepo;
 import com.example.demo.repository.HoaDonRepo;
 import com.example.demo.repository.SanPhamChiTietRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/bao-cao")
@@ -38,6 +34,7 @@ public class BaoCaoController {
 
     @Autowired
     private SanPhamChiTietRepo sanPhamChiTietRepo;
+
 
     @GetMapping("/hien-thi")
     public String showRevenueReport(Model model) {
@@ -104,9 +101,42 @@ public class BaoCaoController {
         model.addAttribute("bestProductQuantity", bestProductQuantity);
         model.addAttribute("averageDailyRevenue", roundedAverageRevenue); // Trung bình doanh thu mỗi ngày
 
-        return "admin/bao_cao/BaoCaoDoanhThu"; // Trả về view
+        return "admin/bao_cao/DoanhThu"; // Trả về view
     }
 
+    // Hiển thị giao diện nhập thông tin báo cáo
+    @GetMapping("/hang-ngay")
+    public String getReportForm() {
+        return "admin/bao_cao/BaoCao"; // Trả về view chứa form
+    }
+
+    @GetMapping("/hang-ngay/xem")
+    public String getDailyReport(
+            @RequestParam("selectedDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate selectedDate,
+            @RequestParam("reportType") String reportType,
+            Model model) {
+
+        // Chuyển LocalDate sang java.sql.Date
+        java.sql.Date sqlDate = java.sql.Date.valueOf(selectedDate);  // Chuyển đổi đúng cách
+
+        List<Object[]> reportData;
+
+        // Nếu báo cáo là Doanh thu theo thu ngân
+        if ("Doanh thu theo thu ngân".equals(reportType)) {
+            // Gọi repo để lấy dữ liệu theo Doanh thu theo thu ngân
+            reportData = hoaDonRepo.getEmployeeRevenueReport(sqlDate);  // Truyền java.sql.Date
+        } else {
+            // Gọi repo để lấy dữ liệu theo Doanh thu theo sản phẩm
+            reportData = hoaDonRepo.getProductRevenueReport(sqlDate);  // Truyền java.sql.Date
+        }
+
+        // Thêm dữ liệu vào model để hiển thị trên view
+        model.addAttribute("reportData", reportData);
+        model.addAttribute("reportType", reportType);
+
+        // Trả về view hiển thị báo cáo
+        return "admin/bao_cao/BaoCao";
+    }
 
 }
 

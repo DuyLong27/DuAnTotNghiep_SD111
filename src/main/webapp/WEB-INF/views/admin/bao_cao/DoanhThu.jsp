@@ -31,42 +31,6 @@
     <div class="row" style="text-align: center">
         <H1>Doanh Thu Cửa Hàng</H1>
     </div>
-
-    <br>
-
-    <div class="container">
-        <!-- Phần nhập liệu báo cáo -->
-        <div class="row">
-            <!-- Loại báo cáo -->
-            <div class="col-md-3">
-                <label>Loại báo cáo</label>
-                <select class="form-select" id="reportSelect">
-                    <option selected>Doanh thu theo thu ngân</option>
-                    <option value="1">Doanh thu theo sản phẩm</option>
-                    <option value="2">Doanh thu theo dịch vụ</option>
-                    <option value="3">Doanh thu theo khu vực</option>
-                </select>
-            </div>
-
-            <!-- Thời gian -->
-            <div class="col-md-3">
-                <label>Ngày</label>
-                <input type="date" class="form-control" id="timeSelect">
-            </div>
-
-            <!-- Giờ -->
-            <div class="col-md-3">
-                <label>Giờ</label>
-                <input type="time" class="form-control" id="hourSelect">
-            </div>
-
-            <!-- Nút xem báo cáo -->
-            <div class="col-md-3">
-                <button type="button" class="btn btn-primary mt-4" onclick="filterData()">Xem báo cáo</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Modal hiển thị báo cáo -->
     <div class="modal" tabindex="-1" id="reportModal">
         <div class="modal-dialog">
@@ -105,7 +69,7 @@
     <table class="table table-borderless">
         <thead>
         <tr>
-            <th scope="col" style="text-align: center; color: darkorchid">Tổng số hóa đơn</th>
+            <th scope="col" style="text-align: center; color: darkorchid">Tổng số hóa đơn hoàn thành</th>
             <th scope="col" style="text-align: center; color: darkorchid">Số hóa đơn hủy</th>
             <th scope="col" style="text-align: center; color: darkorchid">Sản phẩm bán ra</th>
             <th scope="col" style="text-align: center; color: darkorchid">Sản phẩm bán chạy nhất</th>

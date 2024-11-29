@@ -76,7 +76,8 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
             "FROM hoa_don h " +
             "JOIN hoa_don_chi_tiet hdct ON h.id_hoa_don = hdct.id_hoa_don " +
             "WHERE h.ngay_tao BETWEEN :startDate AND :endDate " +
-            "GROUP BY CONVERT(VARCHAR, h.ngay_tao, 23) " + // Chuyển đổi ngày sang định dạng yyyy-mm-dd
+            "AND h.tinh_trang = 4 " +
+            "GROUP BY CONVERT(VARCHAR, h.ngay_tao, 23) " +
             "ORDER BY date", nativeQuery = true)
     List<Object[]> tinhDoanhThuTheoNgay(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
@@ -98,4 +99,27 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
 
     @Query("SELECT h FROM HoaDon h WHERE h.ngayTao <= :endDate")
     Page<HoaDon> findByThoiGianTaoBefore(@Param("endDate") LocalDateTime endDate, Pageable pageable);
+
+    @Query(value = "SELECT nv.ten_nhan_vien, COUNT(hd.id_hoa_don), SUM(hd.tong_tien) " +
+            "FROM nhan_vien nv " +
+            "LEFT JOIN hoa_don hd ON hd.id_nhan_vien = nv.id_nhan_vien " +
+            "WHERE hd.tinh_trang = 4 " +
+            "AND CONVERT(DATE, hd.ngay_tao) = :selectedDate " +  // Sử dụng CONVERT đúng cách trong native query
+            "GROUP BY nv.ten_nhan_vien " +
+            "ORDER BY SUM(hd.tong_tien) DESC",
+            nativeQuery = true)
+    List<Object[]> getEmployeeRevenueReport(@Param("selectedDate") java.sql.Date selectedDate);
+
+
+    @Query(value = "SELECT spChiTiet.hinh_anh_san_pham, sp.ten, COUNT(cthd.id_hoa_don), SUM(cthd.so_luong * cthd.gia_san_pham) " +
+            "FROM hoa_don_chi_tiet cthd " +
+            "JOIN san_pham_chi_tiet spChiTiet ON spChiTiet.id_san_pham_chi_tiet = cthd.id_san_pham_chi_tiet " +
+            "JOIN san_pham sp ON sp.id_san_pham = spChiTiet.id_san_pham " +
+            "JOIN hoa_don hd ON hd.id_hoa_don = cthd.id_hoa_don " +
+            "WHERE hd.tinh_trang = 4 " +
+            "AND CONVERT(DATE, hd.ngay_tao) = :selectedDate " + // Sử dụng CONVERT để so sánh ngày
+            "GROUP BY spChiTiet.hinh_anh_san_pham, sp.ten " +
+            "ORDER BY SUM(cthd.so_luong * cthd.gia_san_pham) DESC",
+            nativeQuery = true)
+    List<Object[]> getProductRevenueReport(@Param("selectedDate") java.sql.Date selectedDate);
 }
