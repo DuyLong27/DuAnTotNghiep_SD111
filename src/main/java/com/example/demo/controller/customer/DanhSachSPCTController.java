@@ -2,6 +2,7 @@ package com.example.demo.controller.customer;
 
 import com.example.demo.entity.*;
 import com.example.demo.repository.*;
+import com.example.demo.service.EmailService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -57,6 +59,12 @@ public class DanhSachSPCTController {
 
     @Autowired
     GioHangRepo gioHangRepo;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private ThoiGianDonHangRepo thoiGianDonHangRepo;
 
     @GetMapping("/view-sp/{id}")
     public String viewProduct(@PathVariable("id") Integer id, Model model) {
@@ -186,21 +194,25 @@ public class DanhSachSPCTController {
                                 @RequestParam String diaChi,
                                 @RequestParam String soDienThoai,
                                 @RequestParam int soLuong,
-                                @RequestParam int sanPhamId) {
+                                @RequestParam int sanPhamId,
+                                @RequestParam(required = false) String email) {
 
         SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamId).orElse(null);
         if (sanPhamChiTiet == null) {
             return "redirect:/error";
         }
 
-        int tongTien = soLuong * sanPhamChiTiet.getGiaBan();
+        String tenSanPham = sanPhamChiTiet.getSanPham().getTen();
+
+        int giaSanPham = (sanPhamChiTiet.getGiaGiamGia() != null && sanPhamChiTiet.getGiaGiamGia() > 0)
+                ? sanPhamChiTiet.getGiaGiamGia()
+                : sanPhamChiTiet.getGiaBan();
+        int tongTien = soLuong * giaSanPham;
         int phiVanChuyen = phuongThucVanChuyen.equals("Giao Hàng Tiêu Chuẩn") ? 20000 : 33000;
         tongTien += phiVanChuyen;
 
-        // Tạo mã số hóa đơn ngẫu nhiên
         String soHoaDon = "HD" + new Random().nextInt(90000);
 
-        // Tạo đối tượng HoaDon và thiết lập các thuộc tính
         HoaDon hoaDon = new HoaDon();
         hoaDon.setPhuong_thuc_thanh_toan(phuongThucThanhToan);
         hoaDon.setPhuongThucVanChuyen(phuongThucVanChuyen);
@@ -211,26 +223,42 @@ public class DanhSachSPCTController {
         hoaDon.setSoHoaDon(soHoaDon);
         hoaDon.setTinh_trang(0);
 
-        // Kiểm tra người dùng đã đăng nhập hay chưa
         KhachHang khachHang = (KhachHang) session.getAttribute("khachHang");
         if (khachHang != null) {
             hoaDon.setKhachHang(khachHang);
+        } else if (email != null && !email.isEmpty()) {
+            emailService.sendHoaDonMuaNgayEmail(
+                    email,
+                    soHoaDon,
+                    phuongThucThanhToan,
+                    phuongThucVanChuyen,
+                    diaChi,
+                    soDienThoai,
+                    soLuong,
+                    tenSanPham,
+                    giaSanPham,
+                    tongTien
+            );
+        } else {
+            return "redirect:/error";
         }
 
-        // Lưu hóa đơn vào cơ sở dữ liệu
         hoaDonRepo.save(hoaDon);
 
-        // Tạo và lưu chi tiết hóa đơn
         HoaDonChiTiet hoaDonChiTiet = new HoaDonChiTiet();
         hoaDonChiTiet.setHoaDon(hoaDon);
         hoaDonChiTiet.setSanPhamChiTiet(sanPhamChiTiet);
         hoaDonChiTiet.setSo_luong(soLuong);
-        hoaDonChiTiet.setGia_san_pham(sanPhamChiTiet.getGiaBan());
+        hoaDonChiTiet.setGia_san_pham(giaSanPham);
         hoaDonChiTietRepo.save(hoaDonChiTiet);
 
-        // Cập nhật số lượng sản phẩm
         sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - soLuong);
         sanPhamChiTietRepo.save(sanPhamChiTiet);
+
+        ThoiGianDonHang thoiGianDonHang = new ThoiGianDonHang();
+        thoiGianDonHang.setHoaDon(hoaDon);
+        thoiGianDonHang.setThoiGianTao(LocalDateTime.now());
+        thoiGianDonHangRepo.save(thoiGianDonHang);
 
         return "redirect:/danh-sach-san-pham-chi-tiet/view-sp/" + sanPhamChiTiet.getId();
     }
