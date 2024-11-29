@@ -32,7 +32,16 @@
                 || item.tinh_trang == 11 || item.tinh_trang == 12 || item.tinh_trang == 13 || item.tinh_trang == 14}">
                     <tr>
                         <td>${item.id}</td>
-                        <td>${item.khachHang.tenKhachHang}</td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${empty item.khachHang.tenKhachHang}">
+                                    Khách Lẻ
+                                </c:when>
+                                <c:otherwise>
+                                    ${item.khachHang.tenKhachHang}
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
                         <td>${item.soHoaDon}</td>
                         <td>${item.tongTien} VNĐ</td>
                         <td>${item.phuong_thuc_thanh_toan}</td>
@@ -43,7 +52,7 @@
                                     ${thoiGianTaoList[status.index]}
                                 </c:when>
                                 <c:otherwise>
-                                    Không có thông tin
+                                    Hóa đơn tại quầy
                                 </c:otherwise>
                             </c:choose>
                         </td>
@@ -90,27 +99,26 @@
         </table>
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center">
-
                 <li class="page-item ${isFirst ? 'disabled' : ''}">
-                    <a class="page-link" href="?page=0&size=10&tinhTrang=${param.tinhTrang}">First</a>
+                    <a class="page-link" href="?page=0&size=10&tinhTrang=${tinhTrang}&phoneNumber=${phoneNumber}&startDate=${startDate}&endDate=${endDate}">First</a>
                 </li>
 
                 <li class="page-item ${currentPage == 0 ? 'disabled' : ''}">
-                    <a class="page-link" href="?page=${currentPage - 1}&size=10&tinhTrang=${param.tinhTrang}">Previous</a>
+                    <a class="page-link" href="?page=${currentPage - 1}&size=10&tinhTrang=${tinhTrang}&phoneNumber=${phoneNumber}&startDate=${startDate}&endDate=${endDate}">Previous</a>
                 </li>
 
                 <li class="page-item disabled">
-                <span class="page-link">
-                    Page ${currentPage + 1} of ${totalPages}
-                </span>
+        <span class="page-link">
+            Page ${currentPage + 1} of ${totalPages}
+        </span>
                 </li>
 
                 <li class="page-item ${isLast ? 'disabled' : ''}">
-                    <a class="page-link" href="?page=${currentPage + 1}&size=10&tinhTrang=${param.tinhTrang}">Next</a>
+                    <a class="page-link" href="?page=${currentPage + 1}&size=10&tinhTrang=${tinhTrang}&phoneNumber=${phoneNumber}&startDate=${startDate}&endDate=${endDate}">Next</a>
                 </li>
 
                 <li class="page-item ${isLast ? 'disabled' : ''}">
-                    <a class="page-link" href="?page=${totalPages - 1}&size=10&tinhTrang=${param.tinhTrang}">Last</a>
+                    <a class="page-link" href="?page=${totalPages - 1}&size=10&tinhTrang=${tinhTrang}&phoneNumber=${phoneNumber}&startDate=${startDate}&endDate=${endDate}">Last</a>
                 </li>
             </ul>
         </nav>
