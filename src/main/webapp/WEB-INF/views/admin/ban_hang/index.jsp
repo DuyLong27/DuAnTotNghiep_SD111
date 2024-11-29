@@ -172,7 +172,6 @@
         }
 
 
-
     </style>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -182,7 +181,6 @@
 <jsp:include page="../layout.jsp"/>
 <div class="container mt-3">
     <div id="notification" class="notification"></div>
-
     <h2>Trang Bán Hàng</h2>
     <br>
     <div class="mt-1">
@@ -247,14 +245,16 @@
                                     </c:choose>
                                 </td>
                                 <td>
-                                    <!-- Trường input cho số lượng -->
-                                    <form action="${pageContext.request.contextPath}/ban-hang/${selectedHoaDonId}/update-quantity/${item.sanPhamChiTiet.id}" method="post" style="display:inline-block;">
-                                        <input type="number" name="soLuong" value="${item.so_luong}" min="1" style="width: 60px;" onchange="this.form.submit();">
+                                    <form action="${pageContext.request.contextPath}/ban-hang/${selectedHoaDonId}/update-quantity/${item.sanPhamChiTiet.id}"
+                                          method="post" style="display:inline-block;">
+                                        <input type="number" name="soLuong" value="${item.so_luong}" min="1"
+                                               style="width: 60px;" onchange="this.form.submit();">
                                         <button type="submit" class="btn btn-info btn-sm" hidden="">Cập nhật</button>
                                     </form>
                                 </td>
                                 <td>
-                                    <form action="${pageContext.request.contextPath}/ban-hang/${selectedHoaDonId}/remove-product/${item.sanPhamChiTiet.id}" method="post" style="display:inline-block;">
+                                    <form action="${pageContext.request.contextPath}/ban-hang/${selectedHoaDonId}/remove-product/${item.sanPhamChiTiet.id}"
+                                          method="post" style="display:inline-block;">
                                         <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
                                     </form>
                                 </td>
@@ -265,29 +265,41 @@
                         </c:forEach>
                         </tbody>
                     </table>
-                    <h5 style="color: #0d6efd; font-weight: bold;">Tổng tiền: ${tongTien}</h5>
+
+
+
+
+
+                    <!-- Thêm phần tử mới để hiển thị giá đã giảm -->
+                    <h5 style="color: #0d6efd; font-weight: bold;">Tổng tiền: <span id="tongTien">${tongTien}</span></h5>
+                    <h5 style="color: #0d6efd; font-weight: bold;">Giảm giá: <span id="discountedPrice">0 VNĐ</span></h5>
+
+
+
+
+
+
+
+
+
+
                     <form id="paymentMethodForm"
                           action="${pageContext.request.contextPath}/ban-hang/${selectedHoaDonId}/update-all-payment-method"
                           method="post" class="mb-3">
                         <div class="form-group">
                             <label class="form-label" for="phuongThucThanhToan">Chọn phương thức thanh toán:</label>
-                            <select id="phuongThucThanhToan" name="phuongThucThanhToan" class="form-select"
-                                    onchange="this.form.submit();">
-                                <option value="Tiền mặt"
-                                        <c:if test="${phuongThucThanhToan == 'Tiền mặt'}">selected</c:if>>Tiền mặt
-                                </option>
-                                <option value="Chuyển khoản"
-                                        <c:if test="${phuongThucThanhToan == 'Chuyển khoản'}">selected</c:if>>Chuyển
-                                    khoản
-                                </option>
-                                <option value="Thẻ tín dụng"
-                                        <c:if test="${phuongThucThanhToan == 'Thẻ tín dụng'}">selected</c:if>>Thẻ tín
-                                    dụng
-                                </option>
+                            <select id="phuongThucThanhToan" name="phuongThucThanhToan" class="form-select" onchange="displayImage(); this.form.submit();">
+                                <option value="Tiền mặt" <c:if test="${phuongThucThanhToan == 'Tiền mặt'}">selected</c:if>>Tiền mặt</option>
+                                <option value="Chuyển khoản" <c:if test="${phuongThucThanhToan == 'Chuyển khoản'}">selected</c:if>>Chuyển khoản</option>
                                 <!-- Thêm các phương thức thanh toán khác nếu cần -->
                             </select>
                         </div>
                     </form>
+
+                    <!-- Phần hình ảnh sẽ hiển thị -->
+                    <div id="imageContainer" style="display: none; text-align: center;">
+                        <img id="myImage" src="../../../../images/QRLong.png" alt="Image of transfer method" width="200" style="border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
+                    </div>
 
                     <div class="mb-3" id="cashPaymentSection" style="display: none;">
                         <label for="soTienKhachDua" class="form-label">Số tiền khách đưa:</label>
@@ -295,17 +307,32 @@
                     </div>
                     <h4 class="text-danger" id="soTienPhaiBu" style="display: none;">Số tiền phải bù lại: 0 VNĐ</h4>
                 </c:if>
+
+
+
                 <c:if test="${not empty selectedHoaDonId}">
-                    <form id="noteForm" action="${pageContext.request.contextPath}/ban-hang/${selectedHoaDonId}/confirm" method="post">
+                    <form id="noteForm" action="${pageContext.request.contextPath}/ban-hang/${selectedHoaDonId}/confirm"
+                          method="post">
                         <div class="form-group">
                             <label for="soDienThoai" class="form-label">Số điện thoại:</label>
-                            <input type="text" class="form-control" id="soDienThoai" name="soDienThoai" value="${sessionScope.soDienThoai}" required />
+                            <input type="text" class="form-control" id="soDienThoai" name="soDienThoai"
+                                   value="${sessionScope.soDienThoai}" required/>
                         </div>
+
+
+
                         <div id="result" class="container mt-3" style="display: none;">
                             <div class="alert alert-info">
                                 <h5>Tên khách hàng: <span id="tenKhachHang">Chưa kiểm tra</span></h5>
+                                <p>Điểm tích lũy: <span id="diemTichLuy">0 điểm</span></p>
+                                <p>Rank: <span id="rank">Khách lẻ</span></p>
+                                <p>Giảm giá: <span id="discountRate">0%</span></p>
                             </div>
                         </div>
+
+
+
+
                         <label class="mt-4 form-label">Ghi Chú:</label>
                         <div class="form-group">
                             <textarea name="ghiChu" class="form-control" rows="3">${sessionScope.ghiChu}</textarea>
@@ -322,11 +349,9 @@
                         <c:forEach items="${sanPhams}" var="sanPham">
                             <div class="col-md-4 mb-3">
                                 <div class="card" style="position: relative; border-radius: 20px; overflow: hidden;">
-                                    <!-- Kiểm tra nếu sản phẩm có giá giảm mới hiển thị badge -->
                                     <c:if test="${sanPham.giaGiamGia != null && sanPham.giaGiamGia > 0}">
                             <span class="discount-badge">
                                 ${sanPham.khuyenMaiChiTietList[0].khuyenMai.giaTriKhuyenMai}%
-                                <!-- Hiển thị giá trị khuyến mãi -->
                             </span>
                                     </c:if>
 
@@ -503,19 +528,27 @@
     }
 
 
-    document.getElementById('soDienThoai').addEventListener('input', function(event) {
+    document.getElementById('soDienThoai').addEventListener('input', function (event) {
         const soDienThoai = event.target.value;
         if (soDienThoai) {
             fetch('/ban-hang/check-phone?soDienThoai=' + soDienThoai)
                 .then(response => response.json())
                 .then(data => {
                     const tenKhachHang = data.tenKhachHang || 'Khách lẻ';
+                    const diemTichLuy = data.diemTichLuy || 0;
+                    const rank = data.rank || 'Khách lẻ';
+                    const discountRate = data.discountRate || 0;
+
+                    // Hiển thị thông tin khách hàng
                     document.getElementById('tenKhachHang').innerText = tenKhachHang;
-                    if (tenKhachHang === 'Khách lẻ') {
-                        document.getElementById('result').classList.add('error');
-                    } else {
-                        document.getElementById('result').classList.remove('error');
-                    }
+                    document.getElementById('diemTichLuy').innerText = diemTichLuy + " điểm";
+                    document.getElementById('rank').innerText = rank;
+                    document.getElementById('discountRate').innerText = discountRate + "% giảm giá";
+
+                    // Cập nhật tổng tiền và giá đã giảm
+                    updateTongTien(discountRate); // Hàm này sẽ tính toán lại tổng tiền và giá đã giảm
+
+                    // Hiển thị kết quả
                     document.getElementById('result').style.display = 'block';
                 })
                 .catch(error => {
@@ -526,9 +559,33 @@
         }
     });
 
+    // Cập nhật tổng tiền và hiển thị giá đã giảm sau khi áp dụng giảm giá
+    function updateTongTien(discountRate) {
+        const totalAmount = parseInt("${tongTien}");  // Lấy tổng tiền ban đầu
+        const discountAmount = totalAmount * discountRate / 100; // Tính toán số tiền giảm
+        const newTotalAmount = totalAmount - discountAmount; // Tính tổng tiền sau khi giảm giá
 
+        // Cập nhật lại hiển thị tổng tiền và giá đã giảm
+        document.getElementById('tongTien').innerText = newTotalAmount.toLocaleString() + " VNĐ";
+        document.getElementById('discountedPrice').innerText = discountAmount.toLocaleString() + " VNĐ";
+    }
 
+    function displayImage() {
+        var paymentMethod = document.getElementById("phuongThucThanhToan").value;
+        var imageContainer = document.getElementById("imageContainer");
 
+        // Nếu chọn "Chuyển khoản", hiển thị hình ảnh
+        if (paymentMethod === "Chuyển khoản") {
+            imageContainer.style.display = "block";
+        } else {
+            imageContainer.style.display = "none";
+        }
+    }
+
+    // Gọi hàm displayImage khi load trang, để đảm bảo ảnh hiển thị nếu đã được chọn "Chuyển khoản" trước đó
+    window.onload = function() {
+        displayImage();
+    };
 
 
 </script>

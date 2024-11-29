@@ -247,36 +247,27 @@ public class DoiTraController {
                                 @RequestParam Map<String, String> requestParams,
                                 @RequestParam("phuongThucChuyenTien") String phuongThucChuyenTien,
                                 @RequestParam("moTa") String moTa,
-                                @RequestParam("uploadImage") MultipartFile uploadImage) {
-
+                                @RequestParam("uploadImage") MultipartFile uploadImage,
+                                @RequestParam(value = "tenNganHang", required = false) String tenNganHang,
+                                @RequestParam(value = "soNganHang", required = false) String soNganHang) {
         HoaDon hoaDon = hoaDonRepo.findById(hoaDonId).orElse(null);
         if (hoaDon != null) {
-            // Xử lý upload ảnh chứng minh lỗi hàng hóa
             String fileName = null;
             if (!uploadImage.isEmpty()) {
                 try {
-                    // Đường dẫn tương đối đến thư mục images
                     String relativeFolder = "src/main/webapp/uploads/";
-
-                    // Tạo thư mục nếu chưa tồn tại
                     Path folderPath = Paths.get(relativeFolder).toAbsolutePath();
                     if (!Files.exists(folderPath)) {
                         Files.createDirectories(folderPath);
                     }
-
-                    // Tạo tên file duy nhất với timestamp
                     fileName = System.currentTimeMillis() + "_" + uploadImage.getOriginalFilename();
                     Path filePath = folderPath.resolve(fileName);
-
-                    // Lưu file vào thư mục
                     Files.write(filePath, uploadImage.getBytes());
                 } catch (IOException e) {
                     e.printStackTrace();
                     return "customer/doi_tra/error";
                 }
             }
-
-            // Tạo đối tượng DoiTra
             DoiTra doiTra = new DoiTra();
             doiTra.setHoaDon(hoaDon);
             doiTra.setLyDoCuThe(lyDoDetail);
@@ -284,49 +275,43 @@ public class DoiTraController {
             doiTra.setTienHoan(tongTienHoan);
             doiTra.setPhuongThucChuyenTien(phuongThucChuyenTien);
             doiTra.setMoTa(moTa);
-            doiTra.setHinhAnh(fileName); // Lưu tên file ảnh vào database
+            doiTra.setHinhAnh(fileName);
             doiTra.setNgayYeuCau(new Date());
             doiTra.setTinhTrang(11);
+            if ("Chuyển khoản".equals(phuongThucChuyenTien)) {
+                doiTra.setTenNganHang(tenNganHang);
+                doiTra.setSoNganHang(soNganHang);
+            }
             doiTraRepo.save(doiTra);
-
-            // Lấy danh sách HoaDonChiTiet để sử dụng giaSanPham
             List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepo.findByHoaDon(hoaDon);
-
-            // Lưu từng chi tiết đổi trả
             for (Integer sanPhamChiTietId : sanPhamChiTietIds) {
                 SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamChiTietId).orElse(null);
                 if (sanPhamChiTiet != null) {
                     Integer soLuongHoan = Integer.valueOf(requestParams.get("soLuong_" + sanPhamChiTietId));
-
-                    // Tìm HoaDonChiTiet tương ứng với sanPhamChiTietId
                     HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietList.stream()
                             .filter(chiTiet -> chiTiet.getSanPhamChiTiet().getId().equals(sanPhamChiTietId))
                             .findFirst().orElse(null);
-
                     if (hoaDonChiTiet != null) {
-                        // Tạo đối tượng DoiTraChiTiet với giaSanPham từ HoaDonChiTiet
                         DoiTraChiTiet doiTraChiTiet = new DoiTraChiTiet();
                         doiTraChiTiet.setDoiTra(doiTra);
                         doiTraChiTiet.setSanPhamChiTiet(sanPhamChiTiet);
-                        doiTraChiTiet.setGiaSanPham(hoaDonChiTiet.getGia_san_pham()); // Sử dụng giaSanPham từ HoaDonChiTiet
+                        doiTraChiTiet.setGiaSanPham(hoaDonChiTiet.getGia_san_pham());
                         doiTraChiTiet.setSoLuong(soLuongHoan);
                         doiTraChiTietRepo.save(doiTraChiTiet);
                     }
                 }
             }
-
             ThoiGianDonHang thoiGianDonHang = thoiGianDonHangRepo.findByHoaDon(hoaDon);
             thoiGianDonHang.setHoanTra(LocalDateTime.now());
             thoiGianDonHangRepo.save(thoiGianDonHang);
-
             hoaDon.setTinh_trang(11);
             hoaDonRepo.save(hoaDon);
-
             return "redirect:/doi-tra";
         }
 
         return "customer/doi_tra/error";
     }
+
 
     @PostMapping("/huy-don/{id}")
     public String huyDon(@PathVariable("id") Integer id, Model model) {
