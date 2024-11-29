@@ -37,6 +37,12 @@ public class DoiTra {
     @Column(name = "phuong_thuc_chuyen_tien")
     private String phuongThucChuyenTien;
 
+    @Column(name = "ten_ngan_hang")
+    private String tenNganHang;
+
+    @Column(name = "so_ngan_hang")
+    private String soNganHang;
+
     @Column(name = "mo_ta")
     private String moTa;
     @Column(name = "hinh_anh")

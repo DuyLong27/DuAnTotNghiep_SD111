@@ -561,6 +561,23 @@
                                                     </c:otherwise>
                                                 </c:choose>
                                             </div>
+
+                                            <c:if test="${khachHang != null}">
+                                                <div class="d-flex justify-content-between">
+                                                    <div>
+                                                        <label class="form-label fw-bold">Số tiền giảm giá:</label>
+                                                        <p id="discountAmount" class="text-success fw-bold">${discountAmount} VNĐ</p>
+                                                    </div>
+                                                    <div>
+                                                        <label class="form-label fw-bold">Phần trăm giảm:</label>
+                                                        <p id="discountRate" class="text-warning fw-bold">${discountRate}%</p>
+                                                    </div>
+                                                </div>
+                                            </c:if>
+
+
+
+
                                         </div>
                                         <div class="col-md-6 border-start">
                                             <h3 class="text-center mb-4 text-secondary">Thông tin thanh toán</h3>
@@ -568,14 +585,34 @@
                                                 <input type="hidden" name="sanPhamId" value="${sanPhamChiTiet.id}">
                                                 <input type="hidden" name="soLuong" id="soLuongInput" value="1">
                                                 <input type="hidden" name="tongTien" id="tongTienInput" value="${sanPhamChiTiet.giaBan}">
+                                                <c:choose>
+                                                    <c:when test="${empty khachHang}">
+                                                        <div class="mb-3">
+                                                            <label for="email" class="form-label fw-bold">Email:</label>
+                                                            <input type="email" class="form-control" id="email" name="email" placeholder="Nhập email của bạn" required>
+                                                        </div>
+                                                    </c:when>
+                                                </c:choose>
+
+
+
+
                                                 <div class="mb-3">
                                                     <label for="phuongThucThanhToan" class="form-label fw-bold">Phương thức thanh toán:</label>
-                                                    <select class="form-select" id="phuongThucThanhToan" name="phuongThucThanhToan" required>
+                                                    <select class="form-select" id="phuongThucThanhToan" name="phuongThucThanhToan" required onchange="displayImage()">
                                                         <option value="Tiền mặt">Tiền mặt</option>
                                                         <option value="Chuyển khoản">Chuyển khoản</option>
-                                                        <option value="Thẻ tín dụng">Thẻ tín dụng</option>
                                                     </select>
                                                 </div>
+                                                <div id="imageContainer" style="display: none; text-align: center;">
+                                                    <img id="myImage" src="../../../../images/QRLong.png" alt="Image of transfer method" width="200" style="border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
+                                                </div>
+
+
+
+
+
+
                                                 <div class="mb-3">
                                                     <label class="form-label fw-bold">Phương thức vận chuyển:</label>
                                                     <div class="form-check">
@@ -595,14 +632,6 @@
                                                     <label for="soDienThoai" class="form-label fw-bold">Số điện thoại:</label>
                                                     <input type="tel" class="form-control" id="soDienThoai" name="soDienThoai" pattern="[0-9]{10}" required>
                                                 </div>
-                                                <c:choose>
-                                                    <c:when test="${empty khachHang}">
-                                                        <div class="mb-3">
-                                                            <label for="email" class="form-label fw-bold">Email:</label>
-                                                            <input type="email" class="form-control" id="email" name="email" placeholder="Vui lòng nhập email để nhận mã đơn hàng" required>
-                                                        </div>
-                                                    </c:when>
-                                                </c:choose>
                                                 <button type="submit" class="btn btn-success w-100 py-2 mt-4">Xác nhận đơn hàng</button>
                                             </form>
                                         </div>
@@ -621,46 +650,94 @@
 <script>
     const giaBan = ${sanPhamChiTiet.giaBan != null ? sanPhamChiTiet.giaBan : 0};
     const giaGiamGia = ${sanPhamChiTiet.giaGiamGia != null ? sanPhamChiTiet.giaGiamGia : 0};
+    const diemTichLuy = ${khachHang != null ? khachHang.diemTichLuy : 0};
+    const discountRate = Math.min(Math.floor(diemTichLuy / 1000) * 5, 30); // % giảm giá tối đa 30%
 
-    // Hàm cập nhật tổng tiền
+    function calculateDiscountAmount(price, rate) {
+        return price * (rate / 100); // Số tiền giảm giá
+    }
+
     function updateTotal() {
-        const soLuong = parseInt(document.getElementById("soLuong").value) || 1; // Giá trị mặc định là 1
+        const soLuong = parseInt(document.getElementById("soLuong").value) || 1; // Số lượng sản phẩm
         const selectedShipping = document.querySelector('input[name="phuongThucVanChuyen"]:checked');
 
-        // Đặt chi phí vận chuyển mặc định là 0
-        let shippingCost = 0;
-
-        // Nếu có phương thức vận chuyển được chọn, tính toán giá trị chi phí vận chuyển
+        let shippingCost = 0; // Phí vận chuyển mặc định
         if (selectedShipping) {
-            if (selectedShipping.value === "Giao Hàng Nhanh") {
-                shippingCost = 33000; // Chi phí cho giao hàng nhanh
-            } else if (selectedShipping.value === "Giao Hàng Tiêu Chuẩn") {
-                shippingCost = 20000; // Chi phí cho giao hàng tiêu chuẩn
-            }
+            shippingCost = selectedShipping.value === "Giao Hàng Nhanh" ? 33000 : 20000;
         }
 
-        // Kiểm tra giá giảm giá (giaGiamGia) và sử dụng giá phù hợp
-        const giaSuDung = (giaGiamGia && giaGiamGia > 0) ? giaGiamGia : giaBan;
+        // Giá sử dụng (ưu tiên giá giảm nếu có)
+        const giaSuDung = giaGiamGia > 0 ? giaGiamGia : giaBan;
 
-        // Tính tổng tiền
-        const tongTien = (giaSuDung * soLuong) + shippingCost;
+        // Tính tổng tiền sản phẩm
+        const tongTienSanPham = giaSuDung * soLuong;
 
-        // Cập nhật nội dung tổng tiền trong modal
+        // Kiểm tra có đăng nhập hay không
+        let tongTien;
+        if (diemTichLuy > 0) {
+            // Tính giảm giá nếu khách hàng có điểm tích lũy
+            const discountAmount = calculateDiscountAmount(tongTienSanPham, discountRate);
+            document.getElementById("discountAmount").innerText = discountAmount.toLocaleString('vi-VN') + " VNĐ"; // Hiển thị tiền giảm giá
+            tongTien = tongTienSanPham - discountAmount + shippingCost;
+        } else {
+            // Nếu không đăng nhập, không áp dụng giảm giá
+            tongTien = tongTienSanPham + shippingCost;
+        }
+
+        // Hiển thị tổng tiền trên giao diện
         document.getElementById("tongTien").innerText = tongTien.toLocaleString('vi-VN') + " VNĐ";
+        document.getElementById("tongTienInput").value = tongTien; // Nếu cần gửi giá trị này qua form
     }
+
+
+    // Khi thay đổi số lượng sản phẩm
+    document.getElementById("soLuong").addEventListener("change", updateTotal);
+
+    // Khi thay đổi phương thức vận chuyển
+    document.querySelectorAll('input[name="phuongThucVanChuyen"]').forEach((input) => {
+        input.addEventListener("change", updateTotal);
+    });
+
+    // Khi nhấn nút tăng/giảm số lượng
+    function changeQuantity(amount) {
+        const soLuongInput = document.getElementById("soLuong");
+        let currentQuantity = parseInt(soLuongInput.value);
+        currentQuantity = isNaN(currentQuantity) ? 1 : currentQuantity;
+        currentQuantity = Math.max(1, currentQuantity + amount); // Đảm bảo số lượng tối thiểu là 1
+        soLuongInput.value = currentQuantity;
+
+        updateTotal(); // Cập nhật lại tổng tiền
+    }
+
+    // Khởi tạo giá trị ban đầu
+    updateTotal();
 
     function changeQuantity(amount) {
         const soLuongInput = document.getElementById("soLuong");
-        const soLuongHiddenInput = document.getElementById("soLuongInput"); // Thêm dòng này
+        const soLuongHiddenInput = document.getElementById("soLuongInput"); // Trường ẩn
+
         let currentQuantity = parseInt(soLuongInput.value);
         currentQuantity = isNaN(currentQuantity) ? 1 : currentQuantity;
         currentQuantity = Math.max(1, currentQuantity + amount); // Đảm bảo số lượng tối thiểu là 1
         soLuongInput.value = currentQuantity;
 
         // Cập nhật giá trị cho trường ẩn
-        soLuongHiddenInput.value = currentQuantity; // Thêm dòng này
+        soLuongHiddenInput.value = currentQuantity;
 
         updateTotal(); // Cập nhật lại tổng tiền
+    }
+
+
+    function displayImage() {
+        var paymentMethod = document.getElementById("phuongThucThanhToan").value;
+        var imageContainer = document.getElementById("imageContainer");
+
+        // Nếu chọn "Chuyển khoản", hiển thị hình ảnh
+        if (paymentMethod === "Chuyển khoản") {
+            imageContainer.style.display = "block";
+        } else {
+            imageContainer.style.display = "none";
+        }
     }
 </script>
 </html>
