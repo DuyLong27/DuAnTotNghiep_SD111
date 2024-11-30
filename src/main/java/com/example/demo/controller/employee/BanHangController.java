@@ -118,7 +118,7 @@ public class BanHangController {
     public String addHoaDon(@ModelAttribute HoaDon hoaDon, Model model) {
         hoaDon.setSoHoaDon(generateRandomId());
         hoaDon.setTinh_trang(0);
-        hoaDon.setNgayTao(new Timestamp(System.currentTimeMillis()));
+        hoaDon.setKieuHoaDon(0);
         hoaDon.setPhuong_thuc_thanh_toan("Tiền mặt");
         hoaDonRepository.save(hoaDon);
         return "redirect:/ban-hang/" + hoaDon.getId();

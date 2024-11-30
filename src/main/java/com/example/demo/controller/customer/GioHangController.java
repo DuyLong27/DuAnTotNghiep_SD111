@@ -445,7 +445,8 @@ public class GioHangController {
             }
             HoaDon invoice = new HoaDon();
             invoice.setTongTien(totalAmount);
-            invoice.setNgayTao(new java.util.Date());
+            invoice.setNgayTao(LocalDateTime.now());
+            invoice.setKieuHoaDon(1);
             invoice.setPhuong_thuc_thanh_toan(phuongThucThanhToan);
             invoice.setPhuongThucVanChuyen(phuongThucVanChuyen);
             invoice.setDiaChi(diaChi);

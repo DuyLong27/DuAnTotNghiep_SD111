@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -52,7 +53,15 @@ public class HoaDon {
     private String lyDo;
 
     @Column(name = "ngay_tao")
-    private Date ngayTao;
+    private LocalDateTime ngayTao;
+
+    @PrePersist
+    protected void onCreate() {
+        this.ngayTao = LocalDateTime.now();
+    }
+
+    @Column(name = "kieu_hoa_don")
+    private Integer kieuHoaDon;
 
     @Column(name = "tinh_trang")
     private Integer tinh_trang;

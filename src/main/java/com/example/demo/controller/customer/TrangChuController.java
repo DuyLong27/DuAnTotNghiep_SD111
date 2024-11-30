@@ -144,7 +144,8 @@ public class TrangChuController {
         hoaDon.setPhuongThucVanChuyen(phuongThucVanChuyen);
         hoaDon.setDiaChi(diaChi);
         hoaDon.setSoDienThoai(soDienThoai);
-        hoaDon.setNgayTao(new Date());
+        hoaDon.setNgayTao(LocalDateTime.now());
+        hoaDon.setKieuHoaDon(1);
         hoaDon.setTongTien(tongTien);
         hoaDon.setSoHoaDon(soHoaDon);
         hoaDon.setTinh_trang(0);

@@ -28,6 +28,9 @@ public class SanPhamChiTiet {
     @Column(name = "hinh_anh_san_pham")
     private String hinhAnh;
 
+    @Column(name = "ngay_tao")
+    private Date ngayTao;
+
     @Column(name = "ngay_het_han")
     private Date ngayHetHan;
 
