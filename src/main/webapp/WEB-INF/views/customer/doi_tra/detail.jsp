@@ -57,58 +57,77 @@
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">Mã Hóa Đơn: ${hoaDon.soHoaDon}</h5>
-                <p>Ngày Tạo: ${hoaDon.ngayTao}</p>
 
                 <div class="info-row">
                     <div class="info-box">
                         <h6>Thông Tin Khách Hàng:</h6>
-                        <p>Tên Khách Hàng: ${tenKhachHang}</p>
-                        <p>Số Điện Thoại: ${hoaDon.soDienThoai}</p>
-                        <p>Địa Chỉ: ${hoaDon.diaChi}</p>
+                        <p>Tên Khách Hàng: <strong>${tenKhachHang}</strong></p>
+                        <p>Số Điện Thoại: <strong>${hoaDon.soDienThoai}</strong></p>
+                        <p>Địa Chỉ: <strong>${hoaDon.diaChi}</strong></p>
                     </div>
                     <div class="info-box">
                         <h6>Thông Tin Đơn Hàng:</h6>
                         <p>Phương Thức Thanh Toán: <strong>${hoaDon.phuong_thuc_thanh_toan}</strong></p>
                         <p>Phương Thức Vận Chuyển: <strong>${hoaDon.phuongThucVanChuyen}</strong></p>
                         <p>Tiền Vận Chuyển: <strong>${tienVanChuyen} đ</strong></p>
-                        <p>Tổng Tiền: <strong>${hoaDon.tongTien} đ</strong></p>
+                        <c:if test="${hoaDon.tongTien != 33000 && hoaDon.tongTien != 20000}">
+                            <p>Tổng Tiền: <strong>${hoaDon.tongTien} đ</strong></p>
+                        </c:if>
                         <p>
-                            Tình Trạng:
+                            Trạng thái đơn hàng:
                             <c:choose>
-                                <c:when test="${hoaDon.tinh_trang == 0}">
-                                    Chờ xác nhận
-                                </c:when>
-                                <c:when test="${hoaDon.tinh_trang == 1 }">
-                                    Chờ giao
-                                </c:when>
-                                <c:when test="${hoaDon.tinh_trang == 2 || hoaDon.tinh_trang == 3}">
-                                    Đang giao
-                                </c:when>
-                                <c:when test="${hoaDon.tinh_trang == 4}">
-                                    Hoàn thành
-                                </c:when>
-                                <c:when test="${hoaDon.tinh_trang == 11}">
-                                    Chờ xác nhận đổi trả
-                                </c:when>
-                                <c:when test="${hoaDon.tinh_trang == 12}">
-                                    Chờ đổi trả
-                                </c:when>
-                                <c:when test="${hoaDon.tinh_trang == 13}">
-                                    Đã đổi trả
-                                </c:when>
-                                <c:when test="${hoaDon.tinh_trang == 14}">
-                                    Đã hủy
-                                </c:when>
-                                <c:otherwise>
-                                    Không xác định
-                                </c:otherwise>
+                                <c:when test="${hoaDon.tinh_trang == 0}"><strong>Chờ xác nhận</strong></c:when>
+                                <c:when test="${hoaDon.tinh_trang == 1}"><strong>Chờ giao</strong></c:when>
+                                <c:when test="${hoaDon.tinh_trang == 2 || hoaDon.tinh_trang == 3}"><strong>Đang giao</strong></c:when>
+                                <c:when test="${hoaDon.tinh_trang == 4}"><strong>Hoàn thành</strong></c:when>
+                                <c:when test="${hoaDon.tinh_trang == 11}"><strong>Chờ xác nhận đổi trả</strong></c:when>
+                                <c:when test="${hoaDon.tinh_trang == 12}"><strong>Chờ đổi trả</strong></c:when>
+                                <c:when test="${hoaDon.tinh_trang == 13}"><strong>Đã đổi trả</strong></c:when>
+                                <c:when test="${hoaDon.tinh_trang == 14}"><strong>Đã hủy</strong></c:when>
+                                <c:otherwise><strong>Không xác định</strong></c:otherwise>
                             </c:choose>
                         </p>
                     </div>
                 </div>
 
+                <!-- Mục xử lý đơn hàng -->
+                <div class="info-row">
+                    <div class="info-box">
+                        <h6>Xử Lý Đơn Hàng:</h6>
+                        <c:if test="${hoaDon.tinh_trang == 14}">
+                            <p><strong>${thoiGianTao}</strong>: Đơn hàng đã được đặt</p>
+                            <p><strong>${daHuy}</strong>: Đã hủy đơn hàng</p>
+                        </c:if>
+                        <c:if test="${hoaDon.tinh_trang != 14}">
+                            <c:if test="${hoaDon.tinh_trang >= 0}">
+                                <p><strong>${thoiGianTao}</strong>: Đơn hàng đã được đặt</p>
+                            </c:if>
+                            <c:if test="${hoaDon.tinh_trang >= 1}">
+                                <p><strong>${thoiGianXacNhan}</strong>: Đơn hàng đã được xác nhận</p>
+                            </c:if>
+                            <c:if test="${hoaDon.tinh_trang >= 2}">
+                                <p><strong>${banGiaoVanChuyen}</strong>: Đơn hàng đã được bàn giao cho đơn vị vận chuyển</p>
+                                <p>Thời gian nhận hàng dự kiến: <strong>${thoiGianDuKien}</strong></p>
+                            </c:if>
+                            <c:if test="${hoaDon.tinh_trang >= 4}">
+                                <p><strong>${hoanThanh}</strong>: Đơn hàng đã được giao thành công</p>
+                            </c:if>
+                            <c:if test="${hoaDon.tinh_trang >= 11}">
+                                <p><strong>${hoanTra}</strong>: Yêu cầu đổi trả</p>
+                            </c:if>
+                            <c:if test="${hoaDon.tinh_trang >= 12}">
+                                <p><strong>${xacNhanHoanTra}</strong>: Đã xác nhận yêu cầu đổi trả</p>
+                            </c:if>
+                            <c:if test="${hoaDon.tinh_trang >= 13}">
+                                <p><strong>${daHoanTra}</strong>: Đổi trả thành công</p>
+                            </c:if>
+                        </c:if>
+
+                    </div>
+                </div>
+
                 <c:if test="${not empty hoaDon.hoaDonChiTietList}">
-                    <h6>Danh Sách Sản Phẩm:</h6>
+                    <h6>Sản phẩm đã mua:</h6>
                     <ul class="list-group">
                         <c:forEach var="chiTiet" items="${hoaDon.hoaDonChiTietList}">
                             <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -122,13 +141,13 @@
                                 <div>
                                     <c:choose>
                                         <c:when test="${chiTiet.gia_san_pham != chiTiet.sanPhamChiTiet.giaBan}">
-                                <span style="text-decoration: line-through; color: gray;">
-                                    ${chiTiet.sanPhamChiTiet.giaBan} VNĐ
-                                </span>
+                            <span style="text-decoration: line-through; color: gray;">
+                                ${chiTiet.sanPhamChiTiet.giaBan} VNĐ
+                            </span>
                                             <br>
                                             <span style="color: green;">
-                                    ${chiTiet.gia_san_pham} VNĐ
-                                </span>
+                                ${chiTiet.gia_san_pham} VNĐ
+                            </span>
                                         </c:when>
                                         <c:otherwise>
                                             <span>${chiTiet.gia_san_pham} VNĐ</span>
@@ -142,8 +161,43 @@
                         </c:forEach>
                     </ul>
                 </c:if>
+                <c:if test="${hoaDon.tinh_trang == 11 || hoaDon.tinh_trang == 12}">
+                    <h6 class="mt-3">Sản phẩm muốn đổi trả:</h6>
+                    <ul class="list-group mt-3 ">
+                        <c:forEach var="doiTraChiTiet" items="${doiTraChiTiets}">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <img src="${pageContext.request.contextPath}/uploads/${doiTraChiTiet.sanPhamChiTiet.hinhAnh}"
+                                         alt="Hình ảnh sản phẩm" class="me-3" style="width: 100px; height: auto;">
+                                    <div>
+                                        <span>${doiTraChiTiet.sanPhamChiTiet.sanPham.ten}</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <c:choose>
+                                        <c:when test="${doiTraChiTiet.giaSanPham != doiTraChiTiet.sanPhamChiTiet.giaBan}">
+                                <span style="text-decoration: line-through; color: gray;">
+                                    ${doiTraChiTiet.sanPhamChiTiet.giaBan} VNĐ
+                                </span>
+                                            <br>
+                                            <span style="color: green;">
+                                    ${doiTraChiTiet.giaSanPham} VNĐ
+                                </span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span>${doiTraChiTiet.giaSanPham} VNĐ</span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </div>
+                                <div>
+                                    <span>Số Lượng: ${doiTraChiTiet.soLuong}</span>
+                                </div>
+                            </li>
+                        </c:forEach>
+                    </ul>
+                </c:if>
                 <c:if test="${hoaDon.tinh_trang == 13}">
-                    <h6 class="mt-3">Sản phẩm đổi trả:</h6>
+                    <h6 class="mt-3">Sản phẩm đã đổi trả:</h6>
                     <ul class="list-group mt-3 ">
                         <c:forEach var="doiTraChiTiet" items="${doiTraChiTiets}">
                             <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -182,7 +236,7 @@
                     <c:if test="${hoaDon.tinh_trang == 4}">
                         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#returnModal">Đổi Trả</button>
                     </c:if>
-                    <c:if test="${hoaDon.tinh_trang <= 1}">
+                    <c:if test="${hoaDon.tinh_trang == 0}">
                         <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmCancelModal">Hủy đơn</button>
 
                         <div class="modal fade" id="confirmCancelModal" tabindex="-1" aria-labelledby="confirmCancelModalLabel" aria-hidden="true">

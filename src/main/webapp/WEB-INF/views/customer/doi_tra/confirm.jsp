@@ -48,14 +48,31 @@
                     <label for="tongTienHoan" class="form-label">Tổng Tiền Phải Hoàn:</label>
                     <input type="text" id="tongTienHoan" name="tongTienHoan" class="form-control" value="${tongTienHoan}" readonly>
                 </div>
+
+
+
+
+
                 <div class="mb-3">
                     <label for="phuongThucChuyenTien" class="form-label">Phương Thức Chuyển Tiền:</label>
-                    <select id="phuongThucChuyenTien" name="phuongThucChuyenTien" class="form-select">
-                        <option value="Chuyển khoản">Chuyển khoản</option>
+                    <select id="phuongThucChuyenTien" name="phuongThucChuyenTien" class="form-select" onchange="toggleBankFields()">
                         <option value="Tiền mặt">Tiền mặt</option>
-                        <option value="Ví điện tử">Ví điện tử</option>
+                        <option value="Chuyển khoản">Chuyển khoản</option>
                     </select>
                 </div>
+                <div class="mb-3" id="bankDetails" style="display: none;">
+                    <label for="tenNganHang" class="form-label">Tên Ngân Hàng:</label>
+                    <input type="text" id="tenNganHang" name="tenNganHang" class="form-control" placeholder="Nhập tên ngân hàng">
+
+                    <label for="soNganHang" class="form-label">Số Ngân Hàng:</label>
+                    <input type="text" id="soNganHang" name="soNganHang" class="form-control" placeholder="Nhập số ngân hàng">
+                </div>
+
+
+
+
+
+
                 <div class="mb-3">
                     <label for="ghiChu" class="form-label">Mô Tả:</label>
                     <textarea id="ghiChu" name="moTa" class="form-control"></textarea>
@@ -65,7 +82,7 @@
                     <input type="file" id="uploadImage" name="uploadImage" class="form-control" accept="image/*" required>
                 </div>
                 <div class="mt-3">
-                    <a href="/doi-tra" class="btn btn-warning">Quay Lại</a>
+                    <a href="/doi-tra/chi-tiet?id=${hoaDon.id}" class="btn btn-warning">Quay Lại</a>
                     <button type="submit" class="btn btn-success">Xác Nhận Đổi Trả</button>
                 </div>
             </form>
@@ -73,5 +90,16 @@
     </div>
 </div>
 <jsp:include page="../footer_user.jsp"/>
+<script>
+    function toggleBankFields() {
+        var phuongThucChuyenTien = document.getElementById("phuongThucChuyenTien").value;
+        var bankFields = document.getElementById("bankDetails");
+        if (phuongThucChuyenTien === "Chuyển khoản") {
+            bankFields.style.display = "block";
+        } else {
+            bankFields.style.display = "none";
+        }
+    }
+</script>
 </body>
 </html>

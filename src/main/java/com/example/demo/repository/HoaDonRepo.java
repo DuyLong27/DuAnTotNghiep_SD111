@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -84,6 +84,24 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
 
     Optional<HoaDon> findBySoHoaDon(String soHoaDon);
 
+    @Query("SELECT h FROM HoaDon h WHERE h.soDienThoai LIKE %:phoneNumber%")
+    Page<HoaDon> findByPhoneNumberContaining(@Param("phoneNumber") String phoneNumber, Pageable pageable);
+
+    @Query("SELECT h FROM HoaDon h WHERE h.soDienThoai LIKE %:phoneNumber% AND h.tinh_trang = :tinhTrang")
+    Page<HoaDon> findByPhoneNumberAndTinhTrang(@Param("phoneNumber") String phoneNumber,
+                                               @Param("tinhTrang") Integer tinhTrang,
+                                               Pageable pageable);
+    @Query("SELECT h FROM HoaDon h WHERE h.ngayTao BETWEEN :startDate AND :endDate")
+    Page<HoaDon> findByThoiGianTaoBetween(@Param("startDate") LocalDateTime startDate,
+                                          @Param("endDate") LocalDateTime endDate,
+                                          Pageable pageable);
+    @Query("SELECT h FROM HoaDon h WHERE h.ngayTao >= :startDate")
+    Page<HoaDon> findByThoiGianTaoAfter(@Param("startDate") LocalDateTime startDate, Pageable pageable);
+
+    @Query("SELECT h FROM HoaDon h WHERE h.ngayTao <= :endDate")
+    Page<HoaDon> findByThoiGianTaoBefore(@Param("endDate") LocalDateTime endDate, Pageable pageable);
+
+
     @Query(value = "SELECT nv.ten_nhan_vien, COUNT(hd.id_hoa_don), SUM(hd.tong_tien) " +
             "FROM nhan_vien nv " +
             "LEFT JOIN hoa_don hd ON hd.id_nhan_vien = nv.id_nhan_vien " +
@@ -106,6 +124,4 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
             "ORDER BY SUM(cthd.so_luong * cthd.gia_san_pham) DESC",
             nativeQuery = true)
     List<Object[]> getProductRevenueReport(@Param("selectedDate") java.sql.Date selectedDate);
-
-
 }

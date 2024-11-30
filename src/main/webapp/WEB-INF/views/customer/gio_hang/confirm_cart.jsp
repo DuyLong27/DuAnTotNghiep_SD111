@@ -37,18 +37,44 @@
                 </c:forEach>
                 </tbody>
             </table>
-            <h3 class="text-center">Tổng tiền: <span id="totalPrice" class="text-danger">${tongTien} đ</span></h3>
+
+
+
+            <div>
+                <h3 class="text-center">Tổng tiền sản phẩm: <span class="text-danger">${tongTienCuThe} đ</span></h3>
+                <h3 class="text-center">Số tiền cần trả: <span id="totalPrice" class="text-danger">${tongTienSauGiam} đ</span></h3>
+                <div id="customerInfo">
+                    <c:choose>
+                        <c:when test="${not empty khachHang}">
+                            <p>Rank (Hạng Bậc): <span id="rank">${rank}</span></p>
+                            <p>Số Điểm tích lũy: <span id="diemTichLuy">${diemTichLuy}</span></p>
+                            <p>Giá Trị Giảm giá: <span id="giamGia">${phanTramGiam}%</span></p>
+                            <p>Số tiền được giảm: <span id="giamTien">${giamGia} đ</span></p>
+                        </c:when>
+                        <c:otherwise>
+                            <p class="text-warning">Hãy tạo tài khoản để chuẩn bị cho món quà dài hạn nào!</p>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+            </div>
+
+
+
+
+
         </div>
         <div class="col-md-4">
             <h2 class="text-center mb-4">Thông tin thanh toán</h2>
             <form action="/gio-hang/xac-nhan-hoa-don" method="post">
                 <div class="mb-3">
-                    <label for="phuongThucThanhToan" class="form-label">Phương thức thanh toán:</label>
-                    <select class="form-select" id="phuongThucThanhToan" name="phuongThucThanhToan" required>
+                    <label for="phuongThucThanhToan" class="form-label fw-bold">Phương thức thanh toán:</label>
+                    <select class="form-select" id="phuongThucThanhToan" name="phuongThucThanhToan" required onchange="displayImage()">
                         <option value="Tiền mặt">Tiền mặt</option>
                         <option value="Chuyển khoản">Chuyển khoản</option>
-                        <option value="Thẻ tín dụng">Thẻ tín dụng</option>
                     </select>
+                </div>
+                <div id="imageContainer" style="display: none; text-align: center;">
+                    <img id="myImage" src="../../../../images/QRLong.png" alt="Image of transfer method" width="200" style="border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Phương thức vận chuyển:</label>
@@ -69,7 +95,13 @@
                     <label for="soDienThoai" class="form-label">Số điện thoại:</label>
                     <input type="tel" class="form-control" id="soDienThoai" name="soDienThoai" pattern="[0-9]{10}" required>
                 </div>
-
+                <c:if test="${empty khachHang}">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                        <small class="form-text text-muted">Nếu bạn không có tài khoản, vui lòng nhập email để nhận hóa đơn.</small>
+                    </div>
+                </c:if>
                 <c:forEach var="item" items="${selectedItems}">
                     <input type="hidden" name="selectedItems" value="${item.sanPhamChiTiet.id}">
                 </c:forEach>
@@ -81,17 +113,32 @@
 </div>
 <jsp:include page="../footer_user.jsp" />
 <script>
-    // Hàm cập nhật tổng tiền
     function updateTotal() {
-        // Lấy tổng tiền ban đầu
-        let totalPrice = parseInt('${tongTien}');
-        // Lấy giá trị phí vận chuyển
-        let shippingFee = document.querySelector('input[name="phuongThucVanChuyen"]:checked') ? (document.querySelector('input[name="phuongThucVanChuyen"]:checked').value === "Giao Hàng Nhanh" ? 33000 : 20000) : 0;
-        // Cập nhật tổng tiền
-        let finalTotal = totalPrice + shippingFee;
-        // Hiển thị tổng tiền mới
-        document.getElementById('totalPrice').innerText = finalTotal + ' đ';
+        let basePrice = parseInt('${tongTien}');
+        let discount = parseInt('${giamGia}');
+        let shippingFee = document.querySelector('input[name="phuongThucVanChuyen"]:checked')
+            ? (document.querySelector('input[name="phuongThucVanChuyen"]:checked').value === "Giao Hàng Nhanh" ? 33000 : 20000)
+            : 0;
+        let totalPrice = basePrice + shippingFee;
+        let totalPriceAfterDiscount = (basePrice - discount) + shippingFee;
+        document.getElementById('totalPrice').innerText = totalPriceAfterDiscount + ' đ';
+        document.getElementById('giamTien').innerText = discount + ' đ';
+        document.querySelector('h3.text-center span.text-danger').innerText = totalPrice + ' đ';
+    }
+
+
+    function displayImage() {
+        var paymentMethod = document.getElementById("phuongThucThanhToan").value;
+        var imageContainer = document.getElementById("imageContainer");
+
+        // Nếu chọn "Chuyển khoản", hiển thị hình ảnh
+        if (paymentMethod === "Chuyển khoản") {
+            imageContainer.style.display = "block";
+        } else {
+            imageContainer.style.display = "none";
+        }
     }
 </script>
+
 </body>
 </html>

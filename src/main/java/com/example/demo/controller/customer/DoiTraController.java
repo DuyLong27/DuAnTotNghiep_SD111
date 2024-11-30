@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Controller
@@ -34,15 +36,49 @@ public class DoiTraController {
     @Autowired
     private HoaDonRepo hoaDonRepo;
 
+    @Autowired
+    private ThoiGianDonHangRepo thoiGianDonHangRepo;
+
     @GetMapping("")
     public String danhSachHoaDon(Model model, HttpSession session) {
         KhachHang khachHang = (KhachHang) session.getAttribute("khachHang");
         if (khachHang != null) {
             List<HoaDon> hoaDonList = hoaDonRepo.findByKhachHang(khachHang);
+            Map<Integer, LocalDateTime> thoiGianTaoMap = new HashMap<>();
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm , dd-MM-yyyy");
+
             for (HoaDon hoaDon : hoaDonList) {
                 hoaDon.setHoaDonChiTietList(hoaDonChiTietRepo.findByHoaDon(hoaDon));
+                ThoiGianDonHang thoiGianDonHang = thoiGianDonHangRepo.findByHoaDon(hoaDon);
+                if (thoiGianDonHang != null) {
+                    thoiGianTaoMap.put(hoaDon.getId(), thoiGianDonHang.getThoiGianTao());
+                }
             }
+
+            hoaDonList.sort((h1, h2) -> {
+                LocalDateTime thoiGianTao1 = thoiGianTaoMap.get(h1.getId());
+                LocalDateTime thoiGianTao2 = thoiGianTaoMap.get(h2.getId());
+
+                if (thoiGianTao1 == null && thoiGianTao2 == null) {
+                    return 0;
+                } else if (thoiGianTao1 == null) {
+                    return 1;
+                } else if (thoiGianTao2 == null) {
+                    return -1;
+                } else {
+                    return thoiGianTao2.compareTo(thoiGianTao1);
+                }
+            });
+
             model.addAttribute("hoaDonList", hoaDonList);
+
+            Map<Integer, String> formattedThoiGianTaoMap = new HashMap<>();
+            for (Map.Entry<Integer, LocalDateTime> entry : thoiGianTaoMap.entrySet()) {
+                formattedThoiGianTaoMap.put(entry.getKey(), entry.getValue().format(formatter));
+            }
+
+            model.addAttribute("thoiGianTaoMap", formattedThoiGianTaoMap);
         } else {
             model.addAttribute("errorMessage", "Bạn cần đăng nhập để xem danh sách hóa đơn.");
         }
@@ -55,12 +91,43 @@ public class DoiTraController {
         if (hoaDon != null) {
             hoaDon.setHoaDonChiTietList(hoaDonChiTietRepo.findByHoaDon(hoaDon));
             model.addAttribute("hoaDon", hoaDon);
+
             KhachHang khachHang = hoaDon.getKhachHang();
             model.addAttribute("tenKhachHang", khachHang.getTenKhachHang());
             model.addAttribute("sdtKhachHang", khachHang.getSoDienThoai());
             model.addAttribute("diaChiKhachHang", khachHang.getDiaChi());
+
+            ThoiGianDonHang thoiGianDonHang = thoiGianDonHangRepo.findByHoaDon_Id(id);
+            if (thoiGianDonHang != null) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm , dd-MM-yyyy");
+
+                model.addAttribute("thoiGianTao", thoiGianDonHang.getThoiGianTao() != null ? thoiGianDonHang.getThoiGianTao().format(formatter) : "Chưa có thời gian tạo");
+                model.addAttribute("thoiGianXacNhan", thoiGianDonHang.getThoiGianXacNhan() != null ? thoiGianDonHang.getThoiGianXacNhan().format(formatter) : "Chưa có thời gian xác nhận");
+                model.addAttribute("banGiaoVanChuyen", thoiGianDonHang.getBanGiaoVanChuyen() != null ? thoiGianDonHang.getBanGiaoVanChuyen().format(formatter) : "Chưa có thời gian bàn giao vận chuyển");
+                model.addAttribute("hoanThanh", thoiGianDonHang.getHoanThanh() != null ? thoiGianDonHang.getHoanThanh().format(formatter) : "Chưa có thời gian hoàn thành");
+                model.addAttribute("hoanTra", thoiGianDonHang.getHoanTra() != null ? thoiGianDonHang.getHoanTra().format(formatter) : "Chưa có thời gian hoàn trả");
+                model.addAttribute("xacNhanHoanTra", thoiGianDonHang.getXacNhanHoanTra() != null ? thoiGianDonHang.getXacNhanHoanTra().format(formatter) : "Chưa có thời gian xác nhận hoàn trả");
+                model.addAttribute("daHoanTra", thoiGianDonHang.getDaHoanTra() != null ? thoiGianDonHang.getDaHoanTra().format(formatter) : "Chưa có thời gian đã hoàn trả");
+                model.addAttribute("daHuy", thoiGianDonHang.getDaHuy() != null ? thoiGianDonHang.getDaHuy().format(formatter) : "Chưa có thời gian đã hoàn trả");
+
+                if (thoiGianDonHang.getBanGiaoVanChuyen() != null) {
+                    LocalDateTime banGiaoVanChuyen = thoiGianDonHang.getBanGiaoVanChuyen();
+                    int soNgayThem = "Giao Hàng Nhanh".equals(hoaDon.getPhuongThucVanChuyen()) ? 2 : 3;
+                    LocalDateTime thoiGianDuKien = banGiaoVanChuyen.plusDays(soNgayThem);
+
+                    DateTimeFormatter duKienFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                    model.addAttribute("thoiGianDuKien", thoiGianDuKien.format(duKienFormatter));
+                } else {
+                    model.addAttribute("thoiGianDuKien", "Chưa có thời gian xác nhận");
+                }
+            } else {
+                model.addAttribute("thoiGianTao", "Không có thông tin thời gian.");
+                model.addAttribute("thoiGianDuKien", "Không có thời gian dự kiến");
+            }
+
             int tienVanChuyen = "Giao Hàng Nhanh".equals(hoaDon.getPhuongThucVanChuyen()) ? 33000 : 20000;
             model.addAttribute("tienVanChuyen", tienVanChuyen);
+
             List<DoiTraChiTiet> doiTraChiTietList = doiTraChiTietRepo.findByDoiTra_HoaDon_Id(id);
             model.addAttribute("doiTraChiTiets", doiTraChiTietList);
         } else {
@@ -180,36 +247,27 @@ public class DoiTraController {
                                 @RequestParam Map<String, String> requestParams,
                                 @RequestParam("phuongThucChuyenTien") String phuongThucChuyenTien,
                                 @RequestParam("moTa") String moTa,
-                                @RequestParam("uploadImage") MultipartFile uploadImage) {
-
+                                @RequestParam("uploadImage") MultipartFile uploadImage,
+                                @RequestParam(value = "tenNganHang", required = false) String tenNganHang,
+                                @RequestParam(value = "soNganHang", required = false) String soNganHang) {
         HoaDon hoaDon = hoaDonRepo.findById(hoaDonId).orElse(null);
         if (hoaDon != null) {
-            // Xử lý upload ảnh chứng minh lỗi hàng hóa
             String fileName = null;
             if (!uploadImage.isEmpty()) {
                 try {
-                    // Đường dẫn tương đối đến thư mục images
                     String relativeFolder = "src/main/webapp/uploads/";
-
-                    // Tạo thư mục nếu chưa tồn tại
                     Path folderPath = Paths.get(relativeFolder).toAbsolutePath();
                     if (!Files.exists(folderPath)) {
                         Files.createDirectories(folderPath);
                     }
-
-                    // Tạo tên file duy nhất với timestamp
                     fileName = System.currentTimeMillis() + "_" + uploadImage.getOriginalFilename();
                     Path filePath = folderPath.resolve(fileName);
-
-                    // Lưu file vào thư mục
                     Files.write(filePath, uploadImage.getBytes());
                 } catch (IOException e) {
                     e.printStackTrace();
                     return "customer/doi_tra/error";
                 }
             }
-
-            // Tạo đối tượng DoiTra
             DoiTra doiTra = new DoiTra();
             doiTra.setHoaDon(hoaDon);
             doiTra.setLyDoCuThe(lyDoDetail);
@@ -217,45 +275,43 @@ public class DoiTraController {
             doiTra.setTienHoan(tongTienHoan);
             doiTra.setPhuongThucChuyenTien(phuongThucChuyenTien);
             doiTra.setMoTa(moTa);
-            doiTra.setHinhAnh(fileName); // Lưu tên file ảnh vào database
+            doiTra.setHinhAnh(fileName);
             doiTra.setNgayYeuCau(new Date());
             doiTra.setTinhTrang(11);
+            if ("Chuyển khoản".equals(phuongThucChuyenTien)) {
+                doiTra.setTenNganHang(tenNganHang);
+                doiTra.setSoNganHang(soNganHang);
+            }
             doiTraRepo.save(doiTra);
-
-            // Lấy danh sách HoaDonChiTiet để sử dụng giaSanPham
             List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepo.findByHoaDon(hoaDon);
-
-            // Lưu từng chi tiết đổi trả
             for (Integer sanPhamChiTietId : sanPhamChiTietIds) {
                 SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamChiTietId).orElse(null);
                 if (sanPhamChiTiet != null) {
                     Integer soLuongHoan = Integer.valueOf(requestParams.get("soLuong_" + sanPhamChiTietId));
-
-                    // Tìm HoaDonChiTiet tương ứng với sanPhamChiTietId
                     HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietList.stream()
                             .filter(chiTiet -> chiTiet.getSanPhamChiTiet().getId().equals(sanPhamChiTietId))
                             .findFirst().orElse(null);
-
                     if (hoaDonChiTiet != null) {
-                        // Tạo đối tượng DoiTraChiTiet với giaSanPham từ HoaDonChiTiet
                         DoiTraChiTiet doiTraChiTiet = new DoiTraChiTiet();
                         doiTraChiTiet.setDoiTra(doiTra);
                         doiTraChiTiet.setSanPhamChiTiet(sanPhamChiTiet);
-                        doiTraChiTiet.setGiaSanPham(hoaDonChiTiet.getGia_san_pham()); // Sử dụng giaSanPham từ HoaDonChiTiet
+                        doiTraChiTiet.setGiaSanPham(hoaDonChiTiet.getGia_san_pham());
                         doiTraChiTiet.setSoLuong(soLuongHoan);
                         doiTraChiTietRepo.save(doiTraChiTiet);
                     }
                 }
             }
-
+            ThoiGianDonHang thoiGianDonHang = thoiGianDonHangRepo.findByHoaDon(hoaDon);
+            thoiGianDonHang.setHoanTra(LocalDateTime.now());
+            thoiGianDonHangRepo.save(thoiGianDonHang);
             hoaDon.setTinh_trang(11);
             hoaDonRepo.save(hoaDon);
-
             return "redirect:/doi-tra";
         }
 
         return "customer/doi_tra/error";
     }
+
 
     @PostMapping("/huy-don/{id}")
     public String huyDon(@PathVariable("id") Integer id, Model model) {
@@ -271,8 +327,12 @@ public class DoiTraController {
                 sanPhamChiTietRepo.save(sanPhamChiTiet);
             }
 
-            hoaDon.setTinh_trang(14);  // Cập nhật trạng thái đơn hàng
+            hoaDon.setTinh_trang(14);
             hoaDonRepo.save(hoaDon);
+
+            ThoiGianDonHang thoiGianDonHang = thoiGianDonHangRepo.findByHoaDon_Id(id);
+            thoiGianDonHang.setDaHuy(LocalDateTime.now());
+            thoiGianDonHangRepo.save(thoiGianDonHang);
 
             model.addAttribute("message", "Đơn hàng đã được hủy thành công và sản phẩm đã được hoàn lại.");
             return "redirect:/doi-tra/chi-tiet?id=" + id;

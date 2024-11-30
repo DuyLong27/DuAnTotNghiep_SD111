@@ -134,8 +134,14 @@
                     </div>
                     <div class="card-body">
                         <div class="order-header">Mã Hóa Đơn: ${hoaDon.soHoaDon}</div>
-                        <p>Ngày Tạo: ${hoaDon.ngayTao}</p>
-                        <p>Tổng Tiền: <strong>${hoaDon.tongTien} đ</strong></p>
+                        <p>Thời gian đặt hàng:
+                            <c:if test="${not empty thoiGianTaoMap[hoaDon.id]}">
+                                ${thoiGianTaoMap[hoaDon.id]}
+                            </c:if>
+                        </p>
+                        <c:if test="${hoaDon.tongTien != 33000 && hoaDon.tongTien != 20000}">
+                            <p>Tổng Tiền: <strong>${hoaDon.tongTien} đ</strong></p>
+                        </c:if>
                         <p>
                             Tình Trạng:
                             <c:choose>
@@ -168,21 +174,26 @@
                                 </c:otherwise>
                             </c:choose>
                         </p>
-                        <h6>Chi Tiết Sản Phẩm:</h6>
-                        <div class="product-list">
-                            <c:forEach var="chiTiet" items="${hoaDon.hoaDonChiTietList}">
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <div class="d-flex align-items-center">
-                                        <img src="${pageContext.request.contextPath}/uploads/${chiTiet.sanPhamChiTiet.hinhAnh}"
-                                             alt="Hình ảnh sản phẩm" class="me-3" style="width: 100px; height: auto;">
-                                        <div>
-                                            <span>${chiTiet.sanPhamChiTiet.sanPham.ten}</span>
-                                        </div>
-                                    </div>
-                                    <span>Số Lượng: ${chiTiet.so_luong}</span>
-                                </li>
-                            </c:forEach>
-                        </div>
+                        <c:if test="${not empty hoaDon.hoaDonChiTietList}">
+                                <h6>Chi Tiết Sản Phẩm:</h6>
+                                <div class="product-list mb-3">
+                                    <c:forEach var="chiTiet" items="${hoaDon.hoaDonChiTietList}">
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <div class="d-flex align-items-center">
+                                                <img src="${pageContext.request.contextPath}/uploads/${chiTiet.sanPhamChiTiet.hinhAnh}"
+                                                     alt="Hình ảnh sản phẩm" class="me-3" style="width: 100px; height: auto;">
+                                                <div>
+                                                    <span>${chiTiet.sanPhamChiTiet.sanPham.ten}</span>
+                                                </div>
+                                            </div>
+                                            <span>Số Lượng: ${chiTiet.so_luong}</span>
+                                        </li>
+                                    </c:forEach>
+                                </div>
+                        </c:if>
+                        <c:if test="${hoaDon.tinh_trang == 13 && empty hoaDon.hoaDonChiTietList}">
+                                <h6>Hóa đơn đã được hoàn trả tất cả sản phẩm</h6>
+                        </c:if>
                     </div>
                 </div>
             </div>

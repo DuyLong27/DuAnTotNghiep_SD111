@@ -2,6 +2,7 @@ package com.example.demo.controller.customer;
 
 import com.example.demo.entity.*;
 import com.example.demo.repository.*;
+import com.example.demo.service.EmailService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -51,6 +52,8 @@ public class DanhSachSanPhamController {
 
     @Autowired
     private ThoiGianDonHangRepo thoiGianDonHangRepo;
+    @Autowired
+    private EmailService emailService;
 
     public List<SanPhamChiTiet> getSanPhamWithKhuyenMai() {
         return sanPhamChiTietRepo.findAllWithPromotions();
@@ -110,13 +113,27 @@ public class DanhSachSanPhamController {
     }
 
     @GetMapping("/mua-ngay")
-    public String muaNgay(@RequestParam("productId") Integer productId, Model model) {
+    public String muaNgay(@RequestParam("productId") Integer productId, Model model, HttpSession session) {
         SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(productId).orElse(null);
         model.addAttribute("sanPhamChiTiet", sanPhamChiTiet);
+        KhachHang khachHang = (KhachHang) session.getAttribute("khachHang");
+        int diemTichLuy = khachHang != null ? khachHang.getDiemTichLuy() : 0;
+        double discountRate = Math.min(Math.floor(diemTichLuy / 1000.0) * 5, 30);
+        int giaSanPham = (sanPhamChiTiet.getGiaGiamGia() != null && sanPhamChiTiet.getGiaGiamGia() > 0)
+                ? sanPhamChiTiet.getGiaGiamGia()
+                : sanPhamChiTiet.getGiaBan();
+        int discountAmount = (int) (giaSanPham * (discountRate / 100.0));
+        model.addAttribute("discountRate", discountRate);
+        model.addAttribute("discountAmount", discountAmount);
+        model.addAttribute("tongTien", giaSanPham - discountAmount);
+
         List<SanPhamChiTiet> sanPhamList = sanPhamChiTietRepo.findAll();
         model.addAttribute("listSanPham", sanPhamList);
+
         return "customer/san_pham/index";
     }
+
+
 
     @PostMapping("/xac-nhan-hoa-don")
     public String xacNhanHoaDon(HttpSession session,
@@ -125,27 +142,24 @@ public class DanhSachSanPhamController {
                                 @RequestParam String diaChi,
                                 @RequestParam String soDienThoai,
                                 @RequestParam int soLuong,
-                                @RequestParam int sanPhamId) {
-
+                                @RequestParam int sanPhamId,
+                                @RequestParam(required = false) String email) {
         SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamId).orElse(null);
         if (sanPhamChiTiet == null) {
             return "redirect:/error";
         }
-
-        // Kiểm tra giaGiamGia
         int giaSanPham = (sanPhamChiTiet.getGiaGiamGia() != null && sanPhamChiTiet.getGiaGiamGia() > 0)
                 ? sanPhamChiTiet.getGiaGiamGia()
                 : sanPhamChiTiet.getGiaBan();
-
-        // Tính tổng tiền
-        int tongTien = soLuong * giaSanPham;
+        int tongTienSanPham = soLuong * giaSanPham;
         int phiVanChuyen = phuongThucVanChuyen.equals("Giao Hàng Tiêu Chuẩn") ? 20000 : 33000;
-        tongTien += phiVanChuyen;
-
-        // Tạo mã số hóa đơn ngẫu nhiên
+        KhachHang khachHang = (KhachHang) session.getAttribute("khachHang");
+        int diemTichLuy = khachHang != null ? khachHang.getDiemTichLuy() : 0;
+        double discountRate = Math.min(Math.floor(diemTichLuy / 1000) * 0.05, 0.30);
+        double discountAmount = tongTienSanPham * discountRate;
+        int tongTienSauGiam = tongTienSanPham - (int) discountAmount;
+        int tongTien = tongTienSauGiam + phiVanChuyen;
         String soHoaDon = "HD" + new Random().nextInt(90000);
-
-        // Tạo đối tượng HoaDon và thiết lập các thuộc tính
         HoaDon hoaDon = new HoaDon();
         hoaDon.setPhuong_thuc_thanh_toan(phuongThucThanhToan);
         hoaDon.setPhuongThucVanChuyen(phuongThucVanChuyen);
@@ -155,34 +169,39 @@ public class DanhSachSanPhamController {
         hoaDon.setTongTien(tongTien);
         hoaDon.setSoHoaDon(soHoaDon);
         hoaDon.setTinh_trang(0);
-
-        // Kiểm tra người dùng đã đăng nhập hay chưa
-        KhachHang khachHang = (KhachHang) session.getAttribute("khachHang");
         if (khachHang != null) {
             hoaDon.setKhachHang(khachHang);
+        } else if (email != null && !email.isEmpty()) {
+            emailService.sendHoaDonMuaNgayEmail(
+                    email,
+                    soHoaDon,
+                    phuongThucThanhToan,
+                    phuongThucVanChuyen,
+                    diaChi,
+                    soDienThoai,
+                    soLuong,
+                    sanPhamChiTiet.getSanPham().getTen(),
+                    giaSanPham,
+                    tongTien
+            );
+        } else {
+            return "redirect:/error";
         }
-
-        // Lưu hóa đơn vào cơ sở dữ liệu
         hoaDonRepo.save(hoaDon);
-
-        // Tạo và lưu chi tiết hóa đơn
         HoaDonChiTiet hoaDonChiTiet = new HoaDonChiTiet();
         hoaDonChiTiet.setHoaDon(hoaDon);
         hoaDonChiTiet.setSanPhamChiTiet(sanPhamChiTiet);
         hoaDonChiTiet.setSo_luong(soLuong);
-        hoaDonChiTiet.setGia_san_pham(giaSanPham); // Cập nhật giá sản phẩm
+        int giaSanPhamSauGiam = (int) (giaSanPham * (1 - discountRate));
+        hoaDonChiTiet.setGia_san_pham(giaSanPhamSauGiam);
         hoaDonChiTietRepo.save(hoaDonChiTiet);
-
-        // Cập nhật số lượng sản phẩm
         sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - soLuong);
         sanPhamChiTietRepo.save(sanPhamChiTiet);
-
-        // Cập nhật thời gian tạo trong thoiGianDonHang (thời gian hiện tại)
         ThoiGianDonHang thoiGianDonHang = new ThoiGianDonHang();
         thoiGianDonHang.setHoaDon(hoaDon);
-        thoiGianDonHang.setThoiGianTao(LocalDateTime.now()); // Lưu thời gian hiện tại
+        thoiGianDonHang.setThoiGianTao(LocalDateTime.now());
         thoiGianDonHangRepo.save(thoiGianDonHang);
-
         return "redirect:/danh-sach-san-pham/hien-thi";
     }
+
 }

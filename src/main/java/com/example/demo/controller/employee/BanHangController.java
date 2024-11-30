@@ -61,15 +61,12 @@ public class BanHangController {
         List<HoaDon> hoaDonList = hoaDonRepository.findAll();
         List<HoaDonChiTiet> hoaDonChiTiets = hoaDonChiTietRepository.findByHoaDonId(id);
         List<SanPhamChiTiet> sanPhamChiTietList = sanPhamChiTietRepo.findAll();
-
         HoaDon hoaDon = hoaDonRepository.findById(id).orElseThrow();
         int totalAmount = hoaDonChiTietRepository.findByHoaDonId(id).stream()
                 .mapToInt(detail -> detail.getGia_san_pham() * detail.getSo_luong())
                 .sum();
-
         hoaDon.setTongTien(totalAmount);
         hoaDonRepository.save(hoaDon);
-
         String phuongThucThanhToan = hoaDon.getPhuong_thuc_thanh_toan();
         model.addAttribute("hoaDonList", hoaDonList);
         model.addAttribute("selectedHoaDonId", id);
@@ -79,6 +76,7 @@ public class BanHangController {
         model.addAttribute("tongTien", totalAmount);
         return "admin/ban_hang/index";
     }
+
 
 
     @PostMapping("/{id}/add-product")
@@ -121,10 +119,8 @@ public class BanHangController {
         hoaDon.setSoHoaDon(generateRandomId());
         hoaDon.setTinh_trang(0);
         hoaDon.setNgayTao(new Timestamp(System.currentTimeMillis()));
-        hoaDon.setPhuong_thuc_thanh_toan("Tiền mặt"); // Đặt mặc định là "Tiền mặt"
+        hoaDon.setPhuong_thuc_thanh_toan("Tiền mặt");
         hoaDonRepository.save(hoaDon);
-
-        // Chuyển hướng đến trang chi tiết hóa đơn mới được tạo
         return "redirect:/ban-hang/" + hoaDon.getId();
     }
 
@@ -133,21 +129,15 @@ public class BanHangController {
     @Transactional
     public String deleteHoaDon(@PathVariable Integer id, Model model) {
         List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findByHoaDonId(id);
-        // Hoàn trả số lượng sản phẩm trước khi xóa
         for (HoaDonChiTiet hoaDonChiTiet : hoaDonChiTietList) {
             SanPhamChiTiet sanPhamChiTiet = hoaDonChiTiet.getSanPhamChiTiet();
             sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() + hoaDonChiTiet.getSo_luong());
-            sanPhamChiTietRepo.save(sanPhamChiTiet); // Cập nhật số lượng sản phẩm trong cơ sở dữ liệu
+            sanPhamChiTietRepo.save(sanPhamChiTiet);
         }
         hoaDonChiTietRepository.deleteAll(hoaDonChiTietList);
-        // Xóa hóa đơn
         hoaDonRepository.deleteById(id);
-
-        // Tìm ID hóa đơn kế tiếp
         List<Integer> nextIds = hoaDonRepository.findNextId(id);
         Integer nextHoaDonId = nextIds.isEmpty() ? null : nextIds.get(0);
-
-        // Nếu không có hóa đơn kế tiếp, lấy hóa đơn đầu tiên trong danh sách
         if (nextHoaDonId == null) {
             List<HoaDon> remainingHoaDons = hoaDonRepository.findAll();
             if (!remainingHoaDons.isEmpty()) {
@@ -215,18 +205,35 @@ public class BanHangController {
             } else {
                 hoaDon.setKhachHang(null);
             }
+            int diemTichLuy = khachHang != null ? khachHang.getDiemTichLuy() : 0;
+            int discountRate = diemTichLuy / 1000 * 5;
+            discountRate = Math.min(discountRate, 30);
+            int totalOriginalPrice = 0;
+            int discountAmount = 0;
+            for (HoaDonChiTiet hoaDonChiTiet : hoaDon.getHoaDonChiTietList()) {
+                SanPhamChiTiet sanPhamChiTiet = hoaDonChiTiet.getSanPhamChiTiet();
+                int priceAfterPromotion = sanPhamChiTiet.getGiaGiamGia() != null && sanPhamChiTiet.getGiaGiamGia() > 0 ?
+                        sanPhamChiTiet.getGiaGiamGia() : sanPhamChiTiet.getGiaBan();
+                hoaDonChiTiet.setGia_san_pham(priceAfterPromotion);
+                hoaDonChiTietRepository.save(hoaDonChiTiet);
+                totalOriginalPrice += priceAfterPromotion * hoaDonChiTiet.getSo_luong();
+            }
+            discountAmount = totalOriginalPrice * discountRate / 100;
+            int totalAmountAfterDiscount = totalOriginalPrice - discountAmount;
+            hoaDon.setTongTien(totalAmountAfterDiscount);
             hoaDonRepository.save(hoaDon);
+            session.setAttribute("soDienThoai", soDienThoai);
+            session.setAttribute("ghiChu", ghiChu);
+            List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findByHoaDonId(id);
+            model.addAttribute("hoaDon", hoaDon);
+            model.addAttribute("chiTietList", hoaDonChiTietList);
+            model.addAttribute("discountAmount", discountAmount);
         }
-        // Lưu số điện thoại và ghi chú vào session
-        session.setAttribute("soDienThoai", soDienThoai);
-        session.setAttribute("ghiChu", ghiChu);
-
-        List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findByHoaDonId(id);
-        model.addAttribute("hoaDon", hoaDon);
-        model.addAttribute("chiTietList", hoaDonChiTietList);
 
         return "admin/ban_hang/confirm-order";
     }
+
+
 
 
 
@@ -243,9 +250,30 @@ public class BanHangController {
         KhachHang khachHang = khachHangRepo.findBySoDienThoai(soDienThoai);
         if (khachHang != null) {
             hoaDon.setKhachHang(khachHang);
-            int totalOriginalPrice = hoaDon.getHoaDonChiTietList().stream()
-                    .mapToInt(detail -> detail.getSanPhamChiTiet().getGiaBan() * detail.getSo_luong())
-                    .sum();
+            int totalOriginalPrice = 0;
+            for (HoaDonChiTiet hoaDonChiTiet : hoaDon.getHoaDonChiTietList()) {
+                SanPhamChiTiet sanPhamChiTiet = hoaDonChiTiet.getSanPhamChiTiet();
+                int priceAfterPromotion = sanPhamChiTiet.getGiaGiamGia() != null && sanPhamChiTiet.getGiaGiamGia() > 0 ?
+                        sanPhamChiTiet.getGiaGiamGia() : sanPhamChiTiet.getGiaBan();
+                hoaDonChiTiet.setGia_san_pham(priceAfterPromotion);
+                hoaDonChiTietRepository.save(hoaDonChiTiet);
+                totalOriginalPrice += priceAfterPromotion * hoaDonChiTiet.getSo_luong();
+            }
+            int diemTichLuy = khachHang.getDiemTichLuy();
+            int discountRate = diemTichLuy / 1000 * 5;
+            discountRate = Math.min(discountRate, 30);
+            int discountAmount = totalOriginalPrice * discountRate / 100;
+            int totalAmountAfterDiscount = totalOriginalPrice - discountAmount;
+            hoaDon.setTongTien(totalAmountAfterDiscount);
+            int remainingAmount = totalAmountAfterDiscount;
+            for (HoaDonChiTiet hoaDonChiTiet : hoaDon.getHoaDonChiTietList()) {
+                int originalPrice = hoaDonChiTiet.getGia_san_pham() * hoaDonChiTiet.getSo_luong();
+                double productDiscount = (double) originalPrice / totalOriginalPrice * discountAmount;
+                int newPriceAfterDiscount = originalPrice - (int) productDiscount;
+                hoaDonChiTiet.setGia_san_pham(newPriceAfterDiscount / hoaDonChiTiet.getSo_luong());
+                hoaDonChiTietRepository.save(hoaDonChiTiet);
+                remainingAmount -= newPriceAfterDiscount;
+            }
             int pointsToAdd = totalOriginalPrice / 10000;
             khachHang.setDiemTichLuy(khachHang.getDiemTichLuy() + pointsToAdd);
             khachHangRepo.save(khachHang);
@@ -263,9 +291,6 @@ public class BanHangController {
                 ? "redirect:/ban-hang/" + nextHoaDonId
                 : "redirect:/ban-hang";
     }
-
-
-
 
 
     @PostMapping("/{id}/update-quantity/{sanPhamChiTietId}")
@@ -299,13 +324,41 @@ public class BanHangController {
     public ResponseEntity<Map<String, String>> checkPhone(@RequestParam String soDienThoai) {
         Map<String, String> response = new HashMap<>();
         KhachHang khachHang = khachHangRepo.findBySoDienThoai(soDienThoai);
+
         if (khachHang != null) {
+            int diemTichLuy = khachHang.getDiemTichLuy();
+            String rank = getRankFromDiemTichLuy(diemTichLuy);
+            int discountRate = getDiscountRateFromDiemTichLuy(diemTichLuy);
+
             response.put("tenKhachHang", khachHang.getTenKhachHang());
+            response.put("diemTichLuy", String.valueOf(diemTichLuy));
+            response.put("rank", rank);
+            response.put("discountRate", String.valueOf(discountRate));
         } else {
             response.put("tenKhachHang", "Khách lẻ");
+            response.put("diemTichLuy", "0");
+            response.put("rank", "Khách lẻ");
+            response.put("discountRate", "0");
         }
+
         return ResponseEntity.ok(response);
     }
+
+    private String getRankFromDiemTichLuy(int diemTichLuy) {
+        if (diemTichLuy >= 5000) return "VIP";
+        if (diemTichLuy >= 4000) return "Kim Cương";
+        if (diemTichLuy >= 3000) return "Bạch Kim";
+        if (diemTichLuy >= 2000) return "Lục Bảo";
+        if (diemTichLuy >= 1000) return "Vàng";
+        if (diemTichLuy < 1000) return "Bạc";
+        return "Khách lẻ";
+    }
+
+    private int getDiscountRateFromDiemTichLuy(int diemTichLuy) {
+        int discount = diemTichLuy / 1000 * 5;
+        return Math.min(discount, 30);
+    }
+
 
 
 }

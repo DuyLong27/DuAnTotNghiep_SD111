@@ -37,7 +37,8 @@ public interface SanPhamChiTietRepo extends JpaRepository<SanPhamChiTiet, Intege
             + "JOIN hdct.sanPhamChiTiet spct "
             + "JOIN spct.sanPham sp "
             + "JOIN hdct.hoaDon hd "
-            + "WHERE hd.ngayTao BETWEEN :startDate AND :endDate "
+            + "WHERE hd.tinh_trang = 4"
+            + "AND hd.ngayTao BETWEEN :startDate AND :endDate "
             + "GROUP BY sp.ten "
             + "ORDER BY totalSold DESC")
     List<Object[]> findBestSellingProduct(@Param("startDate") Date startDate, @Param("endDate") Date endDate);

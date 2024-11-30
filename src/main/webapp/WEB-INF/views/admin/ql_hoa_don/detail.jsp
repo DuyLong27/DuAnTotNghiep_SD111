@@ -185,7 +185,17 @@
         <div class="card-body">
             <div class="row mb-2">
                 <div class="col-md-6">
-                    <p><strong>Tên khách hàng:</strong> ${hoaDon.khachHang.tenKhachHang}</p>
+                    <p><strong>Tên khách hàng:</strong>
+                        <c:choose>
+                            <c:when test="${empty hoaDon.khachHang.tenKhachHang}">
+                                Khách Lẻ
+                            </c:when>
+                            <c:otherwise>
+                                ${hoaDon.khachHang.tenKhachHang}
+                            </c:otherwise>
+                        </c:choose>
+                    </p>
+
                 </div>
                 <div class="col-md-6">
                     <p><strong>Số hóa đơn:</strong> ${hoaDon.soHoaDon}</p>
@@ -379,7 +389,7 @@
                     </div>
                     <div class="row mb-2">
                         <p class="col-sm-4"><strong>Ngày Yêu Cầu:</strong></p>
-                        <p class="col-sm-8"><span>${doiTra.ngayYeuCau}</span></p>
+                        <p class="col-sm-8"><span>${thoiGianHoanTra}</span></p>
                     </div>
                     <div class="row mb-2">
                         <p class="col-sm-4"><strong>Lý Do Cụ Thể:</strong></p>
@@ -421,9 +431,8 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary-outline" data-bs-dismiss="modal">Đóng</button>
-                <form action="/hoa-don/cap-nhat-tinh-trang" method="post">
-                    <input type="hidden" name="id" value="${hoaDon.id}" />
-                    <button type="submit" name="tinhTrangMoi" value="12" class="btn btn-primary">Xác Nhận Đổi Trả</button>
+                <form action="/hoa-don/xac-nhan-hoan-tra/${hoaDon.id}" method="post">
+                    <button type="submit"class="btn btn-primary">Xác Nhận Đổi Trả</button>
                 </form>
             </div>
         </div>

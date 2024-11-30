@@ -11,10 +11,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -45,12 +47,23 @@ public class QLHoaDonController {
     public String hienThi(Model model,
                           @PathVariable(required = false) String tinhTrang,
                           @RequestParam(defaultValue = "0") int page,
-                          @RequestParam(defaultValue = "10") int size) {
+                          @RequestParam(defaultValue = "10") int size,
+                          @RequestParam(required = false) String phoneNumber,
+                          @RequestParam(required = false) String startDate,
+                          @RequestParam(required = false) String endDate) {
+
         Pageable pageable = PageRequest.of(page, size);
         Page<HoaDon> hoaDonPage;
 
+        LocalDate start = startDate != null && !startDate.isEmpty() ? LocalDate.parse(startDate) : null;
+        LocalDate end = endDate != null && !endDate.isEmpty() ? LocalDate.parse(endDate) : null;
+
         if ("all".equals(tinhTrang)) {
-            hoaDonPage = hoaDonRepo.findAll(pageable);
+            if (phoneNumber != null && !phoneNumber.isEmpty()) {
+                hoaDonPage = hoaDonRepo.findByPhoneNumberContaining(phoneNumber, pageable);
+            } else {
+                hoaDonPage = hoaDonRepo.findAll(pageable);
+            }
         } else {
             Integer tinhTrangInt = null;
             try {
@@ -65,16 +78,34 @@ public class QLHoaDonController {
             } else {
                 hoaDonPage = hoaDonRepo.findAll(pageable);
             }
+
+            if (phoneNumber != null && !phoneNumber.isEmpty()) {
+                hoaDonPage = hoaDonRepo.findByPhoneNumberAndTinhTrang(phoneNumber, tinhTrangInt, pageable);
+            }
+        }
+
+        if (start != null && end != null) {
+            hoaDonPage = hoaDonRepo.findByThoiGianTaoBetween(start.atStartOfDay(), end.atTime(23, 59, 59), pageable);
+        } else if (start != null) {
+            hoaDonPage = hoaDonRepo.findByThoiGianTaoAfter(start.atStartOfDay(), pageable);
+        } else if (end != null) {
+            hoaDonPage = hoaDonRepo.findByThoiGianTaoBefore(end.atTime(23, 59, 59), pageable);
         }
 
         List<HoaDon> hoaDonList = hoaDonPage.getContent();
+        List<ThoiGianDonHang> thoiGianDonHangList = thoiGianDonHangRepo.findByHoaDonIn(hoaDonList);
+
+        Map<HoaDon, ThoiGianDonHang> hoaDonThoiGianMap = thoiGianDonHangList.stream()
+                .collect(Collectors.toMap(ThoiGianDonHang::getHoaDon, tgdh -> tgdh));
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
         List<String> thoiGianTaoFormattedList = hoaDonList.stream()
-                .map(hoaDon -> thoiGianDonHangRepo.findByHoaDon(hoaDon))
-                .filter(thoiGianDonHang -> thoiGianDonHang != null)
-                .map(ThoiGianDonHang::getThoiGianTao)
-                .map(thoiGianTao -> thoiGianTao != null ? thoiGianTao.format(formatter) : "Không có thông tin")
+                .map(hoaDon -> {
+                    ThoiGianDonHang thoiGianDonHang = hoaDonThoiGianMap.get(hoaDon);
+                    return thoiGianDonHang != null && thoiGianDonHang.getThoiGianTao() != null
+                            ? thoiGianDonHang.getThoiGianTao().format(formatter)
+                            : "Hóa đơn tại quầy";
+                })
                 .collect(Collectors.toList());
 
         model.addAttribute("listHoaDon", hoaDonList);
@@ -83,9 +114,14 @@ public class QLHoaDonController {
         model.addAttribute("totalPages", hoaDonPage.getTotalPages());
         model.addAttribute("isFirst", hoaDonPage.isFirst());
         model.addAttribute("isLast", hoaDonPage.isLast());
+        model.addAttribute("phoneNumber", phoneNumber);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+        model.addAttribute("tinhTrang", tinhTrang);
 
         return "/admin/ql_hoa_don/index";
     }
+
 
 
 
@@ -109,9 +145,23 @@ public class QLHoaDonController {
                 ThoiGianDonHang thoiGianDonHang = thoiGianDonHangOpt.get();
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss , dd/MM/yyyy");
-                String formattedThoiGianTao = thoiGianDonHang.getThoiGianTao().format(formatter);
+
+                String formattedThoiGianTao = null;
+                if (thoiGianDonHang.getThoiGianTao() != null) {
+                    formattedThoiGianTao = thoiGianDonHang.getThoiGianTao().format(formatter);
+                } else {
+                    formattedThoiGianTao = "Chưa có thông tin";
+                }
+
+                String formattedThoiGianHoanTra = null;
+                if (thoiGianDonHang.getHoanTra() != null) {
+                    formattedThoiGianHoanTra = thoiGianDonHang.getHoanTra().format(formatter);
+                } else {
+                    formattedThoiGianHoanTra = "Chưa có thông tin";
+                }
 
                 model.addAttribute("thoiGianTao", formattedThoiGianTao);
+                model.addAttribute("thoiGianHoanTra", formattedThoiGianHoanTra);
             }
 
             return "/admin/ql_hoa_don/detail";
@@ -203,6 +253,10 @@ public class QLHoaDonController {
                 }
             }
         }
+
+        ThoiGianDonHang thoiGianDonHang = thoiGianDonHangRepo.findByHoaDon_Id(id);
+        thoiGianDonHang.setDaHoanTra(LocalDateTime.now());
+        thoiGianDonHangRepo.save(thoiGianDonHang);
 
         redirectAttributes.addFlashAttribute("message", "Hoàn hàng thành công và điểm tích lũy đã được trừ!");
         return "redirect:/hoa-don/detail/" + id;
@@ -314,5 +368,37 @@ public class QLHoaDonController {
 
         return "redirect:/hoa-don/detail/" + id;
     }
+
+    @PostMapping("/xac-nhan-hoan-tra/{id}")
+    public String xacNhanHoanTra(
+            @PathVariable("id") Integer hoaDonId,
+            Model model) {
+
+        Optional<HoaDon> optionalHoaDon = hoaDonRepo.findById(hoaDonId);
+        if (!optionalHoaDon.isPresent()) {
+            model.addAttribute("errorMessage", "Hóa đơn không tồn tại.");
+            return "redirect:/danh-sach-hoa-don";
+        }
+
+        HoaDon hoaDon = optionalHoaDon.get();
+
+        hoaDon.setTinh_trang(12);
+
+        ThoiGianDonHang thoiGianDonHang = thoiGianDonHangRepo.findByHoaDon_Id(hoaDonId);
+        if (thoiGianDonHang == null) {
+            model.addAttribute("errorMessage", "Không tìm thấy thời gian cho hóa đơn này.");
+            return "redirect:/hoa-don/detail/" + hoaDonId;
+        }
+
+        thoiGianDonHang.setXacNhanHoanTra(LocalDateTime.now());
+
+        thoiGianDonHangRepo.save(thoiGianDonHang);
+        hoaDonRepo.save(hoaDon);
+
+        model.addAttribute("successMessage", "Hóa đơn đã được xác nhận hoàn trả thành công.");
+
+        return "redirect:/hoa-don/detail/" + hoaDon.getId();
+    }
+
 
 }

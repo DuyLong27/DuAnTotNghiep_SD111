@@ -118,25 +118,27 @@
                         </c:choose>
                     </div>
                     <hr>
-                    <div class="quantity">
-                        Chọn số lượng:
-                        <button type="button" class="btn btn-outline-secondary rounded-circle px-2"
-                                onclick="changeQuantity(-1)">-
-                        </button>
-                        <input type="number" class="form-control mx-2 text-center" id="soLuongSanPham"
-                               name="soLuongSanPham" min="1" value="1" required onchange="updateTotal()"
-                               style="width: 80px;">
-                        <button type="button" class="btn btn-outline-secondary rounded-circle px-2"
-                                onclick="changeQuantity(1)">+
-                        </button>
-                    </div>
+                    <form action="/danh-sach-san-pham-chi-tiet/add" method="post">
+                        <div class="quantity">
+                            Chọn số lượng:
+                            <button type="button" class="btn btn-outline-secondary px-2"
+                                    onclick="changeQuantity(-1)">-
+                            </button>
+                            <input type="number" class="form-control mx-2 text-center" id="soLuongSanPham"
+                                   name="soLuongSanPham" min="1" value="1" required onchange="updateTotal()"
+                                   style="width: 80px;">
+                            <button type="button" class="btn btn-outline-secondary px-2"
+                                    onclick="changeQuantity(1)">+
+                            </button>
+                        </div>
+                    </form>
                     <div class="items">
                         <p>Còn ${sanPhamChiTiet.soLuong} sản phẩm trong kho</p>
                     </div>
                     <hr>
                     <div class="row mt-3">
                         <div class="col-12 d-flex justify-content-between gap-3">
-                            <form action="/gio-hang/add" method="post" class="w-50">
+                            <form action="/danh-sach-san-pham-chi-tiet/add" method="post" class="w-50">
                                 <input type="hidden" name="sanPhamId" value="${sanPhamChiTiet.id}">
                                 <button type="submit" class="product-cart btn btn-dark btn-lg w-100 text-center">Thêm
                                     vào giỏ hàng
@@ -156,7 +158,8 @@
             <div class="description mt-10">
                 <ul class="nav nav-tabs">
                     <li class="nav-item">
-                        <a class="nav-link active" data-bs-toggle="pill" href="#home" style="color: black">Thông tin sản phẩm</a>
+                        <a class="nav-link active" data-bs-toggle="pill" href="#home" style="color: black">Thông tin sản
+                            phẩm</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="pill" href="#menu1" style="color: black">Nhận xét</a>
@@ -286,13 +289,10 @@
                                     <form action="/danh-sach-san-pham/xac-nhan-hoa-don" method="post">
                                         <input type="hidden" name="sanPhamId" value="${sanPhamChiTiet.id}">
                                         <input type="hidden" name="soLuong" id="soLuongInput" value="1">
-                                        <input type="hidden" name="tongTien" id="tongTienInput"
-                                               value="${sanPhamChiTiet.giaBan}">
+                                        <input type="hidden" name="tongTien" id="tongTienInput" value="${sanPhamChiTiet.giaBan}">
                                         <div class="mb-3">
-                                            <label for="phuongThucThanhToan" class="form-label fw-bold">Phương thức
-                                                thanh toán:</label>
-                                            <select class="form-select" id="phuongThucThanhToan"
-                                                    name="phuongThucThanhToan" required>
+                                            <label for="phuongThucThanhToan" class="form-label fw-bold">Phương thức thanh toán:</label>
+                                            <select class="form-select" id="phuongThucThanhToan" name="phuongThucThanhToan" required>
                                                 <option value="Tiền mặt">Tiền mặt</option>
                                                 <option value="Chuyển khoản">Chuyển khoản</option>
                                                 <option value="Thẻ tín dụng">Thẻ tín dụng</option>
@@ -301,18 +301,12 @@
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Phương thức vận chuyển:</label>
                                             <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="phuongThucVanChuyen"
-                                                       id="giaoHangNhanh" value="Giao Hàng Nhanh" required
-                                                       onchange="updateTotal()">
-                                                <label class="form-check-label" for="giaoHangNhanh">Giao Hàng
-                                                    Nhanh</label>
+                                                <input class="form-check-input" type="radio" name="phuongThucVanChuyen" id="giaoHangNhanh" value="Giao Hàng Nhanh" required onchange="updateTotal()">
+                                                <label class="form-check-label" for="giaoHangNhanh">Giao Hàng Nhanh</label>
                                             </div>
                                             <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="phuongThucVanChuyen"
-                                                       id="giaoHangTieuChuan" value="Giao Hàng Tiêu Chuẩn"
-                                                       onchange="updateTotal()">
-                                                <label class="form-check-label" for="giaoHangTieuChuan">Giao Hàng Tiêu
-                                                    Chuẩn</label>
+                                                <input class="form-check-input" type="radio" name="phuongThucVanChuyen" id="giaoHangTieuChuan" value="Giao Hàng Tiêu Chuẩn" onchange="updateTotal()">
+                                                <label class="form-check-label" for="giaoHangTieuChuan">Giao Hàng Tiêu Chuẩn</label>
                                             </div>
                                         </div>
                                         <div class="mb-3">
@@ -321,12 +315,17 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="soDienThoai" class="form-label fw-bold">Số điện thoại:</label>
-                                            <input type="tel" class="form-control" id="soDienThoai" name="soDienThoai"
-                                                   pattern="[0-9]{10}" required>
+                                            <input type="tel" class="form-control" id="soDienThoai" name="soDienThoai" pattern="[0-9]{10}" required>
                                         </div>
-                                        <button type="submit" class="btn btn-success w-100 py-2 mt-4">Xác nhận đơn
-                                            hàng
-                                        </button>
+                                        <c:choose>
+                                            <c:when test="${empty khachHang}">
+                                                <div class="mb-3">
+                                                    <label for="email" class="form-label fw-bold">Email:</label>
+                                                    <input type="email" class="form-control" id="email" name="email" placeholder="Vui lòng nhập email để nhận mã đơn hàng" required>
+                                                </div>
+                                            </c:when>
+                                        </c:choose>
+                                        <button type="submit" class="btn btn-success w-100 py-2 mt-4">Xác nhận đơn hàng</button>
                                     </form>
                                 </div>
                             </div>
@@ -341,85 +340,8 @@
 <script>
     let currentPage = 0; // Trang bắt đầu
 
-    <%--document.querySelector('.btn-dark').addEventListener('click', function () {--%>
-    <%--    // Lấy thông tin sản phẩm từ trang--%>
-    <%--    let productId = document.querySelector('input[name="id"]').value;--%>
-    <%--    let productName = document.querySelector('.product-title').innerText;--%>
-    <%--    let price = document.querySelector('.price').innerText;--%>
-    <%--    let quantity = document.getElementById('quantity').value;--%>
-
-    <%--    // Tạo đối tượng sản phẩm--%>
-    <%--    let product = {--%>
-    <%--        id: productId,--%>
-    <%--        name: productName,--%>
-    <%--        price: price,--%>
-    <%--        quantity: quantity--%>
-    <%--    };--%>
-
-    <%--    // Lấy giỏ hàng từ localStorage (nếu có)--%>
-    <%--    let cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];--%>
-
-    <%--    // Kiểm tra nếu sản phẩm đã có trong giỏ hàng--%>
-    <%--    let existingProduct = cart.find(item => item.id === productId);--%>
-
-    <%--    if (existingProduct) {--%>
-    <%--        // Nếu sản phẩm đã có trong giỏ hàng, tăng số lượng--%>
-    <%--        existingProduct.quantity = parseInt(existingProduct.quantity) + parseInt(quantity);--%>
-    <%--    } else {--%>
-    <%--        // Nếu sản phẩm chưa có, thêm sản phẩm mới vào giỏ hàng--%>
-    <%--        cart.push(product);--%>
-    <%--    }--%>
-
-    <%--    // Lưu giỏ hàng lại vào localStorage--%>
-    <%--    localStorage.setItem('cart', JSON.stringify(cart));--%>
-
-    <%--    // Thông báo cho người dùng--%>
-    <%--    alert('Sản phẩm đã được thêm vào giỏ hàng');--%>
-    <%--});--%>
-
-    <%--function updateCartQuantity() {--%>
-    <%--    // Lấy giá trị số lượng người dùng đã nhập--%>
-    <%--    const soLuong = document.getElementById("soLuong").value;--%>
-
-    <%--    // Cập nhật giá trị số lượng vào trường ẩn trong form--%>
-    <%--    document.getElementById("soLuongInputForm").value = soLuong;--%>
-    <%--}--%>
-
-    <%--function displayCart() {--%>
-    <%--    let cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];--%>
-
-    <%--    let cartTable = document.querySelector('tbody');--%>
-    <%--    cartTable.innerHTML = ''; // Xóa nội dung cũ--%>
-
-    <%--    cart.forEach((item, index) => {--%>
-    <%--        let row = `--%>
-    <%--        <tr>--%>
-    <%--            <td>${index + 1}</td>--%>
-    <%--            <td>${item.name}</td>--%>
-    <%--            <td>${item.price}</td>--%>
-    <%--            <td>${item.quantity}</td>--%>
-    <%--            <td><button class="btn btn-danger btn-sm" onclick="removeFromCart(${item.id})">Xóa</button></td>--%>
-    <%--        </tr>--%>
-    <%--    `;--%>
-    <%--        cartTable.innerHTML += row;--%>
-    <%--    });--%>
-    <%--}--%>
-
     // Gọi hàm displayCart khi trang tải
     window.onload = displayCart;
-
-    // function removeFromCart(productId) {
-    //     let cart = JSON.parse(localStorage.getItem('cart'));
-    //
-    //     // Loại bỏ sản phẩm khỏi giỏ hàng
-    //     cart = cart.filter(item => item.id != productId);
-    //
-    //     // Lưu lại giỏ hàng mới vào localStorage
-    //     localStorage.setItem('cart', JSON.stringify(cart));
-    //
-    //     // Cập nhật lại hiển thị giỏ hàng
-    //     displayCart();
-    // }
 
     // Giá bán của sản phẩm
     const giaBan = ${sanPhamChiTiet.giaBan};
