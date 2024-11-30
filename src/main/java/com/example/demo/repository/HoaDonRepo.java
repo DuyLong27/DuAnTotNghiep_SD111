@@ -81,7 +81,6 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
             "ORDER BY date", nativeQuery = true)
     List<Object[]> tinhDoanhThuTheoNgay(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
-
     Optional<HoaDon> findBySoHoaDon(String soHoaDon);
 
     @Query("SELECT h FROM HoaDon h WHERE h.soDienThoai LIKE %:phoneNumber%")
@@ -100,7 +99,6 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
 
     @Query("SELECT h FROM HoaDon h WHERE h.ngayTao <= :endDate")
     Page<HoaDon> findByThoiGianTaoBefore(@Param("endDate") LocalDateTime endDate, Pageable pageable);
-
 
     @Query(value = "SELECT nv.ten_nhan_vien, COUNT(hd.id_hoa_don), SUM(hd.tong_tien) " +
             "FROM nhan_vien nv " +
