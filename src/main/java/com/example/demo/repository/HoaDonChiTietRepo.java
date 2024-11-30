@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -33,5 +35,21 @@ public interface HoaDonChiTietRepo extends JpaRepository<HoaDonChiTiet, Integer>
             "GROUP BY h.sanPhamChiTiet " +
             "ORDER BY total DESC")
     List<Object[]> findTopSellingProducts(Pageable pageable);
+
+
+    @Query(value = "SELECT SUM(hdct.so_luong * hdct.gia_san_pham - hdct.giam_gia) AS tong_doanh_thu " +
+            "FROM hoa_don_chi_tiet hdct " +
+            "JOIN hoa_don hd ON hdct.id_hoa_don = hd.id_hoa_don " +
+            "WHERE CAST(hd.ngay_tao AS DATE) = :ngay AND hd.tinh_trang = 4", nativeQuery = true)
+    BigDecimal tinhTongDoanhThuTheoNgayVaTinhTrang(@Param("ngay") LocalDate ngay);
+
+
+
+    @Query(value = "SELECT SUM(hdct.so_luong) AS tong_san_pham " +
+            "FROM hoa_don_chi_tiet hdct " +
+            "JOIN hoa_don hd ON hdct.id_hoa_don = hd.id_hoa_don " +  // Sửa từ hoa_don_id thành id_hoa_don
+            "WHERE CAST(hd.ngay_tao AS DATE) = :ngay AND hd.tinh_trang = 4", nativeQuery = true)
+    Long tinhTongSanPhamBanRaTrongNgay(@Param("ngay") LocalDate ngay);
+
 
 }

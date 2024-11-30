@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -100,17 +101,6 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
     @Query("SELECT h FROM HoaDon h WHERE h.ngayTao <= :endDate")
     Page<HoaDon> findByThoiGianTaoBefore(@Param("endDate") LocalDateTime endDate, Pageable pageable);
 
-    @Query(value = "SELECT nv.ten_nhan_vien, COUNT(hd.id_hoa_don), SUM(hd.tong_tien) " +
-            "FROM nhan_vien nv " +
-            "LEFT JOIN hoa_don hd ON hd.id_nhan_vien = nv.id_nhan_vien " +
-            "WHERE hd.tinh_trang = 4 " +
-            "AND CONVERT(DATE, hd.ngay_tao) = :selectedDate " +  // Sử dụng CONVERT đúng cách trong native query
-            "GROUP BY nv.ten_nhan_vien " +
-            "ORDER BY SUM(hd.tong_tien) DESC",
-            nativeQuery = true)
-    List<Object[]> getEmployeeRevenueReport(@Param("selectedDate") java.sql.Date selectedDate);
-
-
     @Query(value = "SELECT spChiTiet.hinh_anh_san_pham, sp.ten, COUNT(cthd.id_hoa_don), SUM(cthd.so_luong * cthd.gia_san_pham) " +
             "FROM hoa_don_chi_tiet cthd " +
             "JOIN san_pham_chi_tiet spChiTiet ON spChiTiet.id_san_pham_chi_tiet = cthd.id_san_pham_chi_tiet " +
@@ -122,4 +112,9 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
             "ORDER BY SUM(cthd.so_luong * cthd.gia_san_pham) DESC",
             nativeQuery = true)
     List<Object[]> getProductRevenueReport(@Param("selectedDate") java.sql.Date selectedDate);
+
+    @Query(value = "SELECT COUNT(*) AS tong_hoa_don " +
+            "FROM hoa_don hd " +
+            "WHERE CAST(hd.ngay_tao AS DATE) = :ngay AND hd.tinh_trang = 4", nativeQuery = true)
+    Long demSoHoaDonTheoNgayVaTinhTrang(@Param("ngay") LocalDate ngay);
 }

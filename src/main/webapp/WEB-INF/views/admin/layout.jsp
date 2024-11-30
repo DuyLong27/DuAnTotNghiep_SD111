@@ -15,7 +15,7 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
           integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
-          crossorigin="anonymous" referrerpolicy="no-referrer" />
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"
             integrity="sha512-KZmyTq3PLx9EZl0RHShHQuXtrvdJ+m35tuOiwlcZfs/rE7NZv29ygNA8SFCkMXTnYZQK2OX0Gm2qKGfvWEtRXA=="
@@ -77,7 +77,7 @@
 
         .dropdown-menu {
             display: none;
-            background-color:grey !important;
+            background-color: grey !important;
             width: 168px;
             border-radius: 5px;
 
@@ -190,7 +190,7 @@
             border-radius: 5px;
             padding: 6px 12px;
             transition: background-color 0.3s, color 0.3s;
-            width:160px
+            width: 160px
         }
 
         .btn-secondary:hover {
@@ -417,7 +417,6 @@
     </style>
 
 
-
 </head>
 <body>
 
@@ -431,13 +430,13 @@
 
     <img src="../../uploads/logo_xanh.png" alt="Logo">
 
-    <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+    <a href="/doanh-thu/hien-thi">
         <i class="fa-solid fa-chart-simple"></i>Tổng quan
     </a>
-    <ul class="dropdown-menu">
-        <li><a class="dropdown-item" href="/bao-cao/hien-thi"><i class="fa-solid fa-chart-simple"></i>Thống kê</a></li>
-        <li><a class="dropdown-item" href="/bao-cao/hang-ngay"><i class="fa-solid fa-clipboard"></i></i>Báo cáo</a></li>
-    </ul>
+
+    <a class="dropdown-item" href="/bao-cao/hien-thi">
+        <i class="fa-solid fa-clipboard"></i></i>Báo cáo
+    </a>
 
     <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
         <i class="fas fa-box"></i>Hàng hóa
@@ -472,8 +471,10 @@
         <i class="fa-solid fa-ticket"></i>Khuyến mãi
     </a>
     <ul class="dropdown-menu">
-        <li><a class="dropdown-item" href="/khuyen-mai/hien-thi"><i class="fa-regular fa-percent"></i>Khuyến mãi</a></li>
-        <li><a class="dropdown-item" href="/khuyen-mai/chi-tiet"><i class="fa-solid fa-clipboard"></i>CT Khuyến mãi</a></li>
+        <li><a class="dropdown-item" href="/khuyen-mai/hien-thi"><i class="fa-regular fa-percent"></i>Khuyến mãi</a>
+        </li>
+        <li><a class="dropdown-item" href="/khuyen-mai/chi-tiet"><i class="fa-solid fa-clipboard"></i>CT Khuyến mãi</a>
+        </li>
     </ul>
 </div>
 
@@ -484,7 +485,8 @@
 <img src="/uploads/background_quanly.png" alt="Background" class="img-fluid" style="width: 100%; height: auto;">
 <div class="overlay-content">
     <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="accountDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="accountDropdown" data-bs-toggle="dropdown"
+                aria-expanded="false">
             <i class="fas fa-user"></i> Tài khoản
         </button>
         <ul class="account-dropdown-menu dropdown-menu" aria-labelledby="accountDropdown">
@@ -493,7 +495,6 @@
         </ul>
     </div>
 </div>
-
 
 
 </body>
@@ -506,7 +507,7 @@
         overlay.classList.toggle('show'); // Hiển thị hoặc ẩn overlay
     }
 
-    document.getElementById('overlay').addEventListener('click', function() {
+    document.getElementById('overlay').addEventListener('click', function () {
         toggleSidebar(); // Gọi lại hàm toggle để đóng sidebar
     });
 
