@@ -137,17 +137,25 @@ public class QLSanPhamController {
     }
 
     @PostMapping("/update")
-    public String updateProduct(@Valid @ModelAttribute("data") SanPham sanPham, BindingResult validate, Model model, RedirectAttributes redirectAttributes) {
+    public String updateProduct(@Valid @ModelAttribute("data") SanPham sanPham, BindingResult validate,
+                                Model model, RedirectAttributes redirectAttributes) {
         if (validate.hasErrors()) {
             List<DanhMuc> danhMucList = danhMucRepo.findAll();
             List<NhaCungCap> nhaCungCapList = nhaCungCapRepo.findAll();
             model.addAttribute("data", sanPham);
             model.addAttribute("danhMucList", danhMucList);
             model.addAttribute("nhaCungCapList", nhaCungCapList);
-            return "admin/ql_san_pham/index"; // Hoặc trả về một trang cụ thể
+            return "admin/ql_san_pham/index";
         }
+        List<SanPhamChiTiet> sanPhamChiTietList = sanPhamChiTietRepo.findBySanPhamId(sanPham.getId());
+        for (SanPhamChiTiet sanPhamChiTiet : sanPhamChiTietList) {
+            sanPhamChiTiet.setTinhTrang(sanPham.getTinhTrang());
+        }
+        sanPhamChiTietRepo.saveAll(sanPhamChiTietList);
         sanPhamRepo.save(sanPham);
+
         redirectAttributes.addFlashAttribute("message", "Sửa thành công!");
         return "redirect:/san-pham/index";
     }
+
 }

@@ -21,6 +21,7 @@ public interface SanPhamChiTietRepo extends JpaRepository<SanPhamChiTiet, Intege
 //    void deleteBySanPhamId(@Param("sanPhamId") int sanPhamId);
 
 
+    List<SanPhamChiTiet> findBySanPhamId(Integer sanPhamId);
 
     List<SanPhamChiTiet> findByThuongHieuId(Integer thuongHieuId);
     List<SanPhamChiTiet> findByLoaiCaPheId(Integer loaiCaPheId);

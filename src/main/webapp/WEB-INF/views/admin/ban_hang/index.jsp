@@ -347,40 +347,42 @@
                 <c:if test="${not empty selectedHoaDonId}">
                     <div class="row">
                         <c:forEach items="${sanPhams}" var="sanPham">
-                            <div class="col-md-4 mb-3">
-                                <div class="card" style="position: relative; border-radius: 20px; overflow: hidden;">
-                                    <c:if test="${sanPham.giaGiamGia != null && sanPham.giaGiamGia > 0}">
-                            <span class="discount-badge">
-                                ${sanPham.khuyenMaiChiTietList[0].khuyenMai.giaTriKhuyenMai}%
-                            </span>
-                                    </c:if>
+                            <c:if test="${sanPham.tinhTrang == 1}">
+                                <div class="col-md-4 mb-3">
+                                    <div class="card" style="position: relative; border-radius: 20px; overflow: hidden;">
+                                        <c:if test="${sanPham.giaGiamGia != null && sanPham.giaGiamGia > 0}">
+                                <span class="discount-badge">
+                                    ${sanPham.khuyenMaiChiTietList[0].khuyenMai.giaTriKhuyenMai}%
+                                </span>
+                                        </c:if>
 
-                                    <div class="card-body text-center">
-                                        <img src="${pageContext.request.contextPath}/uploads/${sanPham.hinhAnh}"
-                                             alt="${sanPham.sanPham.ten}">
-                                        <h5 class="card-title">${sanPham.sanPham.ten}</h5>
-                                        <p class="card-text">
-                                            <c:choose>
-                                                <c:when test="${sanPham.giaGiamGia != null && sanPham.giaGiamGia > 0}">
-                                                    <span class="old-price">Giá: ${sanPham.giaBan} VNĐ</span><br>
-                                                    <span class="discount-price">Giá giảm: ${sanPham.giaGiamGia} VNĐ</span>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    Giá: ${sanPham.giaBan} VNĐ
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </p>
-                                        <p class="card-text">Số Lượng: ${sanPham.soLuong}</p>
-                                        <form action="${pageContext.request.contextPath}/ban-hang/${selectedHoaDonId}/add-product"
-                                              method="post">
-                                            <input type="hidden" name="sanPhamId" value="${sanPham.id}">
-                                            <button type="submit" class="btn btn-outline-custom">
-                                                <i class="bi bi-plus"></i> <!-- Icon dấu cộng -->
-                                            </button>
-                                        </form>
+                                        <div class="card-body text-center">
+                                            <img src="${pageContext.request.contextPath}/uploads/${sanPham.hinhAnh}"
+                                                 alt="${sanPham.sanPham.ten}">
+                                            <h5 class="card-title">${sanPham.sanPham.ten}</h5>
+                                            <p class="card-text">
+                                                <c:choose>
+                                                    <c:when test="${sanPham.giaGiamGia != null && sanPham.giaGiamGia > 0}">
+                                                        <span class="old-price">Giá: ${sanPham.giaBan} VNĐ</span><br>
+                                                        <span class="discount-price">Giá giảm: ${sanPham.giaGiamGia} VNĐ</span>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        Giá: ${sanPham.giaBan} VNĐ
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </p>
+                                            <p class="card-text">Số Lượng: ${sanPham.soLuong}</p>
+                                            <form action="${pageContext.request.contextPath}/ban-hang/${selectedHoaDonId}/add-product"
+                                                  method="post">
+                                                <input type="hidden" name="sanPhamId" value="${sanPham.id}">
+                                                <button type="submit" class="btn btn-outline-custom">
+                                                    <i class="bi bi-plus"></i> <!-- Icon dấu cộng -->
+                                                </button>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </c:if>
                         </c:forEach>
                     </div>
                 </c:if>
