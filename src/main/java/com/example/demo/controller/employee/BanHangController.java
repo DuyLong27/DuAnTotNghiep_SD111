@@ -15,10 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 @Controller
 @RequestMapping("/ban-hang")
@@ -119,6 +116,7 @@ public class BanHangController {
         hoaDon.setSoHoaDon(generateRandomId());
         hoaDon.setTinh_trang(0);
         hoaDon.setKieuHoaDon(0);
+        hoaDon.setNgayTao(new Date());
         hoaDon.setPhuong_thuc_thanh_toan("Tiền mặt");
         hoaDonRepository.save(hoaDon);
         return "redirect:/ban-hang/" + hoaDon.getId();
