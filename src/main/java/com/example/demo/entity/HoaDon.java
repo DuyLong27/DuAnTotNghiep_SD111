@@ -53,11 +53,14 @@ public class HoaDon {
     private String lyDo;
 
     @Column(name = "ngay_tao")
-    private LocalDateTime ngayTao;
+    private Date ngayTao;
+
+    @Column(name = "thoi_gian_tao")
+    private LocalDateTime thoiGianTao;
 
     @PrePersist
     protected void onCreate() {
-        this.ngayTao = LocalDateTime.now();
+        this.thoiGianTao = LocalDateTime.now();
     }
 
     @Column(name = "kieu_hoa_don")

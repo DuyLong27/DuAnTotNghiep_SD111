@@ -229,7 +229,8 @@ public class DanhSachSPCTController {
         hoaDon.setPhuongThucVanChuyen(phuongThucVanChuyen);
         hoaDon.setDiaChi(diaChi);
         hoaDon.setSoDienThoai(soDienThoai);
-        hoaDon.setNgayTao(LocalDateTime.now());
+        hoaDon.setNgayTao(new Date());
+        hoaDon.setThoiGianTao(LocalDateTime.now());
         hoaDon.setKieuHoaDon(1);
         hoaDon.setTongTien(tongTien);
         hoaDon.setSoHoaDon(soHoaDon);
