@@ -54,7 +54,7 @@
             const currentUrl = window.location.href;
             const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
             navLinks.forEach(link => {
-                if (currentUrl.includes(link.getAttribute('href'))) {
+                if (currentUrl === link.href) {
                     link.classList.add('active');
                 }
             });
@@ -76,7 +76,7 @@
         <!-- Thêm trường select cho kieuHoaDon -->
         <select class="form-control me-2" name="kieuHoaDon">
             <option value="">Loại hóa đơn</option>
-            <option value="0" ${kieuHoaDon == 0 ? 'selected' : ''}>Offline</option>
+            <option value="0" ${kieuHoaDon == 0 ? 'selected' : ''}>Tại quầy</option>
             <option value="1" ${kieuHoaDon == 1 ? 'selected' : ''}>Online</option>
         </select>
 
@@ -88,7 +88,6 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <div class="navbar-nav-group">
                 <div class="navbar-nav">
-                    <h5>Chung</h5>
                     <a class="nav-link" href="/hoa-don/tinhTrang=all">Tất cả</a>
                 </div>
                 <div class="navbar-nav">

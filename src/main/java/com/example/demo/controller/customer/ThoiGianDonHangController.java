@@ -43,6 +43,7 @@ public class ThoiGianDonHangController {
                 LocalDateTime hoanTraDate = thoiGianDonHang != null ? thoiGianDonHang.getHoanTra() : null;
                 LocalDateTime xacNhanHoanTraDate = thoiGianDonHang != null ? thoiGianDonHang.getXacNhanHoanTra() : null;
                 LocalDateTime daHoanTraDate = thoiGianDonHang != null ? thoiGianDonHang.getDaHoanTra() : null;
+                LocalDateTime daHuyDate = thoiGianDonHang != null ? thoiGianDonHang.getDaHuy() : null;
 
                 DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
                 DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm , dd-MM-yyyy ");
@@ -54,6 +55,7 @@ public class ThoiGianDonHangController {
                 String hoanTraFormatted = (hoanTraDate != null) ? hoanTraDate.format(dateTimeFormatter) : "Chưa có thông tin";
                 String xacNhanHoanTraFormatted = (xacNhanHoanTraDate != null) ? xacNhanHoanTraDate.format(dateTimeFormatter) : "Chưa có thông tin";
                 String daHoanTraFormatted = (daHoanTraDate != null) ? daHoanTraDate.format(dateTimeFormatter) : "Chưa có thông tin";
+                String daHuyFormatted = (daHuyDate != null) ? daHuyDate.format(dateTimeFormatter) : "Chưa có thông tin";
 
                 LocalDateTime thoiGianDuKien = null;
                 if (banGiaoVanChuyenDate != null) {
@@ -76,6 +78,7 @@ public class ThoiGianDonHangController {
                 model.addAttribute("hoanTra", hoanTraFormatted);
                 model.addAttribute("xacNhanHoanTra", xacNhanHoanTraFormatted);
                 model.addAttribute("daHoanTra", daHoanTraFormatted);
+                model.addAttribute("daHuy", daHuyFormatted);
             }
         } else {
             model.addAttribute("error", "Vui lòng nhập số hóa đơn để tìm kiếm.");

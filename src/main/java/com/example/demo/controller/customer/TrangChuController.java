@@ -56,12 +56,12 @@ public class TrangChuController {
     public String homePage(Model model) {
         Pageable pageable = PageRequest.of(0, 4);
         List<Object[]> topSellingProducts = hoaDonChiTietRepository.findTopSellingProducts(pageable);
-
         List<SanPhamChiTiet> bestSellers = topSellingProducts.stream()
                 .map(obj -> (SanPhamChiTiet) obj[0])
                 .collect(Collectors.toList());
 
         List<SanPhamChiTiet> allProducts = sanPhamChiTietRepository.findAll();
+        List<SanPhamChiTiet> newestProducts = sanPhamChiTietRepository.findByOrderByNgayTaoDesc(pageable);
 
         List<KhuyenMai> khuyenMais = khuyenMaiRepository.findAll();
         List<KhuyenMai> validKhuyenMais = khuyenMais.stream()
@@ -69,12 +69,13 @@ public class TrangChuController {
                 .collect(Collectors.toList());
 
         model.addAttribute("bestSellers", bestSellers);
+        model.addAttribute("newestProducts", newestProducts);
         model.addAttribute("validKhuyenMais", validKhuyenMais);
         model.addAttribute("allProducts", allProducts);
-
         model.addAttribute("listGioHang",gioHangChiTietRepo.findAll());
         return "customer/trang_chu/index";
     }
+
 
     @GetMapping("/mua-ngay")
     public String muaNgay(@RequestParam("productId") Integer productId, Model model, HttpSession session) {

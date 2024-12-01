@@ -122,8 +122,9 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
             "ORDER BY SUM(cthd.so_luong * cthd.gia_san_pham) DESC",
             nativeQuery = true)
     List<Object[]> getProductRevenueReport(@Param("selectedDate") java.sql.Date selectedDate);
-    @Query("SELECT h FROM HoaDon h WHERE (:tinhTrang IS NULL OR h.tinh_trang = :tinhTrang) " +
-            "AND (:phoneNumber IS NULL OR h.soDienThoai LIKE %:phoneNumber%) " +
+    @Query("SELECT h FROM HoaDon h WHERE (:tinhTrang IS NULL OR " +
+            "(h.tinh_trang = :tinhTrang OR (:tinhTrang = 2 AND h.tinh_trang IN (2, 3)))) " +
+            "AND (:phoneNumber IS NULL OR h.soDienThoai IS NULL OR h.soDienThoai LIKE %:phoneNumber%) " +
             "AND (:kieuHoaDon IS NULL OR h.kieuHoaDon = :kieuHoaDon) " +
             "AND (:startDate IS NULL OR h.ngayTao >= :startDate) " +
             "AND (:endDate IS NULL OR h.ngayTao <= :endDate)")

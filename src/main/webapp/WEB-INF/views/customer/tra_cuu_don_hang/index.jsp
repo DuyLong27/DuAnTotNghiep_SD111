@@ -53,6 +53,7 @@
             <div class="col-md-4">
                 <div class="info-card">
                     <h4 class="info-header">Xử lý đơn hàng</h4>
+                    <c:if test="${hoaDon.kieuHoaDon == 1 && hoaDon.tinh_trang !=14}">
                     <c:if test="${hoaDon.tinh_trang >= 0}">
                     <p><strong>${thoiGianTao}</strong> Đơn hàng đã được đặt </p>
                     </c:if>
@@ -76,6 +77,14 @@
                     <c:if test="${hoaDon.tinh_trang >= 13}">
                         <p><strong>${daHoanTra}</strong>: Đổi trả thành công</p>
                     </c:if>
+                    </c:if>
+                    <c:if test="${hoaDon.kieuHoaDon == 0}">
+                        <p>Đơn hàng đã được mua tại quầy vào lúc: <strong>${hoaDon.thoiGianTaoFormatted}</strong></p>
+                    </c:if>
+                    <c:if test="${hoaDon.tinh_trang ==14}">
+                        <p><strong>${thoiGianTao}</strong> Đơn hàng đã được đặt </p>
+                        <p><strong>${daHuy}</strong>: Đã hủy đơn hàng</p>
+                    </c:if>
                 </div>
             </div>
 
@@ -85,6 +94,7 @@
                     <h4 class="info-header">Thông tin hóa đơn</h4>
                     <p><strong>Số hóa đơn:</strong> ${hoaDon.soHoaDon}</p>
                     <p><strong>Số điện thoại:</strong> ${hoaDon.soDienThoai}</p>
+                    <c:if test="${hoaDon.kieuHoaDon == 1}">
                     <p><strong>Địa chỉ:</strong> ${hoaDon.diaChi}</p>
                     <p><strong>Phương thức vận chuyển:</strong> ${hoaDon.phuongThucVanChuyen}</p>
                     <p><strong>Phí vận chuyển:</strong>
@@ -93,7 +103,9 @@
                             <c:when test="${hoaDon.phuongThucVanChuyen == 'Giao Hàng Nhanh'}">33000 VNĐ</c:when>
                         </c:choose>
                     </p>
+                    </c:if>
                     <p><strong>Tổng tiền:</strong> ${hoaDon.tongTien} VNĐ</p>
+                    <p><strong>Loại hóa đơn:</strong> ${hoaDon.kieuHoaDon ==1 ? "Online" :"Tại quầy"}</p>
                     <p>
                         <strong>Trạng thái đơn hàng:</strong>
                         <c:choose>

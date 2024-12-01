@@ -50,4 +50,6 @@ public interface SanPhamChiTietRepo extends JpaRepository<SanPhamChiTiet, Intege
             "WHERE sp.tinhTrang = 1")
     List<SanPhamChiTiet> findAllWithPromotions();
 
+    List<SanPhamChiTiet> findByOrderByNgayTaoDesc(Pageable pageable);
+
 }

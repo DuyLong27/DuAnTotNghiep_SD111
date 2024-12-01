@@ -56,21 +56,21 @@ public class QLHoaDonController {
         Pageable pageable = PageRequest.of(page, size);
         Page<HoaDon> hoaDonPage;
 
-        // Chuyển đổi các tham số thời gian từ chuỗi sang LocalDateTime
         LocalDateTime start = startDate != null && !startDate.isEmpty() ? LocalDateTime.parse(startDate + "T00:00:00") : null;
         LocalDateTime end = endDate != null && !endDate.isEmpty() ? LocalDateTime.parse(endDate + "T23:59:59") : null;
 
-        // Chuyển đổi tình trạng từ String sang Integer (nếu có)
         Integer tinhTrangInt = null;
         try {
             if (tinhTrang != null && !"all".equals(tinhTrang)) {
-                tinhTrangInt = Integer.valueOf(tinhTrang);
+                if ("2".equals(tinhTrang) || "3".equals(tinhTrang)) {
+                    tinhTrangInt = 2;
+                } else {
+                    tinhTrangInt = Integer.valueOf(tinhTrang);
+                }
             }
         } catch (NumberFormatException e) {
-            // Nếu không thể chuyển đổi, tình trạng sẽ để null
         }
 
-        // Truy vấn với các điều kiện đã lọc
         hoaDonPage = hoaDonRepo.findByMultipleCriteria(
                 tinhTrangInt,
                 phoneNumber,
@@ -82,13 +82,11 @@ public class QLHoaDonController {
 
         List<HoaDon> hoaDonList = hoaDonPage.getContent();
 
-        // Định dạng thời gian hiển thị cho hóa đơn
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss, dd-MM-yyyy");
         for (HoaDon hoaDon : hoaDonList) {
             hoaDon.setThoiGianTaoFormatted(hoaDon.getThoiGianTao().format(formatter));
         }
 
-        // Thêm các thuộc tính vào model để hiển thị trên view
         model.addAttribute("listHoaDon", hoaDonList);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", hoaDonPage.getTotalPages());
