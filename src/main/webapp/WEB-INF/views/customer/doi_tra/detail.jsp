@@ -63,16 +63,23 @@
                         <h6>Thông Tin Khách Hàng:</h6>
                         <p>Tên Khách Hàng: <strong>${tenKhachHang}</strong></p>
                         <p>Số Điện Thoại: <strong>${hoaDon.soDienThoai}</strong></p>
+                        <c:if test="${hoaDon.diaChi != null}">
                         <p>Địa Chỉ: <strong>${hoaDon.diaChi}</strong></p>
+                        </c:if>
                     </div>
                     <div class="info-box">
                         <h6>Thông Tin Đơn Hàng:</h6>
                         <p>Phương Thức Thanh Toán: <strong>${hoaDon.phuong_thuc_thanh_toan}</strong></p>
+                        <c:if test="${hoaDon.phuongThucVanChuyen != null}">
                         <p>Phương Thức Vận Chuyển: <strong>${hoaDon.phuongThucVanChuyen}</strong></p>
+                        </c:if>
+                        <c:if test="${hoaDon.phuongThucVanChuyen != null}">
                         <p>Tiền Vận Chuyển: <strong>${tienVanChuyen} đ</strong></p>
+                        </c:if>
                         <c:if test="${hoaDon.tongTien != 33000 && hoaDon.tongTien != 20000}">
                             <p>Tổng Tiền: <strong>${hoaDon.tongTien} đ</strong></p>
                         </c:if>
+                        <p>Đơn hàng được mua: <strong>${hoaDon.kieuHoaDon==1 ? "Online" :"Tại quầy"}</strong></p>
                         <p>
                             Trạng thái đơn hàng:
                             <c:choose>
@@ -94,6 +101,8 @@
                 <div class="info-row">
                     <div class="info-box">
                         <h6>Xử Lý Đơn Hàng:</h6>
+                        <c:choose>
+                            <c:when test="${hoaDon.kieuHoaDon != 0}">
                         <c:if test="${hoaDon.tinh_trang == 14}">
                             <p><strong>${thoiGianTao}</strong>: Đơn hàng đã được đặt</p>
                             <p><strong>${daHuy}</strong>: Đã hủy đơn hàng</p>
@@ -122,12 +131,16 @@
                                 <p><strong>${daHoanTra}</strong>: Đổi trả thành công</p>
                             </c:if>
                         </c:if>
-
+                            </c:when>
+                            <c:otherwise>
+                                <p>Hóa đơn được mua tại quầy vào lúc: ${hoaDon.thoiGianTaoFormatted}</p>
+                            </c:otherwise>
+                        </c:choose>
                     </div>
                 </div>
 
                 <c:if test="${not empty hoaDon.hoaDonChiTietList}">
-                    <h6>Sản phẩm đã mua:</h6>
+                    <h6>Sản phẩm trong hóa đơn:</h6>
                     <ul class="list-group">
                         <c:forEach var="chiTiet" items="${hoaDon.hoaDonChiTietList}">
                             <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -233,7 +246,7 @@
                 </c:if>
                 <div class="d-inline-flex mt-3 gap-2">
                     <a href="/doi-tra" class="btn btn-warning">Quay Lại</a>
-                    <c:if test="${hoaDon.tinh_trang == 4}">
+                    <c:if test="${hoaDon.tinh_trang == 4 && hoaDon.kieuHoaDon == 1}">
                         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#returnModal">Đổi Trả</button>
                     </c:if>
                     <c:if test="${hoaDon.tinh_trang == 0}">

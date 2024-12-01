@@ -206,7 +206,7 @@
                     <p><strong>Số điện thoại:</strong> ${hoaDon.soDienThoai}</p>
                 </div>
                 <div class="col-md-6">
-                    <p><strong>Ngày tạo:</strong> ${thoiGianTao}</p>
+                    <p><strong>Ngày tạo:</strong> ${hoaDon.thoiGianTaoFormatted}</p>
                 </div>
             </div>
             <div class="row mb-2">

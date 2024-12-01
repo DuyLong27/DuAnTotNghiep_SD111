@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -77,5 +78,15 @@ public class HoaDon {
         this.tongTien = hoaDonChiTietList.stream()
                 .mapToInt(detail -> detail.getGia_san_pham() * detail.getSo_luong())
                 .sum();
+    }
+    @Transient
+    private String thoiGianTaoFormatted;
+
+    public String getThoiGianTaoFormatted() {
+        if (this.thoiGianTao != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss, dd-MM-yyyy");
+            return this.thoiGianTao.format(formatter);
+        }
+        return null;
     }
 }
