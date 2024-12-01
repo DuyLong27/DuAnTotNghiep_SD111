@@ -79,7 +79,7 @@
                                 </c:otherwise>
                             </c:choose>
                         </td>
-                        <td>${item.kieuHoaDon == 1 ? "Online" : "Offline"}</td>
+                        <td>${item.kieuHoaDon == 1 ? "Online" : "Tại quầy"}</td>
                         <td>
                             <a href="detail/${item.id}" class="btn btn-outline-custom">
                                 <i class="fa-solid fa-circle-info"></i>

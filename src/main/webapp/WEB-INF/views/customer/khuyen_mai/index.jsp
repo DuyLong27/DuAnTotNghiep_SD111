@@ -68,6 +68,19 @@
 <div class="container mt-5 mb-5">
     <h2 class="text-center text-success mb-4">Các Chương Trình Khuyến Mãi Của The Nature Coffee</h2>
     <div class="row row-cols-1 row-cols-md-3 g-4 mt-3">
+        <c:set var="hasPromoDetails" value="false" />
+        <c:forEach var="khuyenMai" items="${khuyenMais}">
+            <c:if test="${not empty khuyenMai.khuyenMaiChiTietList}">
+                <c:set var="hasPromoDetails" value="true" />
+            </c:if>
+        </c:forEach>
+        <c:if test="${!hasPromoDetails}">
+            <div class="col-12 text-center">
+                <div class="alert alert-warning" role="alert">
+                    Hiện chưa có chương trình khuyến mãi nào.
+                </div>
+            </div>
+        </c:if>
         <c:forEach var="khuyenMai" items="${khuyenMais}">
             <c:if test="${not empty khuyenMai.khuyenMaiChiTietList}">
                 <div class="col">
@@ -88,7 +101,6 @@
                             </div>
                         </div>
                         <div class="promo-card-footer">
-
                         </div>
                     </div>
                 </div>

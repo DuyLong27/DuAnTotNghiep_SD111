@@ -317,15 +317,62 @@
                             <a href="/danh-sach-san-pham-chi-tiet/view-sp/${product.id}"
                                class="btn btn-outline-success">Xem chi tiết</a>
                             <div class="product-buy position-absolute top-50 start-50 translate-middle">
-                                <form action="/trang-chu/mua-ngay" method="get">
+                                <form action="/trang-chu/mua-ngay" method="get" id="my-form">
                                     <input type="hidden" name="productId" value="${product.id}">
                                     <button type="submit" class="btn-custom"><i class="fa-solid fa-money-bill"></i>
                                     </button>
                                 </form>
                             </div>
                             <div class="product-cart position-absolute top-50 start-50 translate-middle">
-                                <form action="/trang-chu/add" method="post">
+                                <form action="/trang-chu/add" method="post" >
                                     <input type="hidden" name="sanPhamId" value="${product.id}">
+                                    <button type="submit" class="btn-custom"><i class="fa-solid fa-cart-shopping"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </c:forEach>
+        </div>
+        <h2 class="text-success mb-3" data-aos="fade-up">Sản phẩm mới nhất</h2>
+        <div class="row" data-aos="fade-up" data-aos-delay="100">
+            <c:forEach var="newestProducts" items="${newestProducts}">
+                <div class="col-md-3 mb-4">
+                    <div class="card">
+                        <c:if test="${newestProducts.giaGiamGia != null && newestProducts.giaGiamGia > 0}">
+                                <span class="discount-badge">
+                                    ${newestProducts.khuyenMaiChiTietList[0].khuyenMai.giaTriKhuyenMai}%
+                                </span>
+                        </c:if>
+                        <img src="${pageContext.request.contextPath}/uploads/${newestProducts.hinhAnh}" class="card-img-top"
+                             alt="${newestProducts.sanPham.ten}">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">${newestProducts.sanPham.ten}</h5>
+                            <p class="card-text text-success">
+                                <c:choose>
+                                    <c:when test="${newestProducts.giaGiamGia != null && newestProducts.giaGiamGia > 0}">
+                                        <span style="color: red; text-decoration: line-through;">${newestProducts.giaBan} VNĐ</span>
+                                        <br>
+                                        <span style="color: green;">${newestProducts.giaGiamGia} VNĐ</span>
+                                    </c:when>
+                                    <c:otherwise>
+                                        ${newestProducts.giaBan} VNĐ
+                                    </c:otherwise>
+                                </c:choose>
+                            </p>
+                            <a href="/danh-sach-san-pham-chi-tiet/view-sp/${newestProducts.id}"
+                               class="btn btn-outline-success">Xem chi tiết</a>
+                            <div class="product-buy position-absolute top-50 start-50 translate-middle">
+                                <form action="/trang-chu/mua-ngay" method="get">
+                                    <input type="hidden" name="productId" value="${newestProducts.id}">
+                                    <button type="submit" class="btn-custom"><i class="fa-solid fa-money-bill"></i>
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="product-cart position-absolute top-50 start-50 translate-middle">
+                                <form action="/trang-chu/add" method="post">
+                                    <input type="hidden" name="sanPhamId" value="${newestProducts.id}">
                                     <button type="submit" class="btn-custom"><i class="fa-solid fa-cart-shopping"></i>
                                     </button>
                                 </form>
@@ -384,36 +431,10 @@
                 </c:if>
             </c:forEach>
             <c:if test="${!hasPromotion}">
-                <p class="text-center text-danger">Chưa có sản phẩm nào đang trong chương trình khuyến mãi</p>
-            </c:if>
-        </div>
-        <h2 class="text-success mb-4" data-aos="fade-up" data-aos-delay="200">Chương trình khuyến mãi</h2>
-        <div class="row" data-aos="fade-up" data-aos-delay="300">
-            <c:if test="${empty validKhuyenMais}">
-                <p class="text-center text-danger">Hiện chưa có chương trình khuyến mãi nào</p>
-            </c:if>
-            <c:forEach var="khuyenMai" items="${validKhuyenMais}">
-                <div class="col-md-4 mb-4">
-                    <div class="card custom-card">
-                        <div class="card-header bg-success text-white">
-                            <h5 class="card-title">${khuyenMai.tenKhuyenMai}</h5>
-                        </div>
-                        <div class="card-body">
-                            <h6 class="card-subtitle mb-3 text-muted">Áp dụng cho sản phẩm:</h6>
-                            <ul class="product-list">
-                                <c:forEach var="chiTiet" items="${khuyenMai.khuyenMaiChiTietList}">
-                                    <li>${chiTiet.sanPhamChiTiet.sanPham.ten}</li>
-                                </c:forEach>
-                            </ul>
-                            <p><strong>Ngày bắt đầu:</strong> ${khuyenMai.ngayBatDau}</p>
-                            <p><strong>Ngày kết thúc:</strong> ${khuyenMai.ngayKetThuc}</p>
-                        </div>
-                        <div class="card-footer text-center">
-                            <a href="/khuyen-mai" class="btn btn-success btn-sm">Truy cập khuyến mãi</a>
-                        </div>
-                    </div>
+                <div class="alert alert-warning text-center" role="alert">
+                    <strong>Chưa có sản phẩm nào đang trong chương trình khuyến mãi</strong>
                 </div>
-            </c:forEach>
+            </c:if>
         </div>
     </div>
     <!-- Modal hiển thị thông tin sản phẩm (hiển thị nếu sản phẩm được chọn) -->
@@ -570,8 +591,10 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
 <script>
+    <!-- Khởi tạo AOS -->
     AOS.init();
 
+    // Hiển thị nút "back-to-top" khi cuộn xuống
     window.onscroll = function () {
         if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
             document.getElementById("back-to-top").style.display = "block";
@@ -580,9 +603,33 @@
         }
     };
 
+    // Xử lý sự kiện click cho nút "back-to-top"
     document.getElementById("back-to-top").addEventListener("click", function () {
         window.scrollTo({top: 0, behavior: 'smooth'});
     });
+
+    // Lưu vị trí cuộn trước khi gửi form
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('submit', function(event) {
+            // Lưu lại vị trí cuộn trước khi gửi form
+            sessionStorage.setItem('scrollPosition', window.scrollY);
+        });
+    });
+
+    // Sau khi trang tải lại, phục hồi vị trí cuộn với hiệu ứng mượt mà
+    window.onload = function() {
+        const scrollPosition = sessionStorage.getItem('scrollPosition');
+        if (scrollPosition) {
+            // Thêm một khoảng delay nhỏ để đảm bảo trang tải hoàn toàn
+            setTimeout(function() {
+                window.scrollTo({
+                    top: scrollPosition,
+                    behavior: 'smooth' // Cuộn mượt mà
+                });
+                sessionStorage.removeItem('scrollPosition');  // Xóa vị trí cuộn sau khi phục hồi
+            }, 100); // 100ms delay (có thể điều chỉnh thêm nếu cần)
+        }
+    };
 
     const giaBan = ${sanPhamChiTiet.giaBan != null ? sanPhamChiTiet.giaBan : 0};
     const giaGiamGia = ${sanPhamChiTiet.giaGiamGia != null ? sanPhamChiTiet.giaGiamGia : 0};
