@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/khuyen-mai")
+@RequestMapping("/quan-ly-khuyen-mai")
 public class QLKhuyenMaiController {
     @Autowired
     KhuyenMaiChiTietRepo khuyenMaiChiTietRepo;
@@ -62,7 +62,7 @@ public class QLKhuyenMaiController {
     @PostMapping("/them")
     public String add(KhuyenMai khuyenMai){
         khuyenMaiRepo.save(khuyenMai);
-        return "redirect:/khuyen-mai/hien-thi";
+        return "redirect:/quan-ly-khuyen-mai/hien-thi";
     }
 
 
@@ -79,7 +79,7 @@ public class QLKhuyenMaiController {
         existingKhuyenMai.setNgayKetThuc(khuyenMai.getNgayKetThuc());
         existingKhuyenMai.setTinhTrang(khuyenMai.getTinhTrang());
         khuyenMaiRepo.save(existingKhuyenMai);
-        return "redirect:/khuyen-mai/hien-thi";
+        return "redirect:/quan-ly-khuyen-mai/hien-thi";
     }
 
     @GetMapping("/chi-tiet")
@@ -155,7 +155,7 @@ public class QLKhuyenMaiController {
                 khuyenMaiChiTietRepo.save(khuyenMaiChiTiet);
             }
         }
-        return "redirect:/khuyen-mai/chi-tiet";
+        return "redirect:/quan-ly-khuyen-mai/chi-tiet";
     }
 
 
@@ -167,7 +167,7 @@ public class QLKhuyenMaiController {
         sanPhamChiTiet.setGiaGiamGia(0);
         sanPhamChiTietRepo.save(sanPhamChiTiet);
         khuyenMaiChiTietRepo.delete(khuyenMaiChiTiet);
-        return "redirect:/khuyen-mai/chi-tiet";
+        return "redirect:/quan-ly-khuyen-mai/chi-tiet";
     }
 
 

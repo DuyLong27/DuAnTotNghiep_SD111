@@ -19,7 +19,7 @@
 <div class="container mt-3">
     <h1 class="text-center mt-3">Danh Sách Khách Hàng</h1>
     <div class="filter-section mb-3">
-        <form action="/khach-hang/hien-thi" method="get" id="filterSearchForm">
+        <form action="/quan-ly-khach-hang/hien-thi" method="get" id="filterSearchForm">
             <div class="row">
                 <%--                <div class="col-md-4">--%>
                 <%--                    <h5>Lọc Theo Tình Trạng</h5>--%>
@@ -55,7 +55,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="productForm" action="/khach-hang/add" method="post">
+                    <form id="productForm" action="/quan-ly-khach-hang/add" method="post">
                         <input type="hidden" id="khachHangId" name="idKhachHang"/>
                         <div class="row">
                             <div class="col-md-6">
@@ -125,7 +125,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="productForm2" action="/khach-hang/update" method="post">
+                    <form id="productForm2" action="/quan-ly-khach-hang/update" method="post">
                         <input type="hidden" id="idKhachHang" name="idKhachHang"/>
                         <div class="row">
                             <div class="col-md-6">
@@ -242,12 +242,12 @@
     <ul class="pagination justify-content-center">
         <c:if test="${currentPage > 0}">
             <li class="page-item">
-                <a class="page-link" href="/khach-hang/hien-thi?page=0&size=${kh.size}" aria-label="First">
+                <a class="page-link" href="/quan-ly-khach-hang/hien-thi?page=0&size=${kh.size}" aria-label="First">
                     <span aria-hidden="true">&laquo;&laquo; First</span>
                 </a>
             </li>
             <li class="page-item">
-                <a class="page-link" href="/khach-hang/hien-thi?page=${currentPage - 1}&size=${kh.size}"
+                <a class="page-link" href="/quan-ly-khach-hang/hien-thi?page=${currentPage - 1}&size=${kh.size}"
                    aria-label="Previous">
                     <span aria-hidden="true">&laquo; Previous</span>
                 </a>
@@ -258,13 +258,13 @@
         </li>
         <c:if test="${currentPage < totalPages - 1}">
             <li class="page-item">
-                <a class="page-link" href="/khach-hang/hien-thi?page=${currentPage + 1}&size=${kh.size}"
+                <a class="page-link" href="/quan-ly-khach-hang/hien-thi?page=${currentPage + 1}&size=${kh.size}"
                    aria-label="Next">
                     <span aria-hidden="true">Next &raquo;</span>
                 </a>
             </li>
             <li class="page-item">
-                <a class="page-link" href="/khach-hang/hien-thi?page=${totalPages - 1}&size=${kh.size}"
+                <a class="page-link" href="/quan-ly-khach-hang/hien-thi?page=${totalPages - 1}&size=${kh.size}"
                    aria-label="Last">
                     <span aria-hidden="true">Last &raquo;&raquo;</span>
                 </a>
@@ -301,7 +301,7 @@
         }
 
         document.getElementById('submitButton2').innerText = 'Cập Nhật Khách Hàng';
-        document.getElementById('productForm2').action = `/khach-hang/update`;
+        document.getElementById('productForm2').action = `/quan-ly-khach-hang/update`;
         var myModal = new bootstrap.Modal(document.getElementById('productModal2'));
         myModal.show();
     }

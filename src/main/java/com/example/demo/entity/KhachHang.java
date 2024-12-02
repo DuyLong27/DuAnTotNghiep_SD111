@@ -50,4 +50,7 @@ public class KhachHang {
 
     @Column(name = "ngay_dang_ky")
     private LocalDate ngayDangKy;
+
+    @Column(name = "role", nullable = false)
+    private int role = 2;
 }
