@@ -468,7 +468,7 @@
         <i class="fas fa-handshake"></i>Đối tác
     </a>
     <ul class="dropdown-menu">
-        <li><a class="dropdown-item" href="/khach-hang/hien-thi"><i class="fas fa-user"></i>Khách hàng</a></li>
+        <li><a class="dropdown-item" href="/quan-ly-khach-hang/hien-thi"><i class="fas fa-user"></i>Khách hàng</a></li>
         <li><a class="dropdown-item" href="/nha-cung-cap"><i class="fas fa-truck"></i>Nhà cung cấp</a></li>
     </ul>
 
@@ -477,8 +477,8 @@
         <i class="fa-solid fa-ticket"></i>Khuyến mãi
     </a>
     <ul class="dropdown-menu">
-        <li><a class="dropdown-item" href="/khuyen-mai/hien-thi"><i class="fa-regular fa-percent"></i>Khuyến mãi</a></li>
-        <li><a class="dropdown-item" href="/khuyen-mai/chi-tiet"><i class="fa-solid fa-clipboard"></i>CT Khuyến mãi</a></li>
+        <li><a class="dropdown-item" href="/quan-ly-khuyen-mai/hien-thi"><i class="fa-regular fa-percent"></i>Khuyến mãi</a></li>
+        <li><a class="dropdown-item" href="/quan-ly-khuyen-mai/chi-tiet"><i class="fa-solid fa-clipboard"></i>CT Khuyến mãi</a></li>
     </ul>
 </div>
 
@@ -490,11 +490,17 @@
 <div class="overlay-content">
     <div class="dropdown">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="accountDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="fas fa-user"></i> Tài khoản
+            <c:choose>
+                <c:when test="${not empty sessionScope.khachHang}">
+                    ${sessionScope.khachHang.tenNhanVien}
+                </c:when>
+                <c:otherwise>
+                    Tài khoản
+                </c:otherwise>
+            </c:choose>
         </button>
         <ul class="account-dropdown-menu dropdown-menu" aria-labelledby="accountDropdown">
-            <li><a class="account-dropdown-item" href="#">Thông tin</a></li>
-            <li><a class="account-dropdown-item" href="#">Đăng xuất</a></li>
+            <li><a class="account-dropdown-item" href="/auth/logout">Đăng xuất</a></li>
         </ul>
     </div>
 </div>
@@ -508,11 +514,10 @@
         const overlay = document.getElementById('overlay');
 
         sidebar.classList.toggle('open');
-        overlay.classList.toggle('show'); // Hiển thị hoặc ẩn overlay
+        overlay.classList.toggle('show');
     }
-
     document.getElementById('overlay').addEventListener('click', function() {
-        toggleSidebar(); // Gọi lại hàm toggle để đóng sidebar
+        toggleSidebar();
     });
 
 </script>

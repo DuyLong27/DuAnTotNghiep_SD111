@@ -255,7 +255,7 @@
 <jsp:include page="../layout.jsp" />
 
 <div class="container mt-4">
-    <form method="get" action="/khuyen-mai/chi-tiet">
+    <form method="get" action="/quan-ly-khuyen-mai/chi-tiet">
         <div class="row mb-4 d-flex align-items-center">
             <div class="col-md-3">
                 <input type="text" class="form-control" placeholder="Tìm kiếm theo tên khuyến mãi" name="tenKhuyenMai" value="${tenKhuyenMai}">
@@ -277,7 +277,7 @@
         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#applyModal">
             Áp dụng
         </button>
-        <a href="/khuyen-mai/chi-tiet" class="btn btn-secondary-outline">Reset</a>
+        <a href="/quan-ly-khuyen-mai/chi-tiet" class="btn btn-secondary-outline">Reset</a>
     </div>
 
 
@@ -340,7 +340,7 @@
                     <h5 class="modal-title" id="applyModalLabel">Chọn Khuyến Mãi và Sản Phẩm</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form method="post" action="/khuyen-mai/apply">
+                <form method="post" action="/quan-ly-khuyen-mai/apply">
                     <div class="modal-body">
                         <div class="row">
                             <!-- Danh sách khuyến mãi -->
@@ -500,7 +500,7 @@
     function deleteProductFromPromotion(khuyenMaiChiTietId) {
         if (confirm("Bạn có chắc chắn muốn xóa sản phẩm này khỏi khuyến mãi?")) {
             var xhr = new XMLHttpRequest();
-            xhr.open("POST", "/khuyen-mai/xoa-san-pham", true);
+            xhr.open("POST", "/quan-ly-khuyen-mai/xoa-san-pham", true);
             xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === XMLHttpRequest.DONE) {

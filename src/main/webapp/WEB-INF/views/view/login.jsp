@@ -264,6 +264,9 @@
 <body>
 
 <div class="container" id="container">
+    <div id="error-message" style="display: none;">
+        ${error}
+    </div>
     <div class="form-container sign-up">
         <form action="/auth/register" method="post">
             <h1>Create Account</h1>
@@ -339,6 +342,14 @@
     loginBtn.addEventListener('click', () => {
         container.classList.remove("active");
     });
+
+
+    window.onload = function() {
+        const params = new URLSearchParams(window.location.search);
+        if (params.has('error') && params.get('error') === 'accessDenied') {
+            alert('Bạn không có quyền truy cập vào đây, hãy quay lại!');
+        }
+    };
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
