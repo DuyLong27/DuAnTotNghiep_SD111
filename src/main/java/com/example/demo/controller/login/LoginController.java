@@ -1,6 +1,8 @@
 package com.example.demo.controller.login;
 
 import com.example.demo.entity.KhachHang;
+import com.example.demo.entity.NhanVien;
+import com.example.demo.repository.NhanVienRepo;
 import com.example.demo.service.KhachHangService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +18,16 @@ import jakarta.servlet.http.HttpServletResponse;
 @RequestMapping("auth")
 public class LoginController {
     @Autowired
+    private NhanVienRepo nhanVienRepo;
+
+    @Autowired
     private KhachHangService khachHangService;
+
     @GetMapping("login")
     public String login() {
         return "view/login";
     }
+
     @PostMapping("login")
     public String doLogin(String email, String matKhau, HttpSession session, HttpServletResponse response, Model model) {
         KhachHang khachHang = khachHangService.findByEmail(email);
@@ -30,12 +37,23 @@ public class LoginController {
             cookie.setMaxAge(7 * 24 * 60 * 60);
             cookie.setPath("/");
             response.addCookie(cookie);
-
-            return "redirect:/danh-sach-san-pham/hien-thi";
-        } else {
-            model.addAttribute("error", "Tên đăng nhập hoặc mật khẩu không đúng");
-            return "view/login";
+            if (khachHang.getRole() == 2) {
+                return "redirect:/trang-chu";
+            }
         }
+        NhanVien nhanVien = nhanVienRepo.findByEmail(email);
+        if (nhanVien != null && matKhau.equals(nhanVien.getMatKhau())) {
+            session.setAttribute("khachHang", nhanVien);
+            Cookie cookie = new Cookie("userSession", nhanVien.getId().toString());
+            cookie.setMaxAge(7 * 24 * 60 * 60);
+            cookie.setPath("/");
+            response.addCookie(cookie);
+            if (nhanVien.getRole() == 1 || nhanVien.getRole() == 0) {
+                return "redirect:/bao-cao/hien-thi";
+            }
+        }
+        model.addAttribute("error", "Tên đăng nhập hoặc mật khẩu không đúng");
+        return "view/login";
     }
 
     @GetMapping("logout")
@@ -45,7 +63,6 @@ public class LoginController {
         cookie.setMaxAge(0);
         cookie.setPath("/");
         response.addCookie(cookie);
-
         return "redirect:/auth/login";
     }
 
@@ -56,13 +73,10 @@ public class LoginController {
 
     @PostMapping("register")
     public String doRegister(String tenKhachHang, String email, String matKhau, String soDienThoai, String diaChi, Model model) {
-        // Kiểm tra email đã tồn tại chưa
         if (khachHangService.findByEmail(email) != null) {
             model.addAttribute("error", "Email đã tồn tại");
             return "view/register";
         }
-
-        // Tạo đối tượng KhachHang mới
         KhachHang khachHang = new KhachHang();
         khachHang.setTenKhachHang(tenKhachHang);
         khachHang.setEmail(email);
@@ -70,8 +84,8 @@ public class LoginController {
         khachHang.setSoDienThoai(soDienThoai);
         khachHang.setDiaChi(diaChi);
         khachHang.setDiemTichLuy(0);
+        khachHang.setRole(2);
         khachHangService.registerCustomer(khachHang);
         return "redirect:/auth/login";
     }
 }
-

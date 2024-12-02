@@ -19,7 +19,7 @@
     <div class="row">
 
         <div class="col-md-3 filter-section">
-            <form action="/khuyen-mai/hien-thi" method="get">
+            <form action="/quan-ly-khuyen-mai/hien-thi" method="get">
                 <div class="mb-3">
                     <label for="maKhuyenMai" class="form-label">Mã khuyến mãi</label>
                     <input type="text" class="form-control" id="maKhuyenMai" name="maKhuyenMai" value="${maKhuyenMai}">
@@ -44,7 +44,7 @@
                     <input type="date" class="form-control" id="ngayKetThuc" name="ngayKetThuc" value="${ngayKetThuc}">
                 </div>
                 <button type="submit" class="btn btn-filter">Lọc</button>
-                <a href="/khuyen-mai/hien-thi" class="btn btn-secondary-outline">Xóa lọc</a>
+                <a href="/quan-ly-khuyen-mai/hien-thi" class="btn btn-secondary-outline">Xóa lọc</a>
             </form>
         </div>
 
@@ -89,7 +89,7 @@
                                     <i class="fa fa-edit"></i>
                                 </a>
                                 <a class="btn btn-outline-custom"
-                                   href="/khuyen-mai/chi-tiet?id=${item.idKhuyenMai}" class="btn btn-outline-success">
+                                   href="/quan-ly-khuyen-mai/chi-tiet?id=${item.idKhuyenMai}" class="btn btn-outline-success">
                                     <i class="fa-solid fa-hand-point-right"></i>
                                 </a>
                             </div>
@@ -129,7 +129,7 @@
                 <h5 class="modal-title" id="addPromotionModalLabel">Tạo mới khuyến mãi</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="/khuyen-mai/them" method="post">
+            <form action="/quan-ly-khuyen-mai/them" method="post">
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="maKhuyenMai" class="form-label">Mã khuyến mãi</label>
@@ -178,7 +178,7 @@
                 <h5 class="modal-title" id="editPromotionModalLabel">Sửa khuyến mãi</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="/khuyen-mai/sua" method="post">
+            <form action="/quan-ly-khuyen-mai/sua" method="post">
                 <div class="modal-body">
                     <div class="mb-3">
                         <input type="hidden" class="form-control" id="editIdKhuyenMai" name="id" required>
@@ -235,7 +235,7 @@
         document.getElementById('editNgayKetThuc').value = ngayKetThuc;
         document.getElementById('editHoatDong').checked = (tinhTrang === 1);
         document.getElementById('editKhongHoatDong').checked = (tinhTrang === 0);
-        document.getElementById('productForm').action = `/khuyen-mai/update`; // Update action
+        document.getElementById('productForm').action = `/quan-ly-khuyen-mai/update`; // Update action
     }
 </script>
 
