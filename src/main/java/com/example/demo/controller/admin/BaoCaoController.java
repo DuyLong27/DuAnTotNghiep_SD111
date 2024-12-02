@@ -33,9 +33,6 @@ public class BaoCaoController {
     @Autowired
     private HoaDonChiTietRepo hoaDonChiTietRepo;
 
-    @Autowired
-    private SanPhamChiTietRepo sanPhamChiTietRepo;
-
     @GetMapping("/hien-thi")
     public String getDailyReport(
             @RequestParam(value = "selectedDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate selectedDate,

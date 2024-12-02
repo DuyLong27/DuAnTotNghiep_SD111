@@ -7,6 +7,7 @@ import com.google.zxing.WriterException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -90,47 +92,31 @@ public class QLSanPhamChiTietController {
     public String addSanPhamChiTiet(@ModelAttribute SanPhamChiTiet sanPhamChiTiet,
                                     @RequestParam("imageFile") MultipartFile imageFile,
                                     RedirectAttributes redirectAttributes) {
-        // Tính toán ngày hết hạn là 3 tháng sau
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH, 3);
+        calendar.add(Calendar.MONTH, 12);
         sanPhamChiTiet.setNgayHetHan(calendar.getTime());
-
-        // Xử lý upload file ảnh
+        sanPhamChiTiet.setNgayTao(new Date());
         if (!imageFile.isEmpty()) {
             try {
-                // Lấy đường dẫn tương đối đến thư mục images
                 String relativeFolder = "src/main/webapp/uploads/";
-
-                // Sử dụng Paths.get() để lấy đường dẫn tuyệt đối của thư mục images
                 Path folderPath = Paths.get(relativeFolder).toAbsolutePath();
-
-                // Kiểm tra và tạo thư mục nếu chưa tồn tại
                 if (!Files.exists(folderPath)) {
                     Files.createDirectories(folderPath);
                 }
-
-                // Thêm thời gian hiện tại để tránh trùng tên file
                 String originalFilename = imageFile.getOriginalFilename();
                 String fileName = System.currentTimeMillis() + "_" + originalFilename;
-
-                // Đường dẫn đầy đủ của file ảnh
                 Path filePath = folderPath.resolve(fileName);
-
-                // Ghi file ảnh lên đường dẫn
                 Files.write(filePath, imageFile.getBytes());
-
-                // Lưu tên file vào database
                 sanPhamChiTiet.setHinhAnh(fileName);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
-        // Lưu sản phẩm chi tiết vào database
         sanPhamChiTietRepo.save(sanPhamChiTiet);
         redirectAttributes.addFlashAttribute("message", "Thêm thành công!");
         return "redirect:/spct/index";
     }
+
 
 
 //    @GetMapping("/delete/{id}")
@@ -145,54 +131,59 @@ public class QLSanPhamChiTietController {
     public String updateSanPhamChiTiet(@ModelAttribute SanPhamChiTiet sanPhamChiTiet,
                                        @RequestParam("imageFile") MultipartFile imageFile,
                                        RedirectAttributes redirectAttributes) {
-        // Lấy sản phẩm hiện tại từ database để có thông tin hình ảnh cũ
         SanPhamChiTiet existingProduct = sanPhamChiTietRepo.findById(sanPhamChiTiet.getId()).orElse(null);
-
-        // Tính toán ngày hết hạn là 3 tháng sau
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH, 3);
+        calendar.add(Calendar.MONTH, 12);
         sanPhamChiTiet.setNgayHetHan(calendar.getTime());
-
-        // Xử lý upload file ảnh nếu có
+        sanPhamChiTiet.setNgayTao(new Date());
         if (!imageFile.isEmpty()) {
-            // Xóa hình ảnh cũ
             if (existingProduct != null && existingProduct.getHinhAnh() != null) {
                 String relativeFolder = "src/main/webapp/uploads/";
                 Path oldImagePath = Paths.get(relativeFolder).resolve(existingProduct.getHinhAnh());
                 try {
-                    Files.deleteIfExists(oldImagePath); // Xóa file cũ
+                    Files.deleteIfExists(oldImagePath);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-
-            // Lưu hình ảnh mới
             try {
                 String relativeFolder = "src/main/webapp/uploads/";
                 Path folderPath = Paths.get(relativeFolder).toAbsolutePath();
                 if (!Files.exists(folderPath)) {
                     Files.createDirectories(folderPath);
                 }
-
                 String originalFilename = imageFile.getOriginalFilename();
                 String fileName = System.currentTimeMillis() + "_" + originalFilename;
                 Path filePath = folderPath.resolve(fileName);
                 Files.write(filePath, imageFile.getBytes());
-
-                // Lưu tên file vào database
                 sanPhamChiTiet.setHinhAnh(fileName);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
-            // Nếu không có hình ảnh mới, giữ nguyên hình ảnh cũ
             sanPhamChiTiet.setHinhAnh(existingProduct.getHinhAnh());
         }
-
-        // Lưu sản phẩm chi tiết vào database
         sanPhamChiTietRepo.save(sanPhamChiTiet);
         redirectAttributes.addFlashAttribute("message", "Sửa thành công!");
         return "redirect:/spct/index";
     }
+
+
+
+    @PostMapping("/kiem-tra")
+    @ResponseBody
+    public ResponseEntity<Void> kiemTraSanPhamChiTiet() {
+        List<SanPhamChiTiet> sanPhamChiTietList = sanPhamChiTietRepo.findAll();
+        Date currentDate = new Date();
+        for (SanPhamChiTiet sanPhamChiTiet : sanPhamChiTietList) {
+            if (sanPhamChiTiet.getNgayHetHan() != null && currentDate.after(sanPhamChiTiet.getNgayHetHan())) {
+                sanPhamChiTiet.setTinhTrang(0);
+            }
+            sanPhamChiTietRepo.save(sanPhamChiTiet);
+        }
+        return ResponseEntity.ok().build();
+    }
+
+
 
 }

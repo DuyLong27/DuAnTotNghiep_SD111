@@ -166,6 +166,8 @@ public class DanhSachSanPhamController {
         hoaDon.setDiaChi(diaChi);
         hoaDon.setSoDienThoai(soDienThoai);
         hoaDon.setNgayTao(new Date());
+        hoaDon.setThoiGianTao(LocalDateTime.now());
+        hoaDon.setKieuHoaDon(1);
         hoaDon.setTongTien(tongTien);
         hoaDon.setSoHoaDon(soHoaDon);
         hoaDon.setTinh_trang(0);

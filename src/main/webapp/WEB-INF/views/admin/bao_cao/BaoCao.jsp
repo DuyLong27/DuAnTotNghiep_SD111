@@ -42,9 +42,9 @@
             <table class="table table-bordered">
                 <thead>
                 <tr>
-                    <th scope="col" class="text-center">Tổng doanh thu</th>
                     <th scope="col" class="text-center">Tổng số hóa đơn</th>
                     <th scope="col" class="text-center">Tổng sản phẩm bán được</th>
+                    <th scope="col" class="text-center">Tổng doanh thu</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -56,7 +56,6 @@
                 </tr>
                 </tbody>
             </table>
-
         </div>
     </div>
 </div>

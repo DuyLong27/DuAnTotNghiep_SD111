@@ -155,7 +155,7 @@
                             <c:otherwise>${hoaDon.ghiChu}</c:otherwise>
                         </c:choose>
                     </p>
-                    <p><strong>Ngày Tạo:</strong> ${hoaDon.ngayTao}</p>
+                    <p><strong>Ngày Tạo:</strong> ${hoaDon.thoiGianTao}</p>
                     <p><strong>Tên Khách Hàng:</strong>
                         <c:choose>
                             <c:when test="${empty hoaDon.khachHang}">Khách lẻ</c:when>

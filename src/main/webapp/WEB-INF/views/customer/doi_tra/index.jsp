@@ -127,6 +127,7 @@
 
     <div class="row">
         <c:forEach var="hoaDon" items="${hoaDonList}">
+            <c:if test="${hoaDon.tongTien > 0}">
             <div class="col-12">
                 <div class="card order-card">
                     <div class="action-button">
@@ -135,13 +136,12 @@
                     <div class="card-body">
                         <div class="order-header">Mã Hóa Đơn: ${hoaDon.soHoaDon}</div>
                         <p>Thời gian đặt hàng:
-                            <c:if test="${not empty thoiGianTaoMap[hoaDon.id]}">
-                                ${thoiGianTaoMap[hoaDon.id]}
-                            </c:if>
+                            <strong>${hoaDon.thoiGianTaoFormatted}</strong>
                         </p>
                         <c:if test="${hoaDon.tongTien != 33000 && hoaDon.tongTien != 20000}">
                             <p>Tổng Tiền: <strong>${hoaDon.tongTien} đ</strong></p>
                         </c:if>
+                        <p>Hóa đơn: <strong>${hoaDon.kieuHoaDon ==1 ? "Online" :"Tại quầy"}</strong></p>
                         <p>
                             Tình Trạng:
                             <c:choose>
@@ -197,6 +197,7 @@
                     </div>
                 </div>
             </div>
+            </c:if>
         </c:forEach>
     </div>
 </div>

@@ -22,8 +22,15 @@ public interface HoaDonChiTietRepo extends JpaRepository<HoaDonChiTiet, Integer>
 
     List<HoaDonChiTiet> findByHoaDon(HoaDon hoaDon);
 
-    @Query("SELECT SUM(hdct.so_luong) FROM HoaDonChiTiet hdct JOIN hdct.hoaDon h WHERE h.tinh_trang = 4 AND h.ngayTao BETWEEN :startDate AND :endDate")
-    Integer tinhTongSoLuongSanPhamTrongHoaDonHoanThanh(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+    @Query("SELECT SUM(hdct.so_luong) " +
+            "FROM HoaDonChiTiet hdct " +
+            "JOIN hdct.hoaDon h " +
+            "WHERE h.tinh_trang IN (4, 13) " +
+            "AND h.ngayTao BETWEEN :startDate AND :endDate")
+    Integer tinhTongSoLuongSanPhamTrongHoaDonHoanThanhVaDoiTra(
+            @Param("startDate") Date startDate,
+            @Param("endDate") Date endDate);
+
 
     HoaDonChiTiet findByHoaDonAndSanPhamChiTiet(HoaDon hoaDon, SanPhamChiTiet sanPhamChiTiet);
 
@@ -36,20 +43,15 @@ public interface HoaDonChiTietRepo extends JpaRepository<HoaDonChiTiet, Integer>
             "ORDER BY total DESC")
     List<Object[]> findTopSellingProducts(Pageable pageable);
 
-
     @Query(value = "SELECT SUM(hdct.so_luong * hdct.gia_san_pham - hdct.giam_gia) AS tong_doanh_thu " +
             "FROM hoa_don_chi_tiet hdct " +
             "JOIN hoa_don hd ON hdct.id_hoa_don = hd.id_hoa_don " +
-            "WHERE CAST(hd.ngay_tao AS DATE) = :ngay AND hd.tinh_trang = 4", nativeQuery = true)
+            "WHERE CAST(hd.ngay_tao AS DATE) = :ngay AND hd.tinh_trang IN(4,13)", nativeQuery = true)
     BigDecimal tinhTongDoanhThuTheoNgayVaTinhTrang(@Param("ngay") LocalDate ngay);
-
-
 
     @Query(value = "SELECT SUM(hdct.so_luong) AS tong_san_pham " +
             "FROM hoa_don_chi_tiet hdct " +
             "JOIN hoa_don hd ON hdct.id_hoa_don = hd.id_hoa_don " +  // Sửa từ hoa_don_id thành id_hoa_don
-            "WHERE CAST(hd.ngay_tao AS DATE) = :ngay AND hd.tinh_trang = 4", nativeQuery = true)
+            "WHERE CAST(hd.ngay_tao AS DATE) = :ngay AND hd.tinh_trang IN(4,13)", nativeQuery = true)
     Long tinhTongSanPhamBanRaTrongNgay(@Param("ngay") LocalDate ngay);
-
-
 }

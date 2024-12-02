@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -57,6 +59,17 @@ public class HoaDon {
     @Column(name = "ngay_tao")
     private Date ngayTao;
 
+    @Column(name = "thoi_gian_tao")
+    private LocalDateTime thoiGianTao;
+
+    @PrePersist
+    protected void onCreate() {
+        this.thoiGianTao = LocalDateTime.now();
+    }
+
+    @Column(name = "kieu_hoa_don")
+    private Integer kieuHoaDon;
+
     @Column(name = "tinh_trang")
     private Integer tinh_trang;
 
@@ -68,5 +81,15 @@ public class HoaDon {
         this.tongTien = hoaDonChiTietList.stream()
                 .mapToInt(detail -> detail.getGia_san_pham() * detail.getSo_luong())
                 .sum();
+    }
+    @Transient
+    private String thoiGianTaoFormatted;
+
+    public String getThoiGianTaoFormatted() {
+        if (this.thoiGianTao != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss, dd-MM-yyyy");
+            return this.thoiGianTao.format(formatter);
+        }
+        return null;
     }
 }

@@ -69,7 +69,7 @@
     <table class="table table-borderless">
         <thead>
         <tr>
-            <th scope="col" style="text-align: center; color: darkorchid">Tổng số hóa đơn hoàn thành</th>
+            <th scope="col" style="text-align: center; color: darkorchid">Số hóa đơn hoàn thành</th>
             <th scope="col" style="text-align: center; color: darkorchid">Số hóa đơn hủy</th>
             <th scope="col" style="text-align: center; color: darkorchid">Sản phẩm bán ra</th>
             <th scope="col" style="text-align: center; color: darkorchid">Sản phẩm bán chạy nhất</th>

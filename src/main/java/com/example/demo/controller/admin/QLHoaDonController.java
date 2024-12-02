@@ -50,66 +50,44 @@ public class QLHoaDonController {
                           @RequestParam(defaultValue = "10") int size,
                           @RequestParam(required = false) String phoneNumber,
                           @RequestParam(required = false) String startDate,
-                          @RequestParam(required = false) String endDate) {
+                          @RequestParam(required = false) String endDate,
+                          @RequestParam(required = false) Integer kieuHoaDon) {
 
         Pageable pageable = PageRequest.of(page, size);
         Page<HoaDon> hoaDonPage;
 
-        LocalDate start = startDate != null && !startDate.isEmpty() ? LocalDate.parse(startDate) : null;
-        LocalDate end = endDate != null && !endDate.isEmpty() ? LocalDate.parse(endDate) : null;
+        LocalDateTime start = startDate != null && !startDate.isEmpty() ? LocalDateTime.parse(startDate + "T00:00:00") : null;
+        LocalDateTime end = endDate != null && !endDate.isEmpty() ? LocalDateTime.parse(endDate + "T23:59:59") : null;
 
-        if ("all".equals(tinhTrang)) {
-            if (phoneNumber != null && !phoneNumber.isEmpty()) {
-                hoaDonPage = hoaDonRepo.findByPhoneNumberContaining(phoneNumber, pageable);
-            } else {
-                hoaDonPage = hoaDonRepo.findAll(pageable);
+        Integer tinhTrangInt = null;
+        try {
+            if (tinhTrang != null && !"all".equals(tinhTrang)) {
+                if ("2".equals(tinhTrang) || "3".equals(tinhTrang)) {
+                    tinhTrangInt = 2;
+                } else {
+                    tinhTrangInt = Integer.valueOf(tinhTrang);
+                }
             }
-        } else {
-            Integer tinhTrangInt = null;
-            try {
-                tinhTrangInt = Integer.valueOf(tinhTrang);
-            } catch (NumberFormatException e) {
-            }
-
-            if (tinhTrangInt != null && tinhTrangInt == 2) {
-                hoaDonPage = hoaDonRepo.findByTinhTrangIn(Arrays.asList(2, 3), pageable);
-            } else if (tinhTrangInt != null) {
-                hoaDonPage = hoaDonRepo.findByTinhTrang(tinhTrangInt, pageable);
-            } else {
-                hoaDonPage = hoaDonRepo.findAll(pageable);
-            }
-
-            if (phoneNumber != null && !phoneNumber.isEmpty()) {
-                hoaDonPage = hoaDonRepo.findByPhoneNumberAndTinhTrang(phoneNumber, tinhTrangInt, pageable);
-            }
+        } catch (NumberFormatException e) {
         }
 
-        if (start != null && end != null) {
-            hoaDonPage = hoaDonRepo.findByThoiGianTaoBetween(start.atStartOfDay(), end.atTime(23, 59, 59), pageable);
-        } else if (start != null) {
-            hoaDonPage = hoaDonRepo.findByThoiGianTaoAfter(start.atStartOfDay(), pageable);
-        } else if (end != null) {
-            hoaDonPage = hoaDonRepo.findByThoiGianTaoBefore(end.atTime(23, 59, 59), pageable);
-        }
+        hoaDonPage = hoaDonRepo.findByMultipleCriteria(
+                tinhTrangInt,
+                phoneNumber,
+                kieuHoaDon,
+                start,
+                end,
+                pageable
+        );
 
         List<HoaDon> hoaDonList = hoaDonPage.getContent();
-        List<ThoiGianDonHang> thoiGianDonHangList = thoiGianDonHangRepo.findByHoaDonIn(hoaDonList);
 
-        Map<HoaDon, ThoiGianDonHang> hoaDonThoiGianMap = thoiGianDonHangList.stream()
-                .collect(Collectors.toMap(ThoiGianDonHang::getHoaDon, tgdh -> tgdh));
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
-        List<String> thoiGianTaoFormattedList = hoaDonList.stream()
-                .map(hoaDon -> {
-                    ThoiGianDonHang thoiGianDonHang = hoaDonThoiGianMap.get(hoaDon);
-                    return thoiGianDonHang != null && thoiGianDonHang.getThoiGianTao() != null
-                            ? thoiGianDonHang.getThoiGianTao().format(formatter)
-                            : "Hóa đơn tại quầy";
-                })
-                .collect(Collectors.toList());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss, dd-MM-yyyy");
+        for (HoaDon hoaDon : hoaDonList) {
+            hoaDon.setThoiGianTaoFormatted(hoaDon.getThoiGianTao().format(formatter));
+        }
 
         model.addAttribute("listHoaDon", hoaDonList);
-        model.addAttribute("thoiGianTaoList", thoiGianTaoFormattedList);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", hoaDonPage.getTotalPages());
         model.addAttribute("isFirst", hoaDonPage.isFirst());
@@ -118,6 +96,7 @@ public class QLHoaDonController {
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
         model.addAttribute("tinhTrang", tinhTrang);
+        model.addAttribute("kieuHoaDon", kieuHoaDon);
 
         return "/admin/ql_hoa_don/index";
     }

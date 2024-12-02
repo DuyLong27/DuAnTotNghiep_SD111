@@ -60,6 +60,9 @@
             <button type="button" class="btn btn-create" data-bs-toggle="modal" data-bs-target="#addProductModal">
                 Thêm sản phẩm
             </button>
+            <button type="button" class="btn btn-warning ms-2" id="checkButton" data-bs-toggle="modal">
+                Kiểm tra
+            </button>
             <div class="col-md-2 me-2 ms-3">
                 <select name="tinhTrang" class="form-select" onchange="this.form.submit();">
                     <option value="" ${param.tinhTrang == '' ? 'selected' : ''}>Tất Cả</option>
@@ -357,6 +360,7 @@
             <th>STT</th>
             <th>Hình ảnh</th>
             <th>Mã</th>
+            <th>Ngày tạo</th>
             <th>Ngày hết hạn</th>
             <th>Số lượng</th>
             <th>Giá Bán</th>
@@ -388,6 +392,7 @@
                         </c:if>
                     </td>
                     <td>${sanPhamChiTiet.ma}</td>
+                    <td>${sanPhamChiTiet.ngayTao}</td>
                     <td>${sanPhamChiTiet.ngayHetHan}</td>
                     <td>${sanPhamChiTiet.soLuong}</td>
                     <td>${sanPhamChiTiet.giaBan}</td>
@@ -571,6 +576,26 @@
             }
         }
     });
+
+
+    document.getElementById('checkButton').addEventListener('click', function() {
+        fetch('/spct/kiem-tra', {
+            method: 'POST',
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('Kiểm tra thành công!');
+                    window.location.reload();  // Reload trang để cập nhật thay đổi
+                } else {
+                    alert('Có lỗi xảy ra, vui lòng thử lại!');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra, vui lòng thử lại!');
+            });
+    });
+
 </script>
 </body>
 </html>

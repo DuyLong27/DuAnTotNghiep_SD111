@@ -22,6 +22,7 @@
                 <th>Ghi chú</th>
                 <th>Ngày tạo</th>
                 <th>Tình trạng</th>
+                <th>Loại hóa đơn</th>
                 <th>Hàng động</th>
             </tr>
             </thead>
@@ -46,16 +47,7 @@
                         <td>${item.tongTien} VNĐ</td>
                         <td>${item.phuong_thuc_thanh_toan}</td>
                         <td>${item.ghiChu}</td>
-                        <td>
-                            <c:choose>
-                                <c:when test="${not empty thoiGianTaoList[status.index]}">
-                                    ${thoiGianTaoList[status.index]}
-                                </c:when>
-                                <c:otherwise>
-                                    Hóa đơn tại quầy
-                                </c:otherwise>
-                            </c:choose>
-                        </td>
+                        <td>${item.thoiGianTaoFormatted}</td>
                         <td>
                             <c:choose>
                                 <c:when test="${item.tinh_trang == 0}">
@@ -87,6 +79,7 @@
                                 </c:otherwise>
                             </c:choose>
                         </td>
+                        <td>${item.kieuHoaDon == 1 ? "Online" : "Tại quầy"}</td>
                         <td>
                             <a href="detail/${item.id}" class="btn btn-outline-custom">
                                 <i class="fa-solid fa-circle-info"></i>
@@ -100,25 +93,33 @@
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center">
                 <li class="page-item ${isFirst ? 'disabled' : ''}">
-                    <a class="page-link" href="?page=0&size=10&tinhTrang=${tinhTrang}&phoneNumber=${phoneNumber}&startDate=${startDate}&endDate=${endDate}">First</a>
+                    <a class="page-link" href="?page=0&size=10&tinhTrang=${tinhTrang}&phoneNumber=${phoneNumber}&startDate=${startDate}&endDate=${endDate}&kieuHoaDon=${kieuHoaDon}">
+                        First
+                    </a>
                 </li>
 
                 <li class="page-item ${currentPage == 0 ? 'disabled' : ''}">
-                    <a class="page-link" href="?page=${currentPage - 1}&size=10&tinhTrang=${tinhTrang}&phoneNumber=${phoneNumber}&startDate=${startDate}&endDate=${endDate}">Previous</a>
+                    <a class="page-link" href="?page=${currentPage - 1}&size=10&tinhTrang=${tinhTrang}&phoneNumber=${phoneNumber}&startDate=${startDate}&endDate=${endDate}&kieuHoaDon=${kieuHoaDon}">
+                        Previous
+                    </a>
                 </li>
 
                 <li class="page-item disabled">
-        <span class="page-link">
-            Page ${currentPage + 1} of ${totalPages}
-        </span>
+            <span class="page-link">
+                Page ${currentPage + 1} of ${totalPages}
+            </span>
                 </li>
 
                 <li class="page-item ${isLast ? 'disabled' : ''}">
-                    <a class="page-link" href="?page=${currentPage + 1}&size=10&tinhTrang=${tinhTrang}&phoneNumber=${phoneNumber}&startDate=${startDate}&endDate=${endDate}">Next</a>
+                    <a class="page-link" href="?page=${currentPage + 1}&size=10&tinhTrang=${tinhTrang}&phoneNumber=${phoneNumber}&startDate=${startDate}&endDate=${endDate}&kieuHoaDon=${kieuHoaDon}">
+                        Next
+                    </a>
                 </li>
 
                 <li class="page-item ${isLast ? 'disabled' : ''}">
-                    <a class="page-link" href="?page=${totalPages - 1}&size=10&tinhTrang=${tinhTrang}&phoneNumber=${phoneNumber}&startDate=${startDate}&endDate=${endDate}">Last</a>
+                    <a class="page-link" href="?page=${totalPages - 1}&size=10&tinhTrang=${tinhTrang}&phoneNumber=${phoneNumber}&startDate=${startDate}&endDate=${endDate}&kieuHoaDon=${kieuHoaDon}">
+                        Last
+                    </a>
                 </li>
             </ul>
         </nav>

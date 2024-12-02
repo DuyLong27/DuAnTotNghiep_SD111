@@ -39,6 +39,8 @@ public class ThongTinKhachHangController {
             int dangGiao = 0;
             int xacNhanThanhToan = 0;
             int hoanThanh = 0;
+            int daHuy = 0;
+            int daDoiTra = 0;
             for (HoaDon hoaDon : hoaDonList) {
                 switch (hoaDon.getTinh_trang()) {
                     case 0 -> choXacNhan++;
@@ -46,6 +48,8 @@ public class ThongTinKhachHangController {
                     case 2 -> dangGiao++;
                     case 3 -> xacNhanThanhToan++;
                     case 4 -> hoanThanh++;
+                    case 14 -> daHuy++;
+                    case 13 -> daDoiTra++;
                 }
             }
             Map<String, Integer> stats = new HashMap<>();
@@ -55,6 +59,8 @@ public class ThongTinKhachHangController {
             stats.put("dangGiao", dangGiao);
             stats.put("xacNhanThanhToan", xacNhanThanhToan);
             stats.put("hoanThanh", hoanThanh);
+            stats.put("daHuy", daHuy);
+            stats.put("daDoiTra", daDoiTra);
             model.addAttribute("orderStats", stats);
             model.addAttribute("khachHang", khachHang);
             return "customer/thong_tin/view";

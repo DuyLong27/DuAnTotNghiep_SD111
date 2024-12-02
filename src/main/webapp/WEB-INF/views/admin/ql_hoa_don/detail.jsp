@@ -206,16 +206,20 @@
                     <p><strong>Số điện thoại:</strong> ${hoaDon.soDienThoai}</p>
                 </div>
                 <div class="col-md-6">
-                    <p><strong>Ngày tạo:</strong> ${thoiGianTao}</p>
+                    <p><strong>Ngày tạo:</strong> ${hoaDon.thoiGianTaoFormatted}</p>
                 </div>
             </div>
             <div class="row mb-2">
+                <c:if test="${hoaDon.diaChi != null}">
                 <div class="col-md-6">
                     <p><strong>Địa chỉ:</strong> ${hoaDon.diaChi}</p>
                 </div>
+                </c:if>
+                <c:if test="${hoaDon.phuongThucVanChuyen != null}">
                 <div class="col-md-6">
                     <p><strong>Phương thức vận chuyển:</strong> ${hoaDon.phuongThucVanChuyen}</p>
                 </div>
+                </c:if>
             </div>
             <div class="row mb-2">
                 <div class="col-md-6">
@@ -223,6 +227,14 @@
                 </div>
                 <div class="col-md-6">
                     <p><strong>Phương thức thanh toán:</strong> ${hoaDon.phuong_thuc_thanh_toan}</p>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-md-6">
+
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Loại hóa đơn:</strong> ${hoaDon.kieuHoaDon ==1 ? "Online":"Tại quầy"}</p>
                 </div>
             </div>
         </div>
@@ -330,9 +342,11 @@
                 </div>
             </div>
         </c:if>
+        <c:if test="${hoaDon.phuongThucVanChuyen != null}">
         <p class="text-end" style="color: #0B745E">
             Phí vận chuyển: ${phiVanChuyen} VNĐ
         </p>
+        </c:if>
         <p class="text-end fw-bold">
             Tổng tiền: ${hoaDonChiTiets[0].hoaDon.tongTien} VNĐ
         </p>

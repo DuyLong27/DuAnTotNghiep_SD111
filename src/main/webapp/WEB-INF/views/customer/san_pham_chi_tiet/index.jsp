@@ -239,19 +239,15 @@
                             <div class="row g-4">
                                 <div class="col-md-6 d-flex flex-column align-items-center text-center">
                                     <a href="/danh-sach-san-pham-chi-tiet/view-sp/${sanPhamChiTiet.id}">
-                                        <img src="${pageContext.request.contextPath}/uploads/${sanPhamChiTiet.hinhAnh}"
-                                             class="card-img-top product-image rounded mb-3 shadow-sm"
-                                             alt="${sanPhamChiTiet.sanPham.ten}">
+                                        <img src="${pageContext.request.contextPath}/uploads/${sanPhamChiTiet.hinhAnh}" class="card-img-top product-image rounded mb-3 shadow-sm" alt="${sanPhamChiTiet.sanPham.ten}">
                                     </a>
                                     <h5 class="fw-bold mb-2">${sanPhamChiTiet.sanPham.ten}</h5>
                                     <p class="fw-bold">Giá:
                                         <c:choose>
                                             <c:when test="${sanPhamChiTiet.giaGiamGia != null and sanPhamChiTiet.giaGiamGia > 0}">
-                                                <span id="giaBan"
-                                                      style="text-decoration: line-through; color: red">${sanPhamChiTiet.giaBan}</span> VNĐ
+                                                <span id="giaBan" style="text-decoration: line-through; color: red">${sanPhamChiTiet.giaBan}</span> VNĐ
                                                 <br>
-                                                <span id="giaGiamGia"
-                                                      style="color: green">${sanPhamChiTiet.giaGiamGia}</span> VNĐ
+                                                <span id="giaGiamGia" style="color: green">${sanPhamChiTiet.giaGiamGia}</span> VNĐ
                                             </c:when>
                                             <c:otherwise>
                                                 <span id="giaBan">${sanPhamChiTiet.giaBan}</span> VNĐ
@@ -260,43 +256,57 @@
                                     </p>
                                     <p class="text-muted">Mô tả: ${sanPhamChiTiet.sanPham.moTa}</p>
                                     <div class="mb-3 d-flex align-items-center justify-content-center">
-                                        <button type="button" class="btn btn-outline-secondary rounded-circle px-2"
-                                                onclick="changeQuantity(-1)">-
-                                        </button>
-                                        <input type="number" class="form-control mx-2 text-center" id="soLuong"
-                                               name="soLuong" min="1" value="1" required onchange="updateTotal()"
-                                               style="width: 80px;">
-                                        <button type="button" class="btn btn-outline-secondary rounded-circle px-2"
-                                                onclick="changeQuantity(1)">+
-                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary rounded-circle px-2" onclick="changeQuantity(-1)">-</button>
+                                        <input type="number" class="form-control mx-2 text-center" id="soLuong" name="soLuong" min="1" value="1" required onchange="updateTotal()" style="width: 80px;">
+                                        <button type="button" class="btn btn-outline-secondary rounded-circle px-2" onclick="changeQuantity(1)">+</button>
                                     </div>
                                     <div>
                                         <label class="form-label fw-bold">Tổng tiền:</label>
                                         <c:choose>
                                             <c:when test="${sanPhamChiTiet.giaGiamGia != null and sanPhamChiTiet.giaGiamGia > 0}">
-                                                <p id="tongTien"
-                                                   class="text-success fw-bold">${sanPhamChiTiet.giaGiamGia} VNĐ</p>
+                                                <p id="tongTien" class="text-success fw-bold">${sanPhamChiTiet.giaGiamGia} VNĐ</p>
                                             </c:when>
                                             <c:otherwise>
-                                                <p id="tongTien" class="text-success fw-bold">${sanPhamChiTiet.giaBan}
-                                                    VNĐ</p>
+                                                <p id="tongTien" class="text-success fw-bold">${sanPhamChiTiet.giaBan} VNĐ</p>
                                             </c:otherwise>
                                         </c:choose>
                                     </div>
+                                    <c:if test="${khachHang != null}">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <label class="form-label fw-bold">Số tiền giảm giá:</label>
+                                                <p id="discountAmount" class="text-success fw-bold">${discountAmount} VNĐ</p>
+                                            </div>
+                                            <div>
+                                                <label class="form-label fw-bold">Phần trăm giảm:</label>
+                                                <p id="discountRate" class="text-warning fw-bold">${discountRate}%</p>
+                                            </div>
+                                        </div>
+                                    </c:if>
                                 </div>
                                 <div class="col-md-6 border-start">
                                     <h3 class="text-center mb-4 text-secondary">Thông tin thanh toán</h3>
-                                    <form action="/danh-sach-san-pham/xac-nhan-hoa-don" method="post">
+                                    <form action="/danh-sach-san-pham-chi-tiet/xac-nhan-hoa-don" method="post">
                                         <input type="hidden" name="sanPhamId" value="${sanPhamChiTiet.id}">
                                         <input type="hidden" name="soLuong" id="soLuongInput" value="1">
                                         <input type="hidden" name="tongTien" id="tongTienInput" value="${sanPhamChiTiet.giaBan}">
+                                        <c:choose>
+                                            <c:when test="${empty khachHang}">
+                                                <div class="mb-3">
+                                                    <label for="email" class="form-label fw-bold">Email:</label>
+                                                    <input type="email" class="form-control" id="email" name="email" placeholder="Nhập email của bạn" required>
+                                                </div>
+                                            </c:when>
+                                        </c:choose>
                                         <div class="mb-3">
                                             <label for="phuongThucThanhToan" class="form-label fw-bold">Phương thức thanh toán:</label>
-                                            <select class="form-select" id="phuongThucThanhToan" name="phuongThucThanhToan" required>
+                                            <select class="form-select" id="phuongThucThanhToan" name="phuongThucThanhToan" required onchange="displayImage()">
                                                 <option value="Tiền mặt">Tiền mặt</option>
                                                 <option value="Chuyển khoản">Chuyển khoản</option>
-                                                <option value="Thẻ tín dụng">Thẻ tín dụng</option>
                                             </select>
+                                        </div>
+                                        <div id="imageContainer" style="display: none; text-align: center;">
+                                            <img id="myImage" src="../../../../images/QRLong.png" alt="Image of transfer method" width="200" style="border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label fw-bold">Phương thức vận chuyển:</label>
@@ -317,14 +327,6 @@
                                             <label for="soDienThoai" class="form-label fw-bold">Số điện thoại:</label>
                                             <input type="tel" class="form-control" id="soDienThoai" name="soDienThoai" pattern="[0-9]{10}" required>
                                         </div>
-                                        <c:choose>
-                                            <c:when test="${empty khachHang}">
-                                                <div class="mb-3">
-                                                    <label for="email" class="form-label fw-bold">Email:</label>
-                                                    <input type="email" class="form-control" id="email" name="email" placeholder="Vui lòng nhập email để nhận mã đơn hàng" required>
-                                                </div>
-                                            </c:when>
-                                        </c:choose>
                                         <button type="submit" class="btn btn-success w-100 py-2 mt-4">Xác nhận đơn hàng</button>
                                     </form>
                                 </div>
@@ -343,32 +345,70 @@
     // Gọi hàm displayCart khi trang tải
     window.onload = displayCart;
 
-    // Giá bán của sản phẩm
-    const giaBan = ${sanPhamChiTiet.giaBan};
+    const giaBan = ${sanPhamChiTiet.giaBan != null ? sanPhamChiTiet.giaBan : 0};
+    const giaGiamGia = ${sanPhamChiTiet.giaGiamGia != null ? sanPhamChiTiet.giaGiamGia : 0};
+    const diemTichLuy = ${khachHang != null ? khachHang.diemTichLuy : 0};
+    const discountRate = Math.min(Math.floor(diemTichLuy / 1000) * 5, 30); // % giảm giá tối đa 30%
+
+    function calculateDiscountAmount(price, rate) {
+        return price * (rate / 100); // Số tiền giảm giá
+    }
 
     // Hàm cập nhật tổng tiền
     function updateTotal() {
         const soLuong = parseInt(document.getElementById("soLuong").value) || 1; // Giá trị mặc định là 1
         const selectedShipping = document.querySelector('input[name="phuongThucVanChuyen"]:checked');
 
-        // Đặt chi phí vận chuyển mặc định là 0
-        let shippingCost = 0;
-
-        // Nếu có phương thức vận chuyển được chọn, tính toán giá trị chi phí vận chuyển
+        let shippingCost = 0; // Phí vận chuyển mặc định
         if (selectedShipping) {
-            if (selectedShipping.value === "Giao Hàng Nhanh") {
-                shippingCost = 33000; // Chi phí cho giao hàng nhanh
-            } else if (selectedShipping.value === "Giao Hàng Tiêu Chuẩn") {
-                shippingCost = 20000; // Chi phí cho giao hàng tiêu chuẩn
-            }
+            shippingCost = selectedShipping.value === "Giao Hàng Nhanh" ? 33000 : 20000;
         }
 
-        // Tính tổng tiền
-        const tongTien = (giaBan * soLuong) + shippingCost;
+        // Giá sử dụng (ưu tiên giá giảm nếu có)
+        const giaSuDung = giaGiamGia > 0 ? giaGiamGia : giaBan;
 
-        // Cập nhật nội dung tổng tiền trong modal
+        // Tính tổng tiền sản phẩm
+        const tongTienSanPham = giaSuDung * soLuong;
+
+        // Kiểm tra có đăng nhập hay không
+        let tongTien;
+        if (diemTichLuy > 0) {
+            // Tính giảm giá nếu khách hàng có điểm tích lũy
+            const discountAmount = calculateDiscountAmount(tongTienSanPham, discountRate);
+            document.getElementById("discountAmount").innerText = discountAmount.toLocaleString('vi-VN') + " VNĐ"; // Hiển thị tiền giảm giá
+            tongTien = tongTienSanPham - discountAmount + shippingCost;
+        } else {
+            // Nếu không đăng nhập, không áp dụng giảm giá
+            tongTien = tongTienSanPham + shippingCost;
+        }
+
+        // Hiển thị tổng tiền trên giao diện
         document.getElementById("tongTien").innerText = tongTien.toLocaleString('vi-VN') + " VNĐ";
+        document.getElementById("tongTienInput").value = tongTien; // Nếu cần gửi giá trị này qua form
     }
+
+
+    // Khi thay đổi số lượng sản phẩm
+    document.getElementById("soLuong").addEventListener("change", updateTotal);
+
+    // Khi thay đổi phương thức vận chuyển
+    document.querySelectorAll('input[name="phuongThucVanChuyen"]').forEach((input) => {
+        input.addEventListener("change", updateTotal);
+    });
+
+    // Khi nhấn nút tăng/giảm số lượng
+    function changeQuantity(amount) {
+        const soLuongInput = document.getElementById("soLuong");
+        let currentQuantity = parseInt(soLuongInput.value);
+        currentQuantity = isNaN(currentQuantity) ? 1 : currentQuantity;
+        currentQuantity = Math.max(1, currentQuantity + amount); // Đảm bảo số lượng tối thiểu là 1
+        soLuongInput.value = currentQuantity;
+
+        updateTotal(); // Cập nhật lại tổng tiền
+    }
+
+    // Khởi tạo giá trị ban đầu
+    updateTotal();
 
     function changeQuantity(amount) {
         const soLuongInput = document.getElementById("soLuong");
@@ -389,6 +429,18 @@
         soLuongSanPhamHiddenInput.value = slsp; // Thêm dòng này
 
         updateTotal(); // Cập nhật lại tổng tiền
+    }
+
+    function displayImage() {
+        var paymentMethod = document.getElementById("phuongThucThanhToan").value;
+        var imageContainer = document.getElementById("imageContainer");
+
+        // Nếu chọn "Chuyển khoản", hiển thị hình ảnh
+        if (paymentMethod === "Chuyển khoản") {
+            imageContainer.style.display = "block";
+        } else {
+            imageContainer.style.display = "none";
+        }
     }
 </script>
 <jsp:include page="../footer_user.jsp"/>

@@ -179,11 +179,23 @@ public class DanhSachSPCTController {
     }
 
     @GetMapping("/mua-ngay")
-    public String muaNgay(@RequestParam("productId") Integer productId, Model model) {
+    public String muaNgay(@RequestParam("productId") Integer productId, Model model, HttpSession session) {
         SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(productId).orElse(null);
         model.addAttribute("sanPhamChiTiet", sanPhamChiTiet);
+        KhachHang khachHang = (KhachHang) session.getAttribute("khachHang");
+        int diemTichLuy = khachHang != null ? khachHang.getDiemTichLuy() : 0;
+        double discountRate = Math.min(Math.floor(diemTichLuy / 1000.0) * 5, 30);
+        int giaSanPham = (sanPhamChiTiet.getGiaGiamGia() != null && sanPhamChiTiet.getGiaGiamGia() > 0)
+                ? sanPhamChiTiet.getGiaGiamGia()
+                : sanPhamChiTiet.getGiaBan();
+        int discountAmount = (int) (giaSanPham * (discountRate / 100.0));
+        model.addAttribute("discountRate", discountRate);
+        model.addAttribute("discountAmount", discountAmount);
+        model.addAttribute("tongTien", giaSanPham - discountAmount);
+
         List<SanPhamChiTiet> sanPhamList = sanPhamChiTietRepo.findAll();
         model.addAttribute("listSanPham", sanPhamList);
+
         return "customer/san_pham_chi_tiet/index";
     }
 
@@ -196,34 +208,33 @@ public class DanhSachSPCTController {
                                 @RequestParam int soLuong,
                                 @RequestParam int sanPhamId,
                                 @RequestParam(required = false) String email) {
-
         SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamId).orElse(null);
         if (sanPhamChiTiet == null) {
             return "redirect:/error";
         }
-
-        String tenSanPham = sanPhamChiTiet.getSanPham().getTen();
-
         int giaSanPham = (sanPhamChiTiet.getGiaGiamGia() != null && sanPhamChiTiet.getGiaGiamGia() > 0)
                 ? sanPhamChiTiet.getGiaGiamGia()
                 : sanPhamChiTiet.getGiaBan();
-        int tongTien = soLuong * giaSanPham;
+        int tongTienSanPham = soLuong * giaSanPham;
         int phiVanChuyen = phuongThucVanChuyen.equals("Giao Hàng Tiêu Chuẩn") ? 20000 : 33000;
-        tongTien += phiVanChuyen;
-
+        KhachHang khachHang = (KhachHang) session.getAttribute("khachHang");
+        int diemTichLuy = khachHang != null ? khachHang.getDiemTichLuy() : 0;
+        double discountRate = Math.min(Math.floor(diemTichLuy / 1000) * 0.05, 0.30);
+        double discountAmount = tongTienSanPham * discountRate;
+        int tongTienSauGiam = tongTienSanPham - (int) discountAmount;
+        int tongTien = tongTienSauGiam + phiVanChuyen;
         String soHoaDon = "HD" + new Random().nextInt(90000);
-
         HoaDon hoaDon = new HoaDon();
         hoaDon.setPhuong_thuc_thanh_toan(phuongThucThanhToan);
         hoaDon.setPhuongThucVanChuyen(phuongThucVanChuyen);
         hoaDon.setDiaChi(diaChi);
         hoaDon.setSoDienThoai(soDienThoai);
         hoaDon.setNgayTao(new Date());
+        hoaDon.setThoiGianTao(LocalDateTime.now());
+        hoaDon.setKieuHoaDon(1);
         hoaDon.setTongTien(tongTien);
         hoaDon.setSoHoaDon(soHoaDon);
         hoaDon.setTinh_trang(0);
-
-        KhachHang khachHang = (KhachHang) session.getAttribute("khachHang");
         if (khachHang != null) {
             hoaDon.setKhachHang(khachHang);
         } else if (email != null && !email.isEmpty()) {
@@ -235,26 +246,23 @@ public class DanhSachSPCTController {
                     diaChi,
                     soDienThoai,
                     soLuong,
-                    tenSanPham,
+                    sanPhamChiTiet.getSanPham().getTen(),
                     giaSanPham,
                     tongTien
             );
         } else {
             return "redirect:/error";
         }
-
         hoaDonRepo.save(hoaDon);
-
         HoaDonChiTiet hoaDonChiTiet = new HoaDonChiTiet();
         hoaDonChiTiet.setHoaDon(hoaDon);
         hoaDonChiTiet.setSanPhamChiTiet(sanPhamChiTiet);
         hoaDonChiTiet.setSo_luong(soLuong);
-        hoaDonChiTiet.setGia_san_pham(giaSanPham);
+        int giaSanPhamSauGiam = (int) (giaSanPham * (1 - discountRate));
+        hoaDonChiTiet.setGia_san_pham(giaSanPhamSauGiam);
         hoaDonChiTietRepo.save(hoaDonChiTiet);
-
         sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - soLuong);
         sanPhamChiTietRepo.save(sanPhamChiTiet);
-
         ThoiGianDonHang thoiGianDonHang = new ThoiGianDonHang();
         thoiGianDonHang.setHoaDon(hoaDon);
         thoiGianDonHang.setThoiGianTao(LocalDateTime.now());

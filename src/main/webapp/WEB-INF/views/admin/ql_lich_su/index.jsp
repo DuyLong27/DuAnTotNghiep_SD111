@@ -60,7 +60,7 @@
             <td>${item.tongTien}</td>
             <td>${item.ghiChu}</td>
             <td>${item.ngayTao}</td>
-            <td>${item.tinh_trang == 4 ? "Hoàn Thành" : "Đã Hủy"}</td>
+            <td>${item.tinh_trang == 4 ? "Hoàn Thành" : (item.tinh_trang == 13 ? "Hoàn Thành" : "Đã Hủy")}</td>
             <td>
                 <a href="detail/${item.id}" class="btn btn-outline-custom">
                     <i class="fa-solid fa-circle-info"></i>

@@ -64,10 +64,10 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
     List<HoaDon> findByKhachHangId(@Param("khachHangId") Integer khachHangId);
 
     // Truy vấn tổng doanh thu
-    @Query("SELECT SUM(h.tongTien) FROM HoaDon h WHERE h.ngayTao BETWEEN :startDate AND :endDate")
+    @Query("SELECT SUM(h.tongTien) FROM HoaDon h WHERE h.tinh_trang IN (4, 13) AND h.ngayTao BETWEEN :startDate AND :endDate")
     Integer tinhTongTienHoaDon(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
-    @Query("SELECT COUNT(h) FROM HoaDon h WHERE h.tinh_trang = 4 AND h.ngayTao BETWEEN :startDate AND :endDate")
+    @Query("SELECT COUNT(h) FROM HoaDon h WHERE h.tinh_trang IN (4,13)  AND h.ngayTao BETWEEN :startDate AND :endDate")
     Integer tinhTongSoHoaDonHoanThanh(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
     @Query("SELECT COUNT(h) FROM HoaDon h WHERE h.tinh_trang = 14 AND h.ngayTao BETWEEN :startDate AND :endDate")
@@ -77,7 +77,7 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
             "FROM hoa_don h " +
             "JOIN hoa_don_chi_tiet hdct ON h.id_hoa_don = hdct.id_hoa_don " +
             "WHERE h.ngay_tao BETWEEN :startDate AND :endDate " +
-            "AND h.tinh_trang = 4 " +
+            "AND h.tinh_trang IN (4,13) " +
             "GROUP BY CONVERT(VARCHAR, h.ngay_tao, 23) " +
             "ORDER BY date", nativeQuery = true)
     List<Object[]> tinhDoanhThuTheoNgay(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
@@ -113,8 +113,21 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
             nativeQuery = true)
     List<Object[]> getProductRevenueReport(@Param("selectedDate") java.sql.Date selectedDate);
 
+    @Query("SELECT h FROM HoaDon h WHERE (:tinhTrang IS NULL OR " +
+            "(h.tinh_trang = :tinhTrang OR (:tinhTrang = 2 AND h.tinh_trang IN (2, 3)))) " +
+            "AND (:phoneNumber IS NULL OR h.soDienThoai IS NULL OR h.soDienThoai LIKE %:phoneNumber%) " +
+            "AND (:kieuHoaDon IS NULL OR h.kieuHoaDon = :kieuHoaDon) " +
+            "AND (:startDate IS NULL OR h.ngayTao >= :startDate) " +
+            "AND (:endDate IS NULL OR h.ngayTao <= :endDate)")
+    Page<HoaDon> findByMultipleCriteria(@Param("tinhTrang") Integer tinhTrang,
+                                        @Param("phoneNumber") String phoneNumber,
+                                        @Param("kieuHoaDon") Integer kieuHoaDon,
+                                        @Param("startDate") LocalDateTime startDate,
+                                        @Param("endDate") LocalDateTime endDate,
+                                        Pageable pageable);
+
     @Query(value = "SELECT COUNT(*) AS tong_hoa_don " +
             "FROM hoa_don hd " +
-            "WHERE CAST(hd.ngay_tao AS DATE) = :ngay AND hd.tinh_trang = 4", nativeQuery = true)
+            "WHERE CAST(hd.ngay_tao AS DATE) = :ngay AND hd.tinh_trang IN(4,13) ", nativeQuery = true)
     Long demSoHoaDonTheoNgayVaTinhTrang(@Param("ngay") LocalDate ngay);
 }
