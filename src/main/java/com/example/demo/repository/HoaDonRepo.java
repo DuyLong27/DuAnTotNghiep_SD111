@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -63,7 +64,7 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
     List<HoaDon> findByKhachHangId(@Param("khachHangId") Integer khachHangId);
 
     // Truy vấn tổng doanh thu
-    @Query("SELECT SUM(h.tongTien) FROM HoaDon h WHERE h.ngayTao BETWEEN :startDate AND :endDate")
+    @Query("SELECT SUM(h.tongTien) FROM HoaDon h WHERE h.tinh_trang = 4 AND h.ngayTao BETWEEN :startDate AND :endDate")
     Integer tinhTongTienHoaDon(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
     @Query("SELECT COUNT(h) FROM HoaDon h WHERE h.tinh_trang = 4 AND h.ngayTao BETWEEN :startDate AND :endDate")
@@ -134,4 +135,9 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
                                         @Param("startDate") LocalDateTime startDate,
                                         @Param("endDate") LocalDateTime endDate,
                                         Pageable pageable);
+
+    @Query(value = "SELECT COUNT(*) AS tong_hoa_don " +
+            "FROM hoa_don hd " +
+            "WHERE CAST(hd.ngay_tao AS DATE) = :ngay AND hd.tinh_trang = 4", nativeQuery = true)
+    Long demSoHoaDonTheoNgayVaTinhTrang(@Param("ngay") LocalDate ngay);
 }
