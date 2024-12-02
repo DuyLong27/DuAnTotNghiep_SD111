@@ -37,7 +37,7 @@ public interface SanPhamChiTietRepo extends JpaRepository<SanPhamChiTiet, Intege
             + "JOIN hdct.sanPhamChiTiet spct "
             + "JOIN spct.sanPham sp "
             + "JOIN hdct.hoaDon hd "
-            + "WHERE hd.tinh_trang = 4"
+            + "WHERE hd.tinh_trang IN (4, 13)"
             + "AND hd.ngayTao BETWEEN :startDate AND :endDate "
             + "GROUP BY sp.ten "
             + "ORDER BY totalSold DESC")

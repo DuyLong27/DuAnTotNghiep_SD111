@@ -40,7 +40,7 @@ public class QLLichSuController {
 
         // Nếu dsTinhTrang không được truyền vào, mặc định lấy [4, 14]
         if (dsTinhTrang == null || dsTinhTrang.isEmpty()) {
-            dsTinhTrang = Arrays.asList(4, 14); // Mặc định tình trạng là 4 và 14
+            dsTinhTrang = Arrays.asList(4, 13, 14); // Mặc định tình trạng là 4 và 14
         }
 
         // Khai báo biến ngày tạo

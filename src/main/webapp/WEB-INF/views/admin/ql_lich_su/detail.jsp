@@ -5,9 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản lý hóa đơn</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          crossorigin="anonymous">
 </head>
-<jsp:include page="../layout.jsp" />
+<jsp:include page="../layout.jsp"/>
 <body>
 <div class="container mt-3">
     <p><strong>Tên khách hàng:</strong> ${hoaDon.khachHang.tenKhachHang}</p>
@@ -18,7 +19,7 @@
     <p><strong>Phương thức vận chuyển:</strong> ${hoaDon.phuongThucVanChuyen}</p>
     <p><strong>Ngày tạo:</strong> ${hoaDon.ngayTao}</p>
     <p><strong>Phương thức thanh toán:</strong> ${hoaDon.phuong_thuc_thanh_toan}</p>
-    <p><strong>Tình trạng:</strong> ${hoaDon.tinh_trang == 4 ? "Hoàn Thành" : "Đã hủy"}</p>
+    <p><strong>Tình trạng:</strong> ${hoaDon.tinh_trang == 4 ? "Hoàn Thành" : (hoaDon.tinh_trang == 13 ? "Hoàn Thành" : "Đã Hủy")}</p>
 
     <h6>Chi tiết sản phẩm:</h6>
     <table class="table">
@@ -30,14 +31,14 @@
         </tr>
         </thead>
         <tbody>
-        <c:set var="tongTien" value="0" />
+        <c:set var="tongTien" value="0"/>
         <c:forEach items="${hoaDonChiTiets}" var="item">
             <tr>
                 <td>${item.sanPhamChiTiet.sanPham.ten}</td>
                 <td>${item.sanPhamChiTiet.giaBan} VND</td>
                 <td>${item.so_luong}</td>
             </tr>
-            <c:set var="tongTien" value="${tongTien + (item.so_luong * item.sanPhamChiTiet.giaBan)}" />
+            <c:set var="tongTien" value="${tongTien + (item.so_luong * item.sanPhamChiTiet.giaBan)}"/>
         </c:forEach>
         </tbody>
     </table>
