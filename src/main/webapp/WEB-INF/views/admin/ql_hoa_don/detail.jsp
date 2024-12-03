@@ -164,9 +164,9 @@
     </div>
 
     <c:if test="${hoaDon.tinh_trang == 0}">
-    <form action="/hoa-don/xac-nhan-hoa-don/${hoaDon.id}" method="post">
-        <button type="submit" class="btn btn-primary">Xác nhận</button>
-    </form>
+        <form action="/hoa-don/xac-nhan-hoa-don/${hoaDon.id}" method="post">
+            <button type="submit" class="btn btn-primary">Xác nhận</button>
+        </form>
     </c:if>
     <c:if test="${hoaDon.tinh_trang == 1}">
         <form action="/hoa-don/ban-giao-van-chuyen/${hoaDon.id}" method="post">
@@ -211,14 +211,14 @@
             </div>
             <div class="row mb-2">
                 <c:if test="${hoaDon.diaChi != null}">
-                <div class="col-md-6">
-                    <p><strong>Địa chỉ:</strong> ${hoaDon.diaChi}</p>
-                </div>
+                    <div class="col-md-6">
+                        <p><strong>Địa chỉ:</strong> ${hoaDon.diaChi}</p>
+                    </div>
                 </c:if>
                 <c:if test="${hoaDon.phuongThucVanChuyen != null}">
-                <div class="col-md-6">
-                    <p><strong>Phương thức vận chuyển:</strong> ${hoaDon.phuongThucVanChuyen}</p>
-                </div>
+                    <div class="col-md-6">
+                        <p><strong>Phương thức vận chuyển:</strong> ${hoaDon.phuongThucVanChuyen}</p>
+                    </div>
                 </c:if>
             </div>
             <div class="row mb-2">
@@ -237,6 +237,54 @@
                     <p><strong>Loại hóa đơn:</strong> ${hoaDon.kieuHoaDon ==1 ? "Online":"Tại quầy"}</p>
                 </div>
             </div>
+            <div class="row mb-2">
+                <div class="col-md-6">
+
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Trạng thái hóa đơn:</strong>
+                        <c:choose>
+                            <c:when test="${hoaDon.tinh_trang == 0}">
+                                Chờ xác nhận
+                            </c:when>
+                            <c:when test="${hoaDon.tinh_trang == 1 }">
+                                Chờ giao
+                            </c:when>
+                            <c:when test="${hoaDon.tinh_trang == 2 || item.tinh_trang == 3}">
+                                Đang giao
+                            </c:when>
+                            <c:when test="${hoaDon.tinh_trang == 4}">
+                                Hoàn thành
+                            </c:when>
+                            <c:when test="${hoaDon.tinh_trang == 11}">
+                                Chờ xác nhận đổi trả
+                            </c:when>
+                            <c:when test="${hoaDon.tinh_trang == 12}">
+                                Chờ đổi trả
+                            </c:when>
+                            <c:when test="${hoaDon.tinh_trang == 13}">
+                                Đã đổi trả
+                            </c:when>
+                            <c:when test="${hoaDon.tinh_trang == 14}">
+                                Đã hủy
+                            </c:when>
+                            <c:otherwise>
+                                Không xác định
+                            </c:otherwise>
+                        </c:choose>
+                    </p>
+                </div>
+            </div>
+            <c:if test="${hoaDon.tinh_trang >=11 && hoaDon.tinh_trang <14}">
+                <div class="row mb-2">
+                    <div class="col-md-6">
+
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Hình thức hoàn trả:</strong> ${doiTra.hinhThuc}</p>
+                    </div>
+                </div>
+            </c:if>
         </div>
     </div>
 
@@ -343,13 +391,14 @@
             </div>
         </c:if>
         <c:if test="${hoaDon.phuongThucVanChuyen != null}">
-        <p class="text-end" style="color: #0B745E">
-            Phí vận chuyển: ${phiVanChuyen} VNĐ
-        </p>
+            <p class="text-end" style="color: #0B745E">
+                Phí vận chuyển: ${hoaDon.phuongThucVanChuyen == "Giao Hàng Nhanh" ? "33.000":'20.000'} VNĐ
+            </p>
         </c:if>
-        <p class="text-end fw-bold">
-            Tổng tiền: ${hoaDonChiTiets[0].hoaDon.tongTien} VNĐ
-        </p>
+        <c:if test="${hoaDon.tongTien != 33000 && hoaDon.tongTien != 20000}">
+            <p class="text-end">
+                Tổng Tiền: <strong>${hoaDon.tongTien} đ</strong></p>
+        </c:if>
     </div>
 </div>
 

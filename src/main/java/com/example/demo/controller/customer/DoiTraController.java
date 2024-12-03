@@ -44,40 +44,26 @@ public class DoiTraController {
         KhachHang khachHang = (KhachHang) session.getAttribute("khachHang");
         if (khachHang != null) {
             List<HoaDon> hoaDonList = hoaDonRepo.findByKhachHang(khachHang);
-            Map<Integer, LocalDateTime> thoiGianTaoMap = new HashMap<>();
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm , dd-MM-yyyy");
 
             for (HoaDon hoaDon : hoaDonList) {
                 hoaDon.setHoaDonChiTietList(hoaDonChiTietRepo.findByHoaDon(hoaDon));
-                ThoiGianDonHang thoiGianDonHang = thoiGianDonHangRepo.findByHoaDon(hoaDon);
-                if (thoiGianDonHang != null) {
-                    thoiGianTaoMap.put(hoaDon.getId(), thoiGianDonHang.getThoiGianTao());
-                }
             }
 
-            hoaDonList.sort((h1, h2) -> {
-                LocalDateTime thoiGianTao1 = thoiGianTaoMap.get(h1.getId());
-                LocalDateTime thoiGianTao2 = thoiGianTaoMap.get(h2.getId());
-
-                if (thoiGianTao1 == null && thoiGianTao2 == null) {
-                    return 0;
-                } else if (thoiGianTao1 == null) {
-                    return 1;
-                } else if (thoiGianTao2 == null) {
-                    return -1;
-                } else {
-                    return thoiGianTao2.compareTo(thoiGianTao1);
-                }
-            });
+            hoaDonList.sort(Comparator.comparing(
+                    HoaDon::getThoiGianTao, Comparator.reverseOrder()
+            ));
 
             model.addAttribute("hoaDonList", hoaDonList);
 
             Map<Integer, String> formattedThoiGianTaoMap = new HashMap<>();
-            for (Map.Entry<Integer, LocalDateTime> entry : thoiGianTaoMap.entrySet()) {
-                formattedThoiGianTaoMap.put(entry.getKey(), entry.getValue().format(formatter));
+            for (HoaDon hoaDon : hoaDonList) {
+                LocalDateTime thoiGianTao = hoaDon.getThoiGianTao();
+                if (thoiGianTao != null) {
+                    formattedThoiGianTaoMap.put(hoaDon.getId(), thoiGianTao.format(formatter));
+                }
             }
-
             model.addAttribute("thoiGianTaoMap", formattedThoiGianTaoMap);
         } else {
             model.addAttribute("errorMessage", "Bạn cần đăng nhập để xem danh sách hóa đơn.");
@@ -130,6 +116,8 @@ public class DoiTraController {
 
             List<DoiTraChiTiet> doiTraChiTietList = doiTraChiTietRepo.findByDoiTra_HoaDon_Id(id);
             model.addAttribute("doiTraChiTiets", doiTraChiTietList);
+            DoiTra doiTra = doiTraRepo.findFirstByHoaDon_Id(id);
+            model.addAttribute("doiTra", doiTra);
         } else {
             model.addAttribute("errorMessage", "Không tìm thấy hóa đơn.");
         }

@@ -196,15 +196,15 @@
 
 
         .product-cart.top-50, .product-buy.top-50 {
-            top: 50% !important;
+            top: 45% !important;
         }
 
         .product-cart.start-50 {
-            left: 56% !important;
+            left: 58% !important;
         }
 
         .product-buy.start-50 {
-            left: 43% !important;
+            left: 42% !important;
         }
 
         .product-buy a i, .product-cart a i {
@@ -298,8 +298,10 @@
                                     ${product.khuyenMaiChiTietList[0].khuyenMai.giaTriKhuyenMai}%
                                 </span>
                         </c:if>
-                        <img src="${pageContext.request.contextPath}/uploads/${product.hinhAnh}" class="card-img-top"
-                             alt="${product.sanPham.ten}">
+                        <a href="/danh-sach-san-pham-chi-tiet/view-sp/${product.id}">
+                            <img src="${pageContext.request.contextPath}/uploads/${product.hinhAnh}" class="card-img-top"
+                                 alt="${product.sanPham.ten}">
+                        </a>
                         <div class="card-body text-center">
                             <h5 class="card-title">${product.sanPham.ten}</h5>
                             <p class="card-text text-success">
@@ -345,8 +347,10 @@
                                     ${newestProducts.khuyenMaiChiTietList[0].khuyenMai.giaTriKhuyenMai}%
                                 </span>
                         </c:if>
-                        <img src="${pageContext.request.contextPath}/uploads/${newestProducts.hinhAnh}" class="card-img-top"
-                             alt="${newestProducts.sanPham.ten}">
+                        <a href="/danh-sach-san-pham-chi-tiet/view-sp/${newestProducts.id}">
+                            <img src="${pageContext.request.contextPath}/uploads/${newestProducts.hinhAnh}" class="card-img-top"
+                                 alt="${newestProducts.sanPham.ten}">
+                        </a>
                         <div class="card-body text-center">
                             <h5 class="card-title">${newestProducts.sanPham.ten}</h5>
                             <p class="card-text text-success">
@@ -393,8 +397,10 @@
                     <span class="discount-badge">
                         ${product.khuyenMaiChiTietList[0].khuyenMai.giaTriKhuyenMai}%
                     </span>
-                            <img src="${pageContext.request.contextPath}/uploads/${product.hinhAnh}"
-                                 class="card-img-top" alt="${product.sanPham.ten}">
+                            <a href="/danh-sach-san-pham-chi-tiet/view-sp/${product.id}">
+                                <img src="${pageContext.request.contextPath}/uploads/${product.hinhAnh}" class="card-img-top"
+                                     alt="${product.sanPham.ten}">
+                            </a>
                             <div class="card-body">
                                 <h5 class="card-title">${product.sanPham.ten}</h5>
                                 <p class="card-text text-success">
