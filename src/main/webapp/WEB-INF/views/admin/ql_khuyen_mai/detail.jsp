@@ -274,9 +274,11 @@
 
     <!-- Nút áp dụng -->
     <div class="text-start mt-4">
-        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#applyModal">
-            Áp dụng
-        </button>
+        <c:if test="${sessionScope.role == 0}">
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#applyModal">
+                Áp dụng
+            </button>
+        </c:if>
         <a href="/quan-ly-khuyen-mai/chi-tiet" class="btn btn-secondary-outline">Reset</a>
     </div>
 
@@ -312,8 +314,9 @@
                                     <c:if test="${kmct.khuyenMai.idKhuyenMai == km.idKhuyenMai}">
                                         <li class="dropdown-item">
                                                 ${kmct.sanPhamChiTiet.sanPham.ten}
-                                            <!-- Nút X với lớp 'delete-link' -->
-                                            <a href="#" class="text-danger delete-link" onclick="deleteProductFromPromotion(${kmct.id})">X</a>
+                                            <c:if test="${sessionScope.role == 0}">
+                                                <a href="#" class="text-danger delete-link" onclick="deleteProductFromPromotion(${kmct.id})">X</a>
+                                            </c:if>
                                         </li>
                                     </c:if>
                                 </c:forEach>

@@ -57,9 +57,11 @@
     </c:if>
     <div class="mb-3 filter-section">
         <form method="get" action="/spct/index" class="d-flex align-items-center">
-            <button type="button" class="btn btn-create" data-bs-toggle="modal" data-bs-target="#addProductModal">
-                Thêm sản phẩm
-            </button>
+            <c:if test="${sessionScope.role == 0}">
+                <button type="button" class="btn btn-create" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                    Thêm sản phẩm
+                </button>
+            </c:if>
             <button type="button" class="btn btn-warning ms-2" id="checkButton" data-bs-toggle="modal">
                 Kiểm tra
             </button>
@@ -373,7 +375,9 @@
             <th>Hương vị</th>
             <th>Thương hiệu</th>
             <th>Tình trạng</th>
-            <th>Thao tác</th>
+            <c:if test="${sessionScope.role == 0}">
+                <th>Thao tác</th>
+            </c:if>
         </tr>
         </thead>
         <tbody>
@@ -406,12 +410,14 @@
                     <td>${sanPhamChiTiet.thuongHieu.ten}</td>
                     <td class="${sanPhamChiTiet.tinhTrang == 1 ? 'text-success' : 'text-danger'}">
                             ${sanPhamChiTiet.tinhTrang == 1 ? 'Hoạt Động' : 'Không Hoạt Động'}</td>
-                    <td>
-                        <div class="d-flex justify-content-center">
-                            <a class="btn btn-outline-custom btn-sm me-2" data-bs-toggle="modal" data-bs-target="#editProductModal" data-id="${sanPhamChiTiet.id}" data-ma="${sanPhamChiTiet.ma}" data-soLuong="${sanPhamChiTiet.soLuong}" data-giaBan="${sanPhamChiTiet.giaBan}" data-sanPhamId="${sanPhamChiTiet.sanPham.id}" data-loaiCaPheId="${sanPhamChiTiet.loaiCaPhe.id}" data-canNangId="${sanPhamChiTiet.canNang.id}" data-loaiHatId="${sanPhamChiTiet.loaiHat.id}" data-loaiTuiId="${sanPhamChiTiet.loaiTui.id}" data-mucDoRangId="${sanPhamChiTiet.mucDoRang.id}" data-huongViId="${sanPhamChiTiet.huongVi.id}" data-thuongHieuId="${sanPhamChiTiet.thuongHieu.id}" data-tinhTrang="${sanPhamChiTiet.tinhTrang}"><i class="fas fa-edit"></i> Sửa</a>
-                                <%--                            <a href="${pageContext.request.contextPath}/spct/delete/${sanPhamChiTiet.id}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này không?')"><i class="fas fa-trash-alt"></i> Xóa</a>--%>
-                        </div>
-                    </td>
+                    <c:if test="${sessionScope.role == 0}">
+                        <td>
+                            <div class="d-flex justify-content-center">
+                                <a class="btn btn-outline-custom btn-sm me-2" data-bs-toggle="modal" data-bs-target="#editProductModal" data-id="${sanPhamChiTiet.id}" data-ma="${sanPhamChiTiet.ma}" data-soLuong="${sanPhamChiTiet.soLuong}" data-giaBan="${sanPhamChiTiet.giaBan}" data-sanPhamId="${sanPhamChiTiet.sanPham.id}" data-loaiCaPheId="${sanPhamChiTiet.loaiCaPhe.id}" data-canNangId="${sanPhamChiTiet.canNang.id}" data-loaiHatId="${sanPhamChiTiet.loaiHat.id}" data-loaiTuiId="${sanPhamChiTiet.loaiTui.id}" data-mucDoRangId="${sanPhamChiTiet.mucDoRang.id}" data-huongViId="${sanPhamChiTiet.huongVi.id}" data-thuongHieuId="${sanPhamChiTiet.thuongHieu.id}" data-tinhTrang="${sanPhamChiTiet.tinhTrang}"><i class="fas fa-edit"></i> Sửa</a>
+                                    <%--                            <a href="${pageContext.request.contextPath}/spct/delete/${sanPhamChiTiet.id}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này không?')"><i class="fas fa-trash-alt"></i> Xóa</a>--%>
+                            </div>
+                        </td>
+                    </c:if>
                 </tr>
             </c:forEach>
         </c:if>

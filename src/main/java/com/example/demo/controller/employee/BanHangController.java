@@ -1,9 +1,6 @@
 package com.example.demo.controller.employee;
 
-import com.example.demo.entity.HoaDon;
-import com.example.demo.entity.HoaDonChiTiet;
-import com.example.demo.entity.KhachHang;
-import com.example.demo.entity.SanPhamChiTiet;
+import com.example.demo.entity.*;
 import com.example.demo.repository.*;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
@@ -112,15 +109,22 @@ public class BanHangController {
     }
 
     @PostMapping("addHoaDon")
-    public String addHoaDon(@ModelAttribute HoaDon hoaDon, Model model) {
+    public String addHoaDon(@ModelAttribute HoaDon hoaDon, HttpSession session) {
+        NhanVien nhanVien = (NhanVien) session.getAttribute("khachHang");
+        if (nhanVien == null || !(nhanVien instanceof NhanVien)) {
+            return "redirect:/auth/login";
+        }
         hoaDon.setSoHoaDon(generateRandomId());
         hoaDon.setTinh_trang(0);
         hoaDon.setKieuHoaDon(0);
-        hoaDon.setNgayTao(new Date());
+        hoaDon.setNgayTao(new Date()); // Ngày tạo
         hoaDon.setPhuong_thuc_thanh_toan("Tiền mặt");
+        hoaDon.setNhanVien(nhanVien);
         hoaDonRepository.save(hoaDon);
         return "redirect:/ban-hang/" + hoaDon.getId();
     }
+
+
 
 
     @PostMapping("/{id}/delete")
