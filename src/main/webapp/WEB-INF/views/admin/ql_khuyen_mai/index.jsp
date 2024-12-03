@@ -13,7 +13,7 @@
 
 </head>
 <body>
-<jsp:include page="../layout.jsp" />
+<jsp:include page="../layout.jsp"/>
 <%--body--%>
 <div class="container mt-3">
     <div class="row">
@@ -26,13 +26,16 @@
                 </div>
                 <div class="mb-3">
                     <label for="tenKhuyenMai" class="form-label">Tên khuyến mãi</label>
-                    <input type="text" class="form-control" id="tenKhuyenMai" name="tenKhuyenMai" value="${tenKhuyenMai}">
+                    <input type="text" class="form-control" id="tenKhuyenMai" name="tenKhuyenMai"
+                           value="${tenKhuyenMai}">
                 </div>
                 <div class="mb-3">
                     <label for="giaTriKhuyenMai" class="form-label">Giá trị khuyến mãi (Từ - Đến)</label>
                     <div class="d-flex gap-2">
-                        <input type="number" class="form-control" name="giaTriMin" placeholder="Từ" value="${giaTriMin}">
-                        <input type="number" class="form-control" name="giaTriMax" placeholder="Đến" value="${giaTriMax}">
+                        <input type="number" class="form-control" name="giaTriMin" placeholder="Từ"
+                               value="${giaTriMin}">
+                        <input type="number" class="form-control" name="giaTriMax" placeholder="Đến"
+                               value="${giaTriMax}">
                     </div>
                 </div>
                 <div class="mb-3">
@@ -50,10 +53,11 @@
 
         <div class="col-md-9">
             <div class="d-flex justify-content-end mb-3">
-
-                <button type="button" class="btn btn-create" data-bs-toggle="modal" data-bs-target="#addPromotionModal">
-                    Tạo mới
-                </button>
+                <c:if test="${sessionScope.role == 0}">
+                    <button type="button" class="btn btn-create" data-bs-toggle="modal" data-bs-target="#addPromotionModal">
+                        Tạo mới
+                    </button>
+                </c:if>
 
             </div>
 
@@ -67,7 +71,9 @@
                     <th>Ngày bắt đầu</th>
                     <th>Ngày kết thúc</th>
                     <th>Trạng thái</th>
-                    <th>Hành động</th>
+                    <c:if test="${sessionScope.role == 0}">
+                        <th>Hành động</th>
+                    </c:if>
                 </tr>
                 </thead>
                 <tbody>
@@ -80,20 +86,23 @@
                         <td>${item.ngayBatDau}</td>
                         <td>${item.ngayKetThuc}</td>
                         <td>${item.tinhTrang ==1?"Đang hoạt động":"Không hoạt động"}</td>
-                        <td style="width: 100px;">
-                            <div class="d-flex justify-content-center gap-2">
-                                <a href="#" class="btn btn-outline-custom"
-                                   data-bs-toggle="modal"
-                                   data-bs-target="#editPromotionModal"
-                                   onclick="showPromotionEdits(${item.idKhuyenMai}, '${item.maKhuyenMai}', '${item.tenKhuyenMai}', ${item.giaTriKhuyenMai}, '${item.ngayBatDau}', '${item.ngayKetThuc}', ${item.tinhTrang})">
-                                    <i class="fa fa-edit"></i>
-                                </a>
-                                <a class="btn btn-outline-custom"
-                                   href="/quan-ly-khuyen-mai/chi-tiet?id=${item.idKhuyenMai}" class="btn btn-outline-success">
-                                    <i class="fa-solid fa-hand-point-right"></i>
-                                </a>
-                            </div>
-                        </td>
+                        <c:if test="${sessionScope.role == 0}">
+                            <td style="width: 100px;">
+                                <div class="d-flex justify-content-center gap-2">
+                                    <a href="#" class="btn btn-outline-custom"
+                                       data-bs-toggle="modal"
+                                       data-bs-target="#editPromotionModal"
+                                       onclick="showPromotionEdits(${item.idKhuyenMai}, '${item.maKhuyenMai}', '${item.tenKhuyenMai}', ${item.giaTriKhuyenMai}, '${item.ngayBatDau}', '${item.ngayKetThuc}', ${item.tinhTrang})">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <a class="btn btn-outline-custom"
+                                       href="/quan-ly-khuyen-mai/chi-tiet?id=${item.idKhuyenMai}"
+                                       class="btn btn-outline-success">
+                                        <i class="fa-solid fa-hand-point-right"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </c:if>
                     </tr>
                 </c:forEach>
                 </tbody>
@@ -102,19 +111,21 @@
             <nav aria-label="Page navigation">
                 <ul class="pagination justify-content-center">
                     <li class="page-item ${currentPage == 0 ? 'disabled' : ''}">
-                        <a class="page-link btn-custom" href="?page=${currentPage - 1}&size=5&maKhuyenMai=${maKhuyenMai}&tenKhuyenMai=${tenKhuyenMai}&giaTriMin=${giaTriMin}&giaTriMax=${giaTriMax}&ngayBatDau=${ngayBatDau}&ngayKetThuc=${ngayKetThuc}">Previous</a>
+                        <a class="page-link btn-custom"
+                           href="?page=${currentPage - 1}&size=5&maKhuyenMai=${maKhuyenMai}&tenKhuyenMai=${tenKhuyenMai}&giaTriMin=${giaTriMin}&giaTriMax=${giaTriMax}&ngayBatDau=${ngayBatDau}&ngayKetThuc=${ngayKetThuc}">Previous</a>
                     </li>
                     <c:forEach var="i" begin="0" end="${totalPages - 1}">
                         <li class="page-item ${currentPage == i ? 'active' : ''}">
-                            <a class="page-link btn-custom" href="?page=${i}&size=5&maKhuyenMai=${maKhuyenMai}&tenKhuyenMai=${tenKhuyenMai}&giaTriMin=${giaTriMin}&giaTriMax=${giaTriMax}&ngayBatDau=${ngayBatDau}&ngayKetThuc=${ngayKetThuc}">${i + 1}</a>
+                            <a class="page-link btn-custom"
+                               href="?page=${i}&size=5&maKhuyenMai=${maKhuyenMai}&tenKhuyenMai=${tenKhuyenMai}&giaTriMin=${giaTriMin}&giaTriMax=${giaTriMax}&ngayBatDau=${ngayBatDau}&ngayKetThuc=${ngayKetThuc}">${i + 1}</a>
                         </li>
                     </c:forEach>
                     <li class="page-item ${currentPage == totalPages - 1 ? 'disabled' : ''}">
-                        <a class="page-link btn-custom" href="?page=${currentPage + 1}&size=5&maKhuyenMai=${maKhuyenMai}&tenKhuyenMai=${tenKhuyenMai}&giaTriMin=${giaTriMin}&giaTriMax=${giaTriMax}&ngayBatDau=${ngayBatDau}&ngayKetThuc=${ngayKetThuc}">Next</a>
+                        <a class="page-link btn-custom"
+                           href="?page=${currentPage + 1}&size=5&maKhuyenMai=${maKhuyenMai}&tenKhuyenMai=${tenKhuyenMai}&giaTriMin=${giaTriMin}&giaTriMax=${giaTriMax}&ngayBatDau=${ngayBatDau}&ngayKetThuc=${ngayKetThuc}">Next</a>
                     </li>
                 </ul>
             </nav>
-
 
 
         </div>
@@ -122,7 +133,8 @@
 </div>
 
 <!-- Pop-up -->
-<div class="modal fade" id="addPromotionModal" tabindex="-1" aria-labelledby="addPromotionModalLabel" aria-hidden="true">
+<div class="modal fade" id="addPromotionModal" tabindex="-1" aria-labelledby="addPromotionModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content modal-green">
             <div class="modal-header">
@@ -171,7 +183,8 @@
 </div>
 
 <!-- Modal for Edit Promotion -->
-<div class="modal fade" id="editPromotionModal" tabindex="-1" aria-labelledby="editPromotionModalLabel" aria-hidden="true">
+<div class="modal fade" id="editPromotionModal" tabindex="-1" aria-labelledby="editPromotionModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -193,7 +206,8 @@
                     </div>
                     <div class="mb-3">
                         <label for="editGiaTriKhuyenMai" class="form-label">Giá trị khuyến mãi</label>
-                        <input type="number" class="form-control" id="editGiaTriKhuyenMai" name="giaTriKhuyenMai" required>
+                        <input type="number" class="form-control" id="editGiaTriKhuyenMai" name="giaTriKhuyenMai"
+                               required>
                     </div>
                     <div class="mb-3">
                         <label for="editNgayBatDau" class="form-label">Ngày bắt đầu</label>
@@ -221,7 +235,6 @@
         </div>
     </div>
 </div>
-
 
 
 </body>

@@ -38,10 +38,12 @@
             </div>
         </form>
         <div class="mt-2">
-            <button type="button" class="btn btn-create" data-bs-toggle="modal" data-bs-target="#productModal"
-                    onclick="resetForm(); setModalTitle('Thêm Nhân Viên');">
-                + Thêm Nhân Viên
-            </button>
+            <c:if test="${sessionScope.role == 0}">
+                <button type="button" class="btn btn-create" data-bs-toggle="modal" data-bs-target="#productModal"
+                        onclick="resetForm(); setModalTitle('Thêm Nhân Viên');">
+                    + Thêm Nhân Viên
+                </button>
+            </c:if>
             <button type="button" class="btn btn-secondary-outline ms-2" onclick="resetFilters();">Reset</button>
         </div>
     </div>
@@ -129,7 +131,9 @@
             <th>Chức Vụ</th>
             <th>Ngày Đi Làm</th>
             <th>Tình Trạng</th>
-            <th>Thao Tác</th>
+            <c:if test="${sessionScope.role == 0}">
+                <th>Thao Tác</th>
+            </c:if>
         </tr>
         </thead>
         <tbody>
@@ -151,12 +155,14 @@
                     <td class="${nv.tinhTrang == 1 ? 'text-success' : 'text-danger'}">
                             ${nv.tinhTrang == 1 ? "Đang làm" : "Tan ca"}
                     </td>
-                    <td>
-                        <a onclick="openEditModal(${nv.id}, '${nv.tenNhanVien}', '${nv.email}', '${nv.matKhau}', '${nv.soDienThoai}', '${nv.chucVu}', '${nv.ngayDiLam}', ${nv.tinhTrang})"
-                           type="button" class="btn btn-default bordervien table__logo">
-                            <i class='bx bx-edit-alt'></i>
-                        </a>
-                    </td>
+                    <c:if test="${sessionScope.role == 0}">
+                        <td>
+                            <a onclick="openEditModal(${nv.id}, '${nv.tenNhanVien}', '${nv.email}', '${nv.matKhau}', '${nv.soDienThoai}', '${nv.chucVu}', '${nv.ngayDiLam}', ${nv.tinhTrang})"
+                               type="button" class="btn btn-default bordervien table__logo">
+                                <i class='bx bx-edit-alt'></i>
+                            </a>
+                        </td>
+                    </c:if>
                 </tr>
             </c:forEach>
         </c:if>

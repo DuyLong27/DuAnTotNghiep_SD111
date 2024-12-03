@@ -36,6 +36,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(roleInterceptor)
                 .addPathPatterns(
                         "/bao-cao/**",
+                        "/doanh-thu/**",
                         "/hoa-don/**",
                         "/quan-ly-khach-hang/**",
                         "/kho-hang/**",

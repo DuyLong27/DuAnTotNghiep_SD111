@@ -55,14 +55,15 @@
                 <option value="danhMuc" ${param.entity == 'danhMuc' ? 'selected' : ''}>Danh Mục</option>
             </select>
         </form>
-
-        <form method="post" action="/thuoc-tinh/add" class="d-flex">
-            <input type="hidden" name="entity" value="${param.entity}"/>
-            <div class="input-group">
-                <input type="text" name="propertyName" id="propertyName" class="form-control" placeholder="Tên thuộc tính mới" required/>
-                <button type="submit" class="btn btn-create">Thêm Thuộc Tính</button>
-            </div>
-        </form>
+        <c:if test="${sessionScope.role == 0}">
+            <form method="post" action="/thuoc-tinh/add" class="d-flex">
+                <input type="hidden" name="entity" value="${param.entity}"/>
+                <div class="input-group">
+                    <input type="text" name="propertyName" id="propertyName" class="form-control" placeholder="Tên thuộc tính mới" required/>
+                    <button type="submit" class="btn btn-create">Thêm Thuộc Tính</button>
+                </div>
+            </form>
+        </c:if>
     </div>
 
     <!-- Bảng thuộc tính -->
@@ -80,12 +81,20 @@
                 <td>${item.id}</td>
                 <td>${item.ten}</td>
                 <td>
-                    <form action="/thuoc-tinh/update" method="post" class="d-inline">
-                        <input type="hidden" name="entity" value="${entity}"/>
-                        <input type="hidden" name="id" value="${item.id}"/>
-                        <input type="text" name="propertyName" value="${item.ten}" class="form-control d-inline-block w-50" required/>
-                        <button type="submit" class="btn btn-outline-custom">Sửa</button>
-                    </form>
+                    <c:if test="${sessionScope.khachHang.role == 0}">
+                        <form action="/thuoc-tinh/update" method="post" class="d-inline">
+                            <input type="hidden" name="entity" value="${entity}"/>
+                            <input type="hidden" name="id" value="${item.id}"/>
+                            <input type="text" name="propertyName" value="${item.ten}" class="form-control d-inline-block w-50" required/>
+                            <button type="submit" class="btn btn-outline-custom">Sửa</button>
+                        </form>
+                    </c:if>
+                    <c:if test="${sessionScope.khachHang.role == 1}">
+                        <form>
+                            <input type="text" name="propertyName" value="${item.ten}"
+                                   class="form-control d-inline-block w-50" disabled/>
+                        </form>
+                    </c:if>
                         <%--                    <form action="/thuoc-tinh/delete" method="post" class="d-inline">--%>
                         <%--                        <input type="hidden" name="entity" value="${entity}"/>--%>
                         <%--                        <input type="hidden" name="id" value="${item.id}"/>--%>

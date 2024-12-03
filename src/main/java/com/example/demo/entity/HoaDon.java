@@ -28,6 +28,9 @@ public class HoaDon {
     @JoinColumn(name = "id_khach_hang", referencedColumnName = "id_khach_hang")
     private KhachHang khachHang;
 
+    @ManyToOne
+    @JoinColumn(name = "id_nhan_vien", referencedColumnName = "id_nhan_vien")
+    private NhanVien nhanVien;
 
     @Column(name = "so_hoa_don")
     private String soHoaDon;

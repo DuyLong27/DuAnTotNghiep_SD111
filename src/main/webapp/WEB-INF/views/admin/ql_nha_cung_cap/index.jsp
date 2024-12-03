@@ -43,9 +43,9 @@
             </div>
         </div>
         <div class="d-flex justify-content-start mb-3">
-            <!-- Nút mở form pop-up -->
-            <button type="button" class="btn btn-create" data-bs-toggle="modal" data-bs-target="#addNhaCungCapModal">Thêm Nhà Cung Cấp</button>
-            <!-- Nút reset -->
+            <c:if test="${sessionScope.role == 0}">
+                <button type="button" class="btn btn-create" data-bs-toggle="modal" data-bs-target="#addNhaCungCapModal">Thêm Nhà Cung Cấp</button>
+            </c:if>
             <button type="button" class="btn btn-secondary-outline ms-2" onclick="resetForm()">Reset</button>
         </div>
     </form>
@@ -64,7 +64,9 @@
             <th>Sản Phẩm Cung Cấp</th>
             <th>Nguồn Gốc Xuất Xứ</th>
             <th>Tình Trạng</th>
-            <th>Thao Tác</th>
+            <c:if test="${sessionScope.role == 0}">
+                <th>Thao tác</th>
+            </c:if>
         </tr>
         </thead>
         <tbody>
@@ -86,15 +88,17 @@
                     <td class="align-middle ${ncc.tinhTrang == 1 ? 'text-success' : 'text-danger'}">
                             ${ncc.tinhTrang == 1 ? 'Hoạt Động' : 'Không Hoạt Động'}
                     </td>
-                    <td >
-                        <button class="btn btn-outline-custom"
-                                data-bs-toggle="modal"
-                                data-bs-target="#addNhaCungCapModal"
-                                onclick="editNhaCungCap(${ncc.id}, '${ncc.tenNCC}', '${ncc.soDienThoai}', '${ncc.email}', '${ncc.diaChi}', '${ncc.sanPhamCungCap}', '${ncc.nguonGoc}', ${ncc.tinhTrang})">
-                            Sửa
-                        </button>
-                            <%--                        <a href="/nha-cung-cap/delete/${ncc.id}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa?');">Xóa</a>--%>
-                    </td>
+                    <c:if test="${sessionScope.role == 0}">
+                        <td >
+                            <button class="btn btn-outline-custom"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#addNhaCungCapModal"
+                                    onclick="editNhaCungCap(${ncc.id}, '${ncc.tenNCC}', '${ncc.soDienThoai}', '${ncc.email}', '${ncc.diaChi}', '${ncc.sanPhamCungCap}', '${ncc.nguonGoc}', ${ncc.tinhTrang})">
+                                Sửa
+                            </button>
+                                <%--                        <a href="/nha-cung-cap/delete/${ncc.id}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa?');">Xóa</a>--%>
+                        </td>
+                    </c:if>
                 </tr>
             </c:forEach>
         </c:if>

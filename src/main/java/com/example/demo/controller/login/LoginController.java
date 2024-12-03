@@ -33,6 +33,7 @@ public class LoginController {
         KhachHang khachHang = khachHangService.findByEmail(email);
         if (khachHang != null && matKhau.equals(khachHang.getMatKhau())) {
             session.setAttribute("khachHang", khachHang);
+            session.setAttribute("role", khachHang.getRole());
             Cookie cookie = new Cookie("userSession", khachHang.getIdKhachHang().toString());
             cookie.setMaxAge(7 * 24 * 60 * 60);
             cookie.setPath("/");
@@ -44,17 +45,19 @@ public class LoginController {
         NhanVien nhanVien = nhanVienRepo.findByEmail(email);
         if (nhanVien != null && matKhau.equals(nhanVien.getMatKhau())) {
             session.setAttribute("khachHang", nhanVien);
+            session.setAttribute("role", nhanVien.getRole());
             Cookie cookie = new Cookie("userSession", nhanVien.getId().toString());
             cookie.setMaxAge(7 * 24 * 60 * 60);
             cookie.setPath("/");
             response.addCookie(cookie);
             if (nhanVien.getRole() == 1 || nhanVien.getRole() == 0) {
-                return "redirect:/bao-cao/hien-thi";
+                return "redirect:/doanh-thu/hien-thi";
             }
         }
         model.addAttribute("error", "Tên đăng nhập hoặc mật khẩu không đúng");
         return "view/login";
     }
+
 
     @GetMapping("logout")
     public String logout(HttpSession session, HttpServletResponse response) {
