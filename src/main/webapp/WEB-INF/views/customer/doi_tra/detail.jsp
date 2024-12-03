@@ -94,6 +94,9 @@
                                 <c:otherwise><strong>Không xác định</strong></c:otherwise>
                             </c:choose>
                         </p>
+                        <c:if test="${hoaDon.tinh_trang >=11 && hoaDon.tinh_trang <14}">
+                            <p>Hình thức hoàn trả: <strong>${doiTra.hinhThuc}</strong></p>
+                        </c:if>
                     </div>
                 </div>
 
