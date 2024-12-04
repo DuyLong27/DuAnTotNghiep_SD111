@@ -48,6 +48,27 @@
             background-color: #0B745E;
             color: white !important;
         }
+        .toast-container {
+            z-index: 1050;
+        }
+
+        .toast {
+            border-radius: 0.5rem;
+            background-color: #0B745E;
+            color: #fff;
+            opacity: 1;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .toast-header {
+            background-color: #0B745E;
+            color: #fff;
+        }
+
+        .toast-body {
+            background-color: #ffffff;
+            color: #333;
+        }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -66,6 +87,17 @@
 
 <h2 class="d-flex justify-content-center mt-3 text-dark">Quản lý hóa đơn</h2>
 <div class="container mt-4">
+    <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3">
+        <div id="toastMessage" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">Thông báo</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                ${error}
+            </div>
+        </div>
+    </div>
     <form class="d-flex" action="/hoa-don/tinhTrang=${tinhTrang}" method="get">
         <input type="hidden" name="tinhTrang" value="${tinhTrang}">
         <input class="form-control me-2" type="search" name="phoneNumber" placeholder="Tìm kiếm theo số điện thoại" aria-label="Search" value="${phoneNumber}">
@@ -73,7 +105,6 @@
         <input class="form-control me-2" type="date" name="startDate" value="${startDate}">
         <input class="form-control me-2" type="date" name="endDate" value="${endDate}">
 
-        <!-- Thêm trường select cho kieuHoaDon -->
         <select class="form-control me-2" name="kieuHoaDon">
             <option value="">Loại hóa đơn</option>
             <option value="0" ${kieuHoaDon == 0 ? 'selected' : ''}>Tại quầy</option>
@@ -91,22 +122,58 @@
                     <a class="nav-link" href="/hoa-don/tinhTrang=all">Tất cả</a>
                 </div>
                 <div class="navbar-nav">
-                    <h5>Quản lý giao hàng</h5>
-                    <a class="nav-link" href="/hoa-don/tinhTrang=0">Chờ xác nhận</a>
-                    <a class="nav-link" href="/hoa-don/tinhTrang=1">Chờ giao</a>
-                    <a class="nav-link" href="/hoa-don/tinhTrang=2">Đang giao</a>
-                    <a class="nav-link" href="/hoa-don/tinhTrang=4">Hoàn thành</a>
+                    <h5>Giao hàng</h5>
+                    <a class="nav-link" href="/hoa-don/tinhTrang=0">
+                        Chờ xác nhận
+                        <span class="badge bg-danger">${chuaXacNhanCount}</span>
+                    </a>
+                    <a class="nav-link" href="/hoa-don/tinhTrang=1">
+                        Chờ giao
+                        <span class="badge bg-secondary">${choGiaoCount}</span>
+                    </a>
+                    <a class="nav-link" href="/hoa-don/tinhTrang=2">
+                        Đang giao
+                        <span class="badge bg-info">${dangGiaoCount}</span>
+                    </a>
+                    <a class="nav-link" href="/hoa-don/tinhTrang=4">
+                        Hoàn thành
+                        <span class="badge bg-success">${hoanThanhCount}</span>
+                    </a>
                 </div>
                 <div class="navbar-nav">
-                    <h5>Quản lý đổi trả</h5>
-                    <a class="nav-link" href="/hoa-don/tinhTrang=11">Chờ xác nhận đổi trả</a>
-                    <a class="nav-link" href="/hoa-don/tinhTrang=12">Chờ đổi trả</a>
-                    <a class="nav-link" href="/hoa-don/tinhTrang=13">Đã đổi trả</a>
-                    <a class="nav-link" href="/hoa-don/tinhTrang=14">Đã hủy</a>
+                    <h5>Đổi trả</h5>
+                    <a class="nav-link" href="/hoa-don/tinhTrang=11">
+                        Chờ xác nhận đổi trả
+                        <span class="badge bg-danger">${chuaXacNhanDoiTraCount}</span>
+                    </a>
+                    <a class="nav-link" href="/hoa-don/tinhTrang=12">
+                        Chờ đổi trả
+                        <span class="badge bg-warning">${choDoiTraCount}</span>
+                    </a>
+                    <a class="nav-link" href="/hoa-don/tinhTrang=13">
+                        Đã đổi trả
+                        <span class="badge bg-success">${daDoiTraCount}</span>
+                    </a>
+                    <a class="nav-link" href="/hoa-don/tinhTrang=14">
+                        Đã hủy
+                        <span class="badge bg-dark">${daHuyCount}</span>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 </nav>
 </body>
+<script>
+    <c:if test="${not empty error}">
+    var toastElement = document.getElementById('toastMessage');
+    var toast = new bootstrap.Toast(toastElement);
+    toast.show();
+
+    setTimeout(function() {
+        toast.hide();
+    }, 3500);
+    </c:if>
+</script>
+
 </html>

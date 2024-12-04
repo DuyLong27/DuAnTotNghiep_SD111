@@ -94,7 +94,8 @@ public class DoiTraController {
                 model.addAttribute("hoanTra", thoiGianDonHang.getHoanTra() != null ? thoiGianDonHang.getHoanTra().format(formatter) : "Chưa có thời gian hoàn trả");
                 model.addAttribute("xacNhanHoanTra", thoiGianDonHang.getXacNhanHoanTra() != null ? thoiGianDonHang.getXacNhanHoanTra().format(formatter) : "Chưa có thời gian xác nhận hoàn trả");
                 model.addAttribute("daHoanTra", thoiGianDonHang.getDaHoanTra() != null ? thoiGianDonHang.getDaHoanTra().format(formatter) : "Chưa có thời gian đã hoàn trả");
-                model.addAttribute("daHuy", thoiGianDonHang.getDaHuy() != null ? thoiGianDonHang.getDaHuy().format(formatter) : "Chưa có thời gian đã hoàn trả");
+                model.addAttribute("daHuy", thoiGianDonHang.getDaHuy() != null ? thoiGianDonHang.getDaHuy().format(formatter) : "Chưa có thời gian đã hủy");
+                model.addAttribute("khongDoiTra", thoiGianDonHang.getKhongHoanTra() != null ? thoiGianDonHang.getKhongHoanTra().format(formatter) : "Chưa có thời gian không xác nhận");
 
                 if (thoiGianDonHang.getBanGiaoVanChuyen() != null) {
                     LocalDateTime banGiaoVanChuyen = thoiGianDonHang.getBanGiaoVanChuyen();

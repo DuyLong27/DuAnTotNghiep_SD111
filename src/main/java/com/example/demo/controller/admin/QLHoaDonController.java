@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -56,8 +57,41 @@ public class QLHoaDonController {
         Pageable pageable = PageRequest.of(page, size);
         Page<HoaDon> hoaDonPage;
 
-        LocalDateTime start = startDate != null && !startDate.isEmpty() ? LocalDateTime.parse(startDate + "T00:00:00") : null;
-        LocalDateTime end = endDate != null && !endDate.isEmpty() ? LocalDateTime.parse(endDate + "T23:59:59") : null;
+        if (phoneNumber != null && !phoneNumber.isEmpty()) {
+            phoneNumber = phoneNumber.replaceAll("[-\\s]", "");
+
+            String phoneRegex = "^(\\d{10})$";
+            if (!phoneNumber.matches(phoneRegex)) {
+                model.addAttribute("error", "Số điện thoại không hợp lệ.");
+                return "/admin/ql_hoa_don/index";
+            }
+        }
+
+        LocalDateTime start = null;
+        LocalDateTime end = null;
+
+        if (startDate != null && !startDate.isEmpty()) {
+            try {
+                start = LocalDateTime.parse(startDate + "T00:00:00");
+            } catch (DateTimeParseException e) {
+                model.addAttribute("error", "Ngày bắt đầu không hợp lệ.");
+                return "/admin/ql_hoa_don/index";
+            }
+        }
+
+        if (endDate != null && !endDate.isEmpty()) {
+            try {
+                end = LocalDateTime.parse(endDate + "T23:59:59");
+            } catch (DateTimeParseException e) {
+                model.addAttribute("error", "Ngày kết thúc không hợp lệ.");
+                return "/admin/ql_hoa_don/index";
+            }
+        }
+
+        if (start != null && end != null && start.isAfter(end)) {
+            model.addAttribute("error", "Ngày bắt đầu không thể sau ngày kết thúc.");
+            return "/admin/ql_hoa_don/index";
+        }
 
         Integer tinhTrangInt = null;
         try {
@@ -86,6 +120,23 @@ public class QLHoaDonController {
         for (HoaDon hoaDon : hoaDonList) {
             hoaDon.setThoiGianTaoFormatted(hoaDon.getThoiGianTao().format(formatter));
         }
+
+        long chuaXacNhanCount = hoaDonRepo.countByTinhTrang(0);
+        long choGiaoCount = hoaDonRepo.countByTinhTrang(1);
+        long dangGiaoCount = hoaDonRepo.countByTinhTrang(2);
+        long hoanThanhCount = hoaDonRepo.countByTinhTrang(4);
+        long chuaXacNhanDoiTraCount = hoaDonRepo.countByTinhTrang(11);
+        long choDoiTraCount = hoaDonRepo.countByTinhTrang(12);
+        long daDoiTraCount = hoaDonRepo.countByTinhTrang(13);
+        long daHuyCount = hoaDonRepo.countByTinhTrang(14);
+        model.addAttribute("chuaXacNhanCount", chuaXacNhanCount);
+        model.addAttribute("choGiaoCount", choGiaoCount);
+        model.addAttribute("dangGiaoCount", dangGiaoCount);
+        model.addAttribute("hoanThanhCount", hoanThanhCount);
+        model.addAttribute("chuaXacNhanDoiTraCount", chuaXacNhanDoiTraCount);
+        model.addAttribute("choDoiTraCount", choDoiTraCount);
+        model.addAttribute("daDoiTraCount", daDoiTraCount);
+        model.addAttribute("daHuyCount", daHuyCount);
 
         model.addAttribute("listHoaDon", hoaDonList);
         model.addAttribute("currentPage", page);
@@ -377,6 +428,59 @@ public class QLHoaDonController {
         model.addAttribute("successMessage", "Hóa đơn đã được xác nhận hoàn trả thành công.");
 
         return "redirect:/hoa-don/detail/" + hoaDon.getId();
+    }
+
+    @PostMapping("/khong-xac-nhan/{id}")
+    public String khongXacNhanDon(@PathVariable("id") Integer id, Model model) {
+        HoaDon hoaDon = hoaDonRepo.findById(id).orElse(null);
+        if (hoaDon != null) {
+            List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepo.findByHoaDon(hoaDon);
+
+            for (HoaDonChiTiet hoaDonChiTiet : hoaDonChiTietList) {
+                SanPhamChiTiet sanPhamChiTiet = hoaDonChiTiet.getSanPhamChiTiet();
+                int soLuongHoan = hoaDonChiTiet.getSo_luong();
+
+                sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() + soLuongHoan);
+                sanPhamChiTietRepo.save(sanPhamChiTiet);
+            }
+
+            hoaDon.setTinh_trang(14);
+            hoaDonRepo.save(hoaDon);
+
+            ThoiGianDonHang thoiGianDonHang = thoiGianDonHangRepo.findByHoaDon_Id(id);
+            if (thoiGianDonHang != null) {
+                thoiGianDonHang.setDaHuy(LocalDateTime.now());
+                thoiGianDonHangRepo.save(thoiGianDonHang);
+            }
+
+            model.addAttribute("message", "Đơn hàng đã được chuyển sang trạng thái không xác nhận.");
+            return "redirect:/hoa-don/detail/" + id;
+        }
+
+        model.addAttribute("errorMessage", "Không tìm thấy hóa đơn.");
+        return "admin/ql_hoa_don/error";
+    }
+
+
+    @PostMapping("/khong-xac-nhan-doi-tra/{id}")
+    public String khongXacNhanDoiTra(@PathVariable("id") Integer id, Model model) {
+        HoaDon hoaDon = hoaDonRepo.findById(id).orElse(null);
+        if (hoaDon != null) {
+            hoaDon.setTinh_trang(4);
+            hoaDonRepo.save(hoaDon);
+
+            ThoiGianDonHang thoiGianDonHang = thoiGianDonHangRepo.findByHoaDon_Id(id);
+            if (thoiGianDonHang != null) {
+                thoiGianDonHang.setKhongHoanTra(LocalDateTime.now());
+                thoiGianDonHangRepo.save(thoiGianDonHang);
+            }
+
+            model.addAttribute("message", "Đơn hàng đã được chuyển sang trạng thái không xác nhận đổi trả.");
+            return "redirect:/hoa-don/detail/" + id;
+        }
+
+        model.addAttribute("errorMessage", "Không tìm thấy hóa đơn.");
+        return "admin/ql_hoa_don/error";
     }
 
 

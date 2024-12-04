@@ -98,6 +98,18 @@
         #alertMessage.show {
             right: 20px;
         }
+        #imageModal {
+            z-index: 1051 !important;
+        }
+
+        #doiTraModal {
+            z-index: 1050; !important;
+        }
+
+        #doiTraChiTietModal{
+            z-index: 1050; !important;
+        }
+
     </style>
 </head>
 <jsp:include page="../layout.jsp" />
@@ -164,20 +176,24 @@
     </div>
 
     <c:if test="${hoaDon.tinh_trang == 0}">
-        <form action="/hoa-don/xac-nhan-hoa-don/${hoaDon.id}" method="post">
-            <button type="submit" class="btn btn-primary">Xác nhận</button>
-        </form>
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmModal">
+                Xác nhận
+            </button>
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancelModal">
+                Không xác nhận
+            </button>
+        </div>
     </c:if>
     <c:if test="${hoaDon.tinh_trang == 1}">
-        <form action="/hoa-don/ban-giao-van-chuyen/${hoaDon.id}" method="post">
-            <button type="submit" class="btn btn-warning">Giao hàng</button>
-        </form>
+        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#deliveryModal">
+            Giao hàng
+        </button>
     </c:if>
     <c:if test="${hoaDon.tinh_trang == 2 || hoaDon.tinh_trang == 3}">
-        <form action="/hoa-don/hoan-thanh/${hoaDon.id}" method="post">
-            <button type="submit" class="btn btn-success"
-                    onclick="return confirmCompletion(${hoaDon.tinh_trang});">Hoàn thành</button>
-        </form>
+        <button type="button" class="btn btn-success" data-bs-target="#completeModal" onclick="return confirmCompletion(${hoaDon.tinh_trang});">
+            Hoàn thành
+        </button>
     </c:if>
 
     <div class="card mb-4 mt-3">
@@ -462,6 +478,7 @@
                         <p class="col-sm-4"><strong>Hình Ảnh Sản Phẩm:</strong></p>
                         <p class="col-sm-8">
                             <img style="width: 90px;" src="${pageContext.request.contextPath}/uploads/${doiTra.hinhAnh}">
+                            <button class="btn btn-info ms-3" data-bs-toggle="modal" data-bs-target="#imageModal">Xem Hình Ảnh</button>
                         </p>
                     </div>
 
@@ -494,6 +511,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary-outline" data-bs-dismiss="modal">Đóng</button>
+                <form action="/hoa-don/khong-xac-nhan-doi-tra/${hoaDon.id}" method="post">
+                    <button type="submit"class="btn btn-danger">Không Xác Nhận Đổi Trả</button>
+                </form>
                 <form action="/hoa-don/xac-nhan-hoan-tra/${hoaDon.id}" method="post">
                     <button type="submit"class="btn btn-primary">Xác Nhận Đổi Trả</button>
                 </form>
@@ -524,6 +544,7 @@
                         <p class="col-sm-4"><strong>Hình Ảnh Sản Phẩm:</strong></p>
                         <p class="col-sm-8">
                             <img style="width: 90px;" src="${pageContext.request.contextPath}/uploads/${doiTra.hinhAnh}">
+                            <button class="btn btn-info ms-3" data-bs-toggle="modal" data-bs-target="#imageModal">Xem Hình Ảnh</button>
                         </p>
                     </div>
 
@@ -561,21 +582,125 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Hình ảnh Sản phẩm</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <img style="width: 100%; height: auto;" src="${pageContext.request.contextPath}/uploads/${doiTra.hinhAnh}" alt="Hình ảnh sản phẩm">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary-outline" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
 
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Xác nhận</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Xác nhận đơn hàng và chuẩn bị hàng
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary-outline" data-bs-dismiss="modal">Hủy</button>
+                <form action="/hoa-don/xac-nhan-hoa-don/${hoaDon.id}" method="post">
+                    <button type="submit" class="btn btn-primary">Xác nhận</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="cancelModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cancelModalLabel">Không xác nhận</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn hủy xác nhận đơn hàng này?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary-outline" data-bs-dismiss="modal">Hủy</button>
+                <form action="/hoa-don/khong-xac-nhan/${hoaDon.id}" method="post">
+                    <button type="submit" class="btn btn-danger">Không xác nhận</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deliveryModal" tabindex="-1" role="dialog" aria-labelledby="deliveryModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deliveryModalLabel">Giao hàng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bàn giao đơn hàng cho đơn vị vận chuyển
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary-outline" data-bs-dismiss="modal">Hủy</button>
+                <form action="/hoa-don/ban-giao-van-chuyen/${hoaDon.id}" method="post">
+                    <button type="submit" class="btn btn-warning">Giao hàng</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="completeModal" tabindex="-1" role="dialog" aria-labelledby="completeModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="completeModalLabel">Hoàn thành</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Hoàn thành đơn hàng <br>
+                Hãy kiểm tra thanh toán trước khi hoàn thành
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary-outline" data-bs-dismiss="modal">Hủy</button>
+                <form action="/hoa-don/hoan-thanh/${hoaDon.id}" method="post">
+                    <button type="submit" class="btn btn-success">Hoàn thành</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 </body>
 <script>
     function confirmCompletion(tinhTrang) {
         const alertBox = document.getElementById('alertMessage');
+        const modalElement = document.getElementById('completeModal');
+        const modal = new bootstrap.Modal(modalElement);
+
         if (tinhTrang < 3) {
             alertBox.textContent = 'Phải xác nhận thanh toán trước khi hoàn thành đơn hàng.';
             alertBox.classList.add('show');
+            alertBox.style.display = 'block';
+
             setTimeout(() => {
                 alertBox.classList.remove('show');
+                alertBox.style.display = 'none';
             }, 3000);
-            return false;
+
+            return;
         }
-        return true;
+
+        modal.show();
     }
 </script>
 </html>

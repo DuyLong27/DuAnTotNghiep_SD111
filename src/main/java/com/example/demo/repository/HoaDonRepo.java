@@ -135,7 +135,8 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
                                         @Param("startDate") LocalDateTime startDate,
                                         @Param("endDate") LocalDateTime endDate,
                                         Pageable pageable);
-
+    @Query("SELECT COUNT(h) FROM HoaDon h WHERE h.tinh_trang = :tinhTrang")
+    long countByTinhTrang(@Param("tinhTrang") Integer tinhTrang);
     @Query(value = "SELECT COUNT(*) AS tong_hoa_don " +
             "FROM hoa_don hd " +
             "WHERE CAST(hd.ngay_tao AS DATE) = :ngay AND hd.tinh_trang IN(4,13) ", nativeQuery = true)

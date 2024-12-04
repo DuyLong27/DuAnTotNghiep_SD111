@@ -26,16 +26,13 @@
                 </div>
                 <div class="mb-3">
                     <label for="tenKhuyenMai" class="form-label">Tên khuyến mãi</label>
-                    <input type="text" class="form-control" id="tenKhuyenMai" name="tenKhuyenMai"
-                           value="${tenKhuyenMai}">
+                    <input type="text" class="form-control" id="tenKhuyenMai" name="tenKhuyenMai" value="${tenKhuyenMai}">
                 </div>
                 <div class="mb-3">
                     <label for="giaTriKhuyenMai" class="form-label">Giá trị khuyến mãi (Từ - Đến)</label>
                     <div class="d-flex gap-2">
-                        <input type="number" class="form-control" name="giaTriMin" placeholder="Từ"
-                               value="${giaTriMin}">
-                        <input type="number" class="form-control" name="giaTriMax" placeholder="Đến"
-                               value="${giaTriMax}">
+                        <input type="number" class="form-control" name="giaTriMin" placeholder="Từ" value="${giaTriMin}">
+                        <input type="number" class="form-control" name="giaTriMax" placeholder="Đến" value="${giaTriMax}">
                     </div>
                 </div>
                 <div class="mb-3">
@@ -250,6 +247,86 @@
         document.getElementById('editKhongHoatDong').checked = (tinhTrang === 0);
         document.getElementById('productForm').action = `/quan-ly-khuyen-mai/update`; // Update action
     }
+    function removeVietnameseAccents(str) {
+        var accents = [
+            {base: 'a', letters: 'áàạảãâấầậẩẫăắằặẳẵ'},
+            {base: 'e', letters: 'éèẹẻẽêếềệểễ'},
+            {base: 'i', letters: 'íìịỉĩ'},
+            {base: 'o', letters: 'óòọỏõôốồộổỗơớờợởỡ'},
+            {base: 'u', letters: 'úùụủũưứừựửữ'},
+            {base: 'y', letters: 'ýỳỵỷỹ'},
+            {base: 'd', letters: 'đ'}
+        ];
+
+        for (var i = 0; i < accents.length; i++) {
+            var letters = accents[i].letters.split('');
+            for (var j = 0; j < letters.length; j++) {
+                str = str.replace(letters[j], accents[i].base);
+            }
+        }
+
+        return str;
+    }
+
+    document.querySelector("form").addEventListener("submit", function(event) {
+        var maKhuyenMai = document.getElementById("maKhuyenMai").value.trim().toLowerCase();
+        var tenKhuyenMai = document.getElementById("tenKhuyenMai").value.trim().toLowerCase();
+        var giaTriMin = document.getElementsByName("giaTriMin")[0].value.trim();
+        var giaTriMax = document.getElementsByName("giaTriMax")[0].value.trim();
+        var ngayBatDau = document.getElementById("ngayBatDau").value.trim();
+        var ngayKetThuc = document.getElementById("ngayKetThuc").value.trim();
+
+        maKhuyenMai = removeVietnameseAccents(maKhuyenMai);
+        tenKhuyenMai = removeVietnameseAccents(tenKhuyenMai);
+
+        if (!maKhuyenMai && !tenKhuyenMai && !giaTriMin && !giaTriMax && !ngayBatDau && !ngayKetThuc) {
+            alert("Vui lòng nhập ít nhất một trường để tìm kiếm.");
+            event.preventDefault();
+            return;
+        }
+
+        if (maKhuyenMai && !/^[a-z0-9]+$/.test(maKhuyenMai)) {
+            alert("Mã khuyến mãi chỉ được chứa chữ và số.");
+            event.preventDefault();
+            return;
+        }
+
+        if (tenKhuyenMai && !/^[a-z0-9\s%]+$/.test(tenKhuyenMai)) {
+            alert("Tên khuyến mãi không được chứa ký tự đặc biệt ngoài %.");
+            event.preventDefault();
+            return;
+        }
+
+        if (giaTriMin && giaTriMax && (isNaN(giaTriMin) || isNaN(giaTriMax) || parseFloat(giaTriMin) < 0 || parseFloat(giaTriMax) < 0)) {
+            alert("Giá trị khuyến mãi phải là số và không được âm.");
+            event.preventDefault();
+            return;
+        }
+
+        if (giaTriMin && giaTriMax && parseInt(giaTriMin) > parseInt(giaTriMax)) {
+            alert("Giá trị 'Từ' không được lớn hơn giá trị 'Đến'.");
+            event.preventDefault();
+            return;
+        }
+
+        if (ngayBatDau && ngayKetThuc && ngayBatDau > ngayKetThuc) {
+            alert("Ngày bắt đầu không được lớn hơn ngày kết thúc.");
+            event.preventDefault();
+            return;
+        }
+
+        if (ngayBatDau && !/^\d{4}-\d{2}-\d{2}$/.test(ngayBatDau)) {
+            alert("Ngày bắt đầu không hợp lệ.");
+            event.preventDefault();
+            return;
+        }
+
+        if (ngayKetThuc && !/^\d{4}-\d{2}-\d{2}$/.test(ngayKetThuc)) {
+            alert("Ngày kết thúc không hợp lệ.");
+            event.preventDefault();
+            return;
+        }
+    });
 </script>
 
 </html>
