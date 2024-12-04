@@ -54,4 +54,7 @@ public class DoiTra {
     @Digits(integer = 2, fraction = 0)
     @Column(name = "tinh_trang")
     private int tinhTrang;
+
+    @Column(name = "loai_dich_vu")
+    private int loaiDichVu;
 }
