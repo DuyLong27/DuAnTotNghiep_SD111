@@ -124,6 +124,9 @@
                             <c:if test="${hoaDon.tinh_trang >= 4}">
                                 <p><strong>${hoanThanh}</strong>: Đơn hàng đã được giao thành công</p>
                             </c:if>
+                            <c:if test="${hoaDon.tinh_trang >= 4 && khongDoiTra != 'Chưa có thời gian không xác nhận'}">
+                            <p><strong>${khongDoiTra}</strong>: Hóa đơn không được xác nhận đổi trả</p>
+                            </c:if>
                             <c:if test="${hoaDon.tinh_trang >= 11}">
                                 <p><strong>${hoanTra}</strong>: Yêu cầu đổi trả</p>
                             </c:if>

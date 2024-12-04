@@ -37,7 +37,10 @@ public class ThoiGianDonHang {
     private LocalDateTime xacNhanHoanTra;
     @Column(name = "da_hoan_tra")
     private LocalDateTime daHoanTra;
-
     @Column(name = "da_huy")
     private LocalDateTime daHuy;
+    @Column(name = "khong_xac_nhan")
+    private LocalDateTime khongXacNhan;
+    @Column(name = "khong_hoan_tra")
+    private LocalDateTime khongHoanTra;
 }

@@ -189,13 +189,7 @@
         <div class="col-lg-3">
             <div class="related-products">
                 <h3 class="mb-3">Sản phẩm bán chạy</h3>
-                <c:if test="${empty data.content}">
-                    <tr>
-                        <td colspan="10">Không tìm thấy đối tượng nào.</td>
-                    </tr>
-                </c:if>
-                <c:if test="${not empty data.content}">
-                    <c:forEach items="${data.content}" var="spct">
+                    <c:forEach items="${bestSellingProducts}" var="spct">
                         <div class="row mb-3">
                             <div class="col-4">
                                 <a href="/danh-sach-san-pham-chi-tiet/view-sp/${spct.id}">
@@ -221,7 +215,6 @@
                         </div>
                         <hr>
                     </c:forEach>
-                </c:if>
             </div>
         </div>
         <!-- Modal hiển thị thông tin sản phẩm (hiển thị nếu sản phẩm được chọn) -->

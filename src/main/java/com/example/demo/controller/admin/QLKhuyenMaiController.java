@@ -41,8 +41,18 @@ public class QLKhuyenMaiController {
                        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate ngayBatDau,
                        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate ngayKetThuc,
                        Model model) {
+
+        if (maKhuyenMai != null) {
+            maKhuyenMai = maKhuyenMai.trim().toLowerCase();
+        }
+
+        if (tenKhuyenMai != null) {
+            tenKhuyenMai = tenKhuyenMai.toLowerCase();
+        }
+
         Pageable pageable = PageRequest.of(page, size);
         Page<KhuyenMai> khuyenMaiPage = khuyenMaiRepo.findFiltered(maKhuyenMai, tenKhuyenMai, giaTriMin, giaTriMax, ngayBatDau, ngayKetThuc, pageable);
+
         model.addAttribute("maKhuyenMai", maKhuyenMai);
         model.addAttribute("tenKhuyenMai", tenKhuyenMai);
         model.addAttribute("giaTriMin", giaTriMin);

@@ -203,20 +203,8 @@
                 <a class="nav-link text-light" href="/trang-chu">Trang chủ</a>
             </li>
 
-            <!-- Dropdown Custom -->
-            <li class="nav-item dropdown-custom">
+            <li class="nav-item">
                 <a href="/danh-sach-san-pham/hien-thi" class="nav-link text-light">Sản phẩm</a>
-                <ul class="dropdown-menu-custom">
-                    <li class="dropdown-submenu">
-                        <a class="dropdown-item" href="/danh-sach-san-pham/hien-thi">Cà phê</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Cà phê chuyên biệt</a></li>
-                            <li><a class="dropdown-item" href="#">Cà phê rang xay</a></li>
-                            <li><a class="dropdown-item" href="#">Cà phê hòa tan</a></li>
-                            <li><a class="dropdown-item" href="#">Cà phê hạt</a></li>
-                        </ul>
-                    </li>
-                </ul>
             </li>
 
             <li class="nav-item">
