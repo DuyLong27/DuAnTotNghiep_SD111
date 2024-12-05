@@ -124,6 +124,8 @@ public class DoiTraController {
             model.addAttribute("doiTraChiTiets", doiTraChiTietList);
             DoiTra doiTra = doiTraRepo.findFirstByHoaDon_Id(id);
             model.addAttribute("doiTra", doiTra);
+            List<DoiSanPham> doiSanPhamList = doiSanPhamRepo.findByDoiTra_HoaDon_Id(id);
+            model.addAttribute("doiSanPhams",doiSanPhamList);
         } else {
             model.addAttribute("errorMessage", "Không tìm thấy hóa đơn.");
         }

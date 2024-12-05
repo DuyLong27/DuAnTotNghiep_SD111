@@ -475,13 +475,22 @@ public class QLHoaDonController {
             hoaDon.setTinh_trang(4);
             hoaDonRepo.save(hoaDon);
 
+            List<DoiTra> doiTras = doiTraRepo.findByHoaDon(hoaDon);
+
+            for (DoiTra doiTra : doiTras) {
+                List<DoiTraChiTiet> doiTraChiTiets = doiTraChiTietRepo.findByDoiTra(doiTra);
+                doiTraChiTietRepo.deleteAll(doiTraChiTiets);
+
+                doiTraRepo.delete(doiTra);
+            }
+
             ThoiGianDonHang thoiGianDonHang = thoiGianDonHangRepo.findByHoaDon_Id(id);
             if (thoiGianDonHang != null) {
                 thoiGianDonHang.setKhongHoanTra(LocalDateTime.now());
                 thoiGianDonHangRepo.save(thoiGianDonHang);
             }
 
-            model.addAttribute("message", "Đơn hàng đã được chuyển sang trạng thái không xác nhận đổi trả.");
+            model.addAttribute("message", "Đơn hàng đã được chuyển sang trạng thái không xác nhận đổi trả và các yêu cầu đổi trả đã bị hủy.");
             return "redirect:/hoa-don/detail/" + id;
         }
 
