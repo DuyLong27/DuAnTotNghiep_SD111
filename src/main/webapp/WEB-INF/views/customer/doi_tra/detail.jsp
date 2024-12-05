@@ -217,6 +217,41 @@
                             </li>
                         </c:forEach>
                     </ul>
+                    <c:if test="${doiTra.loaiDichVu == 1}">
+                        <h6 class="mt-3">Sản phẩm muốn đổi lấy:</h6>
+                        <ul class="list-group mt-3 ">
+                            <c:forEach var="doiTraChiTiet" items="${doiSanPhams}">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <img src="${pageContext.request.contextPath}/uploads/${doiTraChiTiet.sanPhamChiTiet.hinhAnh}"
+                                             alt="Hình ảnh sản phẩm" class="me-3" style="width: 100px; height: auto;">
+                                        <div>
+                                            <span>${doiTraChiTiet.sanPhamChiTiet.sanPham.ten}</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <c:choose>
+                                            <c:when test="${doiTraChiTiet.giaSanPham != doiTraChiTiet.sanPhamChiTiet.giaBan}">
+                                <span style="text-decoration: line-through; color: gray;">
+                                    ${doiTraChiTiet.sanPhamChiTiet.giaBan} VNĐ
+                                </span>
+                                                <br>
+                                                <span style="color: green;">
+                                    ${doiTraChiTiet.giaSanPham} VNĐ
+                                </span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <span>${doiTraChiTiet.giaSanPham} VNĐ</span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
+                                    <div>
+                                        <span>Số Lượng: ${doiTraChiTiet.soLuong}</span>
+                                    </div>
+                                </li>
+                            </c:forEach>
+                        </ul>
+                    </c:if>
                 </c:if>
                 <c:if test="${hoaDon.tinh_trang == 13}">
                     <h6 class="mt-3">Sản phẩm đã đổi trả:</h6>
@@ -252,6 +287,41 @@
                             </li>
                         </c:forEach>
                     </ul>
+                    <c:if test="${doiTra.loaiDichVu == 1}">
+                        <h6 class="mt-3">Sản phẩm đã đổi lấy:</h6>
+                        <ul class="list-group mt-3 ">
+                            <c:forEach var="doiTraChiTiet" items="${doiSanPhams}">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <img src="${pageContext.request.contextPath}/uploads/${doiTraChiTiet.sanPhamChiTiet.hinhAnh}"
+                                             alt="Hình ảnh sản phẩm" class="me-3" style="width: 100px; height: auto;">
+                                        <div>
+                                            <span>${doiTraChiTiet.sanPhamChiTiet.sanPham.ten}</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <c:choose>
+                                            <c:when test="${doiTraChiTiet.giaSanPham != doiTraChiTiet.sanPhamChiTiet.giaBan}">
+                                <span style="text-decoration: line-through; color: gray;">
+                                    ${doiTraChiTiet.sanPhamChiTiet.giaBan} VNĐ
+                                </span>
+                                                <br>
+                                                <span style="color: green;">
+                                    ${doiTraChiTiet.giaSanPham} VNĐ
+                                </span>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <span>${doiTraChiTiet.giaSanPham} VNĐ</span>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </div>
+                                    <div>
+                                        <span>Số Lượng: ${doiTraChiTiet.soLuong}</span>
+                                    </div>
+                                </li>
+                            </c:forEach>
+                        </ul>
+                    </c:if>
                 </c:if>
                 <div class="d-inline-flex mt-3 gap-2">
                     <a href="/doi-tra" class="btn btn-warning">Quay Lại</a>

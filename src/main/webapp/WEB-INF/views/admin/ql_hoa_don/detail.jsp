@@ -110,6 +110,17 @@
             z-index: 1050; !important;
         }
 
+        #confirmationModalRejectReturn{
+            z-index:1052; !important;
+        }
+
+        #confirmationModalPending2{
+            z-index: 1053; !important;
+        }
+        #confirmationModalReturn{
+            z-index: 1053; !important;
+        }
+
     </style>
 </head>
 <jsp:include page="../layout.jsp" />
@@ -187,34 +198,93 @@
     </c:if>
     <c:if test="${hoaDon.tinh_trang == 1}">
     <div class="d-flex gap-2">
-    <form action="/hoa-don/cap-nhat-tinh-trang" method="post">
-        <input type="hidden" name="id" value="${hoaDon.id}" />
-        <button type="submit" name="tinhTrangMoi" value="0" class="btn btn-secondary-outline">Quay về chờ xác nhận</button>
-    </form>
+        <button type="button" class="btn btn-secondary-outline" data-bs-toggle="modal" data-bs-target="#confirmationModal1">
+            Quay về chờ xác nhận
+        </button>
         <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#deliveryModal">
             Giao hàng
         </button>
     </div>
     </c:if>
+    <div class="modal fade" id="confirmationModal1" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmationModalLabel">Xác nhận thay đổi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn quay về trạng thái "Chờ xác nhận" không?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary-ouline" data-bs-dismiss="modal">Hủy</button>
+                    <form action="/hoa-don/cap-nhat-tinh-trang" method="post" id="confirmationForm">
+                        <input type="hidden" name="id" value="${hoaDon.id}" />
+                        <button type="submit" name="tinhTrangMoi" value="0" class="btn btn-success">Xác nhận</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
     <c:if test="${hoaDon.tinh_trang == 2 || hoaDon.tinh_trang == 3}">
     <div class="d-flex gap-2">
         <c:if test="${hoaDon.tinh_trang == 2}">
-    <form action="/hoa-don/cap-nhat-tinh-trang" method="post">
-        <input type="hidden" name="id" value="${hoaDon.id}" />
-        <button type="submit" name="tinhTrangMoi" value="1" class="btn btn-secondary-outline">Quay về chờ giao</button>
-    </form>
+            <button type="button" class="btn btn-secondary-outline" data-bs-toggle="modal" data-bs-target="#confirmationModalDelivery1">
+                Quay về chờ giao
+            </button>
         </c:if>
         <c:if test="${hoaDon.tinh_trang == 3}">
-            <form action="/hoa-don/cap-nhat-tinh-trang" method="post">
-                <input type="hidden" name="id" value="${hoaDon.id}" />
-                <button type="submit" name="tinhTrangMoi" value="2" class="btn btn-secondary-outline">Quay về thanh toán</button>
-            </form>
+            <button type="button" class="btn btn-secondary-outline" data-bs-toggle="modal" data-bs-target="#confirmationModalPayment1">
+                Quay về thanh toán
+            </button>
         </c:if>
         <button type="button" class="btn btn-success" data-bs-target="#completeModal" onclick="return confirmCompletion(${hoaDon.tinh_trang});">
             Hoàn thành
         </button>
     </div>
     </c:if>
+
+    <div class="modal fade" id="confirmationModalDelivery1" tabindex="-1" aria-labelledby="confirmationModalDeliveryLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmationModalDeliveryLabel">Xác nhận thay đổi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn quay về trạng thái "Chờ giao" không?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary-outline" data-bs-dismiss="modal">Hủy</button>
+                    <form action="/hoa-don/cap-nhat-tinh-trang" method="post" id="confirmationFormDelivery">
+                        <input type="hidden" name="id" value="${hoaDon.id}" />
+                        <button type="submit" name="tinhTrangMoi" value="1" class="btn btn-success">Xác nhận</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="confirmationModalPayment1" tabindex="-1" aria-labelledby="confirmationModalPaymentLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmationModalPaymentLabel">Xác nhận thay đổi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn quay về trạng thái "Chờ Thanh toán" không?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary-ouline" data-bs-dismiss="modal">Hủy</button>
+                    <form action="/hoa-don/cap-nhat-tinh-trang" method="post" id="confirmationFormPayment">
+                        <input type="hidden" name="id" value="${hoaDon.id}" />
+                        <button type="submit" name="tinhTrangMoi" value="2" class="btn btn-success">Xác nhận</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="card mb-4 mt-3">
         <div class="card-header">Thông tin khách hàng</div>
@@ -466,9 +536,33 @@
                         <textarea name="ghiChu" id="ghiChu" class="form-control" rows="4" placeholder="Nhập ghi chú" style="resize: vertical;">${hoaDon.ghiChu}</textarea>
                     </div>
                     <div class="d-flex justify-content-between">
-                        <button type="submit" name="tinhTrangMoi" value="3" class="btn btn-info me-2">Xác nhận thanh toán</button>
+                        <button type="button" class="btn btn-info me-2" data-bs-toggle="modal" data-bs-target="#confirmationModalPayment2">
+                            Xác nhận thanh toán
+                        </button>
                         <button type="button" class="btn btn-secondary-outline" data-bs-dismiss="modal">Hủy</button>
                     </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="confirmationModalPayment2" tabindex="-1" aria-labelledby="confirmationModalPaymentLabel1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalPaymentLabel1">Xác nhận hành động</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Xác nhận đã thanh toán đơn hàng <br>
+                Hãy kiểm tra kỹ giao dịch thanh toán trước khi xác nhận
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary-outline" data-bs-dismiss="modal">Hủy</button>
+                <form action="/hoa-don/cap-nhat-tinh-trang" method="post" id="confirmationFormPayment2">
+                    <input type="hidden" name="id" value="${hoaDon.id}" />
+                    <button type="submit" name="tinhTrangMoi" value="3" class="btn btn-info">Xác nhận thanh toán</button>
                 </form>
             </div>
         </div>
@@ -485,9 +579,10 @@
             <div class="modal-body">
                 <div class="container">
                     <div class="row mb-2">
-                        <p class="col-sm-4"><strong>Hình Thức Hoàn Trả:</strong></p>
-                        <p class="col-sm-8"><span>${doiTra.hinhThuc}</span></p>
+                        <p class="col-sm-4"><strong>Loại dịch vụ:</strong></p>
+                        <p class="col-sm-8"><span>${doiTra.loaiDichVu == 1 ? "Đổi hàng" : "Trả hàng"}</span></p>
                     </div>
+                    <c:if test="${doiTra.loaiDichVu == 0}">
                     <div class="row mb-2">
                         <p class="col-sm-4"><strong>Số Tiền Hoàn Trả:</strong></p>
                         <p class="col-sm-8"><span>${doiTra.tienHoan} VND</span></p>
@@ -496,6 +591,7 @@
                         <p class="col-sm-4"><strong>Phương Thức Thanh Toán:</strong></p>
                         <p class="col-sm-8"><span>${doiTra.phuongThucChuyenTien}</span></p>
                     </div>
+                    </c:if>
                     <div class="row mb-2">
                         <p class="col-sm-4"><strong>Ngày Yêu Cầu:</strong></p>
                         <p class="col-sm-8"><span>${thoiGianHoanTra}</span></p>
@@ -538,7 +634,7 @@
                         </table>
                     </div>
                     <c:if test="${not empty doiSanPhams}">
-                        <h5 class="mt-4">Sản phẩm muốn lấy</h5>
+                        <h5 class="mt-4">Sản phẩm muốn đổi lấy</h5>
                         <div class="table-responsive">
                             <table class="table table-striped table-bordered">
                                 <thead>
@@ -568,17 +664,57 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary-outline" data-bs-dismiss="modal">Đóng</button>
-                <form action="/hoa-don/khong-xac-nhan-doi-tra/${hoaDon.id}" method="post">
-                    <button type="submit"class="btn btn-danger">Không Xác Nhận Đổi Trả</button>
-                </form>
-                <form action="/hoa-don/xac-nhan-hoan-tra/${hoaDon.id}" method="post">
-                    <button type="submit"class="btn btn-primary">Xác Nhận Đổi Trả</button>
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmationModalRejectReturn">
+                    Không Xác Nhận Đổi Trả
+                </button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmationModalReturn">
+                    Xác Nhận Đổi Trả
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="confirmationModalRejectReturn" tabindex="-1" aria-labelledby="confirmationModalRejectReturnLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalRejectReturnLabel">Xác nhận hành động</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn không xác nhận yêu cầu đổi trả này không?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary-outline" data-bs-dismiss="modal">Hủy</button>
+                <form action="/hoa-don/khong-xac-nhan-doi-tra/${hoaDon.id}" method="post" id="confirmationFormRejectReturn">
+                    <button type="submit" class="btn btn-danger">Xác nhận</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
 
+<div class="modal fade" id="confirmationModalReturn" tabindex="-1" aria-labelledby="confirmationModalReturnLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalReturnLabel">Xác nhận hành động</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Xác nhận yêu cầu đổi trả <br>
+                Hãy kiểm tra kỹ hình ảnh sản phẩm trước khi xác nhận
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary-outline" data-bs-dismiss="modal">Hủy</button>
+                <form action="/hoa-don/xac-nhan-hoan-tra/${hoaDon.id}" method="post" id="confirmationFormReturn">
+                    <button type="submit" class="btn btn-primary">Xác nhận</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="modal fade" id="doiTraChiTietModal" tabindex="-1" aria-labelledby="doiTraChiTietModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -589,14 +725,32 @@
             </div>
             <div class="modal-body overflow-auto" style="max-height: 70vh;">
                 <div class="container">
+                    <c:if test="${doiTra.loaiDichVu == 0}">
                     <div class="row mb-2">
                         <p class="col-sm-4"><strong>Số Tiền Hoàn Trả:</strong></p>
                         <p class="col-sm-8"><span>${doiTra.tienHoan} VND</span></p>
                     </div>
+                        <c:if test="${doiTra.phuongThucChuyenTien == 'Tiền mặt'}">
                     <div class="row mb-2">
                         <p class="col-sm-4"><strong>Phương Thức Thanh Toán:</strong></p>
                         <p class="col-sm-8"><span>${doiTra.phuongThucChuyenTien}</span></p>
                     </div>
+                        </c:if>
+                        <c:if test="${doiTra.phuongThucChuyenTien == 'Chuyển khoản'}">
+                            <div class="row mb-2">
+                                <p class="col-sm-4"><strong>Phương Thức Thanh Toán:</strong></p>
+                                <p class="col-sm-8"><span>${doiTra.phuongThucChuyenTien}</span></p>
+                            </div>
+                            <div class="row mb-2">
+                                <p class="col-sm-4"><strong>Tên Ngân Hàng:</strong></p>
+                                <p class="col-sm-8"><span>${doiTra.tenNganHang}</span></p>
+                            </div>
+                            <div class="row mb-2">
+                                <p class="col-sm-4"><strong>Số tài khoản:</strong></p>
+                                <p class="col-sm-8"><span>${doiTra.soNganHang}</span></p>
+                            </div>
+                        </c:if>
+                    </c:if>
                     <div class="row mb-2">
                         <p class="col-sm-4"><strong>Hình Ảnh Sản Phẩm:</strong></p>
                         <p class="col-sm-8">
@@ -629,7 +783,7 @@
                         </tbody>
                     </table>
                     <c:if test="${not empty doiSanPhams}">
-                        <h5 class="mt-4">Sản phẩm muốn lấy</h5>
+                        <h5 class="mt-4">Sản phẩm muốn đổi lấy</h5>
                         <div class="table-responsive">
                             <table class="table table-striped table-bordered">
                                 <thead>
@@ -659,17 +813,59 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary-outline" data-bs-dismiss="modal">Đóng</button>
-                <form action="/hoa-don/cap-nhat-tinh-trang" method="post">
+                <button type="button" class="btn btn-secondary-outline" data-bs-toggle="modal" data-bs-target="#confirmationModalPending2">
+                    Quay về chờ xác nhận
+                </button>
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmationModalReturnItem">
+                    Đổi trả
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="confirmationModalPending2" tabindex="-1" aria-labelledby="confirmationModalPendingLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalPendingLabel">Xác nhận thay đổi trạng thái</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn quay về trạng thái "Chờ xác nhận" không?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary-outline" data-bs-dismiss="modal">Hủy</button>
+                <form action="/hoa-don/cap-nhat-tinh-trang" method="post" id="confirmationFormPending">
                     <input type="hidden" name="id" value="${hoaDon.id}" />
-                <button type="submit" name="tinhTrangMoi" value="11" class="btn btn-secondary-outline">Quay về chờ xác nhận</button>
-                </form>
-                <form action="/hoa-don/hoan-hang/${hoaDon.id}" method="post">
-                    <button type="submit" class="btn btn-success">Đổi trả</button>
+                    <button type="submit" name="tinhTrangMoi" value="11" class="btn btn-success">Xác nhận</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="confirmationModalReturnItem" tabindex="-1" aria-labelledby="confirmationModalReturnItemLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalReturnItemLabel">Xác nhận hành động</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Hoàn thành đổi trả cho đơn hàng <br>
+                Hãy kiểm tra kỹ giao dịch thanh toán
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary-outline" data-bs-dismiss="modal">Hủy</button>
+                <form action="/hoa-don/hoan-hang/${hoaDon.id}" method="post" id="confirmationFormReturnItem">
+                    <button type="submit" class="btn btn-success">Xác nhận</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
