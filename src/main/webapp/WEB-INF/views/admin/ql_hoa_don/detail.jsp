@@ -177,23 +177,43 @@
 
     <c:if test="${hoaDon.tinh_trang == 0}">
         <div class="d-flex gap-2">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmModal">
-                Xác nhận
-            </button>
             <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancelModal">
                 Không xác nhận
+            </button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmModal">
+                Xác nhận
             </button>
         </div>
     </c:if>
     <c:if test="${hoaDon.tinh_trang == 1}">
+    <div class="d-flex gap-2">
+    <form action="/hoa-don/cap-nhat-tinh-trang" method="post">
+        <input type="hidden" name="id" value="${hoaDon.id}" />
+        <button type="submit" name="tinhTrangMoi" value="0" class="btn btn-secondary-outline">Quay về chờ xác nhận</button>
+    </form>
         <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#deliveryModal">
             Giao hàng
         </button>
+    </div>
     </c:if>
     <c:if test="${hoaDon.tinh_trang == 2 || hoaDon.tinh_trang == 3}">
+    <div class="d-flex gap-2">
+        <c:if test="${hoaDon.tinh_trang == 2}">
+    <form action="/hoa-don/cap-nhat-tinh-trang" method="post">
+        <input type="hidden" name="id" value="${hoaDon.id}" />
+        <button type="submit" name="tinhTrangMoi" value="1" class="btn btn-secondary-outline">Quay về chờ giao</button>
+    </form>
+        </c:if>
+        <c:if test="${hoaDon.tinh_trang == 3}">
+            <form action="/hoa-don/cap-nhat-tinh-trang" method="post">
+                <input type="hidden" name="id" value="${hoaDon.id}" />
+                <button type="submit" name="tinhTrangMoi" value="2" class="btn btn-secondary-outline">Quay về thanh toán</button>
+            </form>
+        </c:if>
         <button type="button" class="btn btn-success" data-bs-target="#completeModal" onclick="return confirmCompletion(${hoaDon.tinh_trang});">
             Hoàn thành
         </button>
+    </div>
     </c:if>
 
     <div class="card mb-4 mt-3">
@@ -291,13 +311,23 @@
                     </p>
                 </div>
             </div>
-            <c:if test="${hoaDon.tinh_trang >=11 && hoaDon.tinh_trang <14}">
+                <c:if test="${hoaDon.tinh_trang >=11 && hoaDon.tinh_trang <14 && doiTra.loaiDichVu == null}">
                 <div class="row mb-2">
                     <div class="col-md-6">
 
                     </div>
                     <div class="col-md-6">
-                        <p><strong>Hình thức hoàn trả:</strong> ${doiTra.hinhThuc}</p>
+                            <p><strong>Hình thức hoàn trả:</strong> ${doiTra.hinhThuc}</p>
+                    </div>
+                </div>
+                </c:if>
+            <c:if test="${hoaDon.tinh_trang >=11 && hoaDon.tinh_trang <14 && doiTra.loaiDichVu != null}">
+                <div class="row mb-2">
+                    <div class="col-md-6">
+
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Loại dịch vụ:</strong> ${doiTra.loaiDichVu == 1 ? "Đổi hàng" : "Trả hàng"}</p>
                     </div>
                 </div>
             </c:if>
@@ -507,6 +537,33 @@
                             </tbody>
                         </table>
                     </div>
+                    <c:if test="${not empty doiSanPhams}">
+                        <h5 class="mt-4">Sản phẩm muốn lấy</h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Hình ảnh</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Giá sản phẩm</th>
+                                    <th>Số lượng</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <c:forEach var="doiSanPhams" items="${doiSanPhams}">
+                                    <tr>
+                                        <td class="text-center">
+                                            <img style="width: 90px; height: auto;" src="${pageContext.request.contextPath}/uploads/${doiSanPhams.sanPhamChiTiet.hinhAnh}" alt="Hình ảnh sản phẩm">
+                                        </td>
+                                        <td>${doiSanPhams.sanPhamChiTiet.sanPham.ten}</td>
+                                        <td class="text-center">${doiSanPhams.giaSanPham} VNĐ</td>
+                                        <td class="text-center">${doiSanPhams.soLuong}</td>
+                                    </tr>
+                                </c:forEach>
+                                </tbody>
+                            </table>
+                        </div>
+                    </c:if>
                 </div>
             </div>
             <div class="modal-footer">
@@ -571,10 +628,41 @@
                         </c:forEach>
                         </tbody>
                     </table>
+                    <c:if test="${not empty doiSanPhams}">
+                        <h5 class="mt-4">Sản phẩm muốn lấy</h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Hình ảnh</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Giá sản phẩm</th>
+                                    <th>Số lượng</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <c:forEach var="doiSanPhams" items="${doiSanPhams}">
+                                    <tr>
+                                        <td class="text-center">
+                                            <img style="width: 90px; height: auto;" src="${pageContext.request.contextPath}/uploads/${doiSanPhams.sanPhamChiTiet.hinhAnh}" alt="Hình ảnh sản phẩm">
+                                        </td>
+                                        <td>${doiSanPhams.sanPhamChiTiet.sanPham.ten}</td>
+                                        <td class="text-center">${doiSanPhams.giaSanPham} VNĐ</td>
+                                        <td class="text-center">${doiSanPhams.soLuong}</td>
+                                    </tr>
+                                </c:forEach>
+                                </tbody>
+                            </table>
+                        </div>
+                    </c:if>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary-outline" data-bs-dismiss="modal">Đóng</button>
+                <form action="/hoa-don/cap-nhat-tinh-trang" method="post">
+                    <input type="hidden" name="id" value="${hoaDon.id}" />
+                <button type="submit" name="tinhTrangMoi" value="11" class="btn btn-secondary-outline">Quay về chờ xác nhận</button>
+                </form>
                 <form action="/hoa-don/hoan-hang/${hoaDon.id}" method="post">
                     <button type="submit" class="btn btn-success">Đổi trả</button>
                 </form>

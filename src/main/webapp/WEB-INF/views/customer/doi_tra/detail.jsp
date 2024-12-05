@@ -94,8 +94,11 @@
                                 <c:otherwise><strong>Không xác định</strong></c:otherwise>
                             </c:choose>
                         </p>
-                        <c:if test="${hoaDon.tinh_trang >=11 && hoaDon.tinh_trang <14}">
+                        <c:if test="${hoaDon.tinh_trang >=11 && hoaDon.tinh_trang <14 && doiTra.loaiDichVu == null}">
                             <p>Hình thức hoàn trả: <strong>${doiTra.hinhThuc}</strong></p>
+                        </c:if>
+                        <c:if test="${hoaDon.tinh_trang >=11 && hoaDon.tinh_trang <14 && doiTra.loaiDichVu != null}">
+                            <p>Loại dịch vụ: <strong>${doiTra.loaiDichVu == 1 ? "Đổi hàng" : "Trả hàng"}</strong></p>
                         </c:if>
                     </div>
                 </div>
@@ -127,7 +130,7 @@
                             <c:if test="${hoaDon.tinh_trang >= 4 && khongDoiTra != 'Chưa có thời gian không xác nhận'}">
                             <p><strong>${khongDoiTra}</strong>: Hóa đơn không được xác nhận đổi trả</p>
                             </c:if>
-                            <c:if test="${hoaDon.tinh_trang >= 11}">
+                            <c:if test="${hoaDon.tinh_trang >= 11 && hoanTra !='Chưa có thời gian hoàn trả'}">
                                 <p><strong>${hoanTra}</strong>: Yêu cầu đổi trả</p>
                             </c:if>
                             <c:if test="${hoaDon.tinh_trang >= 12}">

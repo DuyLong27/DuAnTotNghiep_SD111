@@ -44,6 +44,9 @@ public class QLHoaDonController {
 
     @Autowired
     ThoiGianDonHangRepo thoiGianDonHangRepo;
+
+    @Autowired
+    DoiSanPhamRepo doiSanPhamRepo;
     @GetMapping("/tinhTrang={tinhTrang}")
     public String hienThi(Model model,
                           @PathVariable(required = false) String tinhTrang,
@@ -169,6 +172,9 @@ public class QLHoaDonController {
 
             List<DoiTraChiTiet> doiTraChiTietList = doiTraChiTietRepo.findByDoiTra_HoaDon_Id(id);
             model.addAttribute("doiTraChiTiets", doiTraChiTietList);
+
+            List<DoiSanPham> doiSanPhamList = doiSanPhamRepo.findByDoiTra_HoaDon_Id(id);
+            model.addAttribute("doiSanPhams",doiSanPhamList);
 
             Optional<ThoiGianDonHang> thoiGianDonHangOpt = thoiGianDonHangRepo.findByHoaDonId(id);
             if (thoiGianDonHangOpt.isPresent()) {
