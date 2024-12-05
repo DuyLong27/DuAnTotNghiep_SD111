@@ -436,7 +436,8 @@ public class DoiTraController {
             @RequestParam("hoaDonId") Integer hoaDonId,
             @RequestParam("lyDo") String lyDo,
             @RequestParam("lyDoDetail") String lyDoDetail,
-            @RequestParam("sanPhamChiTietIds") String sanPhamChiTietIdsStr,
+            @RequestParam("sanPhamChiTietIds") List<Integer> sanPhamChiTietIds,
+            @RequestParam("sanPhamChiTietDoiIds") String sanPhamChiTietIdsStr,
             @RequestParam Map<String, String> requestParams,
             @RequestParam("moTa") String moTa,
             @RequestParam("uploadImage") MultipartFile uploadImage,
@@ -450,9 +451,9 @@ public class DoiTraController {
         }
 
         // Chuyển đổi chuỗi ID sản phẩm thành danh sách
-        List<Integer> sanPhamChiTietIds;
+        List<Integer> sanPhamChiTietDoiIds;
         try {
-            sanPhamChiTietIds = Arrays.stream(sanPhamChiTietIdsStr.split(","))
+            sanPhamChiTietDoiIds = Arrays.stream(sanPhamChiTietIdsStr.split(","))
                     .map(Integer::valueOf)
                     .collect(Collectors.toList());
         } catch (NumberFormatException e) {
@@ -490,32 +491,54 @@ public class DoiTraController {
         doiTra.setTinhTrang(11); // Đổi hàng chờ xử lý
         doiTraRepo.save(doiTra);
 
-        // Lưu thông tin đổi sản phẩm
+        List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepo.findByHoaDon(hoaDon);
         for (Integer sanPhamChiTietId : sanPhamChiTietIds) {
             SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamChiTietId).orElse(null);
             if (sanPhamChiTiet != null) {
-                String soLuongStr = requestParams.get("soLuong_" + sanPhamChiTietId);
-                Integer soLuong = soLuongStr != null ? Integer.valueOf(soLuongStr) : 1;  // Mặc định số lượng là 1
+                Integer soLuongHoan = Integer.valueOf(requestParams.get("soLuong_" + sanPhamChiTietId));
+                HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietList.stream()
+                        .filter(chiTiet -> chiTiet.getSanPhamChiTiet().getId().equals(sanPhamChiTietId))
+                        .findFirst().orElse(null);
+                if (hoaDonChiTiet != null) {
+                    DoiTraChiTiet doiTraChiTiet = new DoiTraChiTiet();
+                    doiTraChiTiet.setDoiTra(doiTra);
+                    doiTraChiTiet.setSanPhamChiTiet(sanPhamChiTiet);
+                    doiTraChiTiet.setGiaSanPham(hoaDonChiTiet.getGia_san_pham());
+                    doiTraChiTiet.setSoLuong(soLuongHoan);
+                    doiTraChiTietRepo.save(doiTraChiTiet);
+                }
+            }
+        }
+
+
+        // Lưu thông tin đổi sản phẩm
+        for (Integer sanPhamChiTietDoiId : sanPhamChiTietDoiIds) {
+            SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamChiTietDoiId).orElse(null);
+            if (sanPhamChiTiet != null) {
+                String soLuongStr = requestParams.get("soLuong_" + sanPhamChiTietDoiId);
+                Integer soLuong = soLuongStr != null ? Integer.valueOf(soLuongStr) : null;
 
                 // Kiểm tra số lượng hợp lệ
-                if (soLuong > 0 && soLuong <= sanPhamChiTiet.getSoLuong()) {
+                if (soLuong != null && soLuong > 0 && soLuong <= sanPhamChiTiet.getSoLuong()) {
+                    // Xử lý đổi sản phẩm
                     DoiSanPham doiSanPham = new DoiSanPham();
                     doiSanPham.setDoiTra(doiTra);
                     doiSanPham.setSanPhamChiTiet(sanPhamChiTiet);
                     doiSanPham.setGiaSanPham(sanPhamChiTiet.getGiaBan());
                     doiSanPham.setSoLuong(soLuong);
 
-                    // Cập nhật số lượng tồn kho của sản phẩm
+                    // Cập nhật tồn kho sản phẩm
                     sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - soLuong);
                     sanPhamChiTietRepo.save(sanPhamChiTiet);
 
                     doiSanPhamRepo.save(doiSanPham);
                 } else {
-                    model.addAttribute("error", "Số lượng yêu cầu vượt quá số lượng tồn kho cho sản phẩm ID: " + sanPhamChiTietId);
+                    model.addAttribute("error", "Số lượng không hợp lệ cho sản phẩm ID: " + sanPhamChiTietDoiId);
                     return "customer/doi_tra/error";
                 }
             }
         }
+
 
         // Cập nhật trạng thái hóa đơn
         hoaDon.setTinh_trang(11); // Trạng thái "Đổi hàng chờ xử lý"

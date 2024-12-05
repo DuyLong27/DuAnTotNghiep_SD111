@@ -14,7 +14,9 @@
     .modal-content {
         border-radius: 10px;
     }
-
+    .d-none {
+        display: none !important;
+    }
     .info-box {
         background-color: #f8f9fa;
         padding: 20px;
@@ -324,13 +326,28 @@
                                                     <p class="card-text">Giá: ${sp.giaBan} VND</p>
                                                     <p class="card-text">Số lượng tồn: ${sp.soLuong}</p>
 
+                                                    <!-- Ô nhập số lượng (ẩn mặc định) -->
+                                                    <div id="quantity-input-${sp.id}" class="mt-3">
+                                                        <label for="soLuong_${sp.id}">Nhập số lượng:</label>
+                                                        <input type="number" name="soLuong_${sp.id}" id="soLuong_${sp.id}"
+                                                               min="1" max="${sp.soLuong}" class="form-control"
+                                                               placeholder="Nhập số lượng muốn đổi">
+                                                    </div>
+
                                                     <!-- Nút chọn sản phẩm -->
-                                                    <button type="button" class="btn btn-primary toggle-btn" data-selected="false" onclick="toggleProduct(this, ${sp.id})">Chọn</button>
+                                                    <button type="button" class="btn btn-primary toggle-btn" data-selected="false"
+                                                            onclick="toggleProduct(this, ${sp.id})">Chọn</button>
+
+
+
+                                                    <!-- Hidden input lưu ID sản phẩm -->
+                                                    <input type="hidden" id="sanPhamChiTietDoiIds" name="sanPhamChiTietDoiIds" value="">
                                                 </div>
                                             </div>
                                         </div>
                                     </c:if>
                                 </c:forEach>
+
                             </div>
                         </div>
                     </div>
@@ -349,49 +366,63 @@
                         <input type="hidden" name="lyDoDetail" value="${lyDoDetail}">
                         <input type="hidden" name="moTa" value="${moTa}">
 
-                        <input type="hidden" name="sanPhamChiTietIds" id="sanPhamChiTietIds">
-                        <input type="hidden" name="soLuongSanPham" id="soLuongSanPham" value="1">
-
+                        <c:forEach var="product" items="${selectedProducts}">
+                            <input type="hidden" name="sanPhamChiTietIds" value="${product.id}">
+                        </c:forEach>
                         <!-- Các sản phẩm chọn được sẽ được thêm vào form dưới dạng hidden input -->
-                        <button type="submit" class="btn btn-primary">Xác nhận đổi hàng</button>
                     </form>
-                </div>
 
-                <jsp:include page="../footer_user.jsp"/>
+
+                    <input type="hidden" name="soLuongSanPham" id="soLuongSanPham" value="1">
+                    <button type="submit" class="btn btn-primary">Xác nhận đổi hàng</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+            <jsp:include page="../footer_user.jsp"/>
 
                 <script>
-                    // Lưu các id sản phẩm đã chọn
                     function toggleProduct(button, productId) {
                         const isSelected = button.getAttribute('data-selected') === 'true';
+                        const hiddenInput = document.getElementById('sanPhamChiTietDoiIds');
+                        const quantityInput = document.getElementById(`quantity-input-${productId}`);
+
+                        // Lấy danh sách các ID hiện tại
+                        let selectedIds = hiddenInput.value ? hiddenInput.value.split(',') : [];
 
                         if (isSelected) {
+                            // Bỏ chọn sản phẩm
                             button.setAttribute('data-selected', 'false');
                             button.textContent = 'Chọn';
+
+                            // Ẩn ô nhập số lượng
+                            if (quantityInput) {
+                                quantityInput.classList.add('d-none');
+                            }
+
+                            // Loại bỏ ID sản phẩm khỏi danh sách
+                            selectedIds = selectedIds.filter(id => id !== productId.toString());
                         } else {
+                            // Chọn sản phẩm
                             button.setAttribute('data-selected', 'true');
                             button.textContent = 'Bỏ chọn';
 
-                            // Thêm id của sản phẩm vào chuỗi sanPhamChiTietIds
-                            let selectedIds = document.getElementById('sanPhamChiTietIds').value;
-                            if (selectedIds) {
-                                selectedIds += ',' + productId;
-                            } else {
-                                selectedIds = productId;
+                            // Hiển thị ô nhập số lượng
+                            if (quantityInput) {
+                                quantityInput.classList.remove('d-none');
                             }
-                            document.getElementById('sanPhamChiTietIds').value = selectedIds;
 
-                            // Mặc định số lượng là 1
-                            let soLuong = document.getElementById('soLuongSanPham').value;
-                            if (soLuong) {
-                                soLuong = parseInt(soLuong) + 1;
-                            } else {
-                                soLuong = 1;
+                            // Thêm ID sản phẩm vào danh sách nếu chưa tồn tại
+                            if (!selectedIds.includes(productId.toString())) {
+                                selectedIds.push(productId);
                             }
-                            document.getElementById('soLuongSanPham').value = soLuong;
                         }
+
+                        // Cập nhật lại giá trị trong input ẩn
+                        hiddenInput.value = selectedIds.join(',');
                     }
+
                 </script>
-
-
 </body>
 </html>
