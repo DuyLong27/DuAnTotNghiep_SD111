@@ -1,6 +1,8 @@
 package com.example.demo.controller.admin;
 
+import com.example.demo.entity.KhachHang;
 import com.example.demo.entity.NhaCungCap;
+import com.example.demo.entity.NhanVien;
 import com.example.demo.entity.NhapHang;
 import com.example.demo.entity.NhapHangChiTiet;
 import com.example.demo.entity.SanPham;
@@ -10,6 +12,7 @@ import com.example.demo.repository.NhapHangChiTietRepo;
 import com.example.demo.repository.NhapHangRepo;
 import com.example.demo.repository.SanPhamChiTietRepo;
 import com.example.demo.repository.SanPhamRepo;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -125,12 +128,21 @@ public class QLNhapHangController {
     }
 
     @PostMapping("/add")
-    public String addNhapHang(@RequestParam Map<String, String> formData, @RequestParam(value = "selectedItems", required = false) List<String> selectedItems) {
-        // Debug: Kiểm tra formData và selectedItems
-        formData.forEach((key, value) -> System.out.println(key + ": " + value));
-        if (selectedItems != null) {
-            selectedItems.forEach(itemId -> System.out.println("Selected Product ID: " + itemId));
+    public String addNhapHang(
+            @RequestParam Map<String, String> formData,
+            @RequestParam(value = "selectedItems", required = false) List<String> selectedItems,
+            HttpSession session
+    ) {
+        // Lấy thông tin nhân viên từ session
+        NhanVien nhanVien = (NhanVien) session.getAttribute("khachHang");
+
+        if (nhanVien == null) {
+            // Trường hợp không tìm thấy nhân viên trong session, chuyển hướng về trang đăng nhập
+            return "redirect:/login";
         }
+
+        // Debug: kiểm tra thông tin nhân viên
+        System.out.println("Tên nhân viên: " + nhanVien.getTenNhanVien());
 
         // Nhóm sản phẩm theo nhà cung cấp
         Map<NhaCungCap, List<String>> productsBySupplier = new HashMap<>();
@@ -154,10 +166,11 @@ public class QLNhapHangController {
             nhapHang.setNgayTao(new Date());
             nhapHang.setTinhTrang(0); // Tình trạng mặc định
             nhapHang.setNhaCungCap(nhaCungCap); // Gán nhà cung cấp cho phiếu nhập
+            nhapHang.setNhanVien(nhanVien); // Gán nhân viên thực hiện nhập hàng
 
             // Lấy giá trị ghi chú từ form
             String ghiChu = formData.get("ghiChu");
-            nhapHang.setGhiChu(ghiChu);  // Lưu ghi chú vào đối tượng nhapHang (nếu có)
+            nhapHang.setGhiChu(ghiChu); // Lưu ghi chú vào đối tượng nhapHang (nếu có)
 
             // Khởi tạo tổng giá trị
             int tongGiaTri = 0;
@@ -174,14 +187,14 @@ public class QLNhapHangController {
                 String soLuongStr = formData.get("soLuong_" + productId); // Lấy số lượng từ formData
 
                 // Kiểm tra giá nhập và số lượng có hợp lệ hay không
-                Integer giaNhap = (giaNhapStr != null && !giaNhapStr.isEmpty()) ? Integer.valueOf(giaNhapStr) : 0;  // Nếu giá nhập là null hoặc rỗng, gán giá trị mặc định là 0
-                Integer soLuong = (soLuongStr != null && !soLuongStr.isEmpty()) ? Integer.valueOf(soLuongStr) : 0;  // Nếu số lượng là null hoặc rỗng, gán giá trị mặc định là 0
+                Integer giaNhap = (giaNhapStr != null && !giaNhapStr.isEmpty()) ? Integer.valueOf(giaNhapStr) : 0; // Nếu giá nhập là null hoặc rỗng, gán giá trị mặc định là 0
+                Integer soLuong = (soLuongStr != null && !soLuongStr.isEmpty()) ? Integer.valueOf(soLuongStr) : 0; // Nếu số lượng là null hoặc rỗng, gán giá trị mặc định là 0
 
                 // Lấy sản phẩm và nhà cung cấp
                 SanPham sanPham = sanPhamRepo.findById(productId).orElse(null);
                 if (sanPham != null) {
                     // Lấy giá nhập từ thẻ span (data-giaban)
-                    Integer giaNhapFromSpan = sanPham.getGiaBan();  // Sử dụng giá bán từ sanPham
+                    Integer giaNhapFromSpan = sanPham.getGiaBan(); // Sử dụng giá bán từ sanPham
 
                     // Tính tổng tiền cho từng sản phẩm
                     Integer tongTien = giaNhapFromSpan * soLuong;
@@ -193,7 +206,7 @@ public class QLNhapHangController {
                     NhapHangChiTiet chiTiet = new NhapHangChiTiet();
                     chiTiet.setNhapHang(nhapHang);
                     chiTiet.setSanPham(sanPham);
-                    chiTiet.setGiaNhap(giaNhapFromSpan);  // Sử dụng giaNhapFromSpan đã lấy từ sản phẩm
+                    chiTiet.setGiaNhap(giaNhapFromSpan); // Sử dụng giaNhapFromSpan đã lấy từ sản phẩm
                     chiTiet.setSoLuong(soLuong);
                     chiTiet.setTongTien(tongTien);
                     chiTiet.setNgaySanXuat(new Date()); // Cập nhật ngày sản xuất nếu có
