@@ -76,10 +76,12 @@
 
 
     <div class="mt-3">
-        <button type="button" class="btn btn-create" data-bs-toggle="modal" data-bs-target="#productModal"
-                onclick="resetForm(); setModalTitle('Thêm Sản Phẩm');">
-            Tạo mới
-        </button>
+        <c:if test="${sessionScope.role == 0}">
+            <button type="button" class="btn btn-create" data-bs-toggle="modal" data-bs-target="#productModal"
+                    onclick="resetForm(); setModalTitle('Thêm Sản Phẩm');">
+                Tạo mới
+            </button>
+        </c:if>
         <button type="button" class="btn btn-secondary-outline" onclick="resetFilters();">Reset</button>
     </div>
 
@@ -164,7 +166,9 @@
             <th>Giá Cơ Bản</th>
             <th>Mô Tả</th>
             <th>Tình Trạng</th>
-            <th>Thao Tác</th>
+            <c:if test="${sessionScope.role == 0}">
+                <th>Thao tác</th>
+            </c:if>
         </tr>
         </thead>
         <tbody>
@@ -185,24 +189,22 @@
                     <td class="${sanPham.tinhTrang == 1 ? 'text-success' : 'text-danger'}">
                             ${sanPham.tinhTrang == 1 ? "Hoạt Động" : "Không Hoạt Động"}
                     </td>
-                    <td>
-                        <!-- Nút Chi Tiết -->
-                        <c:choose>
-                            <c:when test="${sanPham.tinhTrang == 1}">
-                                <a href="/spct/index?id=${sanPham.id}&openModal=true" class="btn btn-outline-custom">Chi tiết</a>
-                            </c:when>
-                            <c:otherwise>
-                                <button class="btn btn-outline-custom" disabled>Chi tiết</button>
-                            </c:otherwise>
-                        </c:choose>
-
-                        <!-- Nút Sửa -->
-                        <a onclick="openEditModal(${sanPham.id}, '${sanPham.ten}', ${sanPham.giaBan}, '${sanPham.moTa}', ${sanPham.danhMuc.id}, ${sanPham.nhaCungCap.id}, ${sanPham.tinhTrang})"
-                           class="btn btn-outline-custom">Sửa</a>
-
-                        <!-- Nút Xóa -->
-                            <%--                        <a href="/san-pham/delete/${sanPham.id}" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">Xóa</a>--%>
-                    </td>
+                    <c:if test="${sessionScope.role == 0}">
+                        <td>
+                            <c:choose>
+                                <c:when test="${sanPham.tinhTrang == 1}">
+                                    <a href="/spct/index?id=${sanPham.id}&openModal=true" class="btn btn-outline-custom">Chi tiết</a>
+                                </c:when>
+                                <c:otherwise>
+                                    <button class="btn btn-outline-custom" disabled>Chi tiết</button>
+                                </c:otherwise>
+                            </c:choose>
+                            <a onclick="openEditModal(${sanPham.id}, '${sanPham.ten}', ${sanPham.giaBan}, '${sanPham.moTa}', ${sanPham.danhMuc.id}, ${sanPham.nhaCungCap.id}, ${sanPham.tinhTrang})"
+                               class="btn btn-outline-custom">Sửa</a>
+                            <!-- Nút Xóa -->
+                                <%--                        <a href="/san-pham/delete/${sanPham.id}" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">Xóa</a>--%>
+                        </td>
+                    </c:if>
                 </tr>
             </c:forEach>
         </c:if>

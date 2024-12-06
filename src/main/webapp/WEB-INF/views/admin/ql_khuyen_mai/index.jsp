@@ -13,13 +13,13 @@
 
 </head>
 <body>
-<jsp:include page="../layout.jsp" />
+<jsp:include page="../layout.jsp"/>
 <%--body--%>
 <div class="container mt-3">
     <div class="row">
 
         <div class="col-md-3 filter-section">
-            <form action="/khuyen-mai/hien-thi" method="get">
+            <form action="/quan-ly-khuyen-mai/hien-thi" method="get">
                 <div class="mb-3">
                     <label for="maKhuyenMai" class="form-label">Mã khuyến mãi</label>
                     <input type="text" class="form-control" id="maKhuyenMai" name="maKhuyenMai" value="${maKhuyenMai}">
@@ -44,16 +44,17 @@
                     <input type="date" class="form-control" id="ngayKetThuc" name="ngayKetThuc" value="${ngayKetThuc}">
                 </div>
                 <button type="submit" class="btn btn-filter">Lọc</button>
-                <a href="/khuyen-mai/hien-thi" class="btn btn-secondary-outline">Xóa lọc</a>
+                <a href="/quan-ly-khuyen-mai/hien-thi" class="btn btn-secondary-outline">Xóa lọc</a>
             </form>
         </div>
 
         <div class="col-md-9">
             <div class="d-flex justify-content-end mb-3">
-
-                <button type="button" class="btn btn-create" data-bs-toggle="modal" data-bs-target="#addPromotionModal">
-                    Tạo mới
-                </button>
+                <c:if test="${sessionScope.role == 0}">
+                    <button type="button" class="btn btn-create" data-bs-toggle="modal" data-bs-target="#addPromotionModal">
+                        Tạo mới
+                    </button>
+                </c:if>
 
             </div>
 
@@ -67,7 +68,9 @@
                     <th>Ngày bắt đầu</th>
                     <th>Ngày kết thúc</th>
                     <th>Trạng thái</th>
-                    <th>Hành động</th>
+                    <c:if test="${sessionScope.role == 0}">
+                        <th>Hành động</th>
+                    </c:if>
                 </tr>
                 </thead>
                 <tbody>
@@ -80,20 +83,23 @@
                         <td>${item.ngayBatDau}</td>
                         <td>${item.ngayKetThuc}</td>
                         <td>${item.tinhTrang ==1?"Đang hoạt động":"Không hoạt động"}</td>
-                        <td style="width: 100px;">
-                            <div class="d-flex justify-content-center gap-2">
-                                <a href="#" class="btn btn-outline-custom"
-                                   data-bs-toggle="modal"
-                                   data-bs-target="#editPromotionModal"
-                                   onclick="showPromotionEdits(${item.idKhuyenMai}, '${item.maKhuyenMai}', '${item.tenKhuyenMai}', ${item.giaTriKhuyenMai}, '${item.ngayBatDau}', '${item.ngayKetThuc}', ${item.tinhTrang})">
-                                    <i class="fa fa-edit"></i>
-                                </a>
-                                <a class="btn btn-outline-custom"
-                                   href="/khuyen-mai/chi-tiet?id=${item.idKhuyenMai}" class="btn btn-outline-success">
-                                    <i class="fa-solid fa-hand-point-right"></i>
-                                </a>
-                            </div>
-                        </td>
+                        <c:if test="${sessionScope.role == 0}">
+                            <td style="width: 100px;">
+                                <div class="d-flex justify-content-center gap-2">
+                                    <a href="#" class="btn btn-outline-custom"
+                                       data-bs-toggle="modal"
+                                       data-bs-target="#editPromotionModal"
+                                       onclick="showPromotionEdits(${item.idKhuyenMai}, '${item.maKhuyenMai}', '${item.tenKhuyenMai}', ${item.giaTriKhuyenMai}, '${item.ngayBatDau}', '${item.ngayKetThuc}', ${item.tinhTrang})">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <a class="btn btn-outline-custom"
+                                       href="/quan-ly-khuyen-mai/chi-tiet?id=${item.idKhuyenMai}"
+                                       class="btn btn-outline-success">
+                                        <i class="fa-solid fa-hand-point-right"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </c:if>
                     </tr>
                 </c:forEach>
                 </tbody>
@@ -102,19 +108,21 @@
             <nav aria-label="Page navigation">
                 <ul class="pagination justify-content-center">
                     <li class="page-item ${currentPage == 0 ? 'disabled' : ''}">
-                        <a class="page-link btn-custom" href="?page=${currentPage - 1}&size=5&maKhuyenMai=${maKhuyenMai}&tenKhuyenMai=${tenKhuyenMai}&giaTriMin=${giaTriMin}&giaTriMax=${giaTriMax}&ngayBatDau=${ngayBatDau}&ngayKetThuc=${ngayKetThuc}">Previous</a>
+                        <a class="page-link btn-custom"
+                           href="?page=${currentPage - 1}&size=5&maKhuyenMai=${maKhuyenMai}&tenKhuyenMai=${tenKhuyenMai}&giaTriMin=${giaTriMin}&giaTriMax=${giaTriMax}&ngayBatDau=${ngayBatDau}&ngayKetThuc=${ngayKetThuc}">Previous</a>
                     </li>
                     <c:forEach var="i" begin="0" end="${totalPages - 1}">
                         <li class="page-item ${currentPage == i ? 'active' : ''}">
-                            <a class="page-link btn-custom" href="?page=${i}&size=5&maKhuyenMai=${maKhuyenMai}&tenKhuyenMai=${tenKhuyenMai}&giaTriMin=${giaTriMin}&giaTriMax=${giaTriMax}&ngayBatDau=${ngayBatDau}&ngayKetThuc=${ngayKetThuc}">${i + 1}</a>
+                            <a class="page-link btn-custom"
+                               href="?page=${i}&size=5&maKhuyenMai=${maKhuyenMai}&tenKhuyenMai=${tenKhuyenMai}&giaTriMin=${giaTriMin}&giaTriMax=${giaTriMax}&ngayBatDau=${ngayBatDau}&ngayKetThuc=${ngayKetThuc}">${i + 1}</a>
                         </li>
                     </c:forEach>
                     <li class="page-item ${currentPage == totalPages - 1 ? 'disabled' : ''}">
-                        <a class="page-link btn-custom" href="?page=${currentPage + 1}&size=5&maKhuyenMai=${maKhuyenMai}&tenKhuyenMai=${tenKhuyenMai}&giaTriMin=${giaTriMin}&giaTriMax=${giaTriMax}&ngayBatDau=${ngayBatDau}&ngayKetThuc=${ngayKetThuc}">Next</a>
+                        <a class="page-link btn-custom"
+                           href="?page=${currentPage + 1}&size=5&maKhuyenMai=${maKhuyenMai}&tenKhuyenMai=${tenKhuyenMai}&giaTriMin=${giaTriMin}&giaTriMax=${giaTriMax}&ngayBatDau=${ngayBatDau}&ngayKetThuc=${ngayKetThuc}">Next</a>
                     </li>
                 </ul>
             </nav>
-
 
 
         </div>
@@ -122,14 +130,15 @@
 </div>
 
 <!-- Pop-up -->
-<div class="modal fade" id="addPromotionModal" tabindex="-1" aria-labelledby="addPromotionModalLabel" aria-hidden="true">
+<div class="modal fade" id="addPromotionModal" tabindex="-1" aria-labelledby="addPromotionModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content modal-green">
             <div class="modal-header">
                 <h5 class="modal-title" id="addPromotionModalLabel">Tạo mới khuyến mãi</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="/khuyen-mai/them" method="post">
+            <form action="/quan-ly-khuyen-mai/them" method="post">
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="maKhuyenMai" class="form-label">Mã khuyến mãi</label>
@@ -171,14 +180,15 @@
 </div>
 
 <!-- Modal for Edit Promotion -->
-<div class="modal fade" id="editPromotionModal" tabindex="-1" aria-labelledby="editPromotionModalLabel" aria-hidden="true">
+<div class="modal fade" id="editPromotionModal" tabindex="-1" aria-labelledby="editPromotionModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="editPromotionModalLabel">Sửa khuyến mãi</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="/khuyen-mai/sua" method="post">
+            <form action="/quan-ly-khuyen-mai/sua" method="post">
                 <div class="modal-body">
                     <div class="mb-3">
                         <input type="hidden" class="form-control" id="editIdKhuyenMai" name="id" required>
@@ -193,7 +203,8 @@
                     </div>
                     <div class="mb-3">
                         <label for="editGiaTriKhuyenMai" class="form-label">Giá trị khuyến mãi</label>
-                        <input type="number" class="form-control" id="editGiaTriKhuyenMai" name="giaTriKhuyenMai" required>
+                        <input type="number" class="form-control" id="editGiaTriKhuyenMai" name="giaTriKhuyenMai"
+                               required>
                     </div>
                     <div class="mb-3">
                         <label for="editNgayBatDau" class="form-label">Ngày bắt đầu</label>
@@ -223,7 +234,6 @@
 </div>
 
 
-
 </body>
 <script>
     function showPromotionEdits(idKhuyenMai, maKhuyenMai, tenKhuyenMai, giaTriKhuyenMai, ngayBatDau, ngayKetThuc, tinhTrang) {
@@ -235,8 +245,88 @@
         document.getElementById('editNgayKetThuc').value = ngayKetThuc;
         document.getElementById('editHoatDong').checked = (tinhTrang === 1);
         document.getElementById('editKhongHoatDong').checked = (tinhTrang === 0);
-        document.getElementById('productForm').action = `/khuyen-mai/update`; // Update action
+        document.getElementById('productForm').action = `/quan-ly-khuyen-mai/update`; // Update action
     }
+    function removeVietnameseAccents(str) {
+        var accents = [
+            {base: 'a', letters: 'áàạảãâấầậẩẫăắằặẳẵ'},
+            {base: 'e', letters: 'éèẹẻẽêếềệểễ'},
+            {base: 'i', letters: 'íìịỉĩ'},
+            {base: 'o', letters: 'óòọỏõôốồộổỗơớờợởỡ'},
+            {base: 'u', letters: 'úùụủũưứừựửữ'},
+            {base: 'y', letters: 'ýỳỵỷỹ'},
+            {base: 'd', letters: 'đ'}
+        ];
+
+        for (var i = 0; i < accents.length; i++) {
+            var letters = accents[i].letters.split('');
+            for (var j = 0; j < letters.length; j++) {
+                str = str.replace(letters[j], accents[i].base);
+            }
+        }
+
+        return str;
+    }
+
+    document.querySelector("form").addEventListener("submit", function(event) {
+        var maKhuyenMai = document.getElementById("maKhuyenMai").value.trim().toLowerCase();
+        var tenKhuyenMai = document.getElementById("tenKhuyenMai").value.trim().toLowerCase();
+        var giaTriMin = document.getElementsByName("giaTriMin")[0].value.trim();
+        var giaTriMax = document.getElementsByName("giaTriMax")[0].value.trim();
+        var ngayBatDau = document.getElementById("ngayBatDau").value.trim();
+        var ngayKetThuc = document.getElementById("ngayKetThuc").value.trim();
+
+        maKhuyenMai = removeVietnameseAccents(maKhuyenMai);
+        tenKhuyenMai = removeVietnameseAccents(tenKhuyenMai);
+
+        if (!maKhuyenMai && !tenKhuyenMai && !giaTriMin && !giaTriMax && !ngayBatDau && !ngayKetThuc) {
+            alert("Vui lòng nhập ít nhất một trường để tìm kiếm.");
+            event.preventDefault();
+            return;
+        }
+
+        if (maKhuyenMai && !/^[a-z0-9]+$/.test(maKhuyenMai)) {
+            alert("Mã khuyến mãi chỉ được chứa chữ và số.");
+            event.preventDefault();
+            return;
+        }
+
+        if (tenKhuyenMai && !/^[a-z0-9\s%]+$/.test(tenKhuyenMai)) {
+            alert("Tên khuyến mãi không được chứa ký tự đặc biệt ngoài %.");
+            event.preventDefault();
+            return;
+        }
+
+        if (giaTriMin && giaTriMax && (isNaN(giaTriMin) || isNaN(giaTriMax) || parseFloat(giaTriMin) < 0 || parseFloat(giaTriMax) < 0)) {
+            alert("Giá trị khuyến mãi phải là số và không được âm.");
+            event.preventDefault();
+            return;
+        }
+
+        if (giaTriMin && giaTriMax && parseInt(giaTriMin) > parseInt(giaTriMax)) {
+            alert("Giá trị 'Từ' không được lớn hơn giá trị 'Đến'.");
+            event.preventDefault();
+            return;
+        }
+
+        if (ngayBatDau && ngayKetThuc && ngayBatDau > ngayKetThuc) {
+            alert("Ngày bắt đầu không được lớn hơn ngày kết thúc.");
+            event.preventDefault();
+            return;
+        }
+
+        if (ngayBatDau && !/^\d{4}-\d{2}-\d{2}$/.test(ngayBatDau)) {
+            alert("Ngày bắt đầu không hợp lệ.");
+            event.preventDefault();
+            return;
+        }
+
+        if (ngayKetThuc && !/^\d{4}-\d{2}-\d{2}$/.test(ngayKetThuc)) {
+            alert("Ngày kết thúc không hợp lệ.");
+            event.preventDefault();
+            return;
+        }
+    });
 </script>
 
 </html>

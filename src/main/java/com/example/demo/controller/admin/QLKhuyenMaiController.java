@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/khuyen-mai")
+@RequestMapping("/quan-ly-khuyen-mai")
 public class QLKhuyenMaiController {
     @Autowired
     KhuyenMaiChiTietRepo khuyenMaiChiTietRepo;
@@ -41,8 +41,18 @@ public class QLKhuyenMaiController {
                        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate ngayBatDau,
                        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate ngayKetThuc,
                        Model model) {
+
+        if (maKhuyenMai != null) {
+            maKhuyenMai = maKhuyenMai.trim().toLowerCase();
+        }
+
+        if (tenKhuyenMai != null) {
+            tenKhuyenMai = tenKhuyenMai.toLowerCase();
+        }
+
         Pageable pageable = PageRequest.of(page, size);
         Page<KhuyenMai> khuyenMaiPage = khuyenMaiRepo.findFiltered(maKhuyenMai, tenKhuyenMai, giaTriMin, giaTriMax, ngayBatDau, ngayKetThuc, pageable);
+
         model.addAttribute("maKhuyenMai", maKhuyenMai);
         model.addAttribute("tenKhuyenMai", tenKhuyenMai);
         model.addAttribute("giaTriMin", giaTriMin);
@@ -62,7 +72,7 @@ public class QLKhuyenMaiController {
     @PostMapping("/them")
     public String add(KhuyenMai khuyenMai){
         khuyenMaiRepo.save(khuyenMai);
-        return "redirect:/khuyen-mai/hien-thi";
+        return "redirect:/quan-ly-khuyen-mai/hien-thi";
     }
 
 
@@ -79,7 +89,7 @@ public class QLKhuyenMaiController {
         existingKhuyenMai.setNgayKetThuc(khuyenMai.getNgayKetThuc());
         existingKhuyenMai.setTinhTrang(khuyenMai.getTinhTrang());
         khuyenMaiRepo.save(existingKhuyenMai);
-        return "redirect:/khuyen-mai/hien-thi";
+        return "redirect:/quan-ly-khuyen-mai/hien-thi";
     }
 
     @GetMapping("/chi-tiet")
@@ -155,7 +165,7 @@ public class QLKhuyenMaiController {
                 khuyenMaiChiTietRepo.save(khuyenMaiChiTiet);
             }
         }
-        return "redirect:/khuyen-mai/chi-tiet";
+        return "redirect:/quan-ly-khuyen-mai/chi-tiet";
     }
 
 
@@ -167,7 +177,7 @@ public class QLKhuyenMaiController {
         sanPhamChiTiet.setGiaGiamGia(0);
         sanPhamChiTietRepo.save(sanPhamChiTiet);
         khuyenMaiChiTietRepo.delete(khuyenMaiChiTiet);
-        return "redirect:/khuyen-mai/chi-tiet";
+        return "redirect:/quan-ly-khuyen-mai/chi-tiet";
     }
 
 

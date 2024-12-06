@@ -2,7 +2,9 @@ package com.example.demo.controller.customer;
 
 import com.example.demo.entity.*;
 import com.example.demo.repository.*;
+import com.example.demo.service.SanPhamChiTietService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,10 +18,13 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("doi-tra")
 public class DoiTraController {
+    @Autowired
+    private DoiSanPhamRepo doiSanPhamRepo;
     @Autowired
     private DoiTraChiTietRepo doiTraChiTietRepo;
     @Autowired
@@ -44,40 +49,26 @@ public class DoiTraController {
         KhachHang khachHang = (KhachHang) session.getAttribute("khachHang");
         if (khachHang != null) {
             List<HoaDon> hoaDonList = hoaDonRepo.findByKhachHang(khachHang);
-            Map<Integer, LocalDateTime> thoiGianTaoMap = new HashMap<>();
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm , dd-MM-yyyy");
 
             for (HoaDon hoaDon : hoaDonList) {
                 hoaDon.setHoaDonChiTietList(hoaDonChiTietRepo.findByHoaDon(hoaDon));
-                ThoiGianDonHang thoiGianDonHang = thoiGianDonHangRepo.findByHoaDon(hoaDon);
-                if (thoiGianDonHang != null) {
-                    thoiGianTaoMap.put(hoaDon.getId(), thoiGianDonHang.getThoiGianTao());
-                }
             }
 
-            hoaDonList.sort((h1, h2) -> {
-                LocalDateTime thoiGianTao1 = thoiGianTaoMap.get(h1.getId());
-                LocalDateTime thoiGianTao2 = thoiGianTaoMap.get(h2.getId());
-
-                if (thoiGianTao1 == null && thoiGianTao2 == null) {
-                    return 0;
-                } else if (thoiGianTao1 == null) {
-                    return 1;
-                } else if (thoiGianTao2 == null) {
-                    return -1;
-                } else {
-                    return thoiGianTao2.compareTo(thoiGianTao1);
-                }
-            });
+            hoaDonList.sort(Comparator.comparing(
+                    HoaDon::getThoiGianTao, Comparator.reverseOrder()
+            ));
 
             model.addAttribute("hoaDonList", hoaDonList);
 
             Map<Integer, String> formattedThoiGianTaoMap = new HashMap<>();
-            for (Map.Entry<Integer, LocalDateTime> entry : thoiGianTaoMap.entrySet()) {
-                formattedThoiGianTaoMap.put(entry.getKey(), entry.getValue().format(formatter));
+            for (HoaDon hoaDon : hoaDonList) {
+                LocalDateTime thoiGianTao = hoaDon.getThoiGianTao();
+                if (thoiGianTao != null) {
+                    formattedThoiGianTaoMap.put(hoaDon.getId(), thoiGianTao.format(formatter));
+                }
             }
-
             model.addAttribute("thoiGianTaoMap", formattedThoiGianTaoMap);
         } else {
             model.addAttribute("errorMessage", "Bạn cần đăng nhập để xem danh sách hóa đơn.");
@@ -108,7 +99,8 @@ public class DoiTraController {
                 model.addAttribute("hoanTra", thoiGianDonHang.getHoanTra() != null ? thoiGianDonHang.getHoanTra().format(formatter) : "Chưa có thời gian hoàn trả");
                 model.addAttribute("xacNhanHoanTra", thoiGianDonHang.getXacNhanHoanTra() != null ? thoiGianDonHang.getXacNhanHoanTra().format(formatter) : "Chưa có thời gian xác nhận hoàn trả");
                 model.addAttribute("daHoanTra", thoiGianDonHang.getDaHoanTra() != null ? thoiGianDonHang.getDaHoanTra().format(formatter) : "Chưa có thời gian đã hoàn trả");
-                model.addAttribute("daHuy", thoiGianDonHang.getDaHuy() != null ? thoiGianDonHang.getDaHuy().format(formatter) : "Chưa có thời gian đã hoàn trả");
+                model.addAttribute("daHuy", thoiGianDonHang.getDaHuy() != null ? thoiGianDonHang.getDaHuy().format(formatter) : "Chưa có thời gian đã hủy");
+                model.addAttribute("khongDoiTra", thoiGianDonHang.getKhongHoanTra() != null ? thoiGianDonHang.getKhongHoanTra().format(formatter) : "Chưa có thời gian không xác nhận");
 
                 if (thoiGianDonHang.getBanGiaoVanChuyen() != null) {
                     LocalDateTime banGiaoVanChuyen = thoiGianDonHang.getBanGiaoVanChuyen();
@@ -130,6 +122,10 @@ public class DoiTraController {
 
             List<DoiTraChiTiet> doiTraChiTietList = doiTraChiTietRepo.findByDoiTra_HoaDon_Id(id);
             model.addAttribute("doiTraChiTiets", doiTraChiTietList);
+            DoiTra doiTra = doiTraRepo.findFirstByHoaDon_Id(id);
+            model.addAttribute("doiTra", doiTra);
+            List<DoiSanPham> doiSanPhamList = doiSanPhamRepo.findByDoiTra_HoaDon_Id(id);
+            model.addAttribute("doiSanPhams",doiSanPhamList);
         } else {
             model.addAttribute("errorMessage", "Không tìm thấy hóa đơn.");
         }
@@ -137,10 +133,11 @@ public class DoiTraController {
         return "customer/doi_tra/detail";
     }
 
+
     @PostMapping("/luu-ly-do-doi-tra")
-    public String luuLyDoDoiTra(@RequestParam("hoaDonId") Integer hoaDonId,
-                                @RequestParam("lyDo") String lyDo,
-                                Model model) {
+    public String luuLyDoDoi(@RequestParam("hoaDonId") Integer hoaDonId,
+                             @RequestParam("lyDo") String lyDo,
+                             Model model) {
         HoaDon hoaDon = hoaDonRepo.findById(hoaDonId).orElse(null);
         if (hoaDon != null) {
             hoaDon.setHoaDonChiTietList(hoaDonChiTietRepo.findByHoaDon(hoaDon));
@@ -277,6 +274,7 @@ public class DoiTraController {
             doiTra.setMoTa(moTa);
             doiTra.setHinhAnh(fileName);
             doiTra.setNgayYeuCau(new Date());
+            doiTra.setLoaiDichVu(0);
             doiTra.setTinhTrang(11);
             if ("Chuyển khoản".equals(phuongThucChuyenTien)) {
                 doiTra.setTenNganHang(tenNganHang);
@@ -341,5 +339,216 @@ public class DoiTraController {
         model.addAttribute("errorMessage", "Không tìm thấy hóa đơn.");
         return "customer/doi_tra/error";
     }
+
+
+    @PostMapping("/luu-thong-tin-doi-hang")
+    public String luuThongTinDoiHang(@RequestParam("hoaDonId") Integer hoaDonId,
+                                     @RequestParam("lyDo") String lyDo,
+                                     @RequestParam("lyDoDetail") String lyDoDetail,
+                                     @RequestParam("sanPhamChiTietIds") List<Integer> sanPhamChiTietIds,
+                                     @RequestParam Map<String, String> requestParams,
+                                     Model model) {
+
+        HoaDon hoaDon = hoaDonRepo.findById(hoaDonId).orElse(null);
+
+        List<SanPhamChiTiet> sanPhamChiTiets = sanPhamChiTietRepo.findAll();
+        model.addAttribute("sanPhamChiTiets", sanPhamChiTiets);
+
+
+        if (hoaDon != null) {
+            List<SanPhamChiTiet> selectedProducts = new ArrayList<>();
+            Map<Integer, Integer> soLuongMap = new HashMap<>();
+            Map<Integer, Integer> giaSanPhamMap = new HashMap<>();
+
+            // Lấy danh sách sản phẩm chi tiết từ hóa đơn
+            List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepo.findByHoaDon(hoaDon);
+
+            // Map để lưu số lượng đã mua cho từng sản phẩm chi tiết
+            Map<Integer, Integer> soLuongDaMuaMap = new HashMap<>();
+            Map<Integer, Integer> giaBanSanPhamDaMuaMap = new HashMap<>();
+            for (HoaDonChiTiet chiTiet : hoaDonChiTietList) {
+                soLuongDaMuaMap.put(chiTiet.getSanPhamChiTiet().getId(), chiTiet.getSo_luong());
+                giaBanSanPhamDaMuaMap.put(chiTiet.getSanPhamChiTiet().getId(), chiTiet.getGia_san_pham());
+            }
+
+            int tongTienHoan = 0; // Biến lưu tổng tiền hoàn
+            for (Integer id : sanPhamChiTietIds) {
+                Integer soLuongHoan = Integer.valueOf(requestParams.get("soLuong_" + id));
+                SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(id).orElse(null);
+                if (sanPhamChiTiet != null) {
+                    selectedProducts.add(sanPhamChiTiet);
+                    soLuongMap.put(id, soLuongHoan);
+                    // Sử dụng giaSanPham của HoaDonChiTiet thay vì giaBan của SanPhamChiTiet
+                    HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietList.stream()
+                            .filter(ct -> ct.getSanPhamChiTiet().getId().equals(id))
+                            .findFirst().orElse(null);
+                    if (hoaDonChiTiet != null) {
+                        tongTienHoan += hoaDonChiTiet.getGia_san_pham() * soLuongHoan;
+                    }
+                }
+            }
+
+            // Xác định hình thức hoàn trả
+            boolean isHoanToan = true; // Ban đầu giả định là hoàn toàn phần
+            boolean coHoanMotPhan = false; // Biến kiểm tra có hoàn một phần hay không
+
+            for (HoaDonChiTiet chiTiet : hoaDonChiTietList) {
+                Integer sanPhamChiTietId = chiTiet.getSanPhamChiTiet().getId();
+                Integer soLuongDaMua = chiTiet.getSo_luong();
+                Integer soLuongHoan = soLuongMap.get(sanPhamChiTietId);
+
+                if (soLuongHoan != null && soLuongHoan > 0) {
+                    if (soLuongHoan < soLuongDaMua) {
+                        // Có ít nhất một sản phẩm chỉ hoàn một phần số lượng
+                        coHoanMotPhan = true;
+                    }
+                } else {
+                    // Có sản phẩm không được hoàn trả, không phải hoàn toàn phần
+                    isHoanToan = false;
+                }
+            }
+
+            String hinhThucHoan;
+            if (coHoanMotPhan || !isHoanToan) {
+                hinhThucHoan = "Hoàn một phần";
+            } else {
+                hinhThucHoan = "Hoàn toàn phần";
+            }
+
+            model.addAttribute("hinhThucHoan", hinhThucHoan); // Thêm vào model
+            model.addAttribute("tongTienHoan", tongTienHoan); // Thêm tổng tiền hoàn vào model
+            model.addAttribute("hoaDon", hoaDon);
+            model.addAttribute("hoaDonId", hoaDonId);
+            model.addAttribute("lyDo", lyDo);
+            model.addAttribute("lyDoDetail", lyDoDetail);
+            model.addAttribute("sanPhamChiTietIds", sanPhamChiTietIds);
+            model.addAttribute("selectedProducts", selectedProducts);
+            model.addAttribute("soLuongMap", soLuongMap);
+
+            return "customer/doi_tra/doi_hang";
+        }
+
+        model.addAttribute("errorMessage", "Không tìm thấy hóa đơn.");
+        return "customer/doi_tra/detail";
+    }
+
+    @PostMapping("/xac-nhan-doi-hang")
+    @Transactional
+    public String xacNhanDoiHang(
+            @RequestParam("hoaDonId") Integer hoaDonId,
+            @RequestParam("lyDo") String lyDo,
+            @RequestParam("lyDoDetail") String lyDoDetail,
+            @RequestParam("sanPhamChiTietIds") List<Integer> sanPhamChiTietIds,
+            @RequestParam("sanPhamChiTietDoiIds") String sanPhamChiTietIdsStr,
+            @RequestParam Map<String, String> requestParams,
+            @RequestParam("moTa") String moTa,
+            @RequestParam("uploadImage") MultipartFile uploadImage,
+            Model model) {
+
+        // Kiểm tra và lấy hóa đơn
+        HoaDon hoaDon = hoaDonRepo.findById(hoaDonId).orElse(null);
+        if (hoaDon == null) {
+            model.addAttribute("error", "Hóa đơn không tồn tại.");
+            return "customer/doi_tra/error";
+        }
+
+        // Chuyển đổi chuỗi ID sản phẩm thành danh sách
+        List<Integer> sanPhamChiTietDoiIds;
+        try {
+            sanPhamChiTietDoiIds = Arrays.stream(sanPhamChiTietIdsStr.split(","))
+                    .map(Integer::valueOf)
+                    .collect(Collectors.toList());
+        } catch (NumberFormatException e) {
+            model.addAttribute("error", "Dữ liệu sản phẩm không hợp lệ.");
+            return "customer/doi_tra/error";
+        }
+
+        // Xử lý file ảnh chứng minh
+        String fileName = null;
+        if (!uploadImage.isEmpty()) {
+            try {
+                String relativeFolder = "src/main/webapp/uploads/";
+                Path folderPath = Paths.get(relativeFolder).toAbsolutePath();
+                if (!Files.exists(folderPath)) {
+                    Files.createDirectories(folderPath);
+                }
+                fileName = System.currentTimeMillis() + "_" + uploadImage.getOriginalFilename();
+                Path filePath = folderPath.resolve(fileName);
+                Files.write(filePath, uploadImage.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+                model.addAttribute("error", "Không thể lưu ảnh.");
+                return "customer/doi_tra/error";
+            }
+        }
+
+        // Tạo đối tượng DoiTra
+        DoiTra doiTra = new DoiTra();
+        doiTra.setHoaDon(hoaDon);
+        doiTra.setLyDoCuThe(lyDoDetail);
+        doiTra.setMoTa(moTa);
+        doiTra.setHinhAnh(fileName);
+        doiTra.setNgayYeuCau(new Date());
+        doiTra.setLoaiDichVu(1);
+        doiTra.setTinhTrang(11); // Đổi hàng chờ xử lý
+        doiTraRepo.save(doiTra);
+
+        List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepo.findByHoaDon(hoaDon);
+        for (Integer sanPhamChiTietId : sanPhamChiTietIds) {
+            SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamChiTietId).orElse(null);
+            if (sanPhamChiTiet != null) {
+                Integer soLuongHoan = Integer.valueOf(requestParams.get("soLuong_" + sanPhamChiTietId));
+                HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietList.stream()
+                        .filter(chiTiet -> chiTiet.getSanPhamChiTiet().getId().equals(sanPhamChiTietId))
+                        .findFirst().orElse(null);
+                if (hoaDonChiTiet != null) {
+                    DoiTraChiTiet doiTraChiTiet = new DoiTraChiTiet();
+                    doiTraChiTiet.setDoiTra(doiTra);
+                    doiTraChiTiet.setSanPhamChiTiet(sanPhamChiTiet);
+                    doiTraChiTiet.setGiaSanPham(hoaDonChiTiet.getGia_san_pham());
+                    doiTraChiTiet.setSoLuong(soLuongHoan);
+                    doiTraChiTietRepo.save(doiTraChiTiet);
+                }
+            }
+        }
+
+
+        // Lưu thông tin đổi sản phẩm
+        for (Integer sanPhamChiTietDoiId : sanPhamChiTietDoiIds) {
+            SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamChiTietDoiId).orElse(null);
+            if (sanPhamChiTiet != null) {
+                String soLuongStr = requestParams.get("soLuong_" + sanPhamChiTietDoiId);
+                Integer soLuong = soLuongStr != null ? Integer.valueOf(soLuongStr) : null;
+
+                // Kiểm tra số lượng hợp lệ
+                if (soLuong != null && soLuong > 0 && soLuong <= sanPhamChiTiet.getSoLuong()) {
+                    // Xử lý đổi sản phẩm
+                    DoiSanPham doiSanPham = new DoiSanPham();
+                    doiSanPham.setDoiTra(doiTra);
+                    doiSanPham.setSanPhamChiTiet(sanPhamChiTiet);
+                    doiSanPham.setGiaSanPham(sanPhamChiTiet.getGiaBan());
+                    doiSanPham.setSoLuong(soLuong);
+
+                    // Cập nhật tồn kho sản phẩm
+                    sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - soLuong);
+                    sanPhamChiTietRepo.save(sanPhamChiTiet);
+
+                    doiSanPhamRepo.save(doiSanPham);
+                } else {
+                    model.addAttribute("error", "Số lượng không hợp lệ cho sản phẩm ID: " + sanPhamChiTietDoiId);
+                    return "customer/doi_tra/error";
+                }
+            }
+        }
+
+
+        // Cập nhật trạng thái hóa đơn
+        hoaDon.setTinh_trang(11); // Trạng thái "Đổi hàng chờ xử lý"
+        hoaDonRepo.save(hoaDon);
+
+        return "redirect:/doi-tra";
+    }
+
+
 
 }

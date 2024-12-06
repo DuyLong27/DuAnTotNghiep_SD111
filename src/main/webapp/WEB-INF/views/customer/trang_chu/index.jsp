@@ -196,15 +196,15 @@
 
 
         .product-cart.top-50, .product-buy.top-50 {
-            top: 50% !important;
+            top: 45% !important;
         }
 
         .product-cart.start-50 {
-            left: 56% !important;
+            left: 58% !important;
         }
 
         .product-buy.start-50 {
-            left: 43% !important;
+            left: 42% !important;
         }
 
         .product-buy a i, .product-cart a i {
@@ -298,8 +298,10 @@
                                     ${product.khuyenMaiChiTietList[0].khuyenMai.giaTriKhuyenMai}%
                                 </span>
                         </c:if>
-                        <img src="${pageContext.request.contextPath}/uploads/${product.hinhAnh}" class="card-img-top"
-                             alt="${product.sanPham.ten}">
+                        <a href="/danh-sach-san-pham-chi-tiet/view-sp/${product.id}">
+                            <img src="${pageContext.request.contextPath}/uploads/${product.hinhAnh}" class="card-img-top"
+                                 alt="${product.sanPham.ten}">
+                        </a>
                         <div class="card-body text-center">
                             <h5 class="card-title">${product.sanPham.ten}</h5>
                             <p class="card-text text-success">
@@ -345,8 +347,10 @@
                                     ${newestProducts.khuyenMaiChiTietList[0].khuyenMai.giaTriKhuyenMai}%
                                 </span>
                         </c:if>
-                        <img src="${pageContext.request.contextPath}/uploads/${newestProducts.hinhAnh}" class="card-img-top"
-                             alt="${newestProducts.sanPham.ten}">
+                        <a href="/danh-sach-san-pham-chi-tiet/view-sp/${newestProducts.id}">
+                            <img src="${pageContext.request.contextPath}/uploads/${newestProducts.hinhAnh}" class="card-img-top"
+                                 alt="${newestProducts.sanPham.ten}">
+                        </a>
                         <div class="card-body text-center">
                             <h5 class="card-title">${newestProducts.sanPham.ten}</h5>
                             <p class="card-text text-success">
@@ -393,8 +397,10 @@
                     <span class="discount-badge">
                         ${product.khuyenMaiChiTietList[0].khuyenMai.giaTriKhuyenMai}%
                     </span>
-                            <img src="${pageContext.request.contextPath}/uploads/${product.hinhAnh}"
-                                 class="card-img-top" alt="${product.sanPham.ten}">
+                            <a href="/danh-sach-san-pham-chi-tiet/view-sp/${product.id}">
+                                <img src="${pageContext.request.contextPath}/uploads/${product.hinhAnh}" class="card-img-top"
+                                     alt="${product.sanPham.ten}">
+                            </a>
                             <div class="card-body">
                                 <h5 class="card-title">${product.sanPham.ten}</h5>
                                 <p class="card-text text-success">
@@ -591,10 +597,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
 <script>
-    <!-- Khởi tạo AOS -->
     AOS.init();
 
-    // Hiển thị nút "back-to-top" khi cuộn xuống
     window.onscroll = function () {
         if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
             document.getElementById("back-to-top").style.display = "block";
@@ -603,31 +607,49 @@
         }
     };
 
-    // Xử lý sự kiện click cho nút "back-to-top"
     document.getElementById("back-to-top").addEventListener("click", function () {
         window.scrollTo({top: 0, behavior: 'smooth'});
     });
 
-    // Lưu vị trí cuộn trước khi gửi form
+    document.querySelectorAll('.btn-close').forEach(btnClose => {
+        btnClose.addEventListener('click', function(event) {
+            event.preventDefault();
+
+            sessionStorage.setItem('scrollPosition', window.scrollY);
+
+            window.location.href = this.getAttribute('href');
+        });
+    });
+
+    window.onload = function() {
+        const scrollPosition = sessionStorage.getItem('scrollPosition');
+        if (scrollPosition) {
+            setTimeout(function() {
+                window.scrollTo({
+                    top: scrollPosition,
+                    behavior: 'smooth'
+                });
+                sessionStorage.removeItem('scrollPosition');
+            }, 100);
+        }
+    };
+
     document.querySelectorAll('form').forEach(form => {
         form.addEventListener('submit', function(event) {
-            // Lưu lại vị trí cuộn trước khi gửi form
             sessionStorage.setItem('scrollPosition', window.scrollY);
         });
     });
 
-    // Sau khi trang tải lại, phục hồi vị trí cuộn với hiệu ứng mượt mà
     window.onload = function() {
         const scrollPosition = sessionStorage.getItem('scrollPosition');
         if (scrollPosition) {
-            // Thêm một khoảng delay nhỏ để đảm bảo trang tải hoàn toàn
             setTimeout(function() {
                 window.scrollTo({
                     top: scrollPosition,
-                    behavior: 'smooth' // Cuộn mượt mà
+                    behavior: 'smooth'
                 });
-                sessionStorage.removeItem('scrollPosition');  // Xóa vị trí cuộn sau khi phục hồi
-            }, 100); // 100ms delay (có thể điều chỉnh thêm nếu cần)
+                sessionStorage.removeItem('scrollPosition');
+            }, 100);
         }
     };
 

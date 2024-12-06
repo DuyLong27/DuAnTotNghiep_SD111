@@ -16,4 +16,6 @@ public interface NhanVienRepo extends JpaRepository<NhanVien, Integer> {
     Page<NhanVien> findByTinhTrang(Integer tinhTrang, Pageable pageable);
 
     Page<NhanVien> findByTenNhanVienContainingIgnoreCase(String nhaCungCapTen, Pageable pageable);
+
+    NhanVien findByEmail(String email);
 }

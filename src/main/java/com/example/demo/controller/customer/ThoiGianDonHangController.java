@@ -28,57 +28,64 @@ public class ThoiGianDonHangController {
     @GetMapping("/tim-kiem")
     public String timKiem(String soHoaDon, Model model) {
         if (soHoaDon != null && !soHoaDon.isEmpty()) {
-            var hoaDonOptional = hoaDonRepo.findBySoHoaDon(soHoaDon);
-            if (hoaDonOptional.isEmpty()) {
-                model.addAttribute("error", "Không tìm thấy hóa đơn với số: " + soHoaDon);
+            soHoaDon = soHoaDon.trim();
+
+            String regex = "^HD\\d{5}$";
+            if (!soHoaDon.matches(regex)) {
+                model.addAttribute("error", "Số hóa đơn không hợp lệ");
             } else {
-                var hoaDon = hoaDonOptional.get();
-                var thoiGianDonHang = thoiGianDonHangRepo.findByHoaDon_Id(hoaDon.getId());
-                var chiTietHoaDons = hoaDonChiTietRepo.findByHoaDon_Id(hoaDon.getId());
+                var hoaDonOptional = hoaDonRepo.findBySoHoaDon(soHoaDon);
+                if (hoaDonOptional.isEmpty()) {
+                    model.addAttribute("error", "Không tìm thấy hóa đơn với số: " + soHoaDon);
+                } else {
+                    var hoaDon = hoaDonOptional.get();
+                    var thoiGianDonHang = thoiGianDonHangRepo.findByHoaDon_Id(hoaDon.getId());
+                    var chiTietHoaDons = hoaDonChiTietRepo.findByHoaDon_Id(hoaDon.getId());
 
-                LocalDateTime thoiGianTao = thoiGianDonHang != null ? thoiGianDonHang.getThoiGianTao() : null;
-                LocalDateTime thoiGianXacNhan = thoiGianDonHang != null ? thoiGianDonHang.getThoiGianXacNhan() : null;
-                LocalDateTime banGiaoVanChuyenDate = thoiGianDonHang != null ? thoiGianDonHang.getBanGiaoVanChuyen() : null;
-                LocalDateTime hoanThanhDate = thoiGianDonHang != null ? thoiGianDonHang.getHoanThanh() : null;
-                LocalDateTime hoanTraDate = thoiGianDonHang != null ? thoiGianDonHang.getHoanTra() : null;
-                LocalDateTime xacNhanHoanTraDate = thoiGianDonHang != null ? thoiGianDonHang.getXacNhanHoanTra() : null;
-                LocalDateTime daHoanTraDate = thoiGianDonHang != null ? thoiGianDonHang.getDaHoanTra() : null;
-                LocalDateTime daHuyDate = thoiGianDonHang != null ? thoiGianDonHang.getDaHuy() : null;
+                    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm , dd-MM-yyyy ");
+                    String thoiGianTaoFormatted = (thoiGianDonHang != null && thoiGianDonHang.getThoiGianTao() != null) ?
+                            thoiGianDonHang.getThoiGianTao().format(dateTimeFormatter) : "Chưa có thông tin";
+                    String thoiGianXacNhanFormatted = (thoiGianDonHang != null && thoiGianDonHang.getThoiGianXacNhan() != null) ?
+                            thoiGianDonHang.getThoiGianXacNhan().format(dateTimeFormatter) : "Chưa có thông tin";
+                    String banGiaoVanChuyenFormatted = (thoiGianDonHang != null && thoiGianDonHang.getBanGiaoVanChuyen() != null) ?
+                            thoiGianDonHang.getBanGiaoVanChuyen().format(dateTimeFormatter) : "Chưa có thông tin";
+                    String hoanThanhFormatted = (thoiGianDonHang != null && thoiGianDonHang.getHoanThanh() != null) ?
+                            thoiGianDonHang.getHoanThanh().format(dateTimeFormatter) : "Chưa có thông tin";
+                    String hoanTraFormatted = (thoiGianDonHang != null && thoiGianDonHang.getHoanTra() != null) ?
+                            thoiGianDonHang.getHoanTra().format(dateTimeFormatter) : "Chưa có thông tin";
+                    String xacNhanHoanTraFormatted = (thoiGianDonHang != null && thoiGianDonHang.getXacNhanHoanTra() != null) ?
+                            thoiGianDonHang.getXacNhanHoanTra().format(dateTimeFormatter) : "Chưa có thông tin";
+                    String daHoanTraFormatted = (thoiGianDonHang != null && thoiGianDonHang.getDaHoanTra() != null) ?
+                            thoiGianDonHang.getDaHoanTra().format(dateTimeFormatter) : "Chưa có thông tin";
+                    String daHuyFormatted = (thoiGianDonHang != null && thoiGianDonHang.getDaHuy() != null) ?
+                            thoiGianDonHang.getDaHuy().format(dateTimeFormatter) : "Chưa có thông tin";
+                    String khongDoiTraFormatted = (thoiGianDonHang != null && thoiGianDonHang.getKhongHoanTra() != null) ?
+                            thoiGianDonHang.getKhongHoanTra().format(dateTimeFormatter) : "Chưa có thông tin";
 
-                DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm , dd-MM-yyyy ");
-
-                String thoiGianTaoFormatted = (thoiGianTao != null) ? thoiGianTao.format(dateTimeFormatter) : "Chưa có thông tin";
-                String thoiGianXacNhanFormatted = (thoiGianXacNhan != null) ? thoiGianXacNhan.format(dateTimeFormatter) : "Chưa có thông tin";
-                String banGiaoVanChuyenFormatted = (banGiaoVanChuyenDate != null) ? banGiaoVanChuyenDate.format(dateTimeFormatter) : "Chưa có thông tin";
-                String hoanThanhFormatted = (hoanThanhDate != null) ? hoanThanhDate.format(dateTimeFormatter) : "Chưa có thông tin";
-                String hoanTraFormatted = (hoanTraDate != null) ? hoanTraDate.format(dateTimeFormatter) : "Chưa có thông tin";
-                String xacNhanHoanTraFormatted = (xacNhanHoanTraDate != null) ? xacNhanHoanTraDate.format(dateTimeFormatter) : "Chưa có thông tin";
-                String daHoanTraFormatted = (daHoanTraDate != null) ? daHoanTraDate.format(dateTimeFormatter) : "Chưa có thông tin";
-                String daHuyFormatted = (daHuyDate != null) ? daHuyDate.format(dateTimeFormatter) : "Chưa có thông tin";
-
-                LocalDateTime thoiGianDuKien = null;
-                if (banGiaoVanChuyenDate != null) {
-                    if ("Giao Hàng Nhanh".equals(hoaDon.getPhuongThucVanChuyen())) {
-                        thoiGianDuKien = banGiaoVanChuyenDate.plusDays(2);
-                    } else {
-                        thoiGianDuKien = banGiaoVanChuyenDate.plusDays(3);
+                    LocalDateTime thoiGianDuKien = null;
+                    if (thoiGianDonHang != null && thoiGianDonHang.getBanGiaoVanChuyen() != null) {
+                        if ("Giao Hàng Nhanh".equals(hoaDon.getPhuongThucVanChuyen())) {
+                            thoiGianDuKien = thoiGianDonHang.getBanGiaoVanChuyen().plusDays(2);
+                        } else {
+                            thoiGianDuKien = thoiGianDonHang.getBanGiaoVanChuyen().plusDays(3);
+                        }
                     }
-                }
-                String thoiGianDuKienFormatted = (thoiGianDuKien != null) ? thoiGianDuKien.format(dateFormatter) : "Chưa có thông tin";
+                    String thoiGianDuKienFormatted = (thoiGianDuKien != null) ? thoiGianDuKien.format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) : "Chưa có thông tin";
 
-                model.addAttribute("hoaDon", hoaDon);
-                model.addAttribute("thoiGianDonHang", thoiGianDonHang);
-                model.addAttribute("chiTietHoaDons", chiTietHoaDons);
-                model.addAttribute("thoiGianTao", thoiGianTaoFormatted);
-                model.addAttribute("thoiGianXacNhan", thoiGianXacNhanFormatted);
-                model.addAttribute("banGiaoVanChuyen", banGiaoVanChuyenFormatted);
-                model.addAttribute("hoanThanh", hoanThanhFormatted);
-                model.addAttribute("thoiGianDuKien", thoiGianDuKienFormatted);
-                model.addAttribute("hoanTra", hoanTraFormatted);
-                model.addAttribute("xacNhanHoanTra", xacNhanHoanTraFormatted);
-                model.addAttribute("daHoanTra", daHoanTraFormatted);
-                model.addAttribute("daHuy", daHuyFormatted);
+                    model.addAttribute("hoaDon", hoaDon);
+                    model.addAttribute("thoiGianDonHang", thoiGianDonHang);
+                    model.addAttribute("chiTietHoaDons", chiTietHoaDons);
+                    model.addAttribute("thoiGianTao", thoiGianTaoFormatted);
+                    model.addAttribute("thoiGianXacNhan", thoiGianXacNhanFormatted);
+                    model.addAttribute("banGiaoVanChuyen", banGiaoVanChuyenFormatted);
+                    model.addAttribute("hoanThanh", hoanThanhFormatted);
+                    model.addAttribute("thoiGianDuKien", thoiGianDuKienFormatted);
+                    model.addAttribute("hoanTra", hoanTraFormatted);
+                    model.addAttribute("xacNhanHoanTra", xacNhanHoanTraFormatted);
+                    model.addAttribute("daHoanTra", daHoanTraFormatted);
+                    model.addAttribute("daHuy", daHuyFormatted);
+                    model.addAttribute("khongDoiTra", khongDoiTraFormatted);
+                }
             }
         } else {
             model.addAttribute("error", "Vui lòng nhập số hóa đơn để tìm kiếm.");

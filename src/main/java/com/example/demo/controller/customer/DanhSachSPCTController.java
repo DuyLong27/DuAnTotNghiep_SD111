@@ -13,10 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Controller
 @RequestMapping("/danh-sach-san-pham-chi-tiet")
@@ -68,22 +65,25 @@ public class DanhSachSPCTController {
 
     @GetMapping("/view-sp/{id}")
     public String viewProduct(@PathVariable("id") Integer id, Model model) {
-        // Lấy sản phẩm chi tiết
         Optional<SanPhamChiTiet> optionalSanPhamChiTiet = sanPhamChiTietRepo.findById(id);
 
         if (optionalSanPhamChiTiet.isPresent()) {
             model.addAttribute("sanPhamChiTiet", optionalSanPhamChiTiet.get());
         } else {
-            model.addAttribute("sanPhamChiTiet", null); // Trường hợp không tìm thấy sản phẩm
+            model.addAttribute("sanPhamChiTiet", null);
         }
 
-        // Lấy danh sách sản phẩm liên quan
-        Pageable pageable = PageRequest.of(0, 4); // Giới hạn số lượng sản phẩm liên quan
-        Page<SanPhamChiTiet> relatedProductsPage = sanPhamChiTietRepo.findAll(pageable);
+        List<Object[]> bestSellingProducts = hoaDonChiTietRepo.findBestSellingProducts();
 
-        // Thêm sản phẩm liên quan vào model
-        model.addAttribute("data", relatedProductsPage);
-        model.addAttribute("listGioHang",gioHangChiTietRepo.findAll());
+        List<SanPhamChiTiet> products = new ArrayList<>();
+        for (Object[] objects : bestSellingProducts) {
+            SanPhamChiTiet product = (SanPhamChiTiet) objects[0];
+            products.add(product);
+        }
+
+        model.addAttribute("bestSellingProducts", products);
+
+        model.addAttribute("listGioHang", gioHangChiTietRepo.findAll());
 
         return "customer/san_pham_chi_tiet/index";
     }

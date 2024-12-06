@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,9 @@ public class QLHoaDonController {
 
     @Autowired
     ThoiGianDonHangRepo thoiGianDonHangRepo;
+
+    @Autowired
+    DoiSanPhamRepo doiSanPhamRepo;
     @GetMapping("/tinhTrang={tinhTrang}")
     public String hienThi(Model model,
                           @PathVariable(required = false) String tinhTrang,
@@ -56,8 +60,41 @@ public class QLHoaDonController {
         Pageable pageable = PageRequest.of(page, size);
         Page<HoaDon> hoaDonPage;
 
-        LocalDateTime start = startDate != null && !startDate.isEmpty() ? LocalDateTime.parse(startDate + "T00:00:00") : null;
-        LocalDateTime end = endDate != null && !endDate.isEmpty() ? LocalDateTime.parse(endDate + "T23:59:59") : null;
+        if (phoneNumber != null && !phoneNumber.isEmpty()) {
+            phoneNumber = phoneNumber.replaceAll("[-\\s]", "");
+
+            String phoneRegex = "^(\\d{10})$";
+            if (!phoneNumber.matches(phoneRegex)) {
+                model.addAttribute("error", "Số điện thoại không hợp lệ.");
+                return "/admin/ql_hoa_don/index";
+            }
+        }
+
+        LocalDateTime start = null;
+        LocalDateTime end = null;
+
+        if (startDate != null && !startDate.isEmpty()) {
+            try {
+                start = LocalDateTime.parse(startDate + "T00:00:00");
+            } catch (DateTimeParseException e) {
+                model.addAttribute("error", "Ngày bắt đầu không hợp lệ.");
+                return "/admin/ql_hoa_don/index";
+            }
+        }
+
+        if (endDate != null && !endDate.isEmpty()) {
+            try {
+                end = LocalDateTime.parse(endDate + "T23:59:59");
+            } catch (DateTimeParseException e) {
+                model.addAttribute("error", "Ngày kết thúc không hợp lệ.");
+                return "/admin/ql_hoa_don/index";
+            }
+        }
+
+        if (start != null && end != null && start.isAfter(end)) {
+            model.addAttribute("error", "Ngày bắt đầu không thể sau ngày kết thúc.");
+            return "/admin/ql_hoa_don/index";
+        }
 
         Integer tinhTrangInt = null;
         try {
@@ -86,6 +123,23 @@ public class QLHoaDonController {
         for (HoaDon hoaDon : hoaDonList) {
             hoaDon.setThoiGianTaoFormatted(hoaDon.getThoiGianTao().format(formatter));
         }
+
+        long chuaXacNhanCount = hoaDonRepo.countByTinhTrang(0);
+        long choGiaoCount = hoaDonRepo.countByTinhTrang(1);
+        long dangGiaoCount = hoaDonRepo.countByTinhTrang(2);
+        long hoanThanhCount = hoaDonRepo.countByTinhTrang(4);
+        long chuaXacNhanDoiTraCount = hoaDonRepo.countByTinhTrang(11);
+        long choDoiTraCount = hoaDonRepo.countByTinhTrang(12);
+        long daDoiTraCount = hoaDonRepo.countByTinhTrang(13);
+        long daHuyCount = hoaDonRepo.countByTinhTrang(14);
+        model.addAttribute("chuaXacNhanCount", chuaXacNhanCount);
+        model.addAttribute("choGiaoCount", choGiaoCount);
+        model.addAttribute("dangGiaoCount", dangGiaoCount);
+        model.addAttribute("hoanThanhCount", hoanThanhCount);
+        model.addAttribute("chuaXacNhanDoiTraCount", chuaXacNhanDoiTraCount);
+        model.addAttribute("choDoiTraCount", choDoiTraCount);
+        model.addAttribute("daDoiTraCount", daDoiTraCount);
+        model.addAttribute("daHuyCount", daHuyCount);
 
         model.addAttribute("listHoaDon", hoaDonList);
         model.addAttribute("currentPage", page);
@@ -118,6 +172,9 @@ public class QLHoaDonController {
 
             List<DoiTraChiTiet> doiTraChiTietList = doiTraChiTietRepo.findByDoiTra_HoaDon_Id(id);
             model.addAttribute("doiTraChiTiets", doiTraChiTietList);
+
+            List<DoiSanPham> doiSanPhamList = doiSanPhamRepo.findByDoiTra_HoaDon_Id(id);
+            model.addAttribute("doiSanPhams",doiSanPhamList);
 
             Optional<ThoiGianDonHang> thoiGianDonHangOpt = thoiGianDonHangRepo.findByHoaDonId(id);
             if (thoiGianDonHangOpt.isPresent()) {
@@ -379,5 +436,147 @@ public class QLHoaDonController {
         return "redirect:/hoa-don/detail/" + hoaDon.getId();
     }
 
+    @PostMapping("/khong-xac-nhan/{id}")
+    public String khongXacNhanDon(@PathVariable("id") Integer id, Model model) {
+        HoaDon hoaDon = hoaDonRepo.findById(id).orElse(null);
+        if (hoaDon != null) {
+            List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepo.findByHoaDon(hoaDon);
+
+            for (HoaDonChiTiet hoaDonChiTiet : hoaDonChiTietList) {
+                SanPhamChiTiet sanPhamChiTiet = hoaDonChiTiet.getSanPhamChiTiet();
+                int soLuongHoan = hoaDonChiTiet.getSo_luong();
+
+                sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() + soLuongHoan);
+                sanPhamChiTietRepo.save(sanPhamChiTiet);
+            }
+
+            hoaDon.setTinh_trang(14);
+            hoaDonRepo.save(hoaDon);
+
+            ThoiGianDonHang thoiGianDonHang = thoiGianDonHangRepo.findByHoaDon_Id(id);
+            if (thoiGianDonHang != null) {
+                thoiGianDonHang.setDaHuy(LocalDateTime.now());
+                thoiGianDonHangRepo.save(thoiGianDonHang);
+            }
+
+            model.addAttribute("message", "Đơn hàng đã được chuyển sang trạng thái không xác nhận.");
+            return "redirect:/hoa-don/detail/" + id;
+        }
+
+        model.addAttribute("errorMessage", "Không tìm thấy hóa đơn.");
+        return "admin/ql_hoa_don/error";
+    }
+
+
+    @PostMapping("/khong-xac-nhan-doi-tra/{id}")
+    public String khongXacNhanDoiTra(@PathVariable("id") Integer id, Model model) {
+        HoaDon hoaDon = hoaDonRepo.findById(id).orElse(null);
+        if (hoaDon != null) {
+            hoaDon.setTinh_trang(4);
+            hoaDonRepo.save(hoaDon);
+
+            List<DoiTra> doiTras = doiTraRepo.findByHoaDon(hoaDon);
+
+            for (DoiTra doiTra : doiTras) {
+                List<DoiTraChiTiet> doiTraChiTiets = doiTraChiTietRepo.findByDoiTra(doiTra);
+                doiTraChiTietRepo.deleteAll(doiTraChiTiets);
+
+                doiTraRepo.delete(doiTra);
+            }
+
+            ThoiGianDonHang thoiGianDonHang = thoiGianDonHangRepo.findByHoaDon_Id(id);
+            if (thoiGianDonHang != null) {
+                thoiGianDonHang.setKhongHoanTra(LocalDateTime.now());
+                thoiGianDonHangRepo.save(thoiGianDonHang);
+            }
+
+            model.addAttribute("message", "Đơn hàng đã được chuyển sang trạng thái không xác nhận đổi trả và các yêu cầu đổi trả đã bị hủy.");
+            return "redirect:/hoa-don/detail/" + id;
+        }
+
+        model.addAttribute("errorMessage", "Không tìm thấy hóa đơn.");
+        return "admin/ql_hoa_don/error";
+    }
+
+    @PostMapping("/doi-hang/{id}")
+    public String doiHang(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+        HoaDon hoaDon = hoaDonRepo.findById(id).orElse(null);
+        if (hoaDon == null) {
+            redirectAttributes.addFlashAttribute("error", "Không tìm thấy hóa đơn!");
+            return "redirect:/hoa-don/detail/" + id;
+        }
+
+        List<DoiTraChiTiet> doiTraChiTietList = doiTraChiTietRepo.findByDoiTra_HoaDon_Id(id);
+        if (doiTraChiTietList.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Không có sản phẩm cần đổi trong hóa đơn!");
+            return "redirect:/hoa-don/detail/" + id;
+        }
+
+        int diemHoan = 0;
+        int diemCongThem = 0;
+
+        for (DoiTraChiTiet doiTraChiTiet : doiTraChiTietList) {
+            SanPhamChiTiet sanPhamChiTiet = doiTraChiTiet.getSanPhamChiTiet();
+
+            sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() + doiTraChiTiet.getSoLuong());
+            sanPhamChiTietRepo.save(sanPhamChiTiet);
+
+            HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietRepo.findByHoaDonAndSanPhamChiTiet(hoaDon, sanPhamChiTiet);
+            if (hoaDonChiTiet != null) {
+                int newSoLuong = hoaDonChiTiet.getSo_luong() - doiTraChiTiet.getSoLuong();
+                hoaDonChiTiet.setSo_luong(newSoLuong);
+                hoaDonChiTietRepo.save(hoaDonChiTiet);
+
+                if (newSoLuong <= 0) {
+                    hoaDonChiTietRepo.delete(hoaDonChiTiet);
+                }
+            }
+
+            diemHoan += (doiTraChiTiet.getSoLuong() * sanPhamChiTiet.getGiaBan()) / 10000;
+        }
+
+        KhachHang khachHang = hoaDon.getKhachHang();
+        if (khachHang.getDiemTichLuy() >= diemHoan) {
+            khachHang.setDiemTichLuy(khachHang.getDiemTichLuy() - diemHoan);
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Khách hàng không có đủ điểm tích lũy để đổi hàng!");
+            return "redirect:/hoa-don/detail/" + id;
+        }
+
+        List<DoiSanPham> doiSanPhamList = doiSanPhamRepo.findByDoiTra_HoaDon_Id(id);
+        for (DoiSanPham doiSanPham : doiSanPhamList) {
+            SanPhamChiTiet sanPhamMoi = doiSanPham.getSanPhamChiTiet();
+
+            if (sanPhamMoi.getSoLuong() < doiSanPham.getSoLuong()) {
+                redirectAttributes.addFlashAttribute("error", "Sản phẩm không đủ số lượng trong kho!");
+                return "redirect:/hoa-don/detail/" + id;
+            }
+
+            sanPhamMoi.setSoLuong(sanPhamMoi.getSoLuong() - doiSanPham.getSoLuong());
+            sanPhamChiTietRepo.save(sanPhamMoi);
+
+            HoaDonChiTiet hoaDonChiTietMoi = new HoaDonChiTiet();
+            hoaDonChiTietMoi.setHoaDon(hoaDon);
+            hoaDonChiTietMoi.setSanPhamChiTiet(sanPhamMoi);
+            hoaDonChiTietMoi.setSo_luong(doiSanPham.getSoLuong());
+            hoaDonChiTietMoi.setGia_san_pham(sanPhamMoi.getGiaBan());
+            hoaDonChiTietRepo.save(hoaDonChiTietMoi);
+
+            diemCongThem += (doiSanPham.getSoLuong() * sanPhamMoi.getGiaBan()) / 10000;
+        }
+
+        khachHang.setDiemTichLuy(khachHang.getDiemTichLuy() + diemCongThem);
+        khachHangRepo.save(khachHang);
+
+        hoaDon.setTinh_trang(13);
+        hoaDonRepo.save(hoaDon);
+
+        ThoiGianDonHang thoiGianDonHang = thoiGianDonHangRepo.findByHoaDon_Id(id);
+        thoiGianDonHang.setDaHoanTra(LocalDateTime.now());
+        thoiGianDonHangRepo.save(thoiGianDonHang);
+
+        redirectAttributes.addFlashAttribute("message", "Đổi hàng thành công! Điểm tích lũy đã được cập nhật.");
+        return "redirect:/hoa-don/detail/" + id;
+    }
 
 }

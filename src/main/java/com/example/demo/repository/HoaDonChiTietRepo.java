@@ -37,11 +37,19 @@ public interface HoaDonChiTietRepo extends JpaRepository<HoaDonChiTiet, Integer>
     List<HoaDonChiTiet> findByHoaDon_Id(Integer idHoaDon);
 
 
-    @Query("SELECT h.sanPhamChiTiet, SUM(h.so_luong) AS total " +
-            "FROM HoaDonChiTiet h " +
-            "GROUP BY h.sanPhamChiTiet " +
-            "ORDER BY total DESC")
+    @Query("SELECT hct.sanPhamChiTiet, SUM(hct.so_luong) FROM HoaDonChiTiet hct " +
+            "JOIN hct.hoaDon hd " +
+            "WHERE hd.tinh_trang IN (4, 13) " +
+            "GROUP BY hct.sanPhamChiTiet " +
+            "ORDER BY SUM(hct.so_luong) DESC")
     List<Object[]> findTopSellingProducts(Pageable pageable);
+
+    @Query("SELECT hct.sanPhamChiTiet, SUM(hct.so_luong) FROM HoaDonChiTiet hct " +
+            "JOIN hct.hoaDon hd " +
+            "WHERE hd.tinh_trang IN (4, 13) " +
+            "GROUP BY hct.sanPhamChiTiet " +
+            "ORDER BY SUM(hct.so_luong) DESC")
+    List<Object[]> findBestSellingProducts();
 
     @Query(value = "SELECT SUM(hdct.so_luong * hdct.gia_san_pham - hdct.giam_gia) AS tong_doanh_thu " +
             "FROM hoa_don_chi_tiet hdct " +

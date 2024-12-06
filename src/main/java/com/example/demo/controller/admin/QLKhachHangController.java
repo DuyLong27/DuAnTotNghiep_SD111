@@ -17,7 +17,7 @@ import java.time.LocalDate;
 import java.util.Date;
 
 @Controller
-@RequestMapping("/khach-hang")
+@RequestMapping("/quan-ly-khach-hang")
 public class QLKhachHangController {
     @Autowired
     KhachHangRepo repo;
@@ -30,10 +30,11 @@ public class QLKhachHangController {
             return "admin/ql_khach_hang/QuanLyKhachHang";
         }
         khachHang.setDiemTichLuy(0);
+        khachHang.setRole(2);
         khachHang.setNgayDangKy(LocalDate.now());
         repo.save(khachHang);
         redirectAttributes.addFlashAttribute("message", "Thêm thành công!");
-        return "redirect:/khach-hang/hien-thi";
+        return "redirect:/quan-ly-khach-hang/hien-thi";
     }
 
     @GetMapping("/hien-thi")
@@ -74,6 +75,6 @@ public class QLKhachHangController {
         }
         repo.save(khachHang);
         redirectAttributes.addFlashAttribute("message", "Sửa thành công!");
-        return "redirect:/khach-hang/hien-thi";
+        return "redirect:/quan-ly-khach-hang/hien-thi";
     }
 }

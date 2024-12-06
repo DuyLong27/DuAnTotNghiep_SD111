@@ -44,4 +44,8 @@ public class NhanVien {
     @Digits(integer = 1, fraction = 0)
     @Column(name = "tinh_trang")
     private Integer tinhTrang;
+
+    @Column(name = "role", nullable = false)
+    private int role = 1;
+
 }

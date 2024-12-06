@@ -92,6 +92,19 @@
                             </li>
                         </c:forEach>
                     </ul>
+
+                    <div class="mt-3">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="loaiDichVu" id="doiHang" value="DoiHang" required>
+                            <label class="form-check-label" for="doiHang">Đổi hàng</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="loaiDichVu" id="traHang" value="TraHang" required>
+                            <label class="form-check-label" for="traHang">Trả hàng</label>
+                        </div>
+                    </div>
+
+
                     <div class="mt-3">
                         <a href="/doi-tra/chi-tiet?id=${hoaDon.id}" class="btn btn-warning">Quay Lại</a>
                         <button type="button" class="btn btn-success" onclick="showReasonModal(event)">Tiếp Tục</button>
@@ -152,16 +165,94 @@
     }
     function showReasonModal(event) {
         event.preventDefault();
-        const modal = new bootstrap.Modal(document.getElementById('reasonModal'));
-        modal.show();
+        const selectedOption = document.querySelector('input[name="loaiDichVu"]:checked');
+        if (!selectedOption) {
+            alert("Vui lòng chọn loại dịch vụ!");
+            return;
+        }
+
+        const loaiDichVu = selectedOption.value;
+        if (loaiDichVu === "TraHang") {
+            const modal = new bootstrap.Modal(document.getElementById('reasonModal'));
+            modal.show();
+        } else if (loaiDichVu === "DoiHang") {
+            const modal = new bootstrap.Modal(document.getElementById('reasonModal'));
+            modal.show();
+        }
     }
+
     function confirmReason() {
+
         const selectedReason = document.querySelector('input[name="reason"]:checked');
         if (selectedReason) {
             document.getElementById('lyDoDetail').value = selectedReason.value;
             document.getElementById('reasonForm').submit(); // Submit form
         } else {
             alert('Vui lòng chọn lý do!');
+        }
+
+        const selectedOption = document.querySelector('input[name="loaiDichVu"]:checked');
+        if (!selectedOption) {
+            alert("Vui lòng chọn loại dịch vụ!");
+            return;
+        }
+
+        const loaiDichVu = selectedOption.value;
+
+        if (loaiDichVu === "TraHang") {
+            // Hiển thị modal chọn lý do trả hàng
+            document.getElementById("reasonForm").action = "/doi-tra/luu-thong-tin";
+            document.getElementById("reasonForm").submit();
+        } else if (loaiDichVu === "DoiHang") {
+            // Gửi form đổi hàng trực tiếp
+            document.getElementById("reasonForm").action = "/doi-tra/luu-thong-tin-doi-hang";
+            document.getElementById("reasonForm").submit();
+        }
+    }
+
+
+    function handleContinue() {
+        const selectedOption = document.querySelector('input[name="loaiDichVu"]:checked');
+        if (!selectedOption) {
+            alert("Vui lòng chọn loại dịch vụ!");
+            return;
+        }
+
+        const loaiDichVu = selectedOption.value;
+
+        if (loaiDichVu === "TraHang") {
+            const formData = new FormData();
+            formData.append("hoaDonId", hoaDonId);  // Lấy hoaDonId từ đâu đó
+            formData.append("lyDo", lyDo);          // Tương tự cho lý do
+
+            // Gửi yêu cầu POST cho phần "TraHang"
+            fetch('/doi-tra/luu-thong-tin', {
+                method: 'POST',
+                body: formData
+            }).then(response => {
+                if (response.ok) {
+                    window.location.href = response.url; // Chuyển hướng đến URL trả về
+                } else {
+                    alert("Có lỗi xảy ra khi gửi yêu cầu đổi trả!");
+                }
+            }).catch(error => console.error("Error:", error));
+
+        } else if (loaiDichVu === "DoiHang") {
+            const formData = new FormData();
+            formData.append("hoaDonId", hoaDonId);  // Lấy hoaDonId từ đâu đó
+            formData.append("lyDo", lyDo);          // Tương tự cho lý do
+
+            // Gửi yêu cầu POST cho phần "DoiHang"
+            fetch('/doi-tra/doi-hang', {
+                method: 'POST',  // Đảm bảo sử dụng phương thức POST
+                body: formData  // Dữ liệu được gửi qua POST
+            }).then(response => {
+                if (response.ok) {
+                    window.location.href = response.url;
+                } else {
+                    alert("Có lỗi xảy ra khi gửi yêu cầu đổi hàng!");
+                }
+            }).catch(error => console.error("Error:", error));
         }
     }
 
