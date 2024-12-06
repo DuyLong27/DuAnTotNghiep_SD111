@@ -23,12 +23,11 @@
         .input-group .btn {
             white-space: nowrap;
         }
-        /* CSS cho thông báo */
         #successMessage {
-            position: fixed; /* Sử dụng fixed để thông báo không di chuyển khi cuộn */
-            top: 20px; /* Cách mép trên 20px */
-            right: 20px; /* Cách mép bên phải 20px */
-            z-index: 1050; /* Đảm bảo thông báo nằm trên các phần tử khác */
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
         }
     </style>
 </head>
@@ -56,13 +55,15 @@
             </select>
         </form>
         <c:if test="${sessionScope.role == 0}">
-            <form method="post" action="/thuoc-tinh/add" class="d-flex">
-                <input type="hidden" name="entity" value="${param.entity}"/>
+            <form method="post" action="/thuoc-tinh/add" class="d-flex" id="attributeForm">
+                <input type="hidden" name="entity" value="${param.entity}" />
                 <div class="input-group">
-                    <input type="text" name="propertyName" id="propertyName" class="form-control" placeholder="Tên thuộc tính mới" required/>
+                    <input type="text" name="propertyName" id="propertyName" class="form-control" placeholder="Tên thuộc tính mới" required />
                     <button type="submit" class="btn btn-create">Thêm Thuộc Tính</button>
                 </div>
+                <small id="validationError" class="text-danger"></small>
             </form>
+
         </c:if>
     </div>
 
@@ -82,7 +83,7 @@
                 <td>${item.ten}</td>
                 <td>
                     <c:if test="${sessionScope.khachHang.role == 0}">
-                        <form action="/thuoc-tinh/update" method="post" class="d-inline">
+                        <form action="/thuoc-tinh/update" method="post" class="d-inline updateForm">
                             <input type="hidden" name="entity" value="${entity}"/>
                             <input type="hidden" name="id" value="${item.id}"/>
                             <input type="text" name="propertyName" value="${item.ten}" class="form-control d-inline-block w-50" required/>
@@ -95,11 +96,6 @@
                                    class="form-control d-inline-block w-50" disabled/>
                         </form>
                     </c:if>
-                        <%--                    <form action="/thuoc-tinh/delete" method="post" class="d-inline">--%>
-                        <%--                        <input type="hidden" name="entity" value="${entity}"/>--%>
-                        <%--                        <input type="hidden" name="id" value="${item.id}"/>--%>
-                        <%--&lt;%&ndash;            <button onclick="return confirm('Bạn có chắc muốn xóa?')" type="submit" class="btn btn-sm btn-danger">Xóa</button>&ndash;%&gt;--%>
-                        <%--                    </form>--%>
                 </td>
             </tr>
         </c:forEach>
@@ -138,15 +134,44 @@
     </nav>
 </div>
 <script>
-    // Ẩn thông báo sau 3 giây
     window.onload = function() {
         var successMessage = document.getElementById("successMessage");
         if (successMessage) {
             setTimeout(function() {
                 successMessage.style.display = 'none';
-            }, 3000); // 3 giây
+            }, 3000);
         }
     };
+
+    document.querySelector('#attributeForm').addEventListener('submit', function (e) {
+        const propertyName = document.querySelector('#propertyName').value.trim();
+        const regex = /^[a-zA-Z0-9\sÀ-ỹà-ỹ]+$/;
+
+        if (propertyName.length < 3 || propertyName.length > 20) {
+            e.preventDefault();
+            alert('Tên thuộc tính phải từ 3 đến 20 ký tự!');
+        } else if (!regex.test(propertyName)) {
+            e.preventDefault();
+            alert('Tên thuộc tính không được chứa ký tự đặc biệt!');
+        }
+    });
+
+    document.querySelectorAll('.updateForm').forEach(function(form) {
+        form.addEventListener('submit', function(e) {
+            const propertyName = form.querySelector('input[name="propertyName"]').value.trim();
+            const regex = /^[a-zA-Z0-9\sÀ-ỹà-ỹ]+$/;
+
+            if (propertyName.length < 3 || propertyName.length > 20) {
+                e.preventDefault();
+                alert('Tên thuộc tính phải từ 3 đến 20 ký tự!');
+            } else if (!regex.test(propertyName)) {
+                e.preventDefault();
+                alert('Tên thuộc tính không được chứa ký tự đặc biệt!');
+            }
+        });
+    });
+
+
 </script>
 </body>
 </html>

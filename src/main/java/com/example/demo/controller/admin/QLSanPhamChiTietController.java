@@ -4,12 +4,14 @@ import com.example.demo.entity.SanPhamChiTiet;
 import com.example.demo.repository.*;
 import com.example.demo.utils.QRCodeGenerator;
 import com.google.zxing.WriterException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -89,9 +91,13 @@ public class QLSanPhamChiTietController {
 
 
     @PostMapping("/add")
-    public String addSanPhamChiTiet(@ModelAttribute SanPhamChiTiet sanPhamChiTiet,
+    public String addSanPhamChiTiet(@Valid @ModelAttribute SanPhamChiTiet sanPhamChiTiet,
+                                    BindingResult bindingResult,
                                     @RequestParam("imageFile") MultipartFile imageFile,
                                     RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            return "admin/ql_san_pham_chi_tiet/add";
+        }
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MONTH, 12);
         sanPhamChiTiet.setNgayHetHan(calendar.getTime());
@@ -110,6 +116,8 @@ public class QLSanPhamChiTietController {
                 sanPhamChiTiet.setHinhAnh(fileName);
             } catch (IOException e) {
                 e.printStackTrace();
+                redirectAttributes.addFlashAttribute("message", "Lỗi tải ảnh lên!");
+                return "redirect:/spct/index";
             }
         }
         sanPhamChiTietRepo.save(sanPhamChiTiet);
@@ -128,9 +136,13 @@ public class QLSanPhamChiTietController {
 //    }
 
     @PostMapping("/update")
-    public String updateSanPhamChiTiet(@ModelAttribute SanPhamChiTiet sanPhamChiTiet,
+    public String updateSanPhamChiTiet(@Valid @ModelAttribute SanPhamChiTiet sanPhamChiTiet,
+                                       BindingResult bindingResult,
                                        @RequestParam("imageFile") MultipartFile imageFile,
                                        RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            return "admin/ql_san_pham_chi_tiet/update";
+        }
         SanPhamChiTiet existingProduct = sanPhamChiTietRepo.findById(sanPhamChiTiet.getId()).orElse(null);
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MONTH, 12);
