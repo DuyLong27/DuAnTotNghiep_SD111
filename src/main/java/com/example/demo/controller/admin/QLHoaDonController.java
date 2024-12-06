@@ -498,5 +498,85 @@ public class QLHoaDonController {
         return "admin/ql_hoa_don/error";
     }
 
+    @PostMapping("/doi-hang/{id}")
+    public String doiHang(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+        HoaDon hoaDon = hoaDonRepo.findById(id).orElse(null);
+        if (hoaDon == null) {
+            redirectAttributes.addFlashAttribute("error", "Không tìm thấy hóa đơn!");
+            return "redirect:/hoa-don/detail/" + id;
+        }
+
+        List<DoiTraChiTiet> doiTraChiTietList = doiTraChiTietRepo.findByDoiTra_HoaDon_Id(id);
+        if (doiTraChiTietList.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Không có sản phẩm cần đổi trong hóa đơn!");
+            return "redirect:/hoa-don/detail/" + id;
+        }
+
+        int diemHoan = 0;
+        int diemCongThem = 0;
+
+        for (DoiTraChiTiet doiTraChiTiet : doiTraChiTietList) {
+            SanPhamChiTiet sanPhamChiTiet = doiTraChiTiet.getSanPhamChiTiet();
+
+            sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() + doiTraChiTiet.getSoLuong());
+            sanPhamChiTietRepo.save(sanPhamChiTiet);
+
+            HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietRepo.findByHoaDonAndSanPhamChiTiet(hoaDon, sanPhamChiTiet);
+            if (hoaDonChiTiet != null) {
+                int newSoLuong = hoaDonChiTiet.getSo_luong() - doiTraChiTiet.getSoLuong();
+                hoaDonChiTiet.setSo_luong(newSoLuong);
+                hoaDonChiTietRepo.save(hoaDonChiTiet);
+
+                if (newSoLuong <= 0) {
+                    hoaDonChiTietRepo.delete(hoaDonChiTiet);
+                }
+            }
+
+            diemHoan += (doiTraChiTiet.getSoLuong() * sanPhamChiTiet.getGiaBan()) / 10000;
+        }
+
+        KhachHang khachHang = hoaDon.getKhachHang();
+        if (khachHang.getDiemTichLuy() >= diemHoan) {
+            khachHang.setDiemTichLuy(khachHang.getDiemTichLuy() - diemHoan);
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Khách hàng không có đủ điểm tích lũy để đổi hàng!");
+            return "redirect:/hoa-don/detail/" + id;
+        }
+
+        List<DoiSanPham> doiSanPhamList = doiSanPhamRepo.findByDoiTra_HoaDon_Id(id);
+        for (DoiSanPham doiSanPham : doiSanPhamList) {
+            SanPhamChiTiet sanPhamMoi = doiSanPham.getSanPhamChiTiet();
+
+            if (sanPhamMoi.getSoLuong() < doiSanPham.getSoLuong()) {
+                redirectAttributes.addFlashAttribute("error", "Sản phẩm không đủ số lượng trong kho!");
+                return "redirect:/hoa-don/detail/" + id;
+            }
+
+            sanPhamMoi.setSoLuong(sanPhamMoi.getSoLuong() - doiSanPham.getSoLuong());
+            sanPhamChiTietRepo.save(sanPhamMoi);
+
+            HoaDonChiTiet hoaDonChiTietMoi = new HoaDonChiTiet();
+            hoaDonChiTietMoi.setHoaDon(hoaDon);
+            hoaDonChiTietMoi.setSanPhamChiTiet(sanPhamMoi);
+            hoaDonChiTietMoi.setSo_luong(doiSanPham.getSoLuong());
+            hoaDonChiTietMoi.setGia_san_pham(sanPhamMoi.getGiaBan());
+            hoaDonChiTietRepo.save(hoaDonChiTietMoi);
+
+            diemCongThem += (doiSanPham.getSoLuong() * sanPhamMoi.getGiaBan()) / 10000;
+        }
+
+        khachHang.setDiemTichLuy(khachHang.getDiemTichLuy() + diemCongThem);
+        khachHangRepo.save(khachHang);
+
+        hoaDon.setTinh_trang(13);
+        hoaDonRepo.save(hoaDon);
+
+        ThoiGianDonHang thoiGianDonHang = thoiGianDonHangRepo.findByHoaDon_Id(id);
+        thoiGianDonHang.setDaHoanTra(LocalDateTime.now());
+        thoiGianDonHangRepo.save(thoiGianDonHang);
+
+        redirectAttributes.addFlashAttribute("message", "Đổi hàng thành công! Điểm tích lũy đã được cập nhật.");
+        return "redirect:/hoa-don/detail/" + id;
+    }
 
 }

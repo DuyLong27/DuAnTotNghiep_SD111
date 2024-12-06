@@ -94,12 +94,12 @@ public class TrangChuController {
 
         Pageable pageable = PageRequest.of(0, 4);
         List<Object[]> topSellingProducts = hoaDonChiTietRepository.findTopSellingProducts(pageable);
-
         List<SanPhamChiTiet> bestSellers = topSellingProducts.stream()
                 .map(obj -> (SanPhamChiTiet) obj[0])
                 .collect(Collectors.toList());
 
         List<SanPhamChiTiet> allProducts = sanPhamChiTietRepository.findAll();
+        List<SanPhamChiTiet> newestProducts = sanPhamChiTietRepository.findByOrderByNgayTaoDesc(pageable);
 
         List<KhuyenMai> khuyenMais = khuyenMaiRepository.findAll();
         List<KhuyenMai> validKhuyenMais = khuyenMais.stream()
@@ -107,6 +107,7 @@ public class TrangChuController {
                 .collect(Collectors.toList());
 
         model.addAttribute("bestSellers", bestSellers);
+        model.addAttribute("newestProducts", newestProducts);
         model.addAttribute("validKhuyenMais", validKhuyenMais);
         model.addAttribute("allProducts", allProducts);
 

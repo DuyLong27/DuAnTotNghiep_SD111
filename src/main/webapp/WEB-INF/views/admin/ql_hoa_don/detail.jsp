@@ -466,7 +466,7 @@
         </c:if>
         <c:if test="${hoaDon.tinh_trang == 13}">
             <div class="card mb-4">
-                <div class="card-header">Sản phẩm đổi trả</div>
+                <div class="card-header">Sản phẩm đã đổi trả</div>
                 <div class="card-body">
                     <table class="table table-striped">
                         <thead>
@@ -505,6 +505,48 @@
                     </table>
                 </div>
             </div>
+            <c:if test="${doiTra.loaiDichVu == 1}">
+            <div class="card mb-4">
+                <div class="card-header">Sản phẩm đã đổi lấy</div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Hình ảnh</th>
+                            <th>Tên Sản Phẩm</th>
+                            <th>Giá</th>
+                            <th>Số lượng</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <c:forEach var="doiTraChiTiet" items="${doiSanPhams}">
+                            <tr>
+                                <td><img style="width: 90px" src="${pageContext.request.contextPath}/uploads/${doiTraChiTiet.sanPhamChiTiet.hinhAnh}"></td>
+                                <td>${doiTraChiTiet.sanPhamChiTiet.sanPham.ten}</td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${doiTraChiTiet.giaSanPham == doiTraChiTiet.sanPhamChiTiet.giaBan}">
+                                            ${doiTraChiTiet.giaSanPham} VNĐ
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span style="text-decoration: line-through; color: gray;">
+                                                    ${doiTraChiTiet.sanPhamChiTiet.giaBan} VNĐ
+                                            </span>
+                                            <br>
+                                            <span style="color: green;">
+                                                    ${doiTraChiTiet.giaSanPham} VNĐ
+                                            </span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td>${doiTraChiTiet.soLuong}</td>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            </c:if>
         </c:if>
         <c:if test="${hoaDon.phuongThucVanChuyen != null}">
             <p class="text-end" style="color: #0B745E">
@@ -816,9 +858,16 @@
                 <button type="button" class="btn btn-secondary-outline" data-bs-toggle="modal" data-bs-target="#confirmationModalPending2">
                     Quay về chờ xác nhận
                 </button>
+                <c:if test="${doiTra.loaiDichVu == 1}">
+                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmationModalReturnItem12">
+                        Đổi trả
+                    </button>
+                </c:if>
+                <c:if test="${doiTra.loaiDichVu == 0}">
                 <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmationModalReturnItem">
                     Đổi trả
                 </button>
+                </c:if>
             </div>
         </div>
     </div>
@@ -839,6 +888,27 @@
                 <form action="/hoa-don/cap-nhat-tinh-trang" method="post" id="confirmationFormPending">
                     <input type="hidden" name="id" value="${hoaDon.id}" />
                     <button type="submit" name="tinhTrangMoi" value="11" class="btn btn-success">Xác nhận</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="confirmationModalReturnItem12" tabindex="-1" aria-labelledby="confirmationModalReturnItemLabel12" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalReturnItemLabel12">Xác nhận hành động</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Hoàn thành đổi trả cho đơn hàng <br>
+                Hãy kiểm tra kỹ giao dịch thanh toán
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary-outline" data-bs-dismiss="modal">Hủy</button>
+                <form action="/hoa-don/doi-hang/${hoaDon.id}" method="post" id="confirmationFormReturnItem12">
+                    <button type="submit" class="btn btn-success">Xác nhận</button>
                 </form>
             </div>
         </div>

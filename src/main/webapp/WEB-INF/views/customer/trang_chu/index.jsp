@@ -597,10 +597,8 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
 <script>
-    <!-- Khởi tạo AOS -->
     AOS.init();
 
-    // Hiển thị nút "back-to-top" khi cuộn xuống
     window.onscroll = function () {
         if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
             document.getElementById("back-to-top").style.display = "block";
@@ -609,31 +607,49 @@
         }
     };
 
-    // Xử lý sự kiện click cho nút "back-to-top"
     document.getElementById("back-to-top").addEventListener("click", function () {
         window.scrollTo({top: 0, behavior: 'smooth'});
     });
 
-    // Lưu vị trí cuộn trước khi gửi form
+    document.querySelectorAll('.btn-close').forEach(btnClose => {
+        btnClose.addEventListener('click', function(event) {
+            event.preventDefault();
+
+            sessionStorage.setItem('scrollPosition', window.scrollY);
+
+            window.location.href = this.getAttribute('href');
+        });
+    });
+
+    window.onload = function() {
+        const scrollPosition = sessionStorage.getItem('scrollPosition');
+        if (scrollPosition) {
+            setTimeout(function() {
+                window.scrollTo({
+                    top: scrollPosition,
+                    behavior: 'smooth'
+                });
+                sessionStorage.removeItem('scrollPosition');
+            }, 100);
+        }
+    };
+
     document.querySelectorAll('form').forEach(form => {
         form.addEventListener('submit', function(event) {
-            // Lưu lại vị trí cuộn trước khi gửi form
             sessionStorage.setItem('scrollPosition', window.scrollY);
         });
     });
 
-    // Sau khi trang tải lại, phục hồi vị trí cuộn với hiệu ứng mượt mà
     window.onload = function() {
         const scrollPosition = sessionStorage.getItem('scrollPosition');
         if (scrollPosition) {
-            // Thêm một khoảng delay nhỏ để đảm bảo trang tải hoàn toàn
             setTimeout(function() {
                 window.scrollTo({
                     top: scrollPosition,
-                    behavior: 'smooth' // Cuộn mượt mà
+                    behavior: 'smooth'
                 });
-                sessionStorage.removeItem('scrollPosition');  // Xóa vị trí cuộn sau khi phục hồi
-            }, 100); // 100ms delay (có thể điều chỉnh thêm nếu cần)
+                sessionStorage.removeItem('scrollPosition');
+            }, 100);
         }
     };
 
