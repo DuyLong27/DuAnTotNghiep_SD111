@@ -35,12 +35,21 @@
             margin: 0;
         }
 
-        /* CSS cho thông báo */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
         #successMessage {
-            position: fixed; /* Sử dụng fixed để thông báo không di chuyển khi cuộn */
-            top: 20px; /* Cách mép trên 20px */
-            right: 20px; /* Cách mép bên phải 20px */
-            z-index: 1050; /* Đảm bảo thông báo nằm trên các phần tử khác */
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
         }
     </style>
 </head>
@@ -485,12 +494,12 @@
 
     const editProductModal = document.getElementById('editProductModal');
     editProductModal.addEventListener('show.bs.modal', (event) => {
-        const button = event.relatedTarget; // Button that triggered the modal
+        const button = event.relatedTarget;
         const id = button.getAttribute('data-id');
         const ma = button.getAttribute('data-ma');
         const soLuong = button.getAttribute('data-soLuong');
         const giaBan = button.getAttribute('data-giaBan');
-        const sanPhamId = button.getAttribute('data-sanPhamId'); // ID sản phẩm chính
+        const sanPhamId = button.getAttribute('data-sanPhamId');
         const loaiCaPheId = button.getAttribute('data-loaiCaPheId');
         const canNangId = button.getAttribute('data-canNangId');
         const loaiHatId = button.getAttribute('data-loaiHatId');
@@ -499,7 +508,6 @@
         const huongViId = button.getAttribute('data-huongViId');
         const thuongHieuId = button.getAttribute('data-thuongHieuId');
         const tinhTrang = button.getAttribute('data-tinhTrang');
-
         const editProductId = editProductModal.querySelector('#editProductId');
         const editMa = editProductModal.querySelector('#editMa');
         const editSoLuong = editProductModal.querySelector('#editSoLuong');
@@ -512,7 +520,6 @@
         const editMucDoRang = editProductModal.querySelector('#updatemucDoRang');
         const editHuongVi = editProductModal.querySelector('#updatehuongVi');
         const editThuongHieu = editProductModal.querySelector('#updatethuongHieu');
-
         editProductId.value = id;
         editMa.value = ma;
         editSoLuong.value = soLuong;
@@ -525,58 +532,44 @@
         editMucDoRang.value = mucDoRangId;
         editHuongVi.value = huongViId;
         editThuongHieu.value = thuongHieuId;
-
-        // Đặt tình trạng sản phẩm
         if (tinhTrang == 1) {
             document.getElementById('updateconHang').checked = true;
         } else {
             document.getElementById('updatehetHang').checked = true;
         }
-
-        // Hiển thị thông tin sản phẩm
         const selectedSanPham = editSanPham.options[editSanPham.selectedIndex];
         const productPrice = selectedSanPham.getAttribute('data-price');
-
-        // Hiển thị ID sản phẩm chính
-        document.getElementById('editProductIdDisplay').innerText = 'ID Sản Phẩm: ' + sanPhamId; // Sử dụng sanPhamId
+        document.getElementById('editProductIdDisplay').innerText = 'ID Sản Phẩm: ' + sanPhamId;
         document.getElementById('editProductName').innerText = 'Tên Sản Phẩm: ' + selectedSanPham.text;
         document.getElementById('editProductPrice').innerText = 'Giá Ban Đầu: ' + productPrice;
-
-        // Hiển thị thông tin chi tiết
         document.getElementById('editProductInfo').style.display = 'block';
     });
 
 
 
 
-    // Ẩn thông báo sau 3 giây
     window.onload = function () {
         var successMessage = document.getElementById("successMessage");
         if (successMessage) {
             setTimeout(function () {
                 successMessage.style.display = 'none';
-            }, 3000); // 3 giây
+            }, 3000);
         }
     };
 
 
 
     document.addEventListener("DOMContentLoaded", function () {
-        // Lấy giá trị query parameter
         const urlParams = new URLSearchParams(window.location.search);
         const productId = urlParams.get('id');
         const openModal = urlParams.get('openModal');
-
         if (openModal === 'true' && productId) {
-            // Tự động mở modal
             $('#addProductModal').modal('show');
-
-            // Chọn sản phẩm theo ID
             var select = document.getElementById("sanPham");
             for (let i = 0; i < select.options.length; i++) {
                 if (select.options[i].value == productId) {
-                    select.selectedIndex = i; // Chọn sản phẩm
-                    displayProductInfo();  // Hiển thị thông tin sản phẩm đã chọn
+                    select.selectedIndex = i;
+                    displayProductInfo();
                     break;
                 }
             }
@@ -591,7 +584,7 @@
             .then(response => {
                 if (response.ok) {
                     alert('Kiểm tra thành công!');
-                    window.location.reload();  // Reload trang để cập nhật thay đổi
+                    window.location.reload();
                 } else {
                     alert('Có lỗi xảy ra, vui lòng thử lại!');
                 }
@@ -601,6 +594,41 @@
                 alert('Có lỗi xảy ra, vui lòng thử lại!');
             });
     });
+
+
+    function validateForm(e, formId) {
+        const form = document.getElementById(formId);
+        const ma = form.querySelector("input[name='ma']").value;
+        const giaBan = form.querySelector("input[name='giaBan']").value;
+        const soLuong = form.querySelector("input[name='soLuong']").value;
+        let errors = [];
+        if (ma.length < 3 || ma.length > 20) {
+            errors.push("Mã sản phẩm phải từ 3 đến 20 ký tự!");
+        }
+        if (!/^[a-zA-Z0-9\sÀ-ỹà-ỹ]+$/.test(ma)) {
+            errors.push("Mã sản phẩm không được chứa ký tự đặc biệt!");
+        }
+        if (!giaBan || parseInt(giaBan) < 60000) {
+            errors.push("Giá bán phải lớn hơn 60000!");
+        }
+        if (!soLuong || parseInt(soLuong) <= 0) {
+            errors.push("Số lượng phải lớn hơn 0!");
+        }
+        if (errors.length > 0) {
+            e.preventDefault();
+            alert(errors.join("\n"));
+        }
+    }
+    document.getElementById("productForm").addEventListener("submit", function (e) {
+        validateForm(e, "productForm");
+    });
+    document.getElementById("editProductForm").addEventListener("submit", function (e) {
+        validateForm(e, "editProductForm");
+    });
+
+
+
+
 
 </script>
 </body>

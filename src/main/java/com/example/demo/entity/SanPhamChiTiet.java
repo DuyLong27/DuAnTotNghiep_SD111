@@ -2,6 +2,9 @@ package com.example.demo.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +24,8 @@ public class SanPhamChiTiet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_san_pham_chi_tiet")
     private Integer id;
-
+    @Size(min = 3, max = 20, message = "Mã sản phẩm phải từ 3 đến 20 ký tự!")
+    @Pattern(regexp = "^[a-zA-Z0-9\\s]+$", message = "Mã sản phẩm không được chứa ký tự đặc biệt!")
     @Column(name = "ma_san_pham_chi_tiet")
     private String ma;
 
@@ -38,8 +42,10 @@ public class SanPhamChiTiet {
     private String danhGia;
 
     @Column(name = "so_luong")
+    @Min(value = 1, message = "Số lượng phải lớn hơn 0")
     private int soLuong;
 
+    @Min(value = 60000, message = "Giá bán phải lớn hơn hoặc bằng 60000!")
     @Column(name = "gia_ban")
     private int giaBan;
 
