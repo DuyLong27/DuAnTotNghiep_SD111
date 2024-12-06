@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!doctype html>
 <head>
     <meta charset="UTF-8">
@@ -56,10 +57,12 @@
     <c:forEach items="${data}" var="item">
         <tr>
             <td>${item.soHoaDon}</td>
-            <td>${item.khachHang.tenKhachHang}</td>
+            <td>${empty item.khachHang.tenKhachHang ? "Khách vãng lai" : item.khachHang.tenKhachHang}</td>
             <td>${item.tongTien}</td>
-            <td>${item.ghiChu}</td>
-            <td>${item.ngayTao}</td>
+            <td>${empty item.ghiChu ? "Không" : item.ghiChu}</td>
+            <td>
+                <fmt:formatDate value="${item.ngayTao}" pattern="dd/MM/yyyy" />
+            </td>
             <td>${item.tinh_trang == 4 ? "Hoàn Thành" : (item.tinh_trang == 13 ? "Hoàn Thành" : "Đã Hủy")}</td>
             <td>
                 <a href="detail/${item.id}" class="btn btn-outline-custom">

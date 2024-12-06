@@ -71,9 +71,9 @@
         <tr>
             <th scope="col" style="text-align: center; color: darkorchid">Số hóa đơn hoàn thành</th>
             <th scope="col" style="text-align: center; color: darkorchid">Số hóa đơn hủy</th>
+            <th scope="col" style="text-align: center; color: darkorchid">Số hóa đơn đổi trả</th>
             <th scope="col" style="text-align: center; color: darkorchid">Sản phẩm bán ra</th>
             <th scope="col" style="text-align: center; color: darkorchid">Sản phẩm bán chạy nhất</th>
-            <th scope="col" style="text-align: center; color: darkorchid">TB doanh thu một ngày</th>
             <th scope="col" style="text-align: center; color: darkorchid">Tổng doanh thu tháng</th>
         </tr>
         </thead>
@@ -81,9 +81,9 @@
         <tr>
             <td class="text-center"><p><strong>${completedInvoices}</strong></p></td>
             <td class="text-center"><p><strong>${cancelledInvoices}</strong></p></td>
+            <td class="text-center"><p><strong>${doiTra}</strong></p></td>
             <td class="text-center"><p><strong>${totalItemsSold}</strong></p></td>
             <td class="text-center"><p><strong>${bestProductName} - Đã bán ${bestProductQuantity}</strong></p></td>
-            <td class="text-center"><p><strong>${averageDailyRevenue}</strong></p></td>
             <td class="text-center"><p><strong>${totalRevenue} VND</strong></p></td>
         </tr>
 

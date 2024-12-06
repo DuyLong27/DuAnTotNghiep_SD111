@@ -33,7 +33,6 @@ public class QLThongKeController {
 
     @GetMapping("/hien-thi")
     public String showRevenueReport(Model model) {
-        // Thời gian thực để hiển thị
         LocalDateTime currentTime = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
         String formattedCurrentTime = currentTime.format(formatter);
@@ -53,8 +52,6 @@ public class QLThongKeController {
 
         // Tổng số lượng hóa đơn hủy từ startDate đến endDate
         Integer cancelledInvoices = hoaDonRepo.tinhTongSoHoaDonHuy(startDate, endDate);
-
-        // Sản phẩm bán chạy nhất trong khoảng thời gian
         List<Object[]> bestSellingProducts = sanPhamChiTietRepo.findBestSellingProduct(startDate, endDate);
         String bestProductName = bestSellingProducts.isEmpty() ? "Không có" : (String) bestSellingProducts.get(0)[0];
         Integer bestProductQuantity = bestSellingProducts.isEmpty() ? 0 : ((Long) bestSellingProducts.get(0)[1]).intValue();
@@ -77,13 +74,9 @@ public class QLThongKeController {
             totalDailyRevenue += revenue; // Cộng dồn tổng doanh thu
         }
 
-        // Tính trung bình doanh thu mỗi ngày
-        double averageDailyRevenue = dailyRevenue.size() > 0 ? (double) totalDailyRevenue / dailyRevenue.size() : 0;
+        // Tổng số lượng hóa đơn hoàn thành từ startDate đến endDate
+        Integer doiTra = hoaDonRepo.tinhTongSoHoaDonDoiTra(startDate, endDate);
 
-        // Làm tròn trung bình doanh thu (ép kiểu sang int)
-        int roundedAverageRevenue = (int) averageDailyRevenue;
-
-        // Truyền dữ liệu vào model
         model.addAttribute("totalRevenue", totalRevenue);
         model.addAttribute("completedInvoices", completedInvoices);
         model.addAttribute("cancelledInvoices", cancelledInvoices);
@@ -92,7 +85,7 @@ public class QLThongKeController {
         model.addAttribute("dailyRevenue", dailyRevenue);
         model.addAttribute("bestProductName", bestProductName);
         model.addAttribute("bestProductQuantity", bestProductQuantity);
-        model.addAttribute("averageDailyRevenue", roundedAverageRevenue);
+        model.addAttribute("doiTra", doiTra);
 
         return "admin/bao_cao/DoanhThu"; // Trả về view
     }

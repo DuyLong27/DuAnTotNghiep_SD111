@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!doctype html>
 <head>
     <meta charset="UTF-8">
@@ -11,15 +12,21 @@
 <jsp:include page="../layout.jsp"/>
 <body>
 <div class="container mt-3">
-    <p><strong>Tên khách hàng:</strong> ${hoaDon.khachHang.tenKhachHang}</p>
-    <p><strong>Số hóa đơn:</strong> ${hoaDon.soHoaDon}</p>
-    <p><strong>Số điện thoại:</strong> ${hoaDon.khachHang.soDienThoai}</p>
-    <p><strong>Địa chỉ:</strong> ${hoaDon.diaChi}</p>
-    <p><strong>Ghi chú:</strong> ${hoaDon.ghiChu}</p>
-    <p><strong>Phương thức vận chuyển:</strong> ${hoaDon.phuongThucVanChuyen}</p>
-    <p><strong>Ngày tạo:</strong> ${hoaDon.ngayTao}</p>
-    <p><strong>Phương thức thanh toán:</strong> ${hoaDon.phuong_thuc_thanh_toan}</p>
-    <p><strong>Tình trạng:</strong> ${hoaDon.tinh_trang == 4 ? "Hoàn Thành" : (hoaDon.tinh_trang == 13 ? "Hoàn Thành" : "Đã Hủy")}</p>
+    <div class="row">
+        <div class="col-md-6">
+            <p><strong>Tên khách hàng:</strong> ${empty hoaDon.khachHang.tenKhachHang ? "Khách vãng lai" : hoaDon.khachHang.tenKhachHang}</p>
+            <p><strong>Số hóa đơn:</strong> ${hoaDon.soHoaDon}</p>
+            <p><strong>Số điện thoại:</strong> ${empty hoaDon.khachHang.soDienThoai ? "Không" : hoaDon.khachHang.soDienThoai}</p>
+            <p><strong>Địa chỉ:</strong> ${empty hoaDon.diaChi ? "Mua tại quầy" : hoaDon.diaChi}</p>
+        </div>
+        <div class="col-md-6">
+            <p><strong>Ghi chú:</strong> ${empty hoaDon.ghiChu ? "Không" : hoaDon.ghiChu}</p>
+            <p><strong>Phương thức vận chuyển:</strong> ${empty hoaDon.phuongThucVanChuyen ? "Không" : hoaDon.phuongThucVanChuyen}</p>
+            <p><strong>Ngày tạo:</strong> <fmt:formatDate value="${hoaDon.ngayTao}" pattern="dd/MM/yyyy" /></p>
+            <p><strong>Phương thức thanh toán:</strong> ${hoaDon.phuong_thuc_thanh_toan}</p>
+            <p><strong>Tình trạng:</strong> ${hoaDon.tinh_trang == 4 ? "Hoàn Thành" : (hoaDon.tinh_trang == 13 ? "Hoàn Thành" : "Đã Hủy")}</p>
+        </div>
+    </div>
 
     <h6>Chi tiết sản phẩm:</h6>
     <table class="table">

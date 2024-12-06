@@ -115,10 +115,10 @@
             </div>
             <div class="row mb-2">
                 <div class="col-md-6">
-                    <p><strong>Ngày tạo:</strong> ${nhapHang.ngayTao}</p>
+                    <p><strong>Ngày tạo:</strong> ${formattedNgayTao}</p>
                 </div>
                 <div class="col-md-6">
-                    <p><strong>Ngày nhập:</strong> ${nhapHang.ngayNhap}</p>
+                    <p><strong>Ngày nhập:</strong> ${formattedNgayNhap}</p>
                 </div>
             </div>
             <div class="row mb-2">
