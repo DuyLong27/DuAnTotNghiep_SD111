@@ -74,11 +74,8 @@ public class QLThongKeController {
             totalDailyRevenue += revenue; // Cộng dồn tổng doanh thu
         }
 
-        // Tính trung bình doanh thu mỗi ngày
-        double averageDailyRevenue = dailyRevenue.size() > 0 ? (double) totalDailyRevenue / dailyRevenue.size() : 0;
-
-        // Làm tròn trung bình doanh thu (ép kiểu sang int)
-        int roundedAverageRevenue = (int) averageDailyRevenue;
+        // Tổng số lượng hóa đơn hoàn thành từ startDate đến endDate
+        Integer doiTra = hoaDonRepo.tinhTongSoHoaDonDoiTra(startDate, endDate);
 
         model.addAttribute("totalRevenue", totalRevenue);
         model.addAttribute("completedInvoices", completedInvoices);
@@ -88,7 +85,7 @@ public class QLThongKeController {
         model.addAttribute("dailyRevenue", dailyRevenue);
         model.addAttribute("bestProductName", bestProductName);
         model.addAttribute("bestProductQuantity", bestProductQuantity);
-        model.addAttribute("averageDailyRevenue", roundedAverageRevenue);
+        model.addAttribute("doiTra", doiTra);
 
         return "admin/bao_cao/DoanhThu"; // Trả về view
     }

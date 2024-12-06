@@ -130,4 +130,7 @@ public interface HoaDonRepo extends JpaRepository<HoaDon, Integer> {
             "FROM hoa_don hd " +
             "WHERE CAST(hd.ngay_tao AS DATE) = :ngay AND hd.tinh_trang IN(4,13) ", nativeQuery = true)
     Long demSoHoaDonTheoNgayVaTinhTrang(@Param("ngay") LocalDate ngay);
+
+    @Query("SELECT COUNT(h) FROM HoaDon h WHERE h.tinh_trang = 13  AND h.ngayTao BETWEEN :startDate AND :endDate")
+    Integer tinhTongSoHoaDonDoiTra(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 }
