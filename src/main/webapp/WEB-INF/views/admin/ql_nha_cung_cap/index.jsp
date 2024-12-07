@@ -148,7 +148,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="/nha-cung-cap/add" method="post">
+                    <form action="/nha-cung-cap/add" method="post" onsubmit="return validateForm()">
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="tenNCC" class="form-label">Tên Nhà Cung Cấp</label>
@@ -183,13 +183,11 @@
                             <div class="col-md-6">
                                 <label class="form-label">Tình Trạng</label><br>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" id="tinhTrangHoatDong" name="tinhTrang"
-                                           value="1" checked>
+                                    <input class="form-check-input" type="radio" id="tinhTrangHoatDong" name="tinhTrang" value="1" checked>
                                     <label class="form-check-label" for="tinhTrangHoatDong">Hoạt Động</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" id="tinhTrangKhongHoatDong"
-                                           name="tinhTrang" value="0">
+                                    <input class="form-check-input" type="radio" id="tinhTrangKhongHoatDong" name="tinhTrang" value="0">
                                     <label class="form-check-label" for="tinhTrangKhongHoatDong">Không Hoạt Động</label>
                                 </div>
                             </div>
@@ -211,28 +209,53 @@
         document.getElementById('nguonGoc').value = nguonGoc;
         document.getElementById('tinhTrangHoatDong').checked = (tinhTrang === 1);
         document.getElementById('tinhTrangKhongHoatDong').checked = (tinhTrang === 0);
-
-        // Cập nhật action của form
         const form = document.querySelector('#addNhaCungCapModal form');
         form.action = '/nha-cung-cap/update/' + id;
     }
-
-    // Ẩn thông báo sau 3 giây
     window.onload = function () {
         var successMessage = document.getElementById("successMessage");
         if (successMessage) {
             setTimeout(function () {
                 successMessage.style.display = 'none';
-            }, 3000); // 3 giây
+            }, 3000);
         }
     };
 
-    // Hàm thiết lập lại form
     function resetForm() {
         document.querySelector('input[name="search"]').value = '';
         document.querySelector('select[name="tinhTrang"]').selectedIndex = 0;
-        // Gửi lại form để áp dụng các thay đổi
         document.forms[0].submit();
+    }
+
+
+
+
+    function validateForm() {
+        var tenNCC = document.getElementById('tenNCC').value;
+        var soDienThoai = document.getElementById('soDienThoai').value;
+        var email = document.getElementById('email').value;
+        var diaChi = document.getElementById('diaChi').value;
+        var tinhTrang = document.querySelector('input[name="tinhTrang"]:checked');
+        var tenNCCPattern = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/;
+        if (!tenNCCPattern.test(tenNCC)) {
+            alert("Tên Nhà Cung Cấp không hợp lệ.");
+            return false;
+        }
+        var phonePattern = /^0\d{9,10}$/;
+        if (!phonePattern.test(soDienThoai)) {
+            alert("Số điện thoại không hợp lệ. Phải bắt đầu bằng 0 và có từ 10-11 chữ số.");
+            return false;
+        }
+        var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        if (!emailPattern.test(email)) {
+            alert("Email không hợp lệ.");
+            return false;
+        }
+        if (diaChi.length > 50) {
+            alert("Địa chỉ không được quá 50 ký tự.");
+            return false;
+        }
+        return true;
     }
 </script>
 </body>

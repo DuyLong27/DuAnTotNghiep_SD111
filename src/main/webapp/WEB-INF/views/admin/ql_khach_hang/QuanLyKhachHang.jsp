@@ -68,7 +68,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="khachHangEmail" class="form-label">Email</label>
-                                    <input type="text" class="form-control" id="khachHangEmail" name="email" required>
+                                    <input type="email" class="form-control" id="khachHangEmail" name="email" required>
                                 </div>
                             </div>
                         </div>
@@ -83,7 +83,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="khachHangSoDienThoai" class="form-label">Số Điện thoại</label>
-                                    <input type="text" class="form-control" id="khachHangSoDienThoai"
+                                    <input type="number" class="form-control" id="khachHangSoDienThoai"
                                            name="soDienThoai" required>
                                 </div>
                             </div>
@@ -138,7 +138,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="email" class="form-label">Email</label>
-                                    <input type="text" class="form-control" id="email" name="email" required>
+                                    <input type="email" class="form-control" id="email" name="email" required>
                                 </div>
                             </div>
                         </div>
@@ -153,24 +153,8 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="soDienThoai" class="form-label">Số Điện thoại</label>
-                                    <input type="text" class="form-control" id="soDienThoai"
+                                    <input type="number" class="form-control" id="soDienThoai"
                                            name="soDienThoai" required>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="diemTichLuy" class="form-label">Điểm Tích Lũy</label>
-                                    <input type="number" class="form-control" id="diemTichLuy" name="diemTichLuy"
-                                           required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="ngayDangKy" class="form-label">Ngày Đăng Ký</label>
-                                    <input type="date" class="form-control" id="ngayDangKy" name="ngayDangKy"
-                                           required>
                                 </div>
                             </div>
                         </div>
@@ -225,8 +209,7 @@
                         <%--                    </td>--%>
                     <td>
                         <a onclick="openEditModal(${kh.idKhachHang}, '${kh.tenKhachHang}', '${kh.email}',
-                                '${kh.matKhau}', '${kh.soDienThoai}', '${kh.diaChi}', ${kh.diemTichLuy},
-                                '${kh.ngayDangKy}'
+                                '${kh.matKhau}', '${kh.soDienThoai}', '${kh.diaChi}'
                             <%--, '${kh.tinhTrang}'--%>
                                 )"
                            type="button" class="btn btn-outline-custom"><i class='bx bx-edit-alt'></i></a>
@@ -284,7 +267,7 @@
         document.getElementById('productModalLabel').innerText = title;
     }
 
-    function openEditModal(idKhachHang, tenKhachHang, email, matKhau, soDienThoai, diaChi, diemTichLuy, ngayDangKy, tinhTrang) {
+    function openEditModal(idKhachHang, tenKhachHang, email, matKhau, soDienThoai, diaChi, tinhTrang) {
         setModalTitle('Cập Nhật Thông Tin');
         document.getElementById('idKhachHang').value = idKhachHang;
         document.getElementById('tenKhachHang').value = tenKhachHang;
@@ -292,8 +275,6 @@
         document.getElementById('matKhau').value = matKhau;
         document.getElementById('soDienThoai').value = soDienThoai;
         document.getElementById('diaChi').value = diaChi;
-        document.getElementById('diemTichLuy').value = diemTichLuy;
-        document.getElementById('ngayDangKy').value = ngayDangKy;
 
         const tinhTrangRadios = document.getElementsByName('tinhTrang');
         for (let radio of tinhTrangRadios) {
@@ -312,6 +293,103 @@
 
         document.getElementById('filterSearchForm').submit();
     }
+
+    function validateName(name) {
+        const regex = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/;
+        if (!name.trim()) {
+            alert("Tên khách hàng không được để trống.");
+            return false;
+        }
+        return regex.test(name) && name.length <= 30;
+    }
+
+    function validateEmail(email) {
+        const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!email.trim()) {
+            alert("Email không được để trống.");
+            return false;
+        }
+        return regex.test(email) && email.length <= 30;
+    }
+
+    function validatePhoneNumber(phone) {
+        const regex = /^0\d{9,10}$/;
+        if (!phone.trim()) {
+            alert("Số điện thoại không được để trống.");
+            return false;
+        }
+        return regex.test(phone);
+    }
+
+    function validateAddress(address) {
+        if (!address.trim()) {
+            alert("Địa chỉ không được để trống.");
+            return false;
+        }
+        return address.length <= 100;
+    }
+
+    function validateForm() {
+        const name = document.getElementById('khachHangName').value;
+        const email = document.getElementById('khachHangEmail').value;
+        const phone = document.getElementById('khachHangSoDienThoai').value;
+        const address = document.getElementById('khachHangDiaChi').value;
+
+        if (!validateName(name)) {
+            alert("Tên khách hàng không hợp lệ.");
+            return false;
+        }
+        if (!validateEmail(email)) {
+            alert("Email không hợp lệ.");
+            return false;
+        }
+        if (!validatePhoneNumber(phone)) {
+            alert("Số điện thoại không hợp lệ.");
+            return false;
+        }
+        if (!validateAddress(address)) {
+            alert("Địa chỉ không hợp lệ.");
+            return false;
+        }
+        return true;
+    }
+
+    document.getElementById('productForm').onsubmit = function () {
+        return validateForm();
+    }
+
+    function validateUpdateForm() {
+        const name = document.getElementById('tenKhachHang').value;
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('soDienThoai').value;
+        const address = document.getElementById('diaChi').value;
+
+        if (!validateName(name)) {
+            alert("Tên khách hàng không hợp lệ.");
+            return false;
+        }
+        if (!validateEmail(email)) {
+            alert("Email không hợp lệ.");
+            return false;
+        }
+        if (!validatePhoneNumber(phone)) {
+            alert("Số điện thoại không hợp lệ.");
+            return false;
+        }
+        if (!validateAddress(address)) {
+            alert("Địa chỉ không hợp lệ.");
+            return false;
+        }
+        return true;
+    }
+
+    document.getElementById('productForm2').onsubmit = function () {
+        return validateUpdateForm();
+    };
+
+
+
+
 </script>
 
 <style>
@@ -342,6 +420,17 @@
 
     .input-group .btn {
         white-space: nowrap;
+    }
+
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type="number"] {
+        -moz-appearance: textfield;
     }
 </style>
 </body>

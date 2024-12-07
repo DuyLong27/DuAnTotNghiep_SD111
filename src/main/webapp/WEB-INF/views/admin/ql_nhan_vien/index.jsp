@@ -25,8 +25,8 @@
                     <h5>Lọc Theo Tình Trạng</h5>
                     <select name="tinhTrang" class="form-select" onchange="this.form.submit();">
                         <option value="" ${param.tinhTrang == '' ? 'selected' : ''}>Tất Cả</option>
-                        <option value="1" ${param.tinhTrang == '1' ? 'selected' : ''}>Đang làm</option>
-                        <option value="0" ${param.tinhTrang == '0' ? 'selected' : ''}>Đã nghỉ</option>
+                        <option value="1" ${param.tinhTrang == '1' ? 'selected' : ''}>Làm Việc</option>
+                        <option value="0" ${param.tinhTrang == '0' ? 'selected' : ''}>Tan Ca</option>
                     </select>
                 </div>
 
@@ -57,7 +57,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="productForm" action="/nhan-vien/add" method="post">
+                    <form id="productForm" action="/nhan-vien/add" method="post" onsubmit="return validateForm();">
                         <input type="hidden" id="nhanVienId" name="id"/>
                         <div class="row">
                             <div class="col-md-6">
@@ -88,12 +88,6 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="nhanVienNgayDiLam" class="form-label">NgayDiLam</label>
-                                    <input type="date" class="form-control" id="nhanVienNgayDiLam" name="ngayDiLam" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
                                     <label for="nhanVienChucVu" class="form-label">Chức Vụ</label>
                                     <input type="text" class="form-control" id="nhanVienChucVu" name="chucVu" required>
                                 </div>
@@ -101,13 +95,11 @@
                             <div class="col-md-6">
                                 <label class="form-label">Tình Trạng</label><br>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="tinhTrang" id="tinhTrangConHang"
-                                           value="1" required>
+                                    <input class="form-check-input" type="radio" name="tinhTrang" id="tinhTrangConHang" value="1" required>
                                     <label class="form-check-label" for="tinhTrangConHang">Làm việc</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="tinhTrang" id="tinhTrangHetHang"
-                                           value="0" required>
+                                    <input class="form-check-input" type="radio" name="tinhTrang" id="tinhTrangHetHang" value="0" required>
                                     <label class="form-check-label" for="tinhTrangHetHang">Tan ca</label>
                                 </div>
                             </div>
@@ -119,7 +111,6 @@
         </div>
     </div>
 
-    <!-- Bảng hiển thị danh sách sản phẩm -->
     <table class="table table-striped table-hover table-bordered text-center">
         <thead>
         <tr>
@@ -153,11 +144,11 @@
                     <td>${nv.chucVu}</td>
                     <td>${nv.ngayDiLam}</td>
                     <td class="${nv.tinhTrang == 1 ? 'text-success' : 'text-danger'}">
-                            ${nv.tinhTrang == 1 ? "Đang làm" : "Đã nghỉ"}
+                            ${nv.tinhTrang == 1 ? "Đang làm" : "Tan ca"}
                     </td>
                     <c:if test="${sessionScope.role == 0}">
                         <td>
-                            <a onclick="openEditModal(${nv.id}, '${nv.tenNhanVien}', '${nv.email}', '${nv.matKhau}', '${nv.soDienThoai}', '${nv.chucVu}', '${nv.ngayDiLam}', ${nv.tinhTrang})"
+                            <a onclick="openEditModal(${nv.id}, '${nv.tenNhanVien}', '${nv.email}', '${nv.matKhau}', '${nv.soDienThoai}', '${nv.chucVu}', ${nv.tinhTrang})"
                                type="button" class="btn btn-default bordervien table__logo">
                                 <i class='bx bx-edit-alt'></i>
                             </a>
@@ -216,38 +207,73 @@
         document.getElementById('productModalLabel').innerText = title;
     }
 
-    function openEditModal(id, tenNhanVien, email, matKhau, soDienThoai, chucVu, ngayDiLam, tinhTrang) {
+    function openEditModal(id, tenNhanVien, email, matKhau, soDienThoai, chucVu, tinhTrang) {
         setModalTitle('Cập Nhật Nhân Viên');
         document.getElementById('nhanVienId').value = id;
         document.getElementById('nhanVienName').value = tenNhanVien;
         document.getElementById('nhanVienEmail').value = email;
         document.getElementById('nhanVienMatKhau').value = matKhau;
         document.getElementById('nhanVienSoDienThoai').value = soDienThoai;
-        document.getElementById('nhanVienChucVu').value = chucVu;
-        document.getElementById('nhanVienNgayDiLam').value = ngayDiLam;
-
-        // Xử lý radio button tình trạng
         const tinhTrangRadios = document.getElementsByName('tinhTrang');
         for (let radio of tinhTrangRadios) {
             radio.checked = (radio.value == tinhTrang);
         }
-
-        // Cập nhật text button và action form
         document.getElementById('submitButton').innerText = 'Cập Nhật Nhân Viên';
-        document.getElementById('productForm').action = `/nhan-vien/update`; // Đổi action để gửi form cập nhật
-
-        // Mở modal bằng bootstrap
+        document.getElementById('productForm').action = `/nhan-vien/update`;
         var myModal = new bootstrap.Modal(document.getElementById('productModal'));
         myModal.show();
     }
 
     function resetFilters() {
-        // Reset các trường lọc về giá trị mặc định
         document.querySelector('select[name="tinhTrang"]').value = '';
-
-        // Gửi lại form để lấy lại danh sách sản phẩm gốc
         document.getElementById('filterSearchForm').submit();
     }
+
+
+
+
+
+    function validateForm() {
+        const tenNhanVien = document.getElementById('nhanVienName').value.trim();
+        const email = document.getElementById('nhanVienEmail').value.trim();
+        const matKhau = document.getElementById('nhanVienMatKhau').value.trim();
+        const soDienThoai = document.getElementById('nhanVienSoDienThoai').value.trim();
+        const chucVu = document.getElementById('nhanVienChucVu').value.trim();
+        const tenNhanVienRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/;
+        if (!tenNhanVien.match(tenNhanVienRegex)) {
+            alert("Tên nhân viên không chứa ký tự đặc biệt.");
+            return false;
+        }
+        if (tenNhanVien.length > 30) {
+            alert("Tên nhân viên không được quá dài (tối đa 30 ký tự).");
+            return false;
+        }
+        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        if (!email.match(emailRegex)) {
+            alert("Email không hợp lệ.");
+            return false;
+        }
+        if (email.length > 30) {
+            alert("Email không được quá dài (tối đa 30 ký tự).");
+            return false;
+        }
+        if (!/^\d{10,15}$/.test(soDienThoai)) {
+            alert("Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại từ 10 đến 15 chữ số.");
+            return false;
+        }
+        const chucVuRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/;
+        if (!chucVu.match(chucVuRegex)) {
+            alert("Chức vụ không chứa ký tự đặc biệt.");
+            return false;
+        }
+        if (chucVu.length > 30) {
+            alert("Chức vụ không được quá dài (tối đa 30 ký tự).");
+            return false;
+        }
+        return true;
+    }
+
+
 </script>
 
 <style>
@@ -255,7 +281,7 @@
 
     body {
         background-color: #f8f9fa;
-        position: relative; /* Để thông báo được căn chỉnh đúng */
+        position: relative;
     }
 
     .bordervien {
@@ -278,6 +304,15 @@
 
     .input-group .btn {
         white-space: nowrap;
+    }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type="number"] {
+        -moz-appearance: textfield;
     }
 </style>
 </body>

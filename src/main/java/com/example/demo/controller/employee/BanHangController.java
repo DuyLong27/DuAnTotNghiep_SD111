@@ -129,15 +129,18 @@ public class BanHangController {
 
     @PostMapping("/{id}/delete")
     @Transactional
-    public String deleteHoaDon(@PathVariable Integer id, Model model) {
+    public String cancelHoaDon(@PathVariable Integer id, Model model) {
+        HoaDon hoaDon = hoaDonRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Hóa đơn không tồn tại"));
+        hoaDon.setTinh_trang(14);
+        hoaDon.setGhiChu("Nhân viên vô tình tạo ra");
+        hoaDonRepository.save(hoaDon);
         List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findByHoaDonId(id);
         for (HoaDonChiTiet hoaDonChiTiet : hoaDonChiTietList) {
             SanPhamChiTiet sanPhamChiTiet = hoaDonChiTiet.getSanPhamChiTiet();
             sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() + hoaDonChiTiet.getSo_luong());
             sanPhamChiTietRepo.save(sanPhamChiTiet);
         }
-        hoaDonChiTietRepository.deleteAll(hoaDonChiTietList);
-        hoaDonRepository.deleteById(id);
         List<Integer> nextIds = hoaDonRepository.findNextId(id);
         Integer nextHoaDonId = nextIds.isEmpty() ? null : nextIds.get(0);
         if (nextHoaDonId == null) {
@@ -150,6 +153,7 @@ public class BanHangController {
                 ? "redirect:/ban-hang/" + nextHoaDonId
                 : "redirect:/ban-hang";
     }
+
 
 
     @PostMapping("/{hoaDonId}/remove-product/{sanPhamChiTietId}")
