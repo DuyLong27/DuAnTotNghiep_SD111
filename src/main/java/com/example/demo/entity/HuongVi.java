@@ -1,6 +1,8 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +20,8 @@ public class HuongVi {
     @Column(name = "id_huong_vi")
     private Integer id;
 
-
+    @Size(min = 3, max = 20, message = "Tên hương vị phải từ 3 đến 20 ký tự!")
+    @Pattern(regexp = "^[a-zA-Z0-9\\s]+$", message = "Tên hương vị không được chứa ký tự đặc biệt!")
     @Column(name = "ten_huong_vi")
     private String ten;
 }

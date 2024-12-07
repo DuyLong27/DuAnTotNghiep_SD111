@@ -265,24 +265,8 @@
                         </c:forEach>
                         </tbody>
                     </table>
-
-
-
-
-
-                    <!-- Thêm phần tử mới để hiển thị giá đã giảm -->
                     <h5 style="color: #0d6efd; font-weight: bold;">Tổng tiền: <span id="tongTien">${tongTien}</span></h5>
                     <h5 style="color: #0d6efd; font-weight: bold;">Giảm giá: <span id="discountedPrice">0 VNĐ</span></h5>
-
-
-
-
-
-
-
-
-
-
                     <form id="paymentMethodForm"
                           action="${pageContext.request.contextPath}/ban-hang/${selectedHoaDonId}/update-all-payment-method"
                           method="post" class="mb-3">
@@ -291,16 +275,12 @@
                             <select id="phuongThucThanhToan" name="phuongThucThanhToan" class="form-select" onchange="displayImage(); this.form.submit();">
                                 <option value="Tiền mặt" <c:if test="${phuongThucThanhToan == 'Tiền mặt'}">selected</c:if>>Tiền mặt</option>
                                 <option value="Chuyển khoản" <c:if test="${phuongThucThanhToan == 'Chuyển khoản'}">selected</c:if>>Chuyển khoản</option>
-                                <!-- Thêm các phương thức thanh toán khác nếu cần -->
                             </select>
                         </div>
                     </form>
-
-                    <!-- Phần hình ảnh sẽ hiển thị -->
                     <div id="imageContainer" style="display: none; text-align: center;">
                         <img id="myImage" src="../../../../images/QRLong.png" alt="Image of transfer method" width="200" style="border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
                     </div>
-
                     <div class="mb-3" id="cashPaymentSection" style="display: none;">
                         <label for="soTienKhachDua" class="form-label">Số tiền khách đưa:</label>
                         <input type="number" id="soTienKhachDua" class="form-control" oninput="calculateChange()"/>
@@ -316,7 +296,7 @@
                         <div class="form-group">
                             <label for="soDienThoai" class="form-label">Số điện thoại:</label>
                             <input type="text" class="form-control" id="soDienThoai" name="soDienThoai"
-                                   value="${sessionScope.soDienThoai}" required/>
+                                   value="${sessionScope.soDienThoai}"/>
                         </div>
 
 
@@ -376,7 +356,7 @@
                                                   method="post">
                                                 <input type="hidden" name="sanPhamId" value="${sanPham.id}">
                                                 <button type="submit" class="btn btn-outline-custom">
-                                                    <i class="bi bi-plus"></i> <!-- Icon dấu cộng -->
+                                                    <i class="bi bi-plus"></i>
                                                 </button>
                                             </form>
                                         </div>
@@ -395,10 +375,7 @@
 </body>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Kiểm tra và hiển thị phần thanh toán ban đầu
         toggleCashPaymentSection();
-
-        // Bắt sự kiện khi thay đổi phương thức thanh toán
         document.getElementById("phuongThucThanhToan").addEventListener("change", toggleCashPaymentSection);
     });
 
@@ -438,12 +415,8 @@
 
                 try {
                     const qrData = JSON.parse(decodedText);
-
-                    // Kiểm tra dữ liệu QR
                     if (qrData.sanPhamId && qrData.sanPhamTen && qrData.giaBan) {
                         const hoaDonIdElement = document.getElementById("hoaDonId");
-
-                        // Kiểm tra sự tồn tại của ID hóa đơn
                         if (!hoaDonIdElement) {
                             Swal.fire({
                                 icon: 'error',
@@ -452,10 +425,7 @@
                             });
                             return;
                         }
-
                         const selectedHoaDonId = hoaDonIdElement.value;
-
-                        // Kiểm tra giá trị hợp lệ
                         if (!selectedHoaDonId) {
                             Swal.fire({
                                 icon: 'error',
@@ -464,30 +434,25 @@
                             });
                             return;
                         }
-
-                        // Gửi yêu cầu POST để thêm sản phẩm
                         const response = await fetch(`/ban-hang/${selectedHoaDonId}/add-product`, {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/x-www-form-urlencoded",
                             },
                             body: new URLSearchParams({
-                                hoaDonId: selectedHoaDonId, // Sử dụng selectedHoaDonId đúng
+                                hoaDonId: selectedHoaDonId,
                                 sanPhamId: qrData.sanPhamId
                             })
                         });
-
-                        // Xử lý kết quả trả về
                         if (response.ok) {
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Thành công!',
                                 text: 'Sản phẩm đã được thêm vào hóa đơn.'
                             }).then(() => {
-                                // Sau khi nhấn OK, tải lại trang
                                 window.location.reload();
                             });
-                            qrCodeReader.stop(); // Dừng scanner
+                            qrCodeReader.stop();
                         } else {
                             const errorData = await response.json();
                             Swal.fire({
@@ -540,17 +505,11 @@
                     const diemTichLuy = data.diemTichLuy || 0;
                     const rank = data.rank || 'Khách lẻ';
                     const discountRate = data.discountRate || 0;
-
-                    // Hiển thị thông tin khách hàng
                     document.getElementById('tenKhachHang').innerText = tenKhachHang;
                     document.getElementById('diemTichLuy').innerText = diemTichLuy + " điểm";
                     document.getElementById('rank').innerText = rank;
                     document.getElementById('discountRate').innerText = discountRate + "% giảm giá";
-
-                    // Cập nhật tổng tiền và giá đã giảm
-                    updateTongTien(discountRate); // Hàm này sẽ tính toán lại tổng tiền và giá đã giảm
-
-                    // Hiển thị kết quả
+                    updateTongTien(discountRate);
                     document.getElementById('result').style.display = 'block';
                 })
                 .catch(error => {
@@ -561,13 +520,10 @@
         }
     });
 
-    // Cập nhật tổng tiền và hiển thị giá đã giảm sau khi áp dụng giảm giá
     function updateTongTien(discountRate) {
-        const totalAmount = parseInt("${tongTien}");  // Lấy tổng tiền ban đầu
-        const discountAmount = totalAmount * discountRate / 100; // Tính toán số tiền giảm
-        const newTotalAmount = totalAmount - discountAmount; // Tính tổng tiền sau khi giảm giá
-
-        // Cập nhật lại hiển thị tổng tiền và giá đã giảm
+        const totalAmount = parseInt("${tongTien}");
+        const discountAmount = totalAmount * discountRate / 100;
+        const newTotalAmount = totalAmount - discountAmount;
         document.getElementById('tongTien').innerText = newTotalAmount.toLocaleString() + " VNĐ";
         document.getElementById('discountedPrice').innerText = discountAmount.toLocaleString() + " VNĐ";
     }
@@ -575,16 +531,12 @@
     function displayImage() {
         var paymentMethod = document.getElementById("phuongThucThanhToan").value;
         var imageContainer = document.getElementById("imageContainer");
-
-        // Nếu chọn "Chuyển khoản", hiển thị hình ảnh
         if (paymentMethod === "Chuyển khoản") {
             imageContainer.style.display = "block";
         } else {
             imageContainer.style.display = "none";
         }
     }
-
-    // Gọi hàm displayImage khi load trang, để đảm bảo ảnh hiển thị nếu đã được chọn "Chuyển khoản" trước đó
     window.onload = function() {
         displayImage();
     };

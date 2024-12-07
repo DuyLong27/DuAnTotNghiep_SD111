@@ -73,8 +73,14 @@ public class QLKhachHangController {
             model.addAttribute("data", khachHang);
             return "admin/ql_khach_hang/QuanLyKhachHang";
         }
+        KhachHang existingKhachHang = repo.findById(khachHang.getIdKhachHang()).orElse(null);
+        if (existingKhachHang != null) {
+            khachHang.setDiemTichLuy(existingKhachHang.getDiemTichLuy());
+            khachHang.setNgayDangKy(existingKhachHang.getNgayDangKy());
+        }
         repo.save(khachHang);
         redirectAttributes.addFlashAttribute("message", "Sửa thành công!");
         return "redirect:/quan-ly-khach-hang/hien-thi";
     }
+
 }

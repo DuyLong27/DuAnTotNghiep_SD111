@@ -64,7 +64,6 @@
 <div class="container mt-3">
 
     <div class="container mt-3">
-        <!-- Hiển thị thông báo thành công -->
         <c:if test="${not empty successMessage}">
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <strong>Thành công!</strong> ${successMessage}
@@ -72,7 +71,6 @@
             </div>
         </c:if>
 
-        <!-- Hiển thị thông báo lỗi -->
         <c:if test="${not empty errorMessage}">
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 <strong>Lỗi!</strong> ${errorMessage}
@@ -115,10 +113,10 @@
             </div>
             <div class="row mb-2">
                 <div class="col-md-6">
-                    <p><strong>Ngày tạo:</strong> ${nhapHang.ngayTao}</p>
+                    <p><strong>Ngày tạo:</strong> ${formattedNgayTao}</p>
                 </div>
                 <div class="col-md-6">
-                    <p><strong>Ngày nhập:</strong> ${nhapHang.ngayNhap}</p>
+                    <p><strong>Ngày nhập:</strong> ${formattedNgayNhap}</p>
                 </div>
             </div>
             <div class="row mb-2">

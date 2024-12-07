@@ -1,8 +1,7 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,17 +18,19 @@ public class NhaCungCap {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_nha_cung_cap")
     private Integer id;
-
+    @Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ\\s]+$", message = "Tên khách hàng không chứa ký tự đặc biệt.")
+    @Size(max = 30, message = "Tên khách hàng không được quá dài.")
     @Column(name = "ten_nha_cung_cap")
     private String tenNCC;
 
-
+    @Pattern(regexp = "^0\\d{9,10}$", message = "Số điện thoại không hợp lệ. Phải bắt đầu bằng 0 và có từ 10-11 chữ số.")
     @Column(name = "so_dien_thoai")
     private String soDienThoai;
-
+    @Email(message = "Email không hợp lệ.")
+    @Size(max = 30, message = "Email không được quá dài.")
     @Column(name = "email")
     private String email;
-
+    @Size(max = 50, message = "Địa chỉ không được quá dài.")
     @Column(name = "dia_chi")
     private String diaChi;
 

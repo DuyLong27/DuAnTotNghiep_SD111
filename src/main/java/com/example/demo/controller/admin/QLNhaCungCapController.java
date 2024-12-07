@@ -2,12 +2,14 @@ package com.example.demo.controller.admin;
 
 import com.example.demo.entity.NhaCungCap;
 import com.example.demo.repository.NhaCungCapRepo;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -52,11 +54,15 @@ public class QLNhaCungCapController {
 
 
     @PostMapping("/add")
-    public String addNhaCungCap(@ModelAttribute NhaCungCap nhaCungCap, RedirectAttributes redirectAttributes) {
+    public String addNhaCungCap(@Valid @ModelAttribute NhaCungCap nhaCungCap, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            return "redirect:/nha-cung-cap";
+        }
         nhaCungCapRepo.save(nhaCungCap);
         redirectAttributes.addFlashAttribute("message", "Thêm thành công!");
         return "redirect:/nha-cung-cap";
     }
+
 
 //    @GetMapping("/delete/{id}")
 //    public String deleteNhaCungCap(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {

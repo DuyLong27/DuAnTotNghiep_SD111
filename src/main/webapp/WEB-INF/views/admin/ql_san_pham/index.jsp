@@ -26,6 +26,16 @@
             white-space: nowrap;
         }
 
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
         /* CSS cho thông báo */
         #successMessage {
             position: fixed; /* Sử dụng fixed để thông báo không di chuyển khi cuộn */
@@ -280,25 +290,47 @@
 
 
     function resetFilters() {
-        // Reset các trường lọc về giá trị mặc định
         document.querySelector('select[name="danhMucId"]').value = '';
         document.querySelector('select[name="tinhTrang"]').value = '';
         document.querySelector('input[name="nhaCungCapTen"]').value = '';
-
-        // Gửi lại form để lấy lại danh sách sản phẩm gốc
         document.getElementById('filterSearchForm').submit();
     }
 
 
-    // Ẩn thông báo sau 3 giây
     window.onload = function () {
         var successMessage = document.getElementById("successMessage");
         if (successMessage) {
             setTimeout(function () {
                 successMessage.style.display = 'none';
-            }, 3000); // 3 giây
+            }, 3000);
         }
     };
+
+    document.getElementById("productForm").addEventListener("submit", function (e) {
+        const ten = document.getElementById("productName").value;
+        const giaBan = document.getElementById("productPrice").value;
+        const moTa = document.getElementById("productDescription").value;
+        let errors = [];
+        if (ten.length < 3 || ten.length > 20) {
+            e.preventDefault();
+            alert("Tên sản phẩm phải từ 3 đến 20 ký tự!");
+        }
+        if (!/^[a-zA-Z0-9\sÀ-ỹà-ỹ]+$/.test(ten)) {
+            errors.push("Tên sản phẩm không được chứa ký tự đặc biệt!");
+        }
+        if (!giaBan || giaBan < 60000) {
+            errors.push("Giá bán phải lớn hơn 60000!");
+        }
+        if (moTa.length < 10 || moTa.length > 50) {
+            errors.push("Mô tả phải từ 10 đến 50 ký tự!");
+        }
+        if (errors.length > 0) {
+            e.preventDefault();
+            alert(errors.join("\n"));
+        }
+    });
+
+
 </script>
 </body>
 </html>

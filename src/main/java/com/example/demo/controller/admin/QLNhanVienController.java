@@ -1,5 +1,6 @@
 package com.example.demo.controller.admin;
 
+import com.example.demo.entity.KhachHang;
 import com.example.demo.entity.NhanVien;
 import com.example.demo.repository.NhanVienRepo;
 import jakarta.validation.Valid;
@@ -12,6 +13,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.Date;
 
 @Controller
 @RequestMapping("/nhan-vien")
@@ -26,6 +29,7 @@ public class QLNhanVienController {
             model.addAttribute("data",nhanVien);
             return "admin/ql_nhan_vien/index";
         }
+        nhanVien.setNgayDiLam(new Date());
         nhanVienRepo.save(nhanVien);
         redirectAttributes.addFlashAttribute("message", "Thêm thành công!");
         return "redirect:/nhan-vien/hien-thi";
@@ -39,14 +43,9 @@ public class QLNhanVienController {
                         Model model) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<NhanVien> page;
-
-        // Xử lý đầu vào tìm kiếm tên nhà cung cấp
         if (tenNhanVien != null) {
-            // Loại bỏ dấu cách ở đầu và cuối, và thay thế nhiều dấu cách liên tiếp
             tenNhanVien = tenNhanVien.trim().replaceAll("\\s+", " ");
         }
-
-        // Tìm kiếm theo tên nhà cung cấp
         if (tenNhanVien != null && !tenNhanVien.isEmpty()) {
             page = nhanVienRepo.findByTenNhanVienContainingIgnoreCase(tenNhanVien, pageable);
         } else if (tinhTrang != null) {
@@ -54,12 +53,11 @@ public class QLNhanVienController {
         } else {
             page = nhanVienRepo.findAll(pageable);
         }
-
         model.addAttribute("data", page);
         model.addAttribute("currentPage", pageNo);
         model.addAttribute("totalPages", page.getTotalPages());
         model.addAttribute("tinhTrang", tinhTrang);
-        model.addAttribute("tenNhanVien", tenNhanVien); // Để giữ trạng thái tìm kiếm
+        model.addAttribute("tenNhanVien", tenNhanVien);
         return "admin/ql_nhan_vien/index";
     }
 
@@ -87,7 +85,11 @@ public class QLNhanVienController {
     public String updateProduct(@Valid @ModelAttribute("data") NhanVien nhanVien, BindingResult validate, Model model, RedirectAttributes redirectAttributes) {
         if (validate.hasErrors()) {
             model.addAttribute("data", nhanVien);
-            return "admin/ql_nhan_vien/index"; // Hoặc trả về một trang cụ thể
+            return "admin/ql_nhan_vien/index";
+        }
+        NhanVien existingNhanVien = nhanVienRepo.findById(nhanVien.getId()).orElse(null);
+        if (existingNhanVien != null) {
+            nhanVien.setNgayDiLam(existingNhanVien.getNgayDiLam());
         }
         nhanVienRepo.save(nhanVien);
         redirectAttributes.addFlashAttribute("message", "Sửa thành công!");

@@ -1,14 +1,14 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -21,10 +21,12 @@ public class NhanVien {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_nhan_vien")
     private Integer id;
-
+    @Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ\\s]+$", message = "Tên nhân viên không chứa ký tự đặc biệt.")
+    @Size(max = 30, message = "Tên nhân viên không được quá dài.")
     @Column(name = "ten_nhan_vien")
     private String tenNhanVien;
-
+    @Email(message = "Email không hợp lệ.")
+    @Size(max = 30, message = "Email không được quá dài.")
     @Column(name = "email")
     private String email;
 
@@ -33,12 +35,13 @@ public class NhanVien {
 
     @Column(name = "so_dien_thoai")
     private String soDienThoai;
-
+    @Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ\\s]+$", message = "Chức vụ không chứa ký tự đặc biệt.")
+    @Size(max = 30, message = "Chức vụ không được quá dài.")
     @Column(name = "chuc_vu")
     private String chucVu;
 
     @Column(name = "ngay_di_lam")
-    private LocalDate ngayDiLam;
+    private Date ngayDiLam;
 
     @NotNull
     @Digits(integer = 1, fraction = 0)

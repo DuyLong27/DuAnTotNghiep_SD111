@@ -2,16 +2,15 @@ package com.example.demo.controller.admin;
 
 import com.example.demo.entity.*;
 import com.example.demo.repository.*;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -42,7 +41,7 @@ public class QLThuocTinhController {
             @RequestParam(name = "size", defaultValue = "5") int pageSize,
             Model model) {
         if (entity == null || entity.isEmpty()) {
-            entity = "canNang"; // Đặt mặc định là "Cân Nặng"
+            entity = "canNang";
         }
 
         Pageable pageable = PageRequest.of(pageNo, pageSize);
@@ -84,10 +83,23 @@ public class QLThuocTinhController {
         return "admin/ql_thuoc_tinh/index";
     }
 
-    // Thêm RedirectAttributes vào các phương thức
     @PostMapping("/add")
-    public String addAttribute(@RequestParam String entity, @RequestParam String propertyName, RedirectAttributes redirectAttributes) {
-        // Thêm thuộc tính mới vào database
+    public String addAttribute(
+            @RequestParam String entity,
+            @Valid @ModelAttribute AttributeDTO attributeDTO,
+            BindingResult bindingResult,
+            RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            StringBuilder errors = new StringBuilder();
+            bindingResult.getAllErrors().forEach(error -> {
+                errors.append(error.getDefaultMessage()).append("\\n");
+            });
+            redirectAttributes.addFlashAttribute("errorMessage", errors.toString());
+            return "redirect:/thuoc-tinh?entity=" + entity;
+        }
+
+        String propertyName = attributeDTO.getPropertyName();
+
         switch (entity) {
             case "canNang":
                 CanNang canNang = new CanNang();
@@ -130,14 +142,9 @@ public class QLThuocTinhController {
                 danhMucRepo.save(danhMuc);
                 break;
         }
-
-        // Thêm thông báo thành công vào flash attributes
         redirectAttributes.addFlashAttribute("message", "Thêm thuộc tính thành công!");
-
-        // Sau khi thêm, chuyển hướng lại về phương thức hiển thị với entity đã chọn
         return "redirect:/thuoc-tinh?entity=" + entity;
     }
-
 //    @PostMapping("/delete")
 //    public String deleteAttribute(@RequestParam String entity, @RequestParam Integer id, RedirectAttributes redirectAttributes) {
 //        switch (entity) {
@@ -176,7 +183,19 @@ public class QLThuocTinhController {
 
     @PostMapping("/update")
     public String updateAttribute(@RequestParam String entity, @RequestParam Integer id, @RequestParam String propertyName, RedirectAttributes redirectAttributes) {
-        // Sửa thuộc tính trong database
+        // Validate tên thuộc tính
+        if (propertyName.length() < 3 || propertyName.length() > 20) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Tên thuộc tính phải từ 3 đến 20 ký tự!");
+            return "redirect:/thuoc-tinh?entity=" + entity;
+        }
+
+        String regex = "^[a-zA-Z0-9\\sÀ-ỹà-ỹ]+$";
+        if (!propertyName.matches(regex)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Tên thuộc tính không được chứa ký tự đặc biệt!");
+            return "redirect:/thuoc-tinh?entity=" + entity;
+        }
+
+        // Cập nhật thuộc tính vào cơ sở dữ liệu
         switch (entity) {
             case "canNang":
                 CanNang canNang = canNangRepo.findById(id).orElse(null);
@@ -235,10 +254,9 @@ public class QLThuocTinhController {
                 }
                 break;
         }
-        // Thêm thông báo thành công vào flash attributes
-        redirectAttributes.addFlashAttribute("message", "Sửa thuộc tính thành công!");
 
-        // Sau khi sửa, chuyển hướng lại về phương thức hiển thị với entity đã chọn
+        redirectAttributes.addFlashAttribute("message", "Sửa thuộc tính thành công!");
         return "redirect:/thuoc-tinh?entity=" + entity;
     }
+
 }
