@@ -2,6 +2,7 @@ package com.example.demo.controller.admin;
 
 import com.example.demo.entity.*;
 import com.example.demo.repository.*;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -301,7 +302,12 @@ public class QLHoaDonController {
     @PostMapping("/xac-nhan-hoa-don/{id}")
     public String xacNhanHoaDon(
             @PathVariable("id") Integer hoaDonId,
-            Model model) {
+            Model model, HttpSession session) {
+
+        NhanVien nhanVien = (NhanVien) session.getAttribute("khachHang");
+        if (nhanVien == null || !(nhanVien instanceof NhanVien)) {
+            return "redirect:/auth/login";
+        }
 
         Optional<HoaDon> optionalHoaDon = hoaDonRepo.findById(hoaDonId);
         if (!optionalHoaDon.isPresent()) {
@@ -320,6 +326,7 @@ public class QLHoaDonController {
 
         thoiGianDonHang.setThoiGianXacNhan(LocalDateTime.now());
         thoiGianDonHangRepo.save(thoiGianDonHang);
+        hoaDon.setNhanVien(nhanVien);
         hoaDonRepo.save(hoaDon);
 
         model.addAttribute("successMessage", "Hóa đơn đã được xác nhận thành công.");
@@ -471,31 +478,35 @@ public class QLHoaDonController {
     @PostMapping("/khong-xac-nhan-doi-tra/{id}")
     public String khongXacNhanDoiTra(@PathVariable("id") Integer id, Model model) {
         HoaDon hoaDon = hoaDonRepo.findById(id).orElse(null);
-        if (hoaDon != null) {
-            hoaDon.setTinh_trang(4);
-            hoaDonRepo.save(hoaDon);
-
-            List<DoiTra> doiTras = doiTraRepo.findByHoaDon(hoaDon);
-
-            for (DoiTra doiTra : doiTras) {
-                List<DoiTraChiTiet> doiTraChiTiets = doiTraChiTietRepo.findByDoiTra(doiTra);
-                doiTraChiTietRepo.deleteAll(doiTraChiTiets);
-
-                doiTraRepo.delete(doiTra);
-            }
-
-            ThoiGianDonHang thoiGianDonHang = thoiGianDonHangRepo.findByHoaDon_Id(id);
-            if (thoiGianDonHang != null) {
-                thoiGianDonHang.setKhongHoanTra(LocalDateTime.now());
-                thoiGianDonHangRepo.save(thoiGianDonHang);
-            }
-
-            model.addAttribute("message", "Đơn hàng đã được chuyển sang trạng thái không xác nhận đổi trả và các yêu cầu đổi trả đã bị hủy.");
-            return "redirect:/hoa-don/detail/" + id;
+        if (hoaDon == null) {
+            model.addAttribute("errorMessage", "Không tìm thấy hóa đơn.");
+            return "admin/ql_hoa_don/error";
         }
 
-        model.addAttribute("errorMessage", "Không tìm thấy hóa đơn.");
-        return "admin/ql_hoa_don/error";
+        hoaDon.setTinh_trang(4);
+        hoaDonRepo.save(hoaDon);
+
+        List<DoiTra> doiTras = doiTraRepo.findByHoaDon(hoaDon);
+        for (DoiTra doiTra : doiTras) {
+            List<DoiSanPham> doiSanPhams = doiSanPhamRepo.findByDoiTra(doiTra);
+            if (doiSanPhams != null && !doiSanPhams.isEmpty()) {
+                doiSanPhamRepo.deleteAll(doiSanPhams);
+            }
+
+            List<DoiTraChiTiet> doiTraChiTiets = doiTraChiTietRepo.findByDoiTra(doiTra);
+            doiTraChiTietRepo.deleteAll(doiTraChiTiets);
+
+            doiTraRepo.delete(doiTra);
+        }
+
+        ThoiGianDonHang thoiGianDonHang = thoiGianDonHangRepo.findByHoaDon_Id(id);
+        if (thoiGianDonHang != null) {
+            thoiGianDonHang.setKhongHoanTra(LocalDateTime.now());
+            thoiGianDonHangRepo.save(thoiGianDonHang);
+        }
+
+        model.addAttribute("message", "Đơn hàng đã được chuyển sang trạng thái không xác nhận đổi trả và các yêu cầu đổi trả đã bị hủy.");
+        return "redirect:/hoa-don/detail/" + id;
     }
 
     @PostMapping("/doi-hang/{id}")
@@ -514,6 +525,7 @@ public class QLHoaDonController {
 
         int diemHoan = 0;
         int diemCongThem = 0;
+        int tongTienHoaDon = hoaDon.getTongTien();
 
         for (DoiTraChiTiet doiTraChiTiet : doiTraChiTietList) {
             SanPhamChiTiet sanPhamChiTiet = doiTraChiTiet.getSanPhamChiTiet();
@@ -532,6 +544,7 @@ public class QLHoaDonController {
                 }
             }
 
+            tongTienHoaDon -= doiTraChiTiet.getSoLuong() * sanPhamChiTiet.getGiaBan();
             diemHoan += (doiTraChiTiet.getSoLuong() * sanPhamChiTiet.getGiaBan()) / 10000;
         }
 
@@ -562,12 +575,14 @@ public class QLHoaDonController {
             hoaDonChiTietMoi.setGia_san_pham(sanPhamMoi.getGiaBan());
             hoaDonChiTietRepo.save(hoaDonChiTietMoi);
 
+            tongTienHoaDon += doiSanPham.getSoLuong() * sanPhamMoi.getGiaBan();
             diemCongThem += (doiSanPham.getSoLuong() * sanPhamMoi.getGiaBan()) / 10000;
         }
 
         khachHang.setDiemTichLuy(khachHang.getDiemTichLuy() + diemCongThem);
         khachHangRepo.save(khachHang);
 
+        hoaDon.setTongTien(tongTienHoaDon);
         hoaDon.setTinh_trang(13);
         hoaDonRepo.save(hoaDon);
 
@@ -575,7 +590,7 @@ public class QLHoaDonController {
         thoiGianDonHang.setDaHoanTra(LocalDateTime.now());
         thoiGianDonHangRepo.save(thoiGianDonHang);
 
-        redirectAttributes.addFlashAttribute("message", "Đổi hàng thành công! Điểm tích lũy đã được cập nhật.");
+        redirectAttributes.addFlashAttribute("message", "Đổi hàng thành công! Điểm tích lũy và tổng tiền hóa đơn đã được cập nhật.");
         return "redirect:/hoa-don/detail/" + id;
     }
 
