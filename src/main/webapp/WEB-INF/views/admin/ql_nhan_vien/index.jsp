@@ -25,8 +25,8 @@
                     <h5>Lọc Theo Tình Trạng</h5>
                     <select name="tinhTrang" class="form-select" onchange="this.form.submit();">
                         <option value="" ${param.tinhTrang == '' ? 'selected' : ''}>Tất Cả</option>
-                        <option value="1" ${param.tinhTrang == '1' ? 'selected' : ''}>Làm Việc</option>
-                        <option value="0" ${param.tinhTrang == '0' ? 'selected' : ''}>Tan Ca</option>
+                        <option value="1" ${param.tinhTrang == '1' ? 'selected' : ''}>Đang làm</option>
+                        <option value="0" ${param.tinhTrang == '0' ? 'selected' : ''}>Đã nghỉ</option>
                     </select>
                 </div>
 
@@ -153,7 +153,7 @@
                     <td>${nv.chucVu}</td>
                     <td>${nv.ngayDiLam}</td>
                     <td class="${nv.tinhTrang == 1 ? 'text-success' : 'text-danger'}">
-                            ${nv.tinhTrang == 1 ? "Đang làm" : "Tan ca"}
+                            ${nv.tinhTrang == 1 ? "Đang làm" : "Đã nghỉ"}
                     </td>
                     <c:if test="${sessionScope.role == 0}">
                         <td>
