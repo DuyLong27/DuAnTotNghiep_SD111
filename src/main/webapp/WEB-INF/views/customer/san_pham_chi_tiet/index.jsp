@@ -4,7 +4,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Product Page</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -12,17 +14,6 @@
           integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <style>
-        <%--   Modal    --%>
-
-        #soLuong::-webkit-outer-spin-button,
-        #soLuong::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        #soLuong {
-            -moz-appearance: textfield;
-        }
 
         .product-title {
             font-size: 24px;
@@ -118,40 +109,33 @@
                         </c:choose>
                     </div>
                     <hr>
-                    <form action="/danh-sach-san-pham-chi-tiet/add" method="post">
-                        <div class="quantity">
-                            Chọn số lượng:
-                            <button type="button" class="btn btn-outline-secondary px-2"
-                                    onclick="changeQuantity(-1)">-
-                            </button>
-                            <input type="number" class="form-control mx-2 text-center" id="soLuongSanPham"
-                                   name="soLuongSanPham" min="1" value="1" required onchange="updateTotal()"
-                                   style="width: 80px;">
-                            <button type="button" class="btn btn-outline-secondary px-2"
-                                    onclick="changeQuantity(1)">+
-                            </button>
-                        </div>
-                    </form>
                     <div class="items">
                         <p>Còn ${sanPhamChiTiet.soLuong} sản phẩm trong kho</p>
                     </div>
                     <hr>
                     <div class="row mt-3">
-                        <div class="col-12 d-flex justify-content-between gap-3">
-                            <form action="/danh-sach-san-pham-chi-tiet/add" method="post" class="w-50">
+                        <div class="col-12">
+                            <div class="col-12 d-flex justify-content-between align-items-center gap-3">
+                            <form action="/danh-sach-san-pham-chi-tiet/add" method="post" class="w-100">
                                 <input type="hidden" name="sanPhamId" value="${sanPhamChiTiet.id}">
-                                <button type="submit" class="product-cart btn btn-dark btn-lg w-100 text-center">Thêm
-                                    vào giỏ hàng
-                                </button>
+                                <div class="form-group">
+                                    <label for="soLuong">Số lượng</label>
+                                    <input type="number" id="soLuong" name="soLuong" class="form-control" min="1" max="${sanPhamChiTiet.soLuong}" value="1">
+                                </div>
+                                <button type="submit" class="product-cart btn btn-dark btn-lg w-100 text-center mt-3">Thêm vào giỏ hàng</button>
                             </form>
-                            <form action="/danh-sach-san-pham-chi-tiet/mua-ngay" method="get" class="w-50">
+                            </div>
+                            <form action="/danh-sach-san-pham-chi-tiet/mua-ngay" method="get" class="w-100">
                                 <input type="hidden" name="productId" value="${sanPhamChiTiet.id}">
-                                <button type="button" class="product-buy btn btn-success btn-lg w-100 text-center"
+                                <button type="button" class="product-buy btn btn-success btn-lg w-100 text-center mt-3"
                                         data-bs-toggle="modal" data-bs-target="#productModal">
                                     Mua ngay
                                 </button>
                             </form>
                         </div>
+                        <c:if test="${not empty errorMessage}">
+                            <div class="alert alert-danger">${errorMessage}</div>
+                        </c:if>
                     </div>
                 </div>
             </div>
@@ -333,11 +317,6 @@
 </div>
 
 <script>
-    let currentPage = 0; // Trang bắt đầu
-
-    // Gọi hàm displayCart khi trang tải
-    window.onload = displayCart;
-
     const giaBan = ${sanPhamChiTiet.giaBan != null ? sanPhamChiTiet.giaBan : 0};
     const giaGiamGia = ${sanPhamChiTiet.giaGiamGia != null ? sanPhamChiTiet.giaGiamGia : 0};
     const diemTichLuy = ${khachHang != null ? khachHang.diemTichLuy : 0};
@@ -347,9 +326,8 @@
         return price * (rate / 100); // Số tiền giảm giá
     }
 
-    // Hàm cập nhật tổng tiền
     function updateTotal() {
-        const soLuong = parseInt(document.getElementById("soLuong").value) || 1; // Giá trị mặc định là 1
+        const soLuong = parseInt(document.getElementById("soLuong").value) || 1; // Số lượng sản phẩm
         const selectedShipping = document.querySelector('input[name="phuongThucVanChuyen"]:checked');
 
         let shippingCost = 0; // Phí vận chuyển mặc định
@@ -405,24 +383,19 @@
 
     function changeQuantity(amount) {
         const soLuongInput = document.getElementById("soLuong");
-        const soLuongHiddenInput = document.getElementById("soLuongInput");
-        const soLuongSanPhamInput = document.getElementById("soLuongSanPham");
-        const soLuongSanPhamHiddenInput = document.getElementById("soLuongSanPhamInput");
+        const soLuongHiddenInput = document.getElementById("soLuongInput"); // Trường ẩn
+
         let currentQuantity = parseInt(soLuongInput.value);
         currentQuantity = isNaN(currentQuantity) ? 1 : currentQuantity;
         currentQuantity = Math.max(1, currentQuantity + amount); // Đảm bảo số lượng tối thiểu là 1
         soLuongInput.value = currentQuantity;
 
-        let slsp = parseInt(soLuongSanPhamInput.value);
-        slsp = isNaN(slsp) ? 1 : slsp;
-        slsp = Math.max(1, slsp + amount); // Đảm bảo số lượng tối thiểu là 1
-        soLuongSanPhamInput.value = slsp;
-
         // Cập nhật giá trị cho trường ẩn
-        soLuongSanPhamHiddenInput.value = slsp; // Thêm dòng này
+        soLuongHiddenInput.value = currentQuantity;
 
         updateTotal(); // Cập nhật lại tổng tiền
     }
+
 
     function displayImage() {
         var paymentMethod = document.getElementById("phuongThucThanhToan").value;

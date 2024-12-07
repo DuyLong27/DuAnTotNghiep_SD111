@@ -88,25 +88,19 @@ public class DanhSachSPCTController {
         return "customer/san_pham_chi_tiet/index";
     }
 
-    public String showProductList(@RequestParam(name = "page", defaultValue = "0") int pageNo,
-                                  @RequestParam(name = "size", defaultValue = "4") int pageSize,
-                                  Model model) {
-
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Page<SanPhamChiTiet> page = sanPhamChiTietRepo.findAll(pageable);
-
-        model.addAttribute("data", page); // Dữ liệu sản phẩm phân trang
-        model.addAttribute("currentPage", pageNo);
-        model.addAttribute("totalPages", page.getTotalPages());
-
-        return "customer/san_pham_chi_tiet/index"; // Trả về JSP
-    }
 
     @PostMapping("/add")
-    public String addCart(@RequestParam("sanPhamId") int sanPhamId, HttpSession session, Model model) {
+    public String addCart(@RequestParam("sanPhamId") int sanPhamId,
+                          @RequestParam("soLuong") int soLuong,
+                          HttpSession session, Model model) {
         // Tìm sản phẩm chi tiết theo ID
         SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid product ID: " + sanPhamId));
+
+        if (soLuong < 1 || soLuong > sanPhamChiTiet.getSoLuong()) {
+            model.addAttribute("errorMessage", "Số lượng không hợp lệ. Vui lòng chọn số lượng từ 1 đến " + sanPhamChiTiet.getSoLuong());
+            return "redirect:/danh-sach-san-pham-chi-tiet/view-sp/" + sanPhamChiTiet.getId();
+        }
 
         // Kiểm tra người dùng đã đăng nhập hay chưa
         KhachHang khachHang = (KhachHang) session.getAttribute("khachHang");
@@ -138,16 +132,16 @@ public class DanhSachSPCTController {
         // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
         Optional<GioHangChiTiet> existingDetail = gioHangChiTietRepo.findByGioHangAndSanPhamChiTiet(cart, sanPhamChiTiet);
         if (existingDetail.isPresent()) {
-            // Nếu sản phẩm đã có trong giỏ hàng, chỉ cần tăng số lượng
+            // Nếu sản phẩm đã có trong giỏ hàng, cập nhật số lượng
             GioHangChiTiet cartDetail = existingDetail.get();
-            cartDetail.setSoLuong(cartDetail.getSoLuong() + 1);
+            cartDetail.setSoLuong(cartDetail.getSoLuong() + soLuong);  // Cập nhật số lượng
             gioHangChiTietRepo.save(cartDetail);
         } else {
             // Nếu sản phẩm chưa có trong giỏ hàng, thêm sản phẩm mới vào giỏ hàng
             GioHangChiTiet newDetail = new GioHangChiTiet();
             newDetail.setGioHang(cart);
             newDetail.setSanPhamChiTiet(sanPhamChiTiet);
-            newDetail.setSoLuong(1); // Số lượng ban đầu
+            newDetail.setSoLuong(soLuong);  // Cập nhật số lượng từ tham số
 
             // Kiểm tra giá giảm, nếu có thì dùng giaGiamGia, nếu không thì dùng giaBan
             int giaSanPham = (sanPhamChiTiet.getGiaGiamGia() != null && sanPhamChiTiet.getGiaGiamGia() > 0)
@@ -195,7 +189,6 @@ public class DanhSachSPCTController {
 
         List<SanPhamChiTiet> sanPhamList = sanPhamChiTietRepo.findAll();
         model.addAttribute("listSanPham", sanPhamList);
-
         return "customer/san_pham_chi_tiet/index";
     }
 
