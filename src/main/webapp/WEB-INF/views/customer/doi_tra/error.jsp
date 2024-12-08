@@ -8,8 +8,7 @@
     <title>Document</title>
 </head>
 <body>
-<h1>Lỗi rồi con chóa !!!!!!!!!!!!!</h1>
-
-${error}
+<h1>Loi</h1>
+${errorTongtien}
 </body>
 </html>

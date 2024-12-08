@@ -8,7 +8,6 @@
     <title>Xác Nhận Đổi Hàng</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-
 </head>
 <style>
     .modal-content {
@@ -257,9 +256,17 @@
         -moz-appearance: textfield;
     }
 
+    #doi-hang .card-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    #doi-hang .card-body {
+        padding: 15px;
+    }
 
 </style>
-<body>
+    <body>
 <jsp:include page="../header_user.jsp"/>
 <div class="container my-4">
     <h2 class="text-center mb-4">Xác Nhận Đổi Hàng</h2>
@@ -267,7 +274,7 @@
     <div class="card-1">
         <div class="card-body-1">
             <!-- Form gửi thông tin đổi hàng -->
-            <form action="${pageContext.request.contextPath}/doi-tra/xac-nhan-doi-hang" method="post" enctype="multipart/form-data">
+            <form action="${pageContext.request.contextPath}/doi-tra/hien-thi-thong-tin-doi-hang" method="post" enctype="multipart/form-data">
                 <!-- Thêm hoaDonId vào form -->
                 <input type="hidden" name="hoaDonId" value="${hoaDon.id}">
 
@@ -285,7 +292,7 @@
                                 <span>${product.sanPham.ten}</span>
                             </div>
                             <div>
-                                <span>${giaSanPhamMap[product.id]}</span>
+                                <span>${giaSanPhamMap[product.id]} VNĐ</span>
                             </div>
                             <div>
                                 <label>Số lượng:</label>
@@ -329,7 +336,7 @@
                                                     <!-- Ô nhập số lượng (ẩn mặc định) -->
                                                     <div id="quantity-input-${sp.id}" class="mt-3">
                                                         <label for="soLuong_${sp.id}">Nhập số lượng:</label>
-                                                        <input type="number" name="soLuong_${sp.id}" id="soLuong_${sp.id}"
+                                                        <input type="number" name="soLuongDoi_${sp.id}" id="soLuongDoi_${sp.id}"
                                                                min="1" max="${sp.soLuong}" class="form-control"
                                                                placeholder="Nhập số lượng muốn đổi">
                                                     </div>
@@ -337,8 +344,6 @@
                                                     <!-- Nút chọn sản phẩm -->
                                                     <button type="button" class="btn btn-primary toggle-btn" data-selected="false"
                                                             onclick="toggleProduct(this, ${sp.id})">Chọn</button>
-
-
 
                                                     <!-- Hidden input lưu ID sản phẩm -->
                                                     <input type="hidden" id="sanPhamChiTietDoiIds" name="sanPhamChiTietDoiIds" value="">
@@ -369,60 +374,68 @@
                         <c:forEach var="product" items="${selectedProducts}">
                             <input type="hidden" name="sanPhamChiTietIds" value="${product.id}">
                         </c:forEach>
-                        <!-- Các sản phẩm chọn được sẽ được thêm vào form dưới dạng hidden input -->
                     </form>
 
-
+                    ${errorTongtien}
+                    ${error}
                     <input type="hidden" name="soLuongSanPham" id="soLuongSanPham" value="1">
-                    <button type="submit" class="btn btn-primary">Xác nhận đổi hàng</button>
+                        <button type="submit" class="btn btn-primary">Xác nhận đổi hàng</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-            <jsp:include page="../footer_user.jsp"/>
+<jsp:include page="../footer_user.jsp"/>
 
-                <script>
-                    function toggleProduct(button, productId) {
-                        const isSelected = button.getAttribute('data-selected') === 'true';
-                        const hiddenInput = document.getElementById('sanPhamChiTietDoiIds');
-                        const quantityInput = document.getElementById(`quantity-input-${productId}`);
+<script>
+    function toggleProduct(button, productId) {
+        const isSelected = button.getAttribute('data-selected') === 'true';
+        const hiddenInput = document.querySelector('input#sanPhamChiTietDoiIds');
+        const quantityInput = document.querySelector(`#quantity-input-${productId}`);
 
-                        // Lấy danh sách các ID hiện tại
-                        let selectedIds = hiddenInput.value ? hiddenInput.value.split(',') : [];
+        let selectedIds = hiddenInput.value ? hiddenInput.value.split(',') : [];
 
-                        if (isSelected) {
-                            // Bỏ chọn sản phẩm
-                            button.setAttribute('data-selected', 'false');
-                            button.textContent = 'Chọn';
+        if (isSelected) {
+            button.setAttribute('data-selected', 'false');
+            button.textContent = 'Chọn';
 
-                            // Ẩn ô nhập số lượng
-                            if (quantityInput) {
-                                quantityInput.classList.add('d-none');
-                            }
+            // Xóa ID khỏi danh sách
+            selectedIds = selectedIds.filter(id => id !== productId.toString());
 
-                            // Loại bỏ ID sản phẩm khỏi danh sách
-                            selectedIds = selectedIds.filter(id => id !== productId.toString());
-                        } else {
-                            // Chọn sản phẩm
-                            button.setAttribute('data-selected', 'true');
-                            button.textContent = 'Bỏ chọn';
+            if (quantityInput) {
+                quantityInput.classList.add('d-none');
+            }
+        } else {
+            button.setAttribute('data-selected', 'true');
+            button.textContent = 'Bỏ chọn';
 
-                            // Hiển thị ô nhập số lượng
-                            if (quantityInput) {
-                                quantityInput.classList.remove('d-none');
-                            }
+            // Thêm ID nếu chưa có
+            if (!selectedIds.includes(productId.toString())) {
+                selectedIds.push(productId);
+            }
 
-                            // Thêm ID sản phẩm vào danh sách nếu chưa tồn tại
-                            if (!selectedIds.includes(productId.toString())) {
-                                selectedIds.push(productId);
-                            }
-                        }
+            if (quantityInput) {
+                quantityInput.classList.remove('d-none');
+            }
+        }
 
-                        // Cập nhật lại giá trị trong input ẩn
-                        hiddenInput.value = selectedIds.join(',');
-                    }
+        hiddenInput.value = selectedIds.join(',');
+    }
 
-                </script>
+    function submitForm() {
+        const form = document.querySelector('#doiTraForm');
+        const sanPhamChiTietIds = document.querySelector('#sanPhamChiTietDoiIds').value;
+
+        if (!sanPhamChiTietIds) {
+            alert('Vui lòng chọn ít nhất 1 sản phẩm!');
+            return false;
+        }
+
+        form.submit();
+    }
+
+    document.querySelector('button[type="submit"]').addEventListener('click', submitForm);
+</script>
+
 </body>
 </html>
