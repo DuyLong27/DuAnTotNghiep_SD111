@@ -125,7 +125,7 @@ public class DoiTraController {
             DoiTra doiTra = doiTraRepo.findFirstByHoaDon_Id(id);
             model.addAttribute("doiTra", doiTra);
             List<DoiSanPham> doiSanPhamList = doiSanPhamRepo.findByDoiTra_HoaDon_Id(id);
-            model.addAttribute("doiSanPhams",doiSanPhamList);
+            model.addAttribute("doiSanPhams", doiSanPhamList);
         } else {
             model.addAttribute("errorMessage", "Không tìm thấy hóa đơn.");
         }
@@ -424,6 +424,7 @@ public class DoiTraController {
             model.addAttribute("sanPhamChiTietIds", sanPhamChiTietIds);
             model.addAttribute("selectedProducts", selectedProducts);
             model.addAttribute("soLuongMap", soLuongMap);
+            model.addAttribute("giaSanPhamMap", giaBanSanPhamDaMuaMap);
 
             return "customer/doi_tra/doi_hang";
         }
@@ -432,14 +433,94 @@ public class DoiTraController {
         return "customer/doi_tra/detail";
     }
 
+    @PostMapping("/hien-thi-thong-tin-doi-hang")
+    public String hienThiThongTinDoiHang(@RequestParam("hoaDonId") Integer hoaDonId,
+                                         @RequestParam("lyDo") String lyDo,
+                                         @RequestParam("lyDoDetail") String lyDoDetail,
+                                         @RequestParam("sanPhamChiTietIds") List<Integer> sanPhamChiTietIds,
+                                         @RequestParam("sanPhamChiTietDoiIds") String sanPhamChiTietIdsStr,
+                                         @RequestParam Map<String, String> requestParams,
+                                         @RequestParam("moTa") String moTa,
+                                         @RequestParam("uploadImage") MultipartFile uploadImage,
+                                         Model model) {
+
+        // Lấy thông tin hóa đơn
+        HoaDon hoaDon = hoaDonRepo.findById(hoaDonId).orElse(null);
+        if (hoaDon == null) {
+            model.addAttribute("errorMessage", "Không tìm thấy hóa đơn.");
+            return "customer/doi_tra/error";
+        }
+
+        // Lấy danh sách sản phẩm muốn đổi
+        List<SanPhamChiTiet> selectedProducts = new ArrayList<>();
+        Map<Integer, Integer> soLuongMap = new HashMap<>();
+        Map<Integer, Integer> giaSanPhamMap = new HashMap<>();
+        int tongTienHoan = 0;
+
+        for (Integer id : sanPhamChiTietIds) {
+            Integer soLuongHoan = Integer.valueOf(requestParams.get("soLuong_" + id));
+            SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(id).orElse(null);
+            if (sanPhamChiTiet != null) {
+                selectedProducts.add(sanPhamChiTiet);
+                soLuongMap.put(id, soLuongHoan);
+
+                // Lấy giá từ hóa đơn chi tiết
+                HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietRepo.findByHoaDonAndSanPhamChiTiet(hoaDon, sanPhamChiTiet);
+                if (hoaDonChiTiet != null) {
+                    giaSanPhamMap.put(id, hoaDonChiTiet.getGia_san_pham());
+                    tongTienHoan += soLuongHoan * hoaDonChiTiet.getGia_san_pham();
+                }
+            }
+        }
+
+        // Xử lý sản phẩm đổi (sanPhamChiTietDoiIds)
+        List<SanPhamChiTiet> sanPhamChiTietDoiList = new ArrayList<>();
+        Map<Integer, Integer> soLuongMapDoi = new HashMap<>();
+        Map<Integer, Integer> giaSanPhamMapDoi = new HashMap<>();
+        int tongTienDoi = 0;
+
+        List<Integer> sanPhamChiTietDoiIds = Arrays.stream(sanPhamChiTietIdsStr.split(","))
+                .map(Integer::valueOf).collect(Collectors.toList());
+
+        for (Integer id : sanPhamChiTietDoiIds) {
+            Integer soLuongDoi = Integer.valueOf(requestParams.get("soLuongDoi_" + id));
+            SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(id).orElse(null);
+            if (sanPhamChiTiet != null) {
+                sanPhamChiTietDoiList.add(sanPhamChiTiet);
+                soLuongMapDoi.put(id, soLuongDoi);
+                giaSanPhamMapDoi.put(id, sanPhamChiTiet.getGiaBan());
+                tongTienDoi += soLuongDoi * sanPhamChiTiet.getGiaBan();
+            }
+        }
+
+        // Thêm dữ liệu vào model
+        model.addAttribute("hoaDon", hoaDon);
+        model.addAttribute("lyDo", lyDo);
+        model.addAttribute("lyDoDetail", lyDoDetail);
+        model.addAttribute("selectedProducts", selectedProducts);
+        model.addAttribute("sanPhamChiTietDoiList", sanPhamChiTietDoiList);
+        model.addAttribute("soLuongMap", soLuongMap);
+        model.addAttribute("soLuongMapDoi", soLuongMapDoi);
+        model.addAttribute("giaSanPhamMap", giaSanPhamMap);
+        model.addAttribute("giaSanPhamMapDoi", giaSanPhamMapDoi);
+        model.addAttribute("tongTienHoan", tongTienHoan);
+        model.addAttribute("tongTienDoi", tongTienDoi);
+        model.addAttribute("moTa", moTa);
+        model.addAttribute("uploadImage", uploadImage);
+
+        return "customer/doi_tra/xac_nhan_doi_hang";
+    }
+
+
+
     @PostMapping("/xac-nhan-doi-hang")
     @Transactional
     public String xacNhanDoiHang(
             @RequestParam("hoaDonId") Integer hoaDonId,
             @RequestParam("lyDo") String lyDo,
             @RequestParam("lyDoDetail") String lyDoDetail,
-            @RequestParam("sanPhamChiTietIds") List<Integer> sanPhamChiTietIds,
-            @RequestParam("sanPhamChiTietDoiIds") String sanPhamChiTietIdsStr,
+            @RequestParam("sanPhamChiTietIds[]") List<Integer> sanPhamChiTietIds,
+            @RequestParam("sanPhamChiTietDoiIds[]") List<Integer> sanPhamChiTietDoiIds,
             @RequestParam Map<String, String> requestParams,
             @RequestParam("moTa") String moTa,
             @RequestParam("uploadImage") MultipartFile uploadImage,
@@ -452,14 +533,46 @@ public class DoiTraController {
             return "customer/doi_tra/error";
         }
 
-        // Chuyển đổi chuỗi ID sản phẩm thành danh sách
-        List<Integer> sanPhamChiTietDoiIds;
-        try {
-            sanPhamChiTietDoiIds = Arrays.stream(sanPhamChiTietIdsStr.split(","))
-                    .map(Integer::valueOf)
-                    .collect(Collectors.toList());
-        } catch (NumberFormatException e) {
-            model.addAttribute("error", "Dữ liệu sản phẩm không hợp lệ.");
+        // Kiểm tra danh sách sản phẩm cần đổi
+        if (sanPhamChiTietIds == null || sanPhamChiTietIds.isEmpty()) {
+            model.addAttribute("error", "Danh sách sản phẩm cần đổi không được để trống.");
+            return "customer/doi_tra/error";
+        }
+
+        // Kiểm tra danh sách sản phẩm đổi
+        if (sanPhamChiTietDoiIds == null || sanPhamChiTietDoiIds.isEmpty()) {
+            model.addAttribute("error", "Danh sách sản phẩm đổi không được để trống.");
+            return "customer/doi_tra/error";
+        }
+
+        // Tính tổng tiền hoàn
+        List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepo.findByHoaDon(hoaDon);
+        int tongTienHoan = 0;
+        for (Integer sanPhamChiTietId : sanPhamChiTietIds) {
+            HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietList.stream()
+                    .filter(chiTiet -> chiTiet.getSanPhamChiTiet().getId().equals(sanPhamChiTietId))
+                    .findFirst().orElse(null);
+            if (hoaDonChiTiet != null) {
+                int soLuongHoan = Integer.parseInt(requestParams.get("soLuong_" + sanPhamChiTietId));
+                tongTienHoan += hoaDonChiTiet.getGia_san_pham() * soLuongHoan;
+            }
+        }
+
+        // Tính tổng tiền đổi
+        int tongTienDoi = 0;
+        for (Integer sanPhamChiTietDoiId : sanPhamChiTietDoiIds) {
+            SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamChiTietDoiId).orElse(null);
+            if (sanPhamChiTiet != null) {
+                int soLuongDoi = Integer.parseInt(requestParams.get("soLuong_" + sanPhamChiTietDoiId));
+                tongTienDoi += sanPhamChiTiet.getGiaBan() * soLuongDoi;
+            }
+        }
+
+        // Kiểm tra tổng tiền
+        if (tongTienDoi < tongTienHoan) {
+            model.addAttribute("errorTongtien", "Tổng tiền sản phẩm đổi phải lớn hơn hoặc bằng tổng tiền hoàn trả.");
+            model.addAttribute("tongTienHoan", tongTienHoan);
+            model.addAttribute("tongTienDoi", tongTienDoi);
             return "customer/doi_tra/error";
         }
 
@@ -477,7 +590,7 @@ public class DoiTraController {
                 Files.write(filePath, uploadImage.getBytes());
             } catch (IOException e) {
                 e.printStackTrace();
-                model.addAttribute("error", "Không thể lưu ảnh.");
+                model.addAttribute("error2", "Không thể lưu ảnh.");
                 return "customer/doi_tra/error";
             }
         }
@@ -486,6 +599,7 @@ public class DoiTraController {
         DoiTra doiTra = new DoiTra();
         doiTra.setHoaDon(hoaDon);
         doiTra.setLyDoCuThe(lyDoDetail);
+        doiTra.setTienBu(tongTienDoi - tongTienHoan);
         doiTra.setMoTa(moTa);
         doiTra.setHinhAnh(fileName);
         doiTra.setNgayYeuCau(new Date());
@@ -493,62 +607,39 @@ public class DoiTraController {
         doiTra.setTinhTrang(11); // Đổi hàng chờ xử lý
         doiTraRepo.save(doiTra);
 
-        List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepo.findByHoaDon(hoaDon);
+        // Lưu thông tin đổi trả chi tiết
         for (Integer sanPhamChiTietId : sanPhamChiTietIds) {
-            SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamChiTietId).orElse(null);
-            if (sanPhamChiTiet != null) {
-                Integer soLuongHoan = Integer.valueOf(requestParams.get("soLuong_" + sanPhamChiTietId));
-                HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietList.stream()
-                        .filter(chiTiet -> chiTiet.getSanPhamChiTiet().getId().equals(sanPhamChiTietId))
-                        .findFirst().orElse(null);
-                if (hoaDonChiTiet != null) {
-                    DoiTraChiTiet doiTraChiTiet = new DoiTraChiTiet();
-                    doiTraChiTiet.setDoiTra(doiTra);
-                    doiTraChiTiet.setSanPhamChiTiet(sanPhamChiTiet);
-                    doiTraChiTiet.setGiaSanPham(hoaDonChiTiet.getGia_san_pham());
-                    doiTraChiTiet.setSoLuong(soLuongHoan);
-                    doiTraChiTietRepo.save(doiTraChiTiet);
-                }
+            Integer soLuongHoan = Integer.valueOf(requestParams.get("soLuong_" + sanPhamChiTietId));
+            HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietList.stream()
+                    .filter(chiTiet -> chiTiet.getSanPhamChiTiet().getId().equals(sanPhamChiTietId))
+                    .findFirst().orElse(null);
+            if (hoaDonChiTiet != null) {
+                DoiTraChiTiet doiTraChiTiet = new DoiTraChiTiet();
+                doiTraChiTiet.setDoiTra(doiTra);
+                doiTraChiTiet.setSanPhamChiTiet(hoaDonChiTiet.getSanPhamChiTiet());
+                doiTraChiTiet.setGiaSanPham(hoaDonChiTiet.getGia_san_pham());
+                doiTraChiTiet.setSoLuong(soLuongHoan);
+                doiTraChiTietRepo.save(doiTraChiTiet);
             }
         }
 
-
-        // Lưu thông tin đổi sản phẩm
         for (Integer sanPhamChiTietDoiId : sanPhamChiTietDoiIds) {
+            Integer soLuongDoi = Integer.valueOf(requestParams.get("soLuong_" + sanPhamChiTietDoiId));
             SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamChiTietDoiId).orElse(null);
             if (sanPhamChiTiet != null) {
-                String soLuongStr = requestParams.get("soLuong_" + sanPhamChiTietDoiId);
-                Integer soLuong = soLuongStr != null ? Integer.valueOf(soLuongStr) : null;
-
-                // Kiểm tra số lượng hợp lệ
-                if (soLuong != null && soLuong > 0 && soLuong <= sanPhamChiTiet.getSoLuong()) {
-                    // Xử lý đổi sản phẩm
-                    DoiSanPham doiSanPham = new DoiSanPham();
-                    doiSanPham.setDoiTra(doiTra);
-                    doiSanPham.setSanPhamChiTiet(sanPhamChiTiet);
-                    doiSanPham.setGiaSanPham(sanPhamChiTiet.getGiaBan());
-                    doiSanPham.setSoLuong(soLuong);
-
-                    // Cập nhật tồn kho sản phẩm
-                    sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - soLuong);
-                    sanPhamChiTietRepo.save(sanPhamChiTiet);
-
-                    doiSanPhamRepo.save(doiSanPham);
-                } else {
-                    model.addAttribute("error", "Số lượng không hợp lệ cho sản phẩm ID: " + sanPhamChiTietDoiId);
-                    return "customer/doi_tra/error";
-                }
+                DoiSanPham doiSanPham = new DoiSanPham();
+                doiSanPham.setDoiTra(doiTra);
+                doiSanPham.setSanPhamChiTiet(sanPhamChiTiet);
+                doiSanPham.setGiaSanPham(sanPhamChiTiet.getGiaBan());
+                doiSanPham.setSoLuong(soLuongDoi);
+                doiSanPhamRepo.save(doiSanPham);
             }
         }
 
-
-        // Cập nhật trạng thái hóa đơn
-        hoaDon.setTinh_trang(11); // Trạng thái "Đổi hàng chờ xử lý"
+        hoaDon.setTinh_trang(11); // Cập nhật trạng thái hóa đơn
         hoaDonRepo.save(hoaDon);
 
         return "redirect:/doi-tra";
     }
-
-
 
 }
