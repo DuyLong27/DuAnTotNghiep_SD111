@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Controller
@@ -227,11 +228,14 @@ public class BanHangController {
             discountAmount = totalOriginalPrice * discountRate / 100;
             int totalAmountAfterDiscount = totalOriginalPrice - discountAmount;
             hoaDon.setTongTien(totalAmountAfterDiscount);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss, dd/MM/yyyy");
+            String formattedThoiGianTao = hoaDon.getThoiGianTao().format(formatter);
             hoaDonRepository.save(hoaDon);
             session.setAttribute("soDienThoai", soDienThoai);
             session.setAttribute("ghiChu", ghiChu);
             List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepository.findByHoaDonId(id);
             model.addAttribute("hoaDon", hoaDon);
+            model.addAttribute("formattedThoiGianTao", formattedThoiGianTao);
             model.addAttribute("chiTietList", hoaDonChiTietList);
             model.addAttribute("discountAmount", discountAmount);
         }

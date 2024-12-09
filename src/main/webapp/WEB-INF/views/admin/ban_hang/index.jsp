@@ -246,9 +246,9 @@
                                 </td>
                                 <td>
                                     <form action="${pageContext.request.contextPath}/ban-hang/${selectedHoaDonId}/update-quantity/${item.sanPhamChiTiet.id}"
-                                          method="post" style="display:inline-block;">
-                                        <input type="number" name="soLuong" value="${item.so_luong}" min="1"
-                                               style="width: 60px;" onchange="this.form.submit();">
+                                          method="post" style="display:inline-block;" onsubmit="return validateForm(this);">
+                                        <input type="number" name="soLuong" value="${item.so_luong}" min="1" required
+                                               style="width: 60px;" onchange="this.form.submit();" onkeydown="checkEnter(event)">
                                         <button type="submit" class="btn btn-info btn-sm" hidden="">Cập nhật</button>
                                     </form>
                                 </td>
@@ -284,8 +284,12 @@
                     <div class="mb-3" id="cashPaymentSection" style="display: none;">
                         <label for="soTienKhachDua" class="form-label">Số tiền khách đưa:</label>
                         <input type="number" id="soTienKhachDua" class="form-control" oninput="calculateChange()"/>
+                        <div id="error-message" style="color: red; display: none;">Vui lòng nhập số tiền hợp lệ!</div>
                     </div>
                     <h4 class="text-danger" id="soTienPhaiBu" style="display: none;">Số tiền phải bù lại: 0 VNĐ</h4>
+                </c:if>
+                <c:if test="${empty hoaDonChiTiets}">
+                    <p class="text-danger">Không có sản phẩm nào trong hóa đơn</p>
                 </c:if>
 
 
@@ -317,7 +321,12 @@
                         <div class="form-group">
                             <textarea name="ghiChu" class="form-control" rows="3">${sessionScope.ghiChu}</textarea>
                         </div>
+                        <c:if test="${empty hoaDonChiTiets}">
+                            <button type="button" class="btn btn-create mt-2" disabled>Không thể xác nhận hóa đơn</button>
+                        </c:if>
+                        <c:if test="${not empty hoaDonChiTiets}">
                         <button type="submit" class="btn btn-create mt-2">Xác nhận hóa đơn</button>
+                        </c:if>
                     </form>
                 </c:if>
             </div>
@@ -377,8 +386,42 @@
     document.addEventListener('DOMContentLoaded', function () {
         toggleCashPaymentSection();
         document.getElementById("phuongThucThanhToan").addEventListener("change", toggleCashPaymentSection);
+        document.getElementById("noteForm").addEventListener("submit", function(event) {
+            if (!validatePayment()) {
+                event.preventDefault();
+            }
+        });
     });
 
+    function validatePayment() {
+        var phuongThucThanhToan = document.getElementById("phuongThucThanhToan").value;
+
+        if (phuongThucThanhToan === "Tiền mặt") {
+            var soTienKhachDua = document.getElementById("soTienKhachDua").value;
+            var tongTien = parseFloat(document.getElementById("tongTien").textContent);
+            var soTienPhaiBu = document.getElementById("soTienPhaiBu");
+
+            if (soTienKhachDua === "") {
+                alert("Số tiền khách đưa không được để trống.");
+                return false;
+            }
+
+            soTienKhachDua = parseFloat(soTienKhachDua);
+
+            if (soTienKhachDua > tongTien) {
+                var tienBua = soTienKhachDua - tongTien ;
+                soTienPhaiBu.textContent = "Số tiền phải bù lại: " + tienBua + " VNĐ";
+                soTienPhaiBu.style.display = "block";
+            } else if (soTienKhachDua === tongTien) {
+                soTienPhaiBu.style.display = "none";
+            } else {
+                alert("Số tiền khách đưa không được nhỏ hơn tổng tiền.");
+                return false;
+            }
+        }
+
+        return true;
+    }
     function toggleCashPaymentSection() {
         var paymentMethod = document.getElementById("phuongThucThanhToan").value;
         var cashPaymentSection = document.getElementById("cashPaymentSection");
@@ -540,6 +583,26 @@
     window.onload = function() {
         displayImage();
     };
+
+    function checkEnter(event) {
+        if (event.key === 'Enter') {
+            let input = event.target;
+            if (!input.value || input.value < 1) {
+                event.preventDefault(); // Ngừng gửi form nếu số lượng không hợp lệ
+                alert("Vui lòng nhập số lượng hợp lệ!");
+            }
+        }
+    }
+
+    // Hàm kiểm tra khi gửi form
+    function validateForm(form) {
+        let quantity = form.soLuong.value;
+        if (!quantity || quantity < 1) {
+            alert("Số lượng không hợp lệ!");
+            return false;  // Ngừng gửi form nếu không có giá trị hợp lệ
+        }
+        return true; // Gửi form nếu có giá trị hợp lệ
+    }
 
 
 </script>
