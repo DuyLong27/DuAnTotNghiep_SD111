@@ -629,10 +629,24 @@
                         <p class="col-sm-4"><strong>Số Tiền Hoàn Trả:</strong></p>
                         <p class="col-sm-8"><span>${doiTra.tienHoan} VND</span></p>
                     </div>
+                        <c:if test="${doiTra.phuongThucChuyenTien != null}">
                     <div class="row mb-2">
                         <p class="col-sm-4"><strong>Phương Thức Thanh Toán:</strong></p>
                         <p class="col-sm-8"><span>${doiTra.phuongThucChuyenTien}</span></p>
                     </div>
+                        </c:if>
+                    </c:if>
+                    <c:if test="${doiTra.loaiDichVu == 1}">
+                        <div class="row mb-2">
+                            <p class="col-sm-4"><strong>Số Tiền Khách Phải Bù:</strong></p>
+                            <p class="col-sm-8"><span>${doiTra.tienBu} VND</span></p>
+                        </div>
+                        <c:if test="${doiTra.phuongThucChuyenTien != null}">
+                        <div class="row mb-2">
+                            <p class="col-sm-4"><strong>Phương Thức Thanh Toán:</strong></p>
+                            <p class="col-sm-8"><span>${doiTra.phuongThucChuyenTien}</span></p>
+                        </div>
+                        </c:if>
                     </c:if>
                     <div class="row mb-2">
                         <p class="col-sm-4"><strong>Ngày Yêu Cầu:</strong></p>
@@ -791,6 +805,18 @@
                                 <p class="col-sm-4"><strong>Số tài khoản:</strong></p>
                                 <p class="col-sm-8"><span>${doiTra.soNganHang}</span></p>
                             </div>
+                        </c:if>
+                    </c:if>
+                    <c:if test="${doiTra.loaiDichVu == 1}">
+                        <div class="row mb-2">
+                            <p class="col-sm-4"><strong>Số Tiền Khách Phải Bù:</strong></p>
+                            <p class="col-sm-8"><span>${doiTra.tienBu} VND</span></p>
+                        </div>
+                        <c:if test="${doiTra.phuongThucChuyenTien != null}">
+                        <div class="row mb-2">
+                            <p class="col-sm-4"><strong>Phương Thức Thanh Toán:</strong></p>
+                            <p class="col-sm-8"><span>${doiTra.phuongThucChuyenTien}</span></p>
+                        </div>
                         </c:if>
                     </c:if>
                     <div class="row mb-2">

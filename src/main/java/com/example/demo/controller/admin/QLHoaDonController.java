@@ -169,6 +169,15 @@ public class QLHoaDonController {
             model.addAttribute("hoaDonChiTiets", hoaDonChiTietList);
 
             DoiTra doiTra = doiTraRepo.findFirstByHoaDon_Id(id);
+
+            if (doiTra == null) {
+                doiTra = new DoiTra();
+                doiTra.setTienBu(0);
+            }
+            if (doiTra == null) {
+                doiTra = new DoiTra();
+                doiTra.setTienHoan(0);
+            }
             model.addAttribute("doiTra", doiTra);
 
             List<DoiTraChiTiet> doiTraChiTietList = doiTraChiTietRepo.findByDoiTra_HoaDon_Id(id);
@@ -517,6 +526,8 @@ public class QLHoaDonController {
             return "redirect:/hoa-don/detail/" + id;
         }
 
+        DoiTra doiTra = doiTraRepo.findFirstByHoaDon_Id(id);
+
         List<DoiTraChiTiet> doiTraChiTietList = doiTraChiTietRepo.findByDoiTra_HoaDon_Id(id);
         if (doiTraChiTietList.isEmpty()) {
             redirectAttributes.addFlashAttribute("error", "Không có sản phẩm cần đổi trong hóa đơn!");
@@ -575,7 +586,7 @@ public class QLHoaDonController {
             hoaDonChiTietMoi.setGia_san_pham(sanPhamMoi.getGiaBan());
             hoaDonChiTietRepo.save(hoaDonChiTietMoi);
 
-            tongTienHoaDon += doiSanPham.getSoLuong() * sanPhamMoi.getGiaBan();
+            tongTienHoaDon = hoaDon.getTongTien() + doiTra.getTienBu();
             diemCongThem += (doiSanPham.getSoLuong() * sanPhamMoi.getGiaBan()) / 10000;
         }
 

@@ -636,6 +636,10 @@ public class DoiTraController {
             }
         }
 
+        ThoiGianDonHang thoiGianDonHang = thoiGianDonHangRepo.findByHoaDon(hoaDon);
+        thoiGianDonHang.setHoanTra(LocalDateTime.now());
+        thoiGianDonHangRepo.save(thoiGianDonHang);
+
         hoaDon.setTinh_trang(11); // Cập nhật trạng thái hóa đơn
         hoaDonRepo.save(hoaDon);
 
