@@ -19,6 +19,13 @@
         input[type="number"] {
             -moz-appearance: textfield;
         }
+
+        #successMessage {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+        }
     </style>
 
 </head>
@@ -26,8 +33,14 @@
 <jsp:include page="../layout.jsp"/>
 <%--body--%>
 <div class="container mt-3">
-    <div class="row">
+    <!-- Thông báo -->
+    <c:if test="${not empty message}">
+        <div class="alert alert-success alert-dismissible fade show" role="alert" id="successMessage">
+                ${message}
+        </div>
+    </c:if>
 
+    <div class="row">
         <div class="col-md-3 filter-section">
             <form action="/quan-ly-khuyen-mai/hien-thi" method="get">
                 <div class="mb-3">
@@ -92,7 +105,9 @@
                         <td>${item.giaTriKhuyenMai}</td>
                         <td>${item.ngayBatDau}</td>
                         <td>${item.ngayKetThuc}</td>
-                        <td>${item.tinhTrang ==1?"Đang hoạt động":"Không hoạt động"}</td>
+                        <td class="${item.tinhTrang == 1 ? 'text-success': 'text-danger'}">
+                                ${item.tinhTrang == 1 ? "Đang hoạt động":"Không hoạt động"}
+                        </td>
                         <c:if test="${sessionScope.role == 0}">
                             <td style="width: 100px;">
                                 <div class="d-flex justify-content-center gap-2">
@@ -102,11 +117,18 @@
                                        onclick="showPromotionEdits(${item.idKhuyenMai}, '${item.maKhuyenMai}', '${item.tenKhuyenMai}', ${item.giaTriKhuyenMai}, '${item.ngayBatDau}', '${item.ngayKetThuc}', ${item.tinhTrang})">
                                         <i class="fa fa-edit"></i>
                                     </a>
-                                    <a class="btn btn-outline-custom"
-                                       href="/quan-ly-khuyen-mai/chi-tiet?id=${item.idKhuyenMai}"
-                                       class="btn btn-outline-success">
-                                        <i class="fa-solid fa-hand-point-right"></i>
-                                    </a>
+
+                                    <c:choose>
+                                        <c:when test="${item.tinhTrang == 1}">
+                                            <a class="btn btn-outline-custom"
+                                               href="/quan-ly-khuyen-mai/chi-tiet?id=${item.idKhuyenMai}"
+                                               class="btn btn-outline-success">
+                                                <i class="fa-solid fa-hand-point-right"></i>
+                                            </a>                                        </c:when>
+                                        <c:otherwise>
+                                            <button class="btn btn-outline-custom" disabled><i class="fa-solid fa-hand-point-right"></i></button>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </div>
                             </td>
                         </c:if>
@@ -255,7 +277,7 @@
         document.getElementById('editNgayKetThuc').value = ngayKetThuc;
         document.getElementById('editHoatDong').checked = (tinhTrang === 1);
         document.getElementById('editKhongHoatDong').checked = (tinhTrang === 0);
-        document.getElementById('productForm').action = `/quan-ly-khuyen-mai/update`; // Update action
+        document.getElementById('productForm').action = `/quan-ly-khuyen-mai/update`;
     }
     function removeVietnameseAccents(str) {
         var accents = [
@@ -337,6 +359,15 @@
             return;
         }
     });
+
+    window.onload = function () {
+        var successMessage = document.getElementById("successMessage");
+        if (successMessage) {
+            setTimeout(function () {
+                successMessage.style.display = 'none';
+            }, 3000);
+        }
+    };
 </script>
 
 </html>
