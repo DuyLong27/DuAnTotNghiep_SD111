@@ -4,6 +4,7 @@ import com.example.demo.entity.KhachHang;
 import com.example.demo.entity.NhanVien;
 import com.example.demo.repository.NhanVienRepo;
 import com.example.demo.service.KhachHangService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -59,15 +60,20 @@ public class LoginController {
     }
 
 
-    @GetMapping("logout")
-    public String logout(HttpSession session, HttpServletResponse response) {
+    @GetMapping("/logout")
+    public String logout(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
         session.invalidate();
         Cookie cookie = new Cookie("userSession", null);
         cookie.setMaxAge(0);
         cookie.setPath("/");
         response.addCookie(cookie);
-        return "redirect:/auth/login";
+        String referer = request.getHeader("Referer");
+        if (referer == null || referer.isEmpty()) {
+            return "redirect:/auth/login";
+        }
+        return "redirect:" + referer;
     }
+
 
     @GetMapping("register")
     public String registerForm() {
@@ -75,7 +81,11 @@ public class LoginController {
     }
 
     @PostMapping("register")
-    public String doRegister(String tenKhachHang, String email, String matKhau, String soDienThoai, String diaChi, Model model) {
+    public String doRegister(String tenKhachHang, String email, String matKhau, String confirmMatKhau, String soDienThoai, String diaChi, Model model) {
+        if (!matKhau.equals(confirmMatKhau)) {
+            model.addAttribute("error", "Mật khẩu và mật khẩu xác nhận không khớp");
+            return "view/register";
+        }
         if (khachHangService.findByEmail(email) != null) {
             model.addAttribute("error", "Email đã tồn tại");
             return "view/register";
@@ -89,6 +99,8 @@ public class LoginController {
         khachHang.setDiemTichLuy(0);
         khachHang.setRole(2);
         khachHangService.registerCustomer(khachHang);
+        model.addAttribute("success", "Đăng ký tài khoản thành công!");
         return "redirect:/auth/login";
     }
+
 }

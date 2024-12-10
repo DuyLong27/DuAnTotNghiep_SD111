@@ -39,9 +39,13 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
             position: relative;
             overflow: hidden;
-            width: 768px;
+            width: 900px;
             max-width: 100%;
             min-height: 480px;
+        }
+
+        .form-container {
+            padding: 20px 40px;
         }
 
         .container p{
@@ -105,11 +109,9 @@
         /*    outline: none;*/
         /*}*/
 
-
-        /* Styling input groups with icons */
         .input-group {
             position: relative;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .input-group i {
@@ -117,25 +119,26 @@
             left: 15px;
             top: 50%;
             transform: translateY(-50%);
-            color: #532A0E;
+            color: #333;
             font-size: 18px;
         }
 
         .input-group input {
             width: 100%;
-            padding: 10px 10px 10px 40px; /* Đặt padding để không đè lên icon */
+            padding: 10px 10px 10px 50px;
             border: none;
             border-radius: 5px;
             background-color: #eee;
             color: black;
-            font-size: 16px;
+            font-size: 14px;
+            box-sizing: border-box;
         }
-
         .form-container{
             position: absolute;
             top: 0;
             height: 100%;
             transition: all 0.6s ease-in-out;
+            padding: 20px 40px;
         }
 
         .sign-in{
@@ -173,21 +176,22 @@
             }
         }
 
-        .social-icons{
+        .social-icons {
             margin: 20px 0;
         }
 
-        .social-icons a{
+        .social-icons a {
             border: 1px solid #ffffff;
             color: #ffffff;
             border-radius: 20%;
             display: inline-flex;
             justify-content: center;
             align-items: center;
-            margin: 0 3px;
+            margin: 0 2px;
             width: 40px;
             height: 40px;
         }
+
 
         .toggle-container{
             position: absolute;
@@ -259,11 +263,23 @@
         .container h1 {
             color: #ffffff;
         }
+
+        button {
+            margin-top: 15px;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
 
 <div class="container" id="container">
+
+    <c:if test="${not empty success}">
+        <div class="alert alert-success" role="alert">
+                ${success}
+        </div>
+    </c:if>
+
     <div id="error-message" style="display: none;">
         ${error}
     </div>
@@ -276,7 +292,7 @@
                 <a href="#" class="icon"><i class="fa-brands fa-github"></i></a>
                 <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a>
             </div>
-            <span>or use your email for registeration</span>
+            <span>or use your email for registration</span>
             <div class="input-group">
                 <i class="fa-solid fa-signature"></i>
                 <input type="text" name="tenKhachHang" placeholder="Tên khách hàng" required>
@@ -289,7 +305,11 @@
                 <i class="fa-solid fa-lock"></i>
                 <input type="password" name="matKhau" placeholder="Mật khẩu" required>
             </div>
-            <button type="submit">Sign Up</button>
+            <div class="input-group">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" name="confirmMatKhau" placeholder="Nhập lại mật khẩu" required>
+            </div>
+            <button type="submit" onclick="return validatePasswords()">Sign Up</button>
         </form>
     </div>
     <div class="form-container sign-in">
@@ -350,6 +370,16 @@
             alert('Bạn không có quyền truy cập vào đây, hãy quay lại!');
         }
     };
+
+    function validatePasswords() {
+        const password = document.querySelector('input[name="matKhau"]').value;
+        const confirmPassword = document.querySelector('input[name="confirmMatKhau"]').value;
+        if (password !== confirmPassword) {
+            alert('Mật khẩu và mật khẩu xác nhận không khớp!');
+            return false;
+        }
+        return true;
+    }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>

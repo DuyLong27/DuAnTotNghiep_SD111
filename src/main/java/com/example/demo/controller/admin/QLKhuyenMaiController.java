@@ -15,6 +15,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -70,8 +71,9 @@ public class QLKhuyenMaiController {
 
 
     @PostMapping("/them")
-    public String add(KhuyenMai khuyenMai){
+    public String add(KhuyenMai khuyenMai, RedirectAttributes redirectAttributes){
         khuyenMaiRepo.save(khuyenMai);
+        redirectAttributes.addFlashAttribute("message", "Thêm thành công!");
         return "redirect:/quan-ly-khuyen-mai/hien-thi";
     }
 
@@ -79,7 +81,8 @@ public class QLKhuyenMaiController {
 
 
     @PostMapping("/sua")
-    public String update(@RequestParam("id") Integer id, @ModelAttribute KhuyenMai khuyenMai) {
+    public String update(@RequestParam("id") Integer id, @ModelAttribute KhuyenMai khuyenMai,
+                         RedirectAttributes redirectAttributes) {
         KhuyenMai existingKhuyenMai = khuyenMaiRepo.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid khuyen mai id: " + id));
         existingKhuyenMai.setMaKhuyenMai(khuyenMai.getMaKhuyenMai());
@@ -89,6 +92,7 @@ public class QLKhuyenMaiController {
         existingKhuyenMai.setNgayKetThuc(khuyenMai.getNgayKetThuc());
         existingKhuyenMai.setTinhTrang(khuyenMai.getTinhTrang());
         khuyenMaiRepo.save(existingKhuyenMai);
+        redirectAttributes.addFlashAttribute("message", "Sửa thành công!");
         return "redirect:/quan-ly-khuyen-mai/hien-thi";
     }
 
@@ -98,7 +102,10 @@ public class QLKhuyenMaiController {
             @RequestParam(required = false) Integer giaTriFrom,
             @RequestParam(required = false) Integer giaTriTo,
             Model model) {
-        List<KhuyenMai> listKhuyenMai = khuyenMaiRepo.findAll();
+        List<KhuyenMai> listKhuyenMai = khuyenMaiRepo.findAll().stream()
+                .filter(km -> km.getTinhTrang() == 1)
+                .collect(Collectors.toList());
+
         if (tenKhuyenMai != null && !tenKhuyenMai.isEmpty()) {
             listKhuyenMai = listKhuyenMai.stream()
                     .filter(km -> km.getTenKhuyenMai().toLowerCase().contains(tenKhuyenMai.toLowerCase()))
@@ -114,7 +121,9 @@ public class QLKhuyenMaiController {
                     .filter(km -> km.getGiaTriKhuyenMai() <= giaTriTo)
                     .collect(Collectors.toList());
         }
-        List<SanPhamChiTiet> listSanPhamChiTiet = sanPhamChiTietRepo.findAll();
+        List<SanPhamChiTiet> listSanPhamChiTiet = sanPhamChiTietRepo.findAll().stream()
+                .filter(sp -> sp.getTinhTrang() == 1)
+                .collect(Collectors.toList());
         List<KhuyenMaiChiTiet> listKhuyenMaiChiTiet = khuyenMaiChiTietRepo.findAll();
 
         Map<Integer, Long> khuyenMaiCounts = listKhuyenMai.stream()
@@ -124,6 +133,7 @@ public class QLKhuyenMaiController {
                                 .filter(kmct -> kmct.getKhuyenMai().getIdKhuyenMai().equals(km.getIdKhuyenMai()))
                                 .count(),
                         (existing, replacement) -> existing));
+
         model.addAttribute("listKhuyenMai", listKhuyenMai);
         model.addAttribute("listSanPhamChiTiet", listSanPhamChiTiet);
         model.addAttribute("listKhuyenMaiChiTiet", listKhuyenMaiChiTiet);
@@ -138,9 +148,12 @@ public class QLKhuyenMaiController {
 
 
 
+
+
     @PostMapping("/apply")
     public String applyKhuyenMai(@RequestParam("khuyenMaiId") Integer khuyenMaiId,
-                                 @RequestParam List<Integer> sanPhamChiTietIds) {
+                                 @RequestParam List<Integer> sanPhamChiTietIds,
+                                 RedirectAttributes redirectAttributes) {
         KhuyenMai khuyenMai = khuyenMaiRepo.findById(khuyenMaiId)
                 .orElseThrow(() -> new IllegalArgumentException("Khuyến mãi không hợp lệ"));
         for (Integer sanPhamId : sanPhamChiTietIds) {
@@ -165,6 +178,7 @@ public class QLKhuyenMaiController {
                 khuyenMaiChiTietRepo.save(khuyenMaiChiTiet);
             }
         }
+        redirectAttributes.addFlashAttribute("message", "Áp dụng thành công!");
         return "redirect:/quan-ly-khuyen-mai/chi-tiet";
     }
 

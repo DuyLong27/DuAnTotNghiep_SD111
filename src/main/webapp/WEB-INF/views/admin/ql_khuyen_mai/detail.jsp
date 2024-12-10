@@ -130,7 +130,6 @@
             font-size: 1.2rem;
         }
 
-        /* Hiệu ứng hover cho thông tin khuyến mãi */
         .khuyen-mai-info {
             position: relative;
             padding: 10px;
@@ -140,16 +139,15 @@
         }
 
         .khuyen-mai-info:hover {
-            background-color: #f0faff; /* Tông màu nhẹ nhàng */
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Shadow mềm */
+            background-color: #f0faff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             cursor: pointer;
         }
 
-        /* Dropdown container */
         .product-info-dropdown {
-            display: none; /* Ẩn mặc định */
+            display: none;
             position: absolute;
-            top: calc(100% + 10px); /* Hiển thị ngay dưới cell */
+            top: calc(100% + 10px);
             left: 0;
             width: 250px;
             background-color: #fff;
@@ -163,7 +161,6 @@
             transition: opacity 0.3s ease, transform 0.3s ease;
         }
 
-        /* Hiển thị dropdown khi hover hoặc khi có lớp active */
         .khuyen-mai-info:hover .product-info-dropdown,
         .khuyen-mai-info.active .product-info-dropdown {
             display: block;
@@ -171,7 +168,6 @@
             transform: translateY(0);
         }
 
-        /* Dropdown tiêu đề */
         .dropdown-title {
             margin-bottom: 10px;
             font-size: 16px;
@@ -181,14 +177,12 @@
             padding-bottom: 5px;
         }
 
-        /* Danh sách sản phẩm */
         .dropdown-list {
             list-style: none;
             padding: 0;
             margin: 0;
         }
 
-        /* Sản phẩm item */
         .dropdown-item {
             padding: 8px 10px;
             font-size: 14px;
@@ -202,7 +196,6 @@
             color: #007bff;
         }
 
-        /* Nút X đẹp hơn */
         .delete-link {
             margin-left: 10px;
             color: red;
@@ -235,26 +228,35 @@
             outline: none;
         }
 
-        /* Ẩn mũi tên của input */
         input[type="number"]::-webkit-outer-spin-button,
         input[type="number"]::-webkit-inner-spin-button {
             -webkit-appearance: none;
             margin: 0;
         }
 
-        /* Ẩn mũi tên trong Firefox */
         input[type="number"] {
             -moz-appearance: textfield;
         }
 
 
-
+        #successMessage {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+        }
     </style>
 </head>
 <body>
 <jsp:include page="../layout.jsp" />
 
 <div class="container mt-4">
+    <!-- Thông báo -->
+    <c:if test="${not empty message}">
+        <div class="alert alert-success alert-dismissible fade show" role="alert" id="successMessage">
+                ${message}
+        </div>
+    </c:if>
     <form method="get" action="/quan-ly-khuyen-mai/chi-tiet">
         <div class="row mb-4 d-flex align-items-center">
             <div class="col-md-3">
@@ -323,15 +325,10 @@
                             </ul>
                         </div>
                     </td>
-
-
-
-
                 </tr>
             </c:forEach>
             </tbody>
         </table>
-
     </div>
 
 
@@ -346,7 +343,6 @@
                 <form method="post" action="/quan-ly-khuyen-mai/apply">
                     <div class="modal-body">
                         <div class="row">
-                            <!-- Danh sách khuyến mãi -->
                             <div class="col-md-12 mb-1">
                                 <h5>Chọn Khuyến Mãi</h5>
                                 <div class="select-wrapper">
@@ -365,8 +361,6 @@
                                     </select>
                                 </div>
                             </div>
-
-                            <!-- Hiển thị thông tin khuyến mãi -->
                             <div class="col-md-12" id="khuyenMaiInfo" style="display: none;">
                                 <div class="info-box">
                                     <div class="row">
@@ -392,7 +386,6 @@
                         </div>
 
                         <div class="row mt-3">
-                            <!-- Danh sách sản phẩm chi tiết -->
                             <div class="col-md-12">
                                 <div class="card-wrapper">
                                     <c:forEach items="${listSanPhamChiTiet}" var="sp">
@@ -402,8 +395,6 @@
                                                 <c:set var="isApplied" value="true"/>
                                             </c:if>
                                         </c:forEach>
-
-                                        <!-- Hiển thị sản phẩm chỉ khi chưa có khuyến mãi -->
                                         <c:if test="${isApplied == false}">
                                             <div class="card-item" data-product-id="${sp.id}">
                                                 <div class="card">
@@ -437,7 +428,6 @@
 
 <script>
     $(document).ready(function() {
-        // Xử lý khi chọn khuyến mãi
         $('#khuyenMaiSelect').change(function() {
             const selectedOption = $(this).find('option:selected');
             $('#khuyenMaiInfo').show();
@@ -446,41 +436,31 @@
             $('#ngayBatDau').text(selectedOption.data('ngay-bat-dau'));
             $('#ngayKetThuc').text(selectedOption.data('ngay-ket-thuc'));
         });
-
-        // Sự kiện khi nhấn nút cộng hoặc dấu kiểm
         $('.toggle-button').click(function() {
             const icon = $(this).find('i');
             const productId = $(this).closest('.card-item').data('product-id');
             let selectedProducts = $('#selectedProducts').val() ? $('#selectedProducts').val().split(',') : [];
-
-            // Kiểm tra nếu sản phẩm đã được chọn rồi
             if (icon.hasClass('bi-plus')) {
-                if (!selectedProducts.includes(String(productId))) {  // Chỉ thêm nếu chưa có
+                if (!selectedProducts.includes(String(productId))) {
                     icon.removeClass('bi-plus').addClass('bi-check');
                     selectedProducts.push(productId);
                 }
             } else {
                 icon.removeClass('bi-check').addClass('bi-plus');
-                selectedProducts = selectedProducts.filter(id => id !== String(productId));  // Xóa khỏi danh sách
+                selectedProducts = selectedProducts.filter(id => id !== String(productId));
             }
-
-            // Cập nhật lại giá trị của input hidden
             $('#selectedProducts').val(selectedProducts.join(','));
         });
-
-        // Tự động chọn khuyến mãi từ URL
         const urlParams = new URLSearchParams(window.location.search);
         const khuyenMaiId = urlParams.get('id');
         if (khuyenMaiId) {
             $('#khuyenMaiSelect').val(khuyenMaiId).change();
             $('#applyModal').modal('show');
         }
-
-        // Kiểm tra sản phẩm khi form được gửi
         $('#applyModal form').submit(function() {
             if ($('#selectedProducts').val() === '') {
                 alert('Vui lòng chọn ít nhất một sản phẩm.');
-                return false; // Ngừng gửi form
+                return false;
             }
             return true;
         });
@@ -489,14 +469,20 @@
 
     document.querySelectorAll('.khuyen-mai-info').forEach(item => {
         item.addEventListener('click', function(event) {
-            // Kiểm tra nếu phần tử không phải là nút X (vì muốn giữ dropdown khi nhấn nút X)
             if (!event.target.classList.contains('delete-link')) {
-                // Toggle lớp active
                 this.classList.toggle('active');
             }
         });
     });
 
+    window.onload = function () {
+        var successMessage = document.getElementById("successMessage");
+        if (successMessage) {
+            setTimeout(function () {
+                successMessage.style.display = 'none';
+            }, 3000);
+        }
+    };
 </script>
 
 <script type="text/javascript">
@@ -508,7 +494,6 @@
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
-                        // Tải lại trang sau khi xóa thành công
                         location.reload();
                     } else {
                         alert("Có lỗi xảy ra khi xóa sản phẩm.");

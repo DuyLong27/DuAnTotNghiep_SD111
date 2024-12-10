@@ -36,12 +36,11 @@
             -moz-appearance: textfield;
         }
 
-        /* CSS cho thông báo */
         #successMessage {
-            position: fixed; /* Sử dụng fixed để thông báo không di chuyển khi cuộn */
-            top: 20px; /* Cách mép trên 20px */
-            right: 20px; /* Cách mép bên phải 20px */
-            z-index: 1050; /* Đảm bảo thông báo nằm trên các phần tử khác */
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
         }
     </style>
 </head>
