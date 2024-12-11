@@ -151,7 +151,7 @@ public class BanHangController {
             }
         }
         return nextHoaDonId != null
-                ? "redirect:/ban-hang/" + nextHoaDonId
+                ? "redirect:/ban-hang"
                 : "redirect:/ban-hang";
     }
 

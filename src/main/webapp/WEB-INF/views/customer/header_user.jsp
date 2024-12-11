@@ -231,39 +231,6 @@
                     </svg>
                     <span>${tongSoLuong}</span> <!-- Hiển thị tổng số lượng giỏ hàng -->
                 </a>
-                <ul class="dropdown-menu-custom">
-                    <li>
-                        <a class="dropdown-item" href="/gio-hang/cart">
-                            <table class="table table-striped table-hover table-bordered text-center">
-                                <thead>
-                                <tr>
-                                    <th>Tên SP</th>
-                                    <th>Giá bán</th>
-                                    <th>Số lượng</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <c:forEach var="item" items="${listGioHang}">
-                                    <tr>
-                                        <td>${item.sanPhamChiTiet.sanPham.ten}</td>
-                                        <td>
-                                            <c:choose>
-                                                <c:when test="${item.sanPhamChiTiet.giaGiamGia != null and item.sanPhamChiTiet.giaGiamGia > 0}">
-                                                    ${item.sanPhamChiTiet.giaGiamGia} VNĐ
-                                                </c:when>
-                                                <c:otherwise>
-                                                    ${item.sanPhamChiTiet.giaBan} VNĐ
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </td>
-                                        <td>${item.soLuong}</td>
-                                    </tr>
-                                </c:forEach>
-                                </tbody>
-                            </table>
-                        </a>
-                    </li>
-                </ul>
             </li>
         </ul>
         <ul class="navbar-nav float-end">

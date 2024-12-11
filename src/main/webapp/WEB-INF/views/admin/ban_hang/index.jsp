@@ -195,7 +195,7 @@
                         <select id="hoaDonSelect" class="form-select" onchange="location = this.value;">
                             <option value="">-- Chọn Hóa Đơn --</option>
                             <c:forEach items="${hoaDonList}" var="hoaDon">
-                                <c:if test="${hoaDon.tinh_trang == 0}">
+                                <c:if test="${hoaDon.tinh_trang == 0 && hoaDon.kieuHoaDon == 0}">
                                     <option value="${pageContext.request.contextPath}/ban-hang/${hoaDon.id}"
                                             <c:if test="${hoaDon.id == selectedHoaDonId}">selected</c:if>>
                                             ${hoaDon.soHoaDon}
@@ -288,10 +288,6 @@
                     </div>
                     <h4 class="text-danger" id="soTienPhaiBu" style="display: none;">Số tiền phải bù lại: 0 VNĐ</h4>
                 </c:if>
-                <c:if test="${empty hoaDonChiTiets}">
-                    <p class="text-danger">Không có sản phẩm nào trong hóa đơn</p>
-                </c:if>
-
 
 
                 <c:if test="${not empty selectedHoaDonId}">
@@ -393,35 +389,6 @@
         });
     });
 
-    function validatePayment() {
-        var phuongThucThanhToan = document.getElementById("phuongThucThanhToan").value;
-
-        if (phuongThucThanhToan === "Tiền mặt") {
-            var soTienKhachDua = document.getElementById("soTienKhachDua").value;
-            var tongTien = parseFloat(document.getElementById("tongTien").textContent);
-            var soTienPhaiBu = document.getElementById("soTienPhaiBu");
-
-            if (soTienKhachDua === "") {
-                alert("Số tiền khách đưa không được để trống.");
-                return false;
-            }
-
-            soTienKhachDua = parseFloat(soTienKhachDua);
-
-            if (soTienKhachDua > tongTien) {
-                var tienBua = soTienKhachDua - tongTien ;
-                soTienPhaiBu.textContent = "Số tiền phải bù lại: " + tienBua + " VNĐ";
-                soTienPhaiBu.style.display = "block";
-            } else if (soTienKhachDua === tongTien) {
-                soTienPhaiBu.style.display = "none";
-            } else {
-                alert("Số tiền khách đưa không được nhỏ hơn tổng tiền.");
-                return false;
-            }
-        }
-
-        return true;
-    }
     function toggleCashPaymentSection() {
         var paymentMethod = document.getElementById("phuongThucThanhToan").value;
         var cashPaymentSection = document.getElementById("cashPaymentSection");
