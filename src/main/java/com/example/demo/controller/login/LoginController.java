@@ -62,17 +62,22 @@ public class LoginController {
 
     @GetMapping("/logout")
     public String logout(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
+        Integer userRole = (Integer) session.getAttribute("role");
         session.invalidate();
         Cookie cookie = new Cookie("userSession", null);
         cookie.setMaxAge(0);
         cookie.setPath("/");
         response.addCookie(cookie);
+        if (userRole != null && (userRole == 0 || userRole == 1)) {
+            return "redirect:/auth/login";
+        }
         String referer = request.getHeader("Referer");
         if (referer == null || referer.isEmpty()) {
-            return "redirect:/auth/login";
+            return "redirect:/";
         }
         return "redirect:" + referer;
     }
+
 
 
     @GetMapping("register")
