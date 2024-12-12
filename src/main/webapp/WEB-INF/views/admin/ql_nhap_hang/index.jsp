@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -82,7 +83,7 @@
                     <td>${nh.nhanVien.tenNhanVien}</td>
                     <td>${nh.ngayNhap}</td>
                     <td>${nh.ngayTao}</td>
-                    <td>${nh.tongGiaTri}</td>
+                    <td><fmt:formatNumber value="${nh.tongGiaTri}" type="number" pattern="#,###" /> </td>
                     <td>${nh.ghiChu}</td>
                     <td class="${nh.tinhTrang == 1 ? 'text-success' : 'text-danger'}">
                             ${nh.tinhTrang == 1 ? "Đã hoàn thành" : "Đang trên đường"}

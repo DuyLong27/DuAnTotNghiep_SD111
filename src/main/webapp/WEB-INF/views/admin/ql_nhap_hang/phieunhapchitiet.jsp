@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -121,7 +122,7 @@
             </div>
             <div class="row mb-2">
                 <div class="col-md-6">
-                    <p><strong>Tổng giá trị:</strong> ${nhapHang.tongGiaTri}</p>
+                    <p><strong>Tổng giá trị:</strong><fmt:formatNumber value="${nhapHang.tongGiaTri}" type="number" pattern="#,###" /> </p>
                 </div>
                 <div class="col-md-6">
                     <p><strong>Tình trạng:</strong> ${nhapHang.tinhTrang == 0 ? 'Đang trên đường' : 'Đã hoàn thành'}</p>
@@ -151,7 +152,7 @@
                         <td>${nhct.sanPham.ten}</td>
                         <td>${nhct.soLuong}</td>
                         <td>${nhct.giaNhap} VND</td>
-                        <td>${nhct.tongTien} VND</td>
+                        <td><fmt:formatNumber value="${nhct.tongTien}" type="number" pattern="#,###" /> VND</td>
                         <td>${nhct.hanSuDung} VND</td>
                         <td>${nhct.ngaySanXuat} VND</td>
                     </tr>
@@ -159,7 +160,7 @@
                 </tbody>
             </table>
             <p class="text-end fw-bold">
-                Tổng giá trị: ${nhapHang.tongGiaTri} VND
+                Tổng giá trị: <fmt:formatNumber value="${nhapHang.tongGiaTri}" type="number" pattern="#,###" />  VND
             </p>
         </div>
     </div>

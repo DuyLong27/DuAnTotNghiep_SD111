@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -23,7 +24,6 @@
         <H1>Báo Cáo</H1>
     </div>
     <div class="container">
-        <!-- Form nhập thông tin -->
         <div class="row mb-3">
             <form action="/bao-cao/hien-thi" method="get">
                 <div class="row">
@@ -49,10 +49,9 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <!-- Kiểm tra và thay thế giá trị null hoặc không có dữ liệu bằng 0 -->
                     <td class="text-center">${tongSoHoaDon != null ? tongSoHoaDon : 0}</td>
                     <td class="text-center">${tongSanPham != null ? tongSanPham : 0}</td>
-                    <td class="text-center">${tongDoanhThu != null ? tongDoanhThu : 0} VND</td>
+                    <td class="text-center"><fmt:formatNumber value="${tongDoanhThu != null ? tongDoanhThu : 0}" type="number" pattern="#,###" /> VND</td>
                 </tr>
                 </tbody>
             </table>

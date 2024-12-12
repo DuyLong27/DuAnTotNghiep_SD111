@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -120,7 +121,7 @@
                         </td>
                         <td>
                             <span class="giaNhapSpan" data-giaban="${item.sanPham.giaBan}">
-                                ${item.sanPham.giaBan} đ
+                <fmt:formatNumber value="${item.sanPham.giaBan}" pattern="#,###" /> đ
                             </span>
                         </td>
                         <td>${item.sanPham.nhaCungCap.tenNCC}</td> <!-- Hiển thị nhà cung cấp -->
@@ -171,7 +172,6 @@
 
 
 <script>
-    // Lưu giỏ hàng vào localStorage
     function saveCartToLocalStorage() {
         let cartItems = [];
 
@@ -180,14 +180,13 @@
             const soLuongInput = row.querySelector('.soLuongInput');
             const checkbox = row.querySelector('input[type="checkbox"]');
 
-            // Nếu không tìm thấy các phần tử cần thiết, bỏ qua dòng này
             if (!giaNhapSpan || !soLuongInput || !checkbox) {
                 return;
             }
 
             const item = {
                 id: checkbox.value,
-                giaNhap: parseFloat(giaNhapSpan.getAttribute('data-giaban')) || 0, // lấy giá từ data-giaban
+                giaNhap: parseFloat(giaNhapSpan.getAttribute('data-giaban')) || 0,
                 soLuong: parseInt(soLuongInput.value) || 0,
                 checked: checkbox.checked
             };
@@ -195,11 +194,9 @@
             cartItems.push(item);
         });
 
-        // Lưu giỏ hàng vào localStorage dưới dạng JSON
         localStorage.setItem('cartItems', JSON.stringify(cartItems));
     }
 
-    // Khôi phục giỏ hàng từ localStorage
     function loadCartFromLocalStorage() {
         const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
 
@@ -212,84 +209,83 @@
                 return;
             }
 
-            // Tìm phần tử trong giỏ hàng đã lưu
             const item = cartItems.find(item => item.id === checkbox.value);
 
             if (item) {
-                // Cập nhật giá trị từ giỏ hàng đã lưu
-                giaNhapSpan.setAttribute('data-giaban', item.giaNhap); // Cập nhật giá nhập vào data-giaban
+                giaNhapSpan.setAttribute('data-giaban', item.giaNhap);
                 soLuongInput.value = item.soLuong;
                 checkbox.checked = item.checked;
             }
         });
     }
 
-    // Cập nhật tổng tiền
     function updateTotal() {
         let totalValue = 0;
         let isAnyCheckboxChecked = false;
 
-        // Lặp qua từng dòng để tính toán tổng tiền
+        // Thêm formatter để định dạng tiền tệ
+        const formatter = new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND',
+            minimumFractionDigits: 0
+        });
+
         document.querySelectorAll('tr').forEach(function (row) {
-            const giaNhapSpan = row.querySelector('.giaNhapSpan'); // Thẻ chứa giá nhập
+            const giaNhapSpan = row.querySelector('.giaNhapSpan');
             const soLuongInput = row.querySelector('.soLuongInput');
             const checkbox = row.querySelector('input[type="checkbox"]');
 
             if (!giaNhapSpan || !soLuongInput || !checkbox) {
-                return; // Nếu không tìm thấy các phần tử, bỏ qua dòng này
+                return;
             }
 
             const tongTienElement = row.querySelector('.tongTien_' + checkbox.value);
 
             if (!tongTienElement) {
-                return; // Nếu không tìm thấy phần tử tổng tiền, bỏ qua dòng này
+                return;
             }
 
-            const giaNhap = parseFloat(giaNhapSpan.getAttribute('data-giaban')) || 0; // Lấy giá nhập từ data-giaban
+            const giaNhap = parseFloat(giaNhapSpan.getAttribute('data-giaban')) || 0;
             const soLuong = parseInt(soLuongInput.value) || 0;
             const tongTien = giaNhap * soLuong;
 
-            tongTienElement.textContent = tongTien + ' đ';
+            // Định dạng số tiền cho từng hàng
+            tongTienElement.textContent = formatter.format(tongTien);
 
-            // Nếu checkbox được chọn, cộng tổng tiền
             if (checkbox.checked) {
                 totalValue += tongTien;
                 isAnyCheckboxChecked = true;
             }
         });
 
-        // Hiển thị tổng giá trị
         const totalValueElement = document.getElementById('totalValue');
         if (totalValueElement) {
-            totalValueElement.textContent = totalValue + ' đ';
+            // Định dạng tổng giá trị
+            totalValueElement.textContent = formatter.format(totalValue);
             totalValueElement.style.display = isAnyCheckboxChecked ? 'inline' : 'none';
         }
 
-        // Kích hoạt nút gửi nếu có ít nhất 1 checkbox được chọn và tổng giá trị > 0
         const checkoutBtn = document.getElementById('checkoutBtn');
         if (checkoutBtn) {
             checkoutBtn.disabled = !isAnyCheckboxChecked || totalValue === 0;
         }
     }
 
-    // Lắng nghe sự kiện khi người dùng thay đổi giá trị
     document.querySelectorAll('.giaNhapInput, .soLuongInput, input[type="checkbox"]').forEach(function (input) {
         input.addEventListener('input', function () {
             updateTotal();
-            saveCartToLocalStorage(); // Lưu lại giỏ hàng sau mỗi thay đổi
+            saveCartToLocalStorage();
         });
         input.addEventListener('change', function () {
             updateTotal();
-            saveCartToLocalStorage(); // Lưu lại giỏ hàng sau mỗi thay đổi
+            saveCartToLocalStorage();
         });
     });
 
-    // Chạy khi trang được tải để khôi phục giỏ hàng từ localStorage
     window.onload = function () {
         loadCartFromLocalStorage();
         updateTotal();
     };
-
 </script>
 
 
