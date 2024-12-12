@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -193,7 +194,7 @@
                     <td>${sanPham.nhaCungCap.tenNCC}</td>
                     <td>${sanPham.danhMuc.ten}</td>
                     <td>${sanPham.ten}</td>
-                    <td>${sanPham.giaBan}</td>
+                    <td><fmt:formatNumber value="${sanPham.giaBan}" type="number" pattern="#,###" /></td>
                     <td>${sanPham.moTa}</td>
                     <td class="${sanPham.tinhTrang == 1 ? 'text-success' : 'text-danger'}">
                             ${sanPham.tinhTrang == 1 ? "Hoạt Động" : "Không Hoạt Động"}

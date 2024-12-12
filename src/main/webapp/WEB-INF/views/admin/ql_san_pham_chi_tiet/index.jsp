@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!doctype html>
 <html lang="en">
 
@@ -408,7 +409,7 @@
                     <td>${sanPhamChiTiet.ngayTao}</td>
                     <td>${sanPhamChiTiet.ngayHetHan}</td>
                     <td>${sanPhamChiTiet.soLuong}</td>
-                    <td>${sanPhamChiTiet.giaBan}</td>
+                    <td><fmt:formatNumber value="${sanPhamChiTiet.giaBan}" type="number" pattern="#,###" /></td>
                     <td>${sanPhamChiTiet.sanPham.ten}</td>
                     <td>${sanPhamChiTiet.loaiCaPhe.ten}</td>
                     <td>${sanPhamChiTiet.canNang.ten}</td>
@@ -470,6 +471,10 @@
 </div>
 
 <script>
+    function formatCurrency(value) {
+        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
+    }
+
     function displayProductInfo() {
         var select = document.getElementById("sanPham");
         var productInfo = document.getElementById("productInfo");
@@ -478,12 +483,14 @@
         if (selectedOption) {
             document.getElementById("productId").innerText = "ID: " + selectedOption.value;
             document.getElementById("productName").innerText = "Tên sản phẩm: " + selectedOption.text;
-            document.getElementById("productPrice").innerText = "Giá Ban Đầu: " + selectedOption.getAttribute("data-price");
+            var productPrice = selectedOption.getAttribute("data-price");
+            document.getElementById("productPrice").innerText = "Giá Ban Đầu: " + formatCurrency(productPrice);
             productInfo.style.display = "block";
         } else {
             productInfo.style.display = "none";
         }
     }
+
 
 
     function resetForm() {
@@ -541,7 +548,7 @@
         const productPrice = selectedSanPham.getAttribute('data-price');
         document.getElementById('editProductIdDisplay').innerText = 'ID Sản Phẩm: ' + sanPhamId;
         document.getElementById('editProductName').innerText = 'Tên Sản Phẩm: ' + selectedSanPham.text;
-        document.getElementById('editProductPrice').innerText = 'Giá Ban Đầu: ' + productPrice;
+        document.getElementById('editProductPrice').innerText = 'Giá Ban Đầu: ' + formatCurrency(productPrice);
         document.getElementById('editProductInfo').style.display = 'block';
     });
 

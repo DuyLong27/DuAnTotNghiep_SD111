@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -237,10 +238,10 @@
                                 <td>
                                     <c:choose>
                                         <c:when test="${item.sanPhamChiTiet.giaGiamGia != null and item.sanPhamChiTiet.giaGiamGia > 0}">
-                                            ${item.sanPhamChiTiet.giaGiamGia}
+                                            <fmt:formatNumber value="${item.sanPhamChiTiet.giaGiamGia}" type="number" pattern="#,###" />
                                         </c:when>
                                         <c:otherwise>
-                                            ${item.sanPhamChiTiet.giaBan}
+                                            <fmt:formatNumber value="${item.sanPhamChiTiet.giaBan}" type="number" pattern="#,###" />
                                         </c:otherwise>
                                     </c:choose>
                                 </td>
@@ -265,7 +266,7 @@
                         </c:forEach>
                         </tbody>
                     </table>
-                    <h5 style="color: #0d6efd; font-weight: bold;">Tổng tiền: <span id="tongTien">${tongTien}</span></h5>
+                    <h5 style="color: #0d6efd; font-weight: bold;">Tổng tiền: <span id="tongTien"><fmt:formatNumber value="${tongTien}" type="number" pattern="#,###" /> VNĐ</span></h5>
                     <h5 style="color: #0d6efd; font-weight: bold;">Giảm giá: <span id="discountedPrice">0 VNĐ</span></h5>
                     <form id="paymentMethodForm"
                           action="${pageContext.request.contextPath}/ban-hang/${selectedHoaDonId}/update-all-payment-method"
@@ -348,11 +349,11 @@
                                             <p class="card-text">
                                                 <c:choose>
                                                     <c:when test="${sanPham.giaGiamGia != null && sanPham.giaGiamGia > 0}">
-                                                        <span class="old-price">Giá: ${sanPham.giaBan} VNĐ</span><br>
-                                                        <span class="discount-price">Giá giảm: ${sanPham.giaGiamGia} VNĐ</span>
+                                                        <span class="old-price">Giá: <fmt:formatNumber value="${sanPham.giaBan}" type="number" pattern="#,###" /> VNĐ</span><br>
+                                                        <span class="discount-price">Giá giảm: <fmt:formatNumber value="${sanPham.giaGiamGia}" type="number" pattern="#,###" /> VNĐ</span>
                                                     </c:when>
                                                     <c:otherwise>
-                                                        Giá: ${sanPham.giaBan} VNĐ
+                                                        Giá: <fmt:formatNumber value="${sanPham.giaBan}" type="number" pattern="#,###" /> VNĐ
                                                     </c:otherwise>
                                                 </c:choose>
                                             </p>

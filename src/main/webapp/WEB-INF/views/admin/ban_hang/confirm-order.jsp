@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -168,17 +169,17 @@
                         <c:forEach items="${chiTietList}" var="chiTiet">
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                     ${chiTiet.sanPhamChiTiet.sanPham.ten}
-                                <span>${chiTiet.so_luong} x ${chiTiet.gia_san_pham} VNĐ</span>
+                                <span>${chiTiet.so_luong} x <fmt:formatNumber value="${chiTiet.gia_san_pham}" type="number" pattern="#,###" /> VNĐ</span>
                             </li>
                         </c:forEach>
                     </ul>
 
                     <!-- Hiển thị Tổng Tiền và Giảm Giá -->
                     <p class="total-price">
-                        <strong>Tổng Tiền:</strong> <span>${hoaDon.tongTien} VNĐ</span>
+                        <strong>Tổng Tiền:</strong> <span><fmt:formatNumber value="${hoaDon.tongTien}" type="number" pattern="#,###" /> VNĐ</span>
                     </p>
                     <h5 class="discount">
-                        <strong>Giảm giá:</strong> <span id="discountedPrice">${discountAmount} VNĐ</span>
+                        <strong>Giảm giá:</strong> <span id="discountedPrice"><fmt:formatNumber value="${discountAmount}" type="number" pattern="#,###" /> VNĐ</span>
                     </h5>
                 </div>
                 <div class="modal-footer">

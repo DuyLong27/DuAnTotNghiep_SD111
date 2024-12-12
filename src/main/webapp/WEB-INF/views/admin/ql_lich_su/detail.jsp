@@ -1,6 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt1" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <!doctype html>
 <head>
     <meta charset="UTF-8">
@@ -22,7 +24,7 @@
         <div class="col-md-6">
             <p><strong>Ghi chú:</strong> ${empty hoaDon.ghiChu ? "Không" : hoaDon.ghiChu}</p>
             <p><strong>Phương thức vận chuyển:</strong> ${empty hoaDon.phuongThucVanChuyen ? "Không" : hoaDon.phuongThucVanChuyen}</p>
-            <p><strong>Ngày tạo:</strong> <fmt:formatDate value="${hoaDon.ngayTao}" pattern="dd/MM/yyyy" /></p>
+            <p><strong>Ngày tạo:</strong> <fmt1:formatDate value="${hoaDon.ngayTao}" pattern="dd/MM/yyyy" /></p>
             <p><strong>Phương thức thanh toán:</strong> ${hoaDon.phuong_thuc_thanh_toan}</p>
             <p><strong>Tình trạng:</strong> ${hoaDon.tinh_trang == 4 ? "Hoàn Thành" : (hoaDon.tinh_trang == 13 ? "Hoàn Thành" : "Đã Hủy")}</p>
         </div>
@@ -42,7 +44,7 @@
         <c:forEach items="${hoaDonChiTiets}" var="item">
             <tr>
                 <td>${item.sanPhamChiTiet.sanPham.ten}</td>
-                <td>${item.sanPhamChiTiet.giaBan} VND</td>
+                <td><fmt:formatNumber value="${item.sanPhamChiTiet.giaBan}" type="number" pattern="#,###" /> VNĐ</td>
                 <td>${item.so_luong}</td>
             </tr>
             <c:set var="tongTien" value="${tongTien + (item.so_luong * item.sanPhamChiTiet.giaBan)}"/>
@@ -50,7 +52,7 @@
         </tbody>
     </table>
 
-    <p><strong>Tổng tiền:</strong> ${tongTien} VND</p>
+    <p><strong>Tổng tiền:</strong> <fmt:formatNumber value="${tongTien}" type="number" pattern="#,###" /> VNĐ</p>
 </div>
 <div class="mt-3 text-center">
     <a href="/lich-su/hien-thi" class="btn btn-create">Quay lại</a>

@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!doctype html>
 <head>
     <meta charset="UTF-8">
@@ -44,7 +45,7 @@
                             </c:choose>
                         </td>
                         <td>${item.soHoaDon}</td>
-                        <td>${item.tongTien} VNĐ</td>
+                        <td><fmt:formatNumber value="${item.tongTien}" type="number" pattern="#,###" />VNĐ</td>
                         <td>${item.phuong_thuc_thanh_toan}</td>
                         <td>${item.ghiChu}</td>
                         <td>${item.thoiGianTaoFormatted}</td>

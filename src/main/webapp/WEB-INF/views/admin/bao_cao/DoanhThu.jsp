@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -84,7 +85,7 @@
             <td class="text-center"><p><strong>${doiTra}</strong></p></td>
             <td class="text-center"><p><strong>${totalItemsSold}</strong></p></td>
             <td class="text-center"><p><strong>${bestProductName} - Đã bán ${bestProductQuantity}</strong></p></td>
-            <td class="text-center"><p><strong>${totalRevenue} VND</strong></p></td>
+            <td class="text-center"><p><strong><fmt:formatNumber value="${totalRevenue}" type="number" pattern="#,###" /> VND</strong></p></td>
         </tr>
 
         </tbody>
