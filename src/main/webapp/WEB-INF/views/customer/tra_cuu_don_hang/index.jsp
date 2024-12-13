@@ -102,12 +102,12 @@
                     <p><strong>Phương thức vận chuyển:</strong> ${hoaDon.phuongThucVanChuyen}</p>
                     <p><strong>Phí vận chuyển:</strong>
                         <c:choose>
-                            <c:when test="${hoaDon.phuongThucVanChuyen == 'Giao Hàng Tiêu Chuẩn'}">20000 VNĐ</c:when>
-                            <c:when test="${hoaDon.phuongThucVanChuyen == 'Giao Hàng Nhanh'}">33000 VNĐ</c:when>
+                            <c:when test="${hoaDon.phuongThucVanChuyen == 'Giao Hàng Tiêu Chuẩn'}">20.000 VNĐ</c:when>
+                            <c:when test="${hoaDon.phuongThucVanChuyen == 'Giao Hàng Nhanh'}">33.000 VNĐ</c:when>
                         </c:choose>
                     </p>
                     </c:if>
-                    <p><strong>Tổng tiền:</strong> ${hoaDon.tongTien} VNĐ</p>
+                    <p><strong>Tổng tiền:</strong> <fmt:formatNumber value="${hoaDon.tongTien}" type="number" pattern="#,###" /> VNĐ</p>
                     <p><strong>Loại hóa đơn:</strong> ${hoaDon.kieuHoaDon ==1 ? "Online" :"Tại quầy"}</p>
                     <p>
                         <strong>Trạng thái đơn hàng:</strong>
@@ -145,15 +145,15 @@
                                         <c:choose>
                                             <c:when test="${item.gia_san_pham != item.sanPhamChiTiet.giaBan}">
                             <span style="text-decoration: line-through; color: gray;">
-                                ${item.sanPhamChiTiet.giaBan} VNĐ
+                                <fmt:formatNumber value="${item.sanPhamChiTiet.giaBan}" type="number" pattern="#,###" /> VNĐ
                             </span>
                                                 <br>
                                                 <span style="color: green;">
-                                ${item.gia_san_pham} VNĐ
+                               <fmt:formatNumber value="${item.gia_san_pham}" type="number" pattern="#,###" /> VNĐ
                             </span>
                                             </c:when>
                                             <c:otherwise>
-                                                <span>${item.gia_san_pham} VNĐ</span>
+                                                <span><fmt:formatNumber value="${item.gia_san_pham}" type="number" pattern="#,###" /> VNĐ</span>
                                             </c:otherwise>
                                         </c:choose>
                                 </td>
@@ -179,15 +179,15 @@
                                     <c:choose>
                                         <c:when test="${doiTraChiTiet.giaSanPham != doiTraChiTiet.sanPhamChiTiet.giaBan}">
                                 <span style="text-decoration: line-through; color: gray;">
-                                    ${doiTraChiTiet.sanPhamChiTiet.giaBan} VNĐ
+                                   <fmt:formatNumber value=" ${doiTraChiTiet.sanPhamChiTiet.giaBan}" type="number" pattern="#,###" /> VNĐ
                                 </span>
                                             <br>
                                             <span style="color: green;">
-                                    ${doiTraChiTiet.giaSanPham} VNĐ
+                                    <fmt:formatNumber value="${doiTraChiTiet.giaSanPham}" type="number" pattern="#,###" /> VNĐ
                                 </span>
                                         </c:when>
                                         <c:otherwise>
-                                            <span>${doiTraChiTiet.giaSanPham} VNĐ</span>
+                                            <span><fmt:formatNumber value="${doiTraChiTiet.giaSanPham}" type="number" pattern="#,###" />VNĐ</span>
                                         </c:otherwise>
                                     </c:choose>
                                 </div>
@@ -214,15 +214,15 @@
                                     <c:choose>
                                         <c:when test="${doiTraChiTiet.giaSanPham != doiTraChiTiet.sanPhamChiTiet.giaBan}">
                                 <span style="text-decoration: line-through; color: gray;">
-                                    ${doiTraChiTiet.sanPhamChiTiet.giaBan} VNĐ
+                                    <fmt:formatNumber value="${doiTraChiTiet.sanPhamChiTiet.giaBan}" type="number" pattern="#,###" /> VNĐ
                                 </span>
                                             <br>
                                             <span style="color: green;">
-                                    ${doiTraChiTiet.giaSanPham} VNĐ
+                                    <fmt:formatNumber value="${doiTraChiTiet.giaSanPham}" type="number" pattern="#,###" />VNĐ
                                 </span>
                                         </c:when>
                                         <c:otherwise>
-                                            <span>${doiTraChiTiet.giaSanPham} VNĐ</span>
+                                            <span><fmt:formatNumber value="${doiTraChiTiet.giaSanPham}" type="number" pattern="#,###" /> VNĐ</span>
                                         </c:otherwise>
                                     </c:choose>
                                 </div>

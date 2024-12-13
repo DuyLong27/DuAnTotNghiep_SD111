@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -99,12 +100,12 @@
                     <div class="price">
                         <c:choose>
                             <c:when test="${sanPhamChiTiet.giaGiamGia != null and sanPhamChiTiet.giaGiamGia > 0}">
-                                <span style="color: red; text-decoration: line-through; font-size: 20px;">${sanPhamChiTiet.giaBan} VNĐ</span>
+                                <span style="color: red; text-decoration: line-through; font-size: 20px;"><fmt:formatNumber value="${sanPhamChiTiet.giaBan}" type="number" pattern="#,###" /> VNĐ</span>
                                 <br>
-                                <span style="color: green; font-size: 30px;">${sanPhamChiTiet.giaGiamGia} VNĐ</span>
+                                <span style="color: green; font-size: 30px;"><fmt:formatNumber value="${sanPhamChiTiet.giaGiamGia}" type="number" pattern="#,###" /> VNĐ</span>
                             </c:when>
                             <c:otherwise>
-                                ${sanPhamChiTiet.giaBan} VNĐ
+                                <fmt:formatNumber value="${sanPhamChiTiet.giaBan}" type="number" pattern="#,###" /> VNĐ
                             </c:otherwise>
                         </c:choose>
                     </div>
@@ -187,11 +188,11 @@
                                     <c:choose>
                                         <c:when test="${spct.giaGiamGia != null and spct.giaGiamGia > 0}">
                                             <p class="product-price"
-                                               style="color: red; text-decoration: line-through;">${spct.giaBan} VNĐ</p>
-                                            <p class="product-price" style="color: green;">${spct.giaGiamGia} VNĐ</p>
+                                               style="color: red; text-decoration: line-through;"><fmt:formatNumber value="${spct.giaBan}" type="number" pattern="#,###" /> VNĐ</p>
+                                            <p class="product-price" style="color: green;"><fmt:formatNumber value="${spct.giaGiamGia}" type="number" pattern="#,###" /> VNĐ</p>
                                         </c:when>
                                         <c:otherwise>
-                                            <p class="product-price" style="color: green;">${spct.giaBan} VNĐ</p>
+                                            <p class="product-price" style="color: green;"><fmt:formatNumber value="${spct.giaBan}" type="number" pattern="#,###" /> VNĐ</p>
                                         </c:otherwise>
                                     </c:choose>
                                 </a>
@@ -222,12 +223,12 @@
                                     <p class="fw-bold">Giá:
                                         <c:choose>
                                             <c:when test="${sanPhamChiTiet.giaGiamGia != null and sanPhamChiTiet.giaGiamGia > 0}">
-                                                <span id="giaBan" style="text-decoration: line-through; color: red">${sanPhamChiTiet.giaBan}</span> VNĐ
+                                                <span id="giaBan" style="text-decoration: line-through; color: red"><fmt:formatNumber value="${sanPhamChiTiet.giaBan}" type="number" pattern="#,###" /></span> VNĐ
                                                 <br>
-                                                <span id="giaGiamGia" style="color: green">${sanPhamChiTiet.giaGiamGia}</span> VNĐ
+                                                <span id="giaGiamGia" style="color: green"><fmt:formatNumber value="${sanPhamChiTiet.giaGiamGia}" type="number" pattern="#,###" /></span> VNĐ
                                             </c:when>
                                             <c:otherwise>
-                                                <span id="giaBan">${sanPhamChiTiet.giaBan}</span> VNĐ
+                                                <span id="giaBan"><fmt:formatNumber value="${sanPhamChiTiet.giaBan}" type="number" pattern="#,###" /></span> VNĐ
                                             </c:otherwise>
                                         </c:choose>
                                     </p>
@@ -241,10 +242,10 @@
                                         <label class="form-label fw-bold">Tổng tiền:</label>
                                         <c:choose>
                                             <c:when test="${sanPhamChiTiet.giaGiamGia != null and sanPhamChiTiet.giaGiamGia > 0}">
-                                                <p id="tongTien" class="text-success fw-bold">${sanPhamChiTiet.giaGiamGia} VNĐ</p>
+                                                <p id="tongTien" class="text-success fw-bold"><fmt:formatNumber value="${sanPhamChiTiet.giaGiamGia}" type="number" pattern="#,###" />VNĐ</p>
                                             </c:when>
                                             <c:otherwise>
-                                                <p id="tongTien" class="text-success fw-bold">${sanPhamChiTiet.giaBan} VNĐ</p>
+                                                <p id="tongTien" class="text-success fw-bold"><fmt:formatNumber value="${sanPhamChiTiet.giaBan}" type="number" pattern="#,###" /> VNĐ</p>
                                             </c:otherwise>
                                         </c:choose>
                                     </div>
@@ -266,7 +267,7 @@
                                     <form action="/danh-sach-san-pham-chi-tiet/xac-nhan-hoa-don" method="post">
                                         <input type="hidden" name="sanPhamId" value="${sanPhamChiTiet.id}">
                                         <input type="hidden" name="soLuong" id="soLuongInput" value="1">
-                                        <input type="hidden" name="tongTien" id="tongTienInput" value="${sanPhamChiTiet.giaBan}">
+                                        <input type="hidden" name="tongTien" id="tongTienInput" value="<fmt:formatNumber value="${sanPhamChiTiet.giaBan}" type="number" pattern="#,###" />">
                                         <c:choose>
                                             <c:when test="${empty khachHang}">
                                                 <div class="mb-3">
@@ -320,88 +321,74 @@
     const giaBan = ${sanPhamChiTiet.giaBan != null ? sanPhamChiTiet.giaBan : 0};
     const giaGiamGia = ${sanPhamChiTiet.giaGiamGia != null ? sanPhamChiTiet.giaGiamGia : 0};
     const diemTichLuy = ${khachHang != null ? khachHang.diemTichLuy : 0};
-    const discountRate = Math.min(Math.floor(diemTichLuy / 1000) * 5, 30); // % giảm giá tối đa 30%
+    const discountRate = Math.min(Math.floor(diemTichLuy / 1000) * 5, 30);
 
     function calculateDiscountAmount(price, rate) {
-        return price * (rate / 100); // Số tiền giảm giá
+        return price * (rate / 100);
     }
 
     function updateTotal() {
-        const soLuong = parseInt(document.getElementById("soLuong").value) || 1; // Số lượng sản phẩm
+        const soLuong = parseInt(document.getElementById("soLuong").value) || 1;
         const selectedShipping = document.querySelector('input[name="phuongThucVanChuyen"]:checked');
 
-        let shippingCost = 0; // Phí vận chuyển mặc định
+        let shippingCost = 0;
         if (selectedShipping) {
             shippingCost = selectedShipping.value === "Giao Hàng Nhanh" ? 33000 : 20000;
         }
 
-        // Giá sử dụng (ưu tiên giá giảm nếu có)
         const giaSuDung = giaGiamGia > 0 ? giaGiamGia : giaBan;
 
-        // Tính tổng tiền sản phẩm
         const tongTienSanPham = giaSuDung * soLuong;
 
-        // Kiểm tra có đăng nhập hay không
         let tongTien;
         if (diemTichLuy > 0) {
-            // Tính giảm giá nếu khách hàng có điểm tích lũy
             const discountAmount = calculateDiscountAmount(tongTienSanPham, discountRate);
-            document.getElementById("discountAmount").innerText = discountAmount.toLocaleString('vi-VN') + " VNĐ"; // Hiển thị tiền giảm giá
+            document.getElementById("discountAmount").innerText = discountAmount.toLocaleString('vi-VN') + " VNĐ";
             tongTien = tongTienSanPham - discountAmount + shippingCost;
         } else {
-            // Nếu không đăng nhập, không áp dụng giảm giá
             tongTien = tongTienSanPham + shippingCost;
         }
 
-        // Hiển thị tổng tiền trên giao diện
         document.getElementById("tongTien").innerText = tongTien.toLocaleString('vi-VN') + " VNĐ";
-        document.getElementById("tongTienInput").value = tongTien; // Nếu cần gửi giá trị này qua form
+        document.getElementById("tongTienInput").value = tongTien;
     }
 
 
-    // Khi thay đổi số lượng sản phẩm
     document.getElementById("soLuong").addEventListener("change", updateTotal);
 
-    // Khi thay đổi phương thức vận chuyển
     document.querySelectorAll('input[name="phuongThucVanChuyen"]').forEach((input) => {
         input.addEventListener("change", updateTotal);
     });
 
-    // Khi nhấn nút tăng/giảm số lượng
     function changeQuantity(amount) {
         const soLuongInput = document.getElementById("soLuong");
         let currentQuantity = parseInt(soLuongInput.value);
         currentQuantity = isNaN(currentQuantity) ? 1 : currentQuantity;
-        currentQuantity = Math.max(1, currentQuantity + amount); // Đảm bảo số lượng tối thiểu là 1
+        currentQuantity = Math.max(1, currentQuantity + amount);
         soLuongInput.value = currentQuantity;
 
-        updateTotal(); // Cập nhật lại tổng tiền
+        updateTotal();
     }
-
-    // Khởi tạo giá trị ban đầu
     updateTotal();
 
     function changeQuantity(amount) {
         const soLuongInput = document.getElementById("soLuong");
-        const soLuongHiddenInput = document.getElementById("soLuongInput"); // Trường ẩn
+        const soLuongHiddenInput = document.getElementById("soLuongInput");
 
         let currentQuantity = parseInt(soLuongInput.value);
         currentQuantity = isNaN(currentQuantity) ? 1 : currentQuantity;
-        currentQuantity = Math.max(1, currentQuantity + amount); // Đảm bảo số lượng tối thiểu là 1
+        currentQuantity = Math.max(1, currentQuantity + amount);
         soLuongInput.value = currentQuantity;
 
-        // Cập nhật giá trị cho trường ẩn
         soLuongHiddenInput.value = currentQuantity;
 
-        updateTotal(); // Cập nhật lại tổng tiền
+        updateTotal();
     }
 
 
     function displayImage() {
         var paymentMethod = document.getElementById("phuongThucThanhToan").value;
         var imageContainer = document.getElementById("imageContainer");
-
-        // Nếu chọn "Chuyển khoản", hiển thị hình ảnh
         if (paymentMethod === "Chuyển khoản") {
             imageContainer.style.display = "block";
         } else {

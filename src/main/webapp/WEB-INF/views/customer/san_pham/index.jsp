@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -484,12 +485,12 @@
                                     <p class="card-text">
                                         <c:choose>
                                             <c:when test="${item.giaGiamGia != null and item.giaGiamGia > 0}">
-                                                <span style="color: red; text-decoration: line-through;">${item.giaBan} VNĐ</span>
+                                                <span style="color: red; text-decoration: line-through;"><fmt:formatNumber value="${item.giaBan}" type="number" pattern="#,###" /> VNĐ</span>
                                                 <br>
-                                                <span style="color: green;">${item.giaGiamGia} VNĐ</span>
+                                                <span style="color: green;"><fmt:formatNumber value="${item.giaGiamGia}" type="number" pattern="#,###"/> VNĐ</span>
                                             </c:when>
                                             <c:otherwise>
-                                                ${item.giaBan} VNĐ
+                                                <fmt:formatNumber value="${item.giaBan}" type="number" pattern="#,###" /> VNĐ
                                             </c:otherwise>
                                         </c:choose>
                                     </p>
@@ -537,12 +538,12 @@
                                             <p class="fw-bold">Giá:
                                                 <c:choose>
                                                     <c:when test="${sanPhamChiTiet.giaGiamGia != null and sanPhamChiTiet.giaGiamGia > 0}">
-                                                        <span id="giaBan" style="text-decoration: line-through; color: red">${sanPhamChiTiet.giaBan}</span> VNĐ
+                                                        <span id="giaBan" style="text-decoration: line-through; color: red"><fmt:formatNumber value="${sanPhamChiTiet.giaBan}" type="number" pattern="#,###" /></span> VNĐ
                                                         <br>
-                                                        <span id="giaGiamGia" style="color: green">${sanPhamChiTiet.giaGiamGia}</span> VNĐ
+                                                        <span id="giaGiamGia" style="color: green"><fmt:formatNumber value="${sanPhamChiTiet.giaGiamGia}" type="number" pattern="#,###" /></span> VNĐ
                                                     </c:when>
                                                     <c:otherwise>
-                                                        <span id="giaBan">${sanPhamChiTiet.giaBan}</span> VNĐ
+                                                        <span id="giaBan"><fmt:formatNumber value="${sanPhamChiTiet.giaBan}" type="number" pattern="#,###" /></span> VNĐ
                                                     </c:otherwise>
                                                 </c:choose>
                                             </p>

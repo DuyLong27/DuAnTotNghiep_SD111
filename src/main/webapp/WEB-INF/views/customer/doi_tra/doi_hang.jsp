@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -273,16 +274,10 @@
 
     <div class="card-1">
         <div class="card-body-1">
-            <!-- Form gửi thông tin đổi hàng -->
             <form action="${pageContext.request.contextPath}/doi-tra/hien-thi-thong-tin-doi-hang" method="post" enctype="multipart/form-data">
-                <!-- Thêm hoaDonId vào form -->
                 <input type="hidden" name="hoaDonId" value="${hoaDon.id}">
-
-                <!-- Thêm lý do và lý do chi tiết -->
                 <input type="hidden" name="lyDo" value="${lyDo}">
                 <input type="hidden" name="lyDoDetail" value="${lyDoDetail}">
-
-                <!-- Danh sách sản phẩm đổi -->
                 <h6>Các Sản Phẩm Bạn Cần Đổi:</h6>
                 <ul class="list-group mb-3">
                     <c:forEach var="product" items="${selectedProducts}">
@@ -292,7 +287,7 @@
                                 <span>${product.sanPham.ten}</span>
                             </div>
                             <div>
-                                <span>${giaSanPhamMap[product.id]} VNĐ</span>
+                                <span><fmt:formatNumber value="${giaSanPhamMap[product.id]}" type="number" pattern="#,###" /> VNĐ</span>
                             </div>
                             <div>
                                 <label>Số lượng:</label>
@@ -303,8 +298,6 @@
                         </li>
                     </c:forEach>
                 </ul>
-
-                <!-- Mô tả và ảnh chứng minh -->
                 <div class="mb-3">
                     <label for="ghiChu" class="form-label">Mô Tả:</label>
                     <textarea id="ghiChu" name="moTa" class="form-control"></textarea>
@@ -314,8 +307,6 @@
                     <label for="uploadImage" class="form-label">Tải Ảnh Chứng Minh:</label>
                     <input type="file" id="uploadImage" name="uploadImage" class="form-control" accept="image/*" required>
                 </div>
-
-                <!-- Chọn sản phẩm đổi -->
                 <h6 class="mt-4">Chọn Sản Phẩm Đổi</h6>
                 <div class="modal-body">
                     <div class="row mt-3">
@@ -330,52 +321,39 @@
                                                         <img src="${pageContext.request.contextPath}/uploads/${sp.hinhAnh}" class="card-img"/>
                                                     </c:if>
                                                     <h5 class="card-title">${sp.sanPham.ten}</h5>
-                                                    <p class="card-text">Giá: ${sp.giaBan} VND</p>
+                                                    <p class="card-text">Giá: <fmt:formatNumber value="${sp.giaBan}" type="number" pattern="#,###" /> VND</p>
                                                     <p class="card-text">Số lượng tồn: ${sp.soLuong}</p>
-
-                                                    <!-- Ô nhập số lượng (ẩn mặc định) -->
                                                     <div id="quantity-input-${sp.id}" class="mt-3">
                                                         <label for="soLuong_${sp.id}">Nhập số lượng:</label>
                                                         <input type="number" name="soLuongDoi_${sp.id}" id="soLuongDoi_${sp.id}"
                                                                min="1" max="${sp.soLuong}" class="form-control"
                                                                placeholder="Nhập số lượng muốn đổi">
                                                     </div>
-
-                                                    <!-- Nút chọn sản phẩm -->
                                                     <button type="button" class="btn btn-primary toggle-btn" data-selected="false"
                                                             onclick="toggleProduct(this, ${sp.id})">Chọn</button>
-
-                                                    <!-- Hidden input lưu ID sản phẩm -->
                                                     <input type="hidden" id="sanPhamChiTietDoiIds" name="sanPhamChiTietDoiIds" value="">
                                                 </div>
                                             </div>
                                         </div>
                                     </c:if>
                                 </c:forEach>
-
                             </div>
                         </div>
                     </div>
                 </div>
-
                 <p>Lý Do Đổi Trả: ${lyDo}</p>
                 <p>Lý Do Cụ Thể: ${lyDoDetail}</p>
-
-                <!-- Nút Xác Nhận -->
                 <div class="mt-3">
                     <a href="/doi-tra/chi-tiet?id=${hoaDon.id}" class="btn btn-warning">Quay Lại</a>
                     <form id="doiTraForm" method="POST" action="/doi-tra/luu-thong-tin-doi-hang" enctype="multipart/form-data">
-                        <!-- Gửi các sanPhamChiTietIds và số lượng đã chọn -->
                         <input type="hidden" name="hoaDonId" value="${hoaDon.id}">
                         <input type="hidden" name="lyDo" value="${lyDo}">
                         <input type="hidden" name="lyDoDetail" value="${lyDoDetail}">
                         <input type="hidden" name="moTa" value="${moTa}">
-
                         <c:forEach var="product" items="${selectedProducts}">
                             <input type="hidden" name="sanPhamChiTietIds" value="${product.id}">
                         </c:forEach>
                     </form>
-
                     ${errorTongtien}
                     ${error}
                     <input type="hidden" name="soLuongSanPham" id="soLuongSanPham" value="1">
@@ -392,24 +370,17 @@
         const isSelected = button.getAttribute('data-selected') === 'true';
         const hiddenInput = document.querySelector('input#sanPhamChiTietDoiIds');
         const quantityInput = document.querySelector(`#quantity-input-${productId}`);
-
         let selectedIds = hiddenInput.value ? hiddenInput.value.split(',') : [];
-
         if (isSelected) {
             button.setAttribute('data-selected', 'false');
             button.textContent = 'Chọn';
-
-            // Xóa ID khỏi danh sách
             selectedIds = selectedIds.filter(id => id !== productId.toString());
-
             if (quantityInput) {
                 quantityInput.classList.add('d-none');
             }
         } else {
             button.setAttribute('data-selected', 'true');
             button.textContent = 'Bỏ chọn';
-
-            // Thêm ID nếu chưa có
             if (!selectedIds.includes(productId.toString())) {
                 selectedIds.push(productId);
             }

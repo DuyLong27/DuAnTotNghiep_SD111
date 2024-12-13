@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -74,10 +75,10 @@
                         <p>Phương Thức Vận Chuyển: <strong>${hoaDon.phuongThucVanChuyen}</strong></p>
                         </c:if>
                         <c:if test="${hoaDon.phuongThucVanChuyen != null}">
-                        <p>Tiền Vận Chuyển: <strong>${tienVanChuyen} đ</strong></p>
+                        <p>Tiền Vận Chuyển: <strong><fmt:formatNumber value="${tienVanChuyen}" type="number" pattern="#,###" /> đ</strong></p>
                         </c:if>
                         <c:if test="${hoaDon.tongTien != 33000 && hoaDon.tongTien != 20000}">
-                            <p>Tổng Tiền: <strong>${hoaDon.tongTien} đ</strong></p>
+                            <p>Tổng Tiền: <strong><fmt:formatNumber value="${hoaDon.tongTien}" type="number" pattern="#,###" /> đ</strong></p>
                         </c:if>
                         <p>Đơn hàng được mua: <strong>${hoaDon.kieuHoaDon==1 ? "Online" :"Tại quầy"}</strong></p>
                         <p>
@@ -164,15 +165,15 @@
                                     <c:choose>
                                         <c:when test="${chiTiet.gia_san_pham != chiTiet.sanPhamChiTiet.giaBan}">
                             <span style="text-decoration: line-through; color: gray;">
-                                ${chiTiet.sanPhamChiTiet.giaBan} VNĐ
+                                <fmt:formatNumber value="${chiTiet.sanPhamChiTiet.giaBan}" type="number" pattern="#,###" /> VNĐ
                             </span>
                                             <br>
                                             <span style="color: green;">
-                                ${chiTiet.gia_san_pham} VNĐ
+                                <fmt:formatNumber value="${chiTiet.gia_san_pham}" type="number" pattern="#,###" /> VNĐ
                             </span>
                                         </c:when>
                                         <c:otherwise>
-                                            <span>${chiTiet.gia_san_pham} VNĐ</span>
+                                            <span><fmt:formatNumber value="${chiTiet.gia_san_pham}" type="number" pattern="#,###" /> VNĐ</span>
                                         </c:otherwise>
                                     </c:choose>
                                 </div>
@@ -199,15 +200,15 @@
                                     <c:choose>
                                         <c:when test="${doiTraChiTiet.giaSanPham != doiTraChiTiet.sanPhamChiTiet.giaBan}">
                                 <span style="text-decoration: line-through; color: gray;">
-                                    ${doiTraChiTiet.sanPhamChiTiet.giaBan} VNĐ
+                                    <fmt:formatNumber value="${doiTraChiTiet.sanPhamChiTiet.giaBan}" type="number" pattern="#,###" /> VNĐ
                                 </span>
                                             <br>
                                             <span style="color: green;">
-                                    ${doiTraChiTiet.giaSanPham} VNĐ
+                                    <fmt:formatNumber value="${doiTraChiTiet.giaSanPham}" type="number" pattern="#,###" /> VNĐ
                                 </span>
                                         </c:when>
                                         <c:otherwise>
-                                            <span>${doiTraChiTiet.giaSanPham} VNĐ</span>
+                                            <span><fmt:formatNumber value="${doiTraChiTiet.giaSanPham}" type="number" pattern="#,###" /> VNĐ</span>
                                         </c:otherwise>
                                     </c:choose>
                                 </div>
@@ -233,15 +234,15 @@
                                         <c:choose>
                                             <c:when test="${doiTraChiTiet.giaSanPham != doiTraChiTiet.sanPhamChiTiet.giaBan}">
                                 <span style="text-decoration: line-through; color: gray;">
-                                    ${doiTraChiTiet.sanPhamChiTiet.giaBan} VNĐ
+                                    <fmt:formatNumber value="${doiTraChiTiet.sanPhamChiTiet.giaBan}" type="number" pattern="#,###" /> VNĐ
                                 </span>
                                                 <br>
                                                 <span style="color: green;">
-                                    ${doiTraChiTiet.giaSanPham} VNĐ
+                                    <fmt:formatNumber value="${doiTraChiTiet.giaSanPham}" type="number" pattern="#,###" /> VNĐ
                                 </span>
                                             </c:when>
                                             <c:otherwise>
-                                                <span>${doiTraChiTiet.giaSanPham} VNĐ</span>
+                                                <span><fmt:formatNumber value="${doiTraChiTiet.giaSanPham}" type="number" pattern="#,###" /> VNĐ</span>
                                             </c:otherwise>
                                         </c:choose>
                                     </div>
@@ -269,15 +270,15 @@
                                     <c:choose>
                                         <c:when test="${doiTraChiTiet.giaSanPham != doiTraChiTiet.sanPhamChiTiet.giaBan}">
                                 <span style="text-decoration: line-through; color: gray;">
-                                    ${doiTraChiTiet.sanPhamChiTiet.giaBan} VNĐ
+                                    <fmt:formatNumber value="${doiTraChiTiet.sanPhamChiTiet.giaBan}" type="number" pattern="#,###" /> VNĐ
                                 </span>
                                             <br>
                                             <span style="color: green;">
-                                    ${doiTraChiTiet.giaSanPham} VNĐ
+                                    <fmt:formatNumber value="${doiTraChiTiet.giaSanPham}" type="number" pattern="#,###" /> VNĐ
                                 </span>
                                         </c:when>
                                         <c:otherwise>
-                                            <span>${doiTraChiTiet.giaSanPham} VNĐ</span>
+                                            <span><fmt:formatNumber value="${doiTraChiTiet.giaSanPham}" type="number" pattern="#,###" /> VNĐ</span>
                                         </c:otherwise>
                                     </c:choose>
                                 </div>
@@ -303,15 +304,15 @@
                                         <c:choose>
                                             <c:when test="${doiTraChiTiet.giaSanPham != doiTraChiTiet.sanPhamChiTiet.giaBan}">
                                 <span style="text-decoration: line-through; color: gray;">
-                                    ${doiTraChiTiet.sanPhamChiTiet.giaBan} VNĐ
+                                    <fmt:formatNumber value="${doiTraChiTiet.sanPhamChiTiet.giaBan}" type="number" pattern="#,###" /> VNĐ
                                 </span>
                                                 <br>
                                                 <span style="color: green;">
-                                    ${doiTraChiTiet.giaSanPham} VNĐ
+                                    <fmt:formatNumber value="${doiTraChiTiet.giaSanPham}" type="number" pattern="#,###" /> VNĐ
                                 </span>
                                             </c:when>
                                             <c:otherwise>
-                                                <span>${doiTraChiTiet.giaSanPham} VNĐ</span>
+                                                <span><fmt:formatNumber value="${doiTraChiTiet.giaSanPham}" type="number" pattern="#,###" /> VNĐ</span>
                                             </c:otherwise>
                                         </c:choose>
                                     </div>
@@ -367,13 +368,9 @@
             </div>
             <div class="modal-body">
                 <label class="form-label">Chọn lý do đổi trả:</label>
-
-                <!-- Form ẩn để gửi lý do đổi trả -->
                 <form id="returnForm" action="/doi-tra/luu-ly-do-doi-tra" method="POST">
                     <input type="hidden" name="hoaDonId" value="${hoaDon.id}">
                     <input type="hidden" id="lyDo" name="lyDo" value="">
-
-                    <!-- Tùy chọn nút radio được ẩn -->
                     <div class="form-check custom-option" onclick="submitReason('Hàng đã giao và đã thanh toán nhưng sản phẩm có vấn đề')">
                         <label class="form-check-label">
                             Hàng đã giao và đã thanh toán nhưng sản phẩm có vấn đề
@@ -392,12 +389,9 @@
 <jsp:include page="../footer_user.jsp"/>
 <script>
     function selectOption(selectedId) {
-        // Bỏ chọn tất cả các tùy chọn trước khi chọn cái mới
         document.querySelectorAll('.custom-option').forEach(option => {
             option.classList.remove('selected');
         });
-
-        // Đánh dấu tùy chọn được chọn
         document.getElementById(selectedId).checked = true;
         document.querySelector(`label[for=${selectedId}]`).parentElement.classList.add('selected');
     }
