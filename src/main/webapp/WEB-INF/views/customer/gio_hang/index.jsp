@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -154,15 +155,15 @@
                                 <c:choose>
                                     <c:when test="${item.sanPhamChiTiet.giaGiamGia != null and item.sanPhamChiTiet.giaGiamGia > 0}">
                                         <span style="text-decoration: line-through; color: gray;">
-                                            ${item.sanPhamChiTiet.giaBan} VNĐ
+                                            <fmt:formatNumber value="${item.sanPhamChiTiet.giaBan}" type="number" pattern="#,###" /> VNĐ
                                         </span>
                                         <br>
                                         <span style="color: green; font-weight: bold;">
-                                        ${item.sanPhamChiTiet.giaGiamGia} VNĐ
+                                        <fmt:formatNumber value="${item.sanPhamChiTiet.giaGiamGia}" type="number" pattern="#,###" /> VNĐ
                                         </span>
                                     </c:when>
                                     <c:otherwise>
-                                        <span>${item.sanPhamChiTiet.giaBan} VNĐ</span>
+                                        <span><fmt:formatNumber value="${item.sanPhamChiTiet.giaBan}" type="number" pattern="#,###" /> VNĐ</span>
                                     </c:otherwise>
                                 </c:choose>
                             </td>
@@ -195,10 +196,10 @@
                     <td>
                         <c:choose>
                             <c:when test="${item.sanPhamChiTiet.giaGiamGia != null and item.sanPhamChiTiet.giaGiamGia > 0}">
-                                ${item.sanPhamChiTiet.giaGiamGia * item.soLuong} VNĐ
+                                <fmt:formatNumber value="${item.sanPhamChiTiet.giaGiamGia * item.soLuong}" type="number" pattern="#,###" /> VNĐ
                             </c:when>
                             <c:otherwise>
-                                ${item.sanPhamChiTiet.giaBan * item.soLuong} VNĐ
+                                <fmt:formatNumber value="${item.sanPhamChiTiet.giaBan * item.soLuong}" type="number" pattern="#,###" /> VNĐ
                             </c:otherwise>
                         </c:choose>
                     </td>
@@ -227,55 +228,48 @@
 <jsp:include page="../footer_user.jsp"/>
 </body>
 <script>
-    // Chọn tất cả
     document.addEventListener('DOMContentLoaded', function () {
         const selectAllCheckbox = document.getElementById('selectAll');
         const productCheckboxes = document.querySelectorAll('input[name="selectedItems"]');
         const checkoutBtn = document.getElementById('checkoutBtn');
 
-        // Xử lý khi tick "Chọn tất cả"
         selectAllCheckbox.addEventListener('change', function () {
             const isChecked = this.checked;
             productCheckboxes.forEach(checkbox => {
-                checkbox.checked = isChecked; // Tick/un-tick tất cả checkbox sản phẩm
+                checkbox.checked = isChecked;
             });
-            toggleCheckoutButton(); // Cập nhật trạng thái nút "Xác nhận giỏ hàng"
-            updateTotalInvoice(); // Cập nhật tổng tiền
+            toggleCheckoutButton();
+            updateTotalInvoice();
         });
 
-        // Xử lý khi tick từng checkbox sản phẩm
         productCheckboxes.forEach(checkbox => {
             checkbox.addEventListener('change', function () {
-                // Nếu có 1 checkbox không được chọn, bỏ tick "Chọn tất cả"
                 if (!this.checked) {
                     selectAllCheckbox.checked = false;
                 } else if (Array.from(productCheckboxes).every(checkbox => checkbox.checked)) {
-                    // Nếu tất cả checkbox được tick, tick "Chọn tất cả"
                     selectAllCheckbox.checked = true;
                 }
-                toggleCheckoutButton(); // Cập nhật trạng thái nút "Xác nhận giỏ hàng"
-                updateTotalInvoice(); // Cập nhật tổng tiền
+                toggleCheckoutButton();
+                updateTotalInvoice();
             });
         });
     });
 
-    // Khởi tạo popover cho các phần tử
     document.addEventListener('DOMContentLoaded', function () {
         const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
         const popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
             return new bootstrap.Popover(popoverTriggerEl, {
-                html: true, // Cho phép HTML trong popover
-                trigger: 'manual' // Thay đổi cách kích hoạt popover
+                html: true,
+                trigger: 'manual'
             });
         });
 
-        // Thêm sự kiện mouseenter và mouseleave cho các sản phẩm
         popoverTriggerList.forEach((element, index) => {
             element.addEventListener('mouseenter', function () {
-                popoverList[index].show(); // Hiện popover
+                popoverList[index].show();
             });
             element.addEventListener('mouseleave', function () {
-                popoverList[index].hide(); // Ẩn popover
+                popoverList[index].hide();
             });
         });
     });
@@ -283,8 +277,6 @@
     function updateTotalInvoice() {
         const checkboxes = document.querySelectorAll('input[name="selectedItems"]:checked');
         const selectedIds = Array.from(checkboxes).map(checkbox => checkbox.value);
-
-        // Gửi yêu cầu đến server để tính toán tổng giá trị hóa đơn
         fetch('/gio-hang/calculateTotal', {
             method: 'POST',
             headers: {
@@ -296,46 +288,36 @@
         })
             .then(response => response.text())
             .then(totalValue => {
-                document.getElementById('totalValue').textContent = totalValue + ' đ'; // Cập nhật hiển thị
+                const formattedTotal = new Intl.NumberFormat('vi-VN').format(totalValue);
+                document.getElementById('totalValue').textContent = formattedTotal + ' đ';
             })
             .catch(error => console.error('Error:', error));
     }
 
-    // Gọi hàm khi checkbox được thay đổi
     document.querySelectorAll('input[name="selectedItems"]').forEach((checkbox) => {
         checkbox.addEventListener('change', updateTotalInvoice);
     });
 
     function toggleCheckoutButton() {
-        // Lấy tất cả các checkbox
         const checkboxes = document.querySelectorAll('input[name="selectedItems"]');
-        // Kiểm tra xem có checkbox nào được chọn hay không
         const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
-        // Lấy nút "Xác nhận giỏ hàng"
         const checkoutBtn = document.getElementById('checkoutBtn');
-        // Nếu có ít nhất một checkbox được chọn, kích hoạt nút
         checkoutBtn.disabled = !anyChecked;
     }
 
-    // Gọi hàm kiểm tra khi checkbox thay đổi
     document.querySelectorAll('input[name="selectedItems"]').forEach((checkbox) => {
         checkbox.addEventListener('change', toggleCheckoutButton);
     });
 
-    // Gọi hàm kiểm tra ban đầu để đảm bảo trạng thái nút đúng
     toggleCheckoutButton();
 
-    // Lắng nghe sự kiện keydown cho các trường nhập số lượng
     document.querySelectorAll('input[type="number"]').forEach(input => {
         input.addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
-                event.preventDefault(); // Ngăn chặn hành vi mặc định của phím Enter
-                const productId = this.id.split('-')[1]; // Lấy ID sản phẩm từ ID input
+                event.preventDefault();
+                const productId = this.id.split('-')[1];
                 const quantity = this.value;
-
-                // Kiểm tra nếu giá trị số lượng hợp lệ trước khi gửi yêu cầu
                 if (quantity && quantity > 0) {
-                    // Gửi yêu cầu cập nhật số lượng sản phẩm
                     const formData = new FormData();
                     formData.append('sanPhamId', productId);
                     formData.append('soLuong', quantity);
@@ -347,7 +329,7 @@
                         .then(response => {
                             if (response.ok) {
                                 console.log('Số lượng đã được cập nhật thành công.');
-                                window.location.reload(); // Tải lại trang để thấy sự thay đổi
+                                window.location.reload();
                             } else {
                                 console.error('Có lỗi xảy ra khi cập nhật số lượng.');
                             }
@@ -359,6 +341,5 @@
             }
         });
     });
-
 </script>
 </html>

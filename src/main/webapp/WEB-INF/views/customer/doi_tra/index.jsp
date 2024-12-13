@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -124,7 +125,6 @@
     <c:if test="${not empty errorMessage}">
         <div class="alert alert-danger text-center">${errorMessage}</div>
     </c:if>
-
     <div class="row">
         <c:forEach var="hoaDon" items="${hoaDonList}">
             <c:if test="${hoaDon.tongTien > 0}">
@@ -139,7 +139,7 @@
                             <strong>${hoaDon.thoiGianTaoFormatted}</strong>
                         </p>
                         <c:if test="${hoaDon.tongTien != 33000 && hoaDon.tongTien != 20000}">
-                            <p>Tổng Tiền: <strong>${hoaDon.tongTien} đ</strong></p>
+                            <p>Tổng Tiền: <strong><fmt:formatNumber value="${hoaDon.tongTien}" type="number" pattern="#,###" /> đ</strong></p>
                         </c:if>
                         <p>Hóa đơn: <strong>${hoaDon.kieuHoaDon ==1 ? "Online" :"Tại quầy"}</strong></p>
                         <p>

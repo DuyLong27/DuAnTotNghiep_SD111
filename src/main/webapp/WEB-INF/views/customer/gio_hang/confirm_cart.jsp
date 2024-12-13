@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -35,18 +36,18 @@
                         <c:forEach var="item" items="${selectedItems}">
                             <tr>
                                 <td>${item.sanPhamChiTiet.sanPham.ten}</td>
-                                <td>${item.giaBan} đ</td>
+                                <td><fmt:formatNumber value="${item.giaBan}" type="number" pattern="#,###" /> đ</td>
                                 <td>${item.soLuong}</td>
-                                <td>${item.soLuong * item.giaBan} đ</td>
+                                <td><fmt:formatNumber value="${item.soLuong * item.giaBan}" type="number" pattern="#,###" /> đ</td>
                             </tr>
                         </c:forEach>
                         </tbody>
                     </table>
                     <h4 class="text-center mt-3">
-                        Tổng Tiền Sản Phẩm: <span class="text-danger">${tongTienCuThe} đ</span>
+                        Tổng Tiền Sản Phẩm: <span class="text-danger"><fmt:formatNumber value="${tongTienCuThe}" type="number" pattern="#,###" /> đ</span>
                     </h4>
                     <h4 class="text-center">
-                        Số Tiền Cần Trả: <span id="totalPrice" class="text-danger">${tongTienSauGiam} đ</span>
+                        Số Tiền Cần Trả: <span id="totalPrice" class="text-danger"><fmt:formatNumber value="${tongTienSauGiam}" type="number" pattern="#,###" /> đ</span>
                     </h4>
                 </div>
             </div>
@@ -140,25 +141,28 @@
 </div>
 <jsp:include page="../footer_user.jsp" />
 <script>
+    function formatCurrency(value) {
+        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value).replace("₫", "đ");
+    }
+
     function updateTotal() {
         let basePrice = parseInt('${tongTien}');
         let discount = parseInt('${giamGia}');
         let shippingFee = document.querySelector('input[name="phuongThucVanChuyen"]:checked')
             ? (document.querySelector('input[name="phuongThucVanChuyen"]:checked').value === "Giao Hàng Nhanh" ? 33000 : 20000)
             : 0;
+
         let totalPrice = basePrice + shippingFee;
         let totalPriceAfterDiscount = (basePrice - discount) + shippingFee;
-        document.getElementById('totalPrice').innerText = totalPriceAfterDiscount + ' đ';
-        document.getElementById('giamTien').innerText = discount + ' đ';
-        document.querySelector('h3.text-center span.text-danger').innerText = totalPrice + ' đ';
-    }
 
+        document.getElementById('totalPrice').innerText = formatCurrency(totalPriceAfterDiscount);
+        document.getElementById('giamTien').innerText = formatCurrency(discount);
+        document.querySelector('h3.text-center span.text-danger').innerText = formatCurrency(totalPrice);
+    }
 
     function displayImage() {
         var paymentMethod = document.getElementById("phuongThucThanhToan").value;
         var imageContainer = document.getElementById("imageContainer");
-
-        // Nếu chọn "Chuyển khoản", hiển thị hình ảnh
         if (paymentMethod === "Chuyển khoản") {
             imageContainer.style.display = "block";
         } else {

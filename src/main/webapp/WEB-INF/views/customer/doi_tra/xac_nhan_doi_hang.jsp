@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -63,8 +64,8 @@
                             <img src="${pageContext.request.contextPath}/uploads/${product.hinhAnh}" class="product-img" alt="Ảnh sản phẩm">
                         </td>
                         <td>${soLuongMap[product.id]}</td>
-                        <td>${giaSanPhamMap[product.id]} VND</td>
-                        <td>${soLuongMap[product.id] * giaSanPhamMap[product.id]} VND</td>
+                        <td><fmt:formatNumber value="${giaSanPhamMap[product.id]}" type="number" pattern="#,###" /> VND</td>
+                        <td><fmt:formatNumber value="${soLuongMap[product.id] * giaSanPhamMap[product.id]}" type="number" pattern="#,###" /> VND</td>
                     </tr>
                 </c:forEach>
                 </tbody>
@@ -91,19 +92,16 @@
                             <img src="${pageContext.request.contextPath}/uploads/${product.hinhAnh}" class="product-img" alt="Ảnh sản phẩm">
                         </td>
                         <td>${soLuongMapDoi[product.id]}</td>
-                        <td>${giaSanPhamMapDoi[product.id]} VND</td>
-                        <td>${soLuongMapDoi[product.id] * giaSanPhamMapDoi[product.id]} VND</td>
+                        <td><fmt:formatNumber value="${giaSanPhamMapDoi[product.id]}" type="number" pattern="#,###" /> VND</td>
+                        <td><fmt:formatNumber value="${soLuongMapDoi[product.id] * giaSanPhamMapDoi[product.id]}" type="number" pattern="#,###" /> VND</td>
                     </tr>
                 </c:forEach>
                 </tbody>
             </table>
-
-            <h5 class="total-price mt-4">Tổng tiền đổi hàng: ${tongTienDoi} VND</h5>
-            <h5 class="total-price mt-2">Tổng tiền hoàn trả: ${tongTienHoan} VND</h5>
-            <h5 class="total-price mt-2">Tổng tiền cần bù: ${tongTienDoi - tongTienHoan} VND</h5>
-
+            <h5 class="total-price mt-4">Tổng tiền đổi hàng: <fmt:formatNumber value="${tongTienDoi}" type="number" pattern="#,###" /> VND</h5>
+            <h5 class="total-price mt-2">Tổng tiền hoàn trả: <fmt:formatNumber value="${tongTienHoan}" type="number" pattern="#,###" /> VND</h5>
+            <h5 class="total-price mt-2">Tổng tiền cần bù: <fmt:formatNumber value="${tongTienDoi - tongTienHoan}" type="number" pattern="#,###" /> VND</h5>
             <div class="mt-4">
-                <a href="/doi-tra/chi-tiet?id=${hoaDon.id}" class="btn btn-warning">Quay lại</a>
                     <input type="hidden" name="hoaDonId" value="${hoaDon.id}">
                     <input type="hidden" name="lyDo" value="${lyDo}">
                     <input type="hidden" name="lyDoDetail" value="${lyDoDetail}">
@@ -114,21 +112,17 @@
                         <label for="uploadImage" class="form-label">Ảnh chứng minh:</label>
                         <input type="file" class="form-control" id="uploadImage" name="uploadImage" required>
                     </div>
-
                     <c:if test="${not empty error}">
                         <div class="alert alert-danger">${error}</div>
                         <div class="alert alert-danger">${errorTongtien}</div>
                     </c:if>
-
-
                     <button type="submit" class="btn btn-primary">Xác nhận đổi hàng</button>
+                    <a href="/doi-tra/chi-tiet?id=${hoaDon.id}" class="btn btn-warning">Quay lại</a>
             </div>
         </div>
     </div>
     </form>
-
 </div>
-
 <jsp:include page="../footer_user.jsp"/>
 </body>
 </html>

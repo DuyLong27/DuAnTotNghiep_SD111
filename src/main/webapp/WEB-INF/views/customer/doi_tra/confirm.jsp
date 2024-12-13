@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -19,7 +20,6 @@
                 <input type="hidden" name="lyDoDetail" value="${lyDoDetail}">
                 <input type="hidden" name="hinhThucHoan" value="${hinhThucHoan}">
 
-                <!-- Thêm trường ẩn cho sanPhamChiTietIds -->
                 <c:forEach var="product" items="${selectedProducts}">
                     <input type="hidden" name="sanPhamChiTietIds" value="${product.id}">
                 </c:forEach>
@@ -46,13 +46,8 @@
                 <p>Lý Do Cụ Thể: ${lyDoDetail}</p>
                 <div class="mb-3">
                     <label for="tongTienHoan" class="form-label">Tổng Tiền Phải Hoàn:</label>
-                    <input type="text" id="tongTienHoan" name="tongTienHoan" class="form-control" value="${tongTienHoan}" readonly>
+                    <input type="text" id="tongTienHoan" name="tongTienHoan" class="form-control" value="<fmt:formatNumber value="${tongTienHoan}" type="number" pattern="#,###" />" readonly>
                 </div>
-
-
-
-
-
                 <div class="mb-3">
                     <label for="phuongThucChuyenTien" class="form-label">Phương Thức Chuyển Tiền:</label>
                     <select id="phuongThucChuyenTien" name="phuongThucChuyenTien" class="form-select" onchange="toggleBankFields()">
@@ -67,12 +62,6 @@
                     <label for="soNganHang" class="form-label">Số Ngân Hàng:</label>
                     <input type="text" id="soNganHang" name="soNganHang" class="form-control" placeholder="Nhập số ngân hàng">
                 </div>
-
-
-
-
-
-
                 <div class="mb-3">
                     <label for="ghiChu" class="form-label">Mô Tả:</label>
                     <textarea id="ghiChu" name="moTa" class="form-control"></textarea>
