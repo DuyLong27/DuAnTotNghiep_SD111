@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -35,7 +36,7 @@ public class GioHangController {
     private EmailService emailService;
 
     @PostMapping("/add")
-    public String addCart(@RequestParam("sanPhamId") int sanPhamId, HttpSession session, Model model) {
+    public String addCart(@RequestParam("sanPhamId") int sanPhamId, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         // Tìm sản phẩm chi tiết theo ID
         SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid product ID: " + sanPhamId));
@@ -107,6 +108,7 @@ public class GioHangController {
         gioHangRepo.save(cart); // Lưu giỏ hàng đã cập nhật
 
         // Chuyển hướng đến trang chi tiết hóa đơn mới được tạo
+        redirectAttributes.addFlashAttribute("message","Thêm sản phẩm vào giỏ hàng thành công");
         return "redirect:/danh-sach-san-pham/hien-thi";
     }
 
@@ -150,7 +152,7 @@ public class GioHangController {
 
 
     @PostMapping("/remove")
-    public String removeCartItem(HttpSession session, @RequestParam("sanPhamId") int sanPhamId) {
+    public String removeCartItem(HttpSession session, @RequestParam("sanPhamId") int sanPhamId, RedirectAttributes redirectAttributes) {
         // Kiểm tra khách hàng đã đăng nhập hay chưa
         KhachHang khachHang = (KhachHang) session.getAttribute("khachHang");
         GioHang cart;
@@ -195,7 +197,7 @@ public class GioHangController {
                 gioHangRepo.save(cart); // Lưu giỏ hàng đã cập nhật
             }
         }
-
+        redirectAttributes.addFlashAttribute("message","Sản phẩm đã được xóa khỏi giỏ hàng");
         // Chuyển hướng về trang giỏ hàng
         return "redirect:/gio-hang/cart";
     }
@@ -386,7 +388,7 @@ public class GioHangController {
             @RequestParam("soDienThoai") String soDienThoai,
             @RequestParam(value = "email", required = false) String email,
             HttpSession session,
-            Model model) {
+            Model model, RedirectAttributes redirectAttributes) {
         if (selectedIds == null || selectedIds.isEmpty()) {
             model.addAttribute("errorMessage", "Bạn chưa chọn sản phẩm nào.");
             return "customer/gio_hang/index";
@@ -474,6 +476,7 @@ public class GioHangController {
                         phuongThucVanChuyen, diaChi, soDienThoai, invoiceDetails, totalAmount);
             }
         }
+        redirectAttributes.addFlashAttribute("message","Đặt hàng thành công");
         return "redirect:/danh-sach-san-pham/hien-thi";
     }
 

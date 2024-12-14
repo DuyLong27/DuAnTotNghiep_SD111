@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 import java.time.LocalDateTime;
@@ -124,7 +125,7 @@ public class TrangChuController {
                                 @RequestParam String soDienThoai,
                                 @RequestParam int soLuong,
                                 @RequestParam int sanPhamId,
-                                @RequestParam(required = false) String email) {
+                                @RequestParam(required = false) String email, RedirectAttributes redirectAttributes) {
         SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepository.findById(sanPhamId).orElse(null);
         if (sanPhamChiTiet == null) {
             return "redirect:/error";
@@ -154,7 +155,8 @@ public class TrangChuController {
         hoaDon.setTinh_trang(0);
         if (khachHang != null) {
             hoaDon.setKhachHang(khachHang);
-        } else if (email != null && !email.isEmpty()) {
+        }
+        if (email != null && !email.isEmpty()) {
             emailService.sendHoaDonMuaNgayEmail(
                     email,
                     soHoaDon,
@@ -167,8 +169,6 @@ public class TrangChuController {
                     giaSanPham,
                     tongTien
             );
-        } else {
-            return "redirect:/error";
         }
         hoaDonRepo.save(hoaDon);
         HoaDonChiTiet hoaDonChiTiet = new HoaDonChiTiet();
@@ -184,11 +184,12 @@ public class TrangChuController {
         thoiGianDonHang.setHoaDon(hoaDon);
         thoiGianDonHang.setThoiGianTao(LocalDateTime.now());
         thoiGianDonHangRepo.save(thoiGianDonHang);
+        redirectAttributes.addFlashAttribute("message","Đặt hàng thành công");
         return "redirect:/trang-chu";
     }
 
     @PostMapping("/add")
-    public String addCart(@RequestParam("sanPhamId") int sanPhamId, HttpSession session, Model model) {
+    public String addCart(@RequestParam("sanPhamId") int sanPhamId, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         // Tìm sản phẩm chi tiết theo ID
         SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepository.findById(sanPhamId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid product ID: " + sanPhamId));
@@ -259,6 +260,7 @@ public class TrangChuController {
         cart.setTongTien(tongTien);
         gioHangRepo.save(cart); // Lưu giỏ hàng đã cập nhật
 
+        redirectAttributes.addFlashAttribute("message","Thêm sản phẩm vào giỏ hàng thành công");
         // Chuyển hướng đến trang chi tiết hóa đơn mới được tạo
         return "redirect:/trang-chu";
     }

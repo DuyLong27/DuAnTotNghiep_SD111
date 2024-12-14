@@ -82,11 +82,100 @@
         .related-products a {
             text-decoration: none;
         }
+        .alert {
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 1.5;
+            border-left: 4px solid #28a745;
+            padding: 15px 20px;
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .alert i {
+            color: #28a745;
+        }
+
+
+        .alert .btn-close {
+            background-color: transparent;
+            opacity: 0.8;
+        }
+
+        #autoCloseAlert {
+            animation: fadeOut 3s forwards;
+        }
+
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+            }
+            80% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                display: none;
+            }
+        }
+
+        .custom-modal {
+            background-color: #ffffff;
+            border-radius: 10px;
+            border: 2px solid #0b745e;
+        }
+
+
+        .custom-modal .modal-header {
+            background-color: #0b745e;
+            color: #ffffff;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .custom-modal .btn-success {
+            background-color: #0b745e;
+            border-color: #0b745e;
+            transition: background-color 0.3s ease;
+        }
+
+        .custom-modal .btn-success:hover {
+            background-color: #085f3b;
+        }
+
+        .custom-modal .btn-outline-danger {
+            border-color: #e74c3c;
+            color: #e74c3c;
+            transition: border-color 0.3s, color 0.3s;
+        }
+
+        .custom-modal .btn-outline-danger:hover {
+            background-color: #e74c3c;
+            color: #ffffff;
+            border-color: #e74c3c;
+        }
+
+        .custom-modal .modal-body {
+            font-size: 1.1rem;
+            padding: 20px;
+            color: #555;
+        }
     </style>
 </head>
 <body>
 <jsp:include page="../header_user.jsp"/>
 <div class="container mt-5">
+    <div class="container mt-3 position-relative">
+        <c:if test="${not empty message}">
+            <div id="autoCloseAlert" class="alert alert-success alert-dismissible fade show shadow-lg rounded"
+                 role="alert"
+                 style="max-width: 500px; margin: 0 auto; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1050;">
+                <i class="fa-solid fa-check-circle me-2"></i>
+                <span>${message}</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </c:if>
+    </div>
     <div class="row">
         <div class="col-lg-9"> <!-- Increased size to 75% -->
             <div class="row">
@@ -264,18 +353,10 @@
                                 </div>
                                 <div class="col-md-6 border-start">
                                     <h3 class="text-center mb-4 text-secondary">Thông tin thanh toán</h3>
-                                    <form action="/danh-sach-san-pham-chi-tiet/xac-nhan-hoa-don" method="post">
+                                    <form id="orderForm" action="/danh-sach-san-pham-chi-tiet/xac-nhan-hoa-don" method="post">
                                         <input type="hidden" name="sanPhamId" value="${sanPhamChiTiet.id}">
                                         <input type="hidden" name="soLuong" id="soLuongInput" value="1">
                                         <input type="hidden" name="tongTien" id="tongTienInput" value="<fmt:formatNumber value="${sanPhamChiTiet.giaBan}" type="number" pattern="#,###" />">
-                                        <c:choose>
-                                            <c:when test="${empty khachHang}">
-                                                <div class="mb-3">
-                                                    <label for="email" class="form-label fw-bold">Email:</label>
-                                                    <input type="email" class="form-control" id="email" name="email" placeholder="Nhập email của bạn" required>
-                                                </div>
-                                            </c:when>
-                                        </c:choose>
                                         <div class="mb-3">
                                             <label for="phuongThucThanhToan" class="form-label fw-bold">Phương thức thanh toán:</label>
                                             <select class="form-select" id="phuongThucThanhToan" name="phuongThucThanhToan" required onchange="displayImage()">
@@ -305,7 +386,34 @@
                                             <label for="soDienThoai" class="form-label fw-bold">Số điện thoại:</label>
                                             <input type="tel" class="form-control" id="soDienThoai" name="soDienThoai" pattern="[0-9]{10}" required>
                                         </div>
-                                        <button type="submit" class="btn btn-success w-100 py-2 mt-4">Xác nhận đơn hàng</button>
+                                        <c:choose>
+                                            <c:when test="${empty khachHang}">
+                                                <div class="mb-3">
+                                                    <label for="email" class="form-label fw-bold">Email:</label>
+                                                    <input type="email" class="form-control" id="email" name="email" placeholder="Nhập email của bạn để nhận thông tin hóa đơn">
+                                                </div>
+                                            </c:when>
+                                        </c:choose>
+                                        <button type="button" class="btn btn-success w-100 py-2 mt-4" data-bs-toggle="modal" data-bs-target="#confirmModal">
+                                            Xác nhận đơn hàng
+                                        </button>
+                                        <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true" data-bs-backdrop="false">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content custom-modal">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="confirmModalLabel">Xác Nhận Đơn Hàng</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        Bạn có chắc chắn các thông tin đúng và hoàn tất xác nhận đơn hàng?
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Hủy</button>
+                                                        <button type="submit" class="btn btn-success" form="orderForm">Xác Nhận</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </form>
                                 </div>
                             </div>

@@ -259,6 +259,85 @@
             border-bottom-left-radius: 8px;
             z-index: 1;
         }
+
+        .alert {
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 1.5;
+            border-left: 4px solid #28a745;
+            padding: 15px 20px;
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .alert i {
+            color: #28a745;
+        }
+
+
+        .alert .btn-close {
+            background-color: transparent;
+            opacity: 0.8;
+        }
+
+        #autoCloseAlert {
+            animation: fadeOut 3s forwards;
+        }
+
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+            }
+            80% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                display: none;
+            }
+        }
+
+        .custom-modal {
+            background-color: #ffffff;
+            border-radius: 10px;
+            border: 2px solid #0b745e;
+        }
+
+
+        .custom-modal .modal-header {
+            background-color: #0b745e;
+            color: #ffffff;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .custom-modal .btn-success {
+            background-color: #0b745e;
+            border-color: #0b745e;
+            transition: background-color 0.3s ease;
+        }
+
+        .custom-modal .btn-success:hover {
+            background-color: #085f3b;
+        }
+
+        .custom-modal .btn-outline-danger {
+            border-color: #e74c3c;
+            color: #e74c3c;
+            transition: border-color 0.3s, color 0.3s;
+        }
+
+        .custom-modal .btn-outline-danger:hover {
+            background-color: #e74c3c;
+            color: #ffffff;
+            border-color: #e74c3c;
+        }
+
+        .custom-modal .modal-body {
+            font-size: 1.1rem;
+            padding: 20px;
+            color: #555;
+        }
     </style>
 </head>
 <body data-bs-spy="scroll" data-bs-target="#navbar" data-bs-offset="70">
@@ -288,9 +367,20 @@
     </button>
 </div>
 <div class="container">
+    <div class="container mt-3 position-relative">
+        <c:if test="${not empty message}">
+            <div id="autoCloseAlert" class="alert alert-success alert-dismissible fade show shadow-lg rounded"
+                 role="alert"
+                 style="max-width: 500px; margin: 0 auto; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1050;">
+                <i class="fa-solid fa-check-circle me-2"></i>
+                <span>${message}</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </c:if>
+    </div>
     <div class="section">
-        <h2 class="text-success mb-3" data-aos="fade-up">Sản phẩm bán chạy</h2>
-        <div class="row" data-aos="fade-up" data-aos-delay="100">
+        <h2 class="text-success mb-3">Sản phẩm bán chạy</h2>
+        <div class="row">
             <c:forEach var="product" items="${bestSellers}">
                 <div class="col-md-3 mb-4">
                     <div class="card">
@@ -338,8 +428,8 @@
                 </div>
             </c:forEach>
         </div>
-        <h2 class="text-success mb-3" data-aos="fade-up">Sản phẩm mới nhất</h2>
-        <div class="row" data-aos="fade-up" data-aos-delay="100">
+        <h2 class="text-success mb-3">Sản phẩm mới nhất</h2>
+        <div class="row">
             <c:forEach var="newestProducts" items="${newestProducts}">
                 <div class="col-md-3 mb-4">
                     <div class="card">
@@ -387,8 +477,8 @@
                 </div>
             </c:forEach>
         </div>
-        <h2 class="text-success mb-3" data-aos="fade-up">Sản phẩm đang khuyến mãi</h2>
-        <div class="row" data-aos="fade-up" data-aos-delay="100">
+        <h2 class="text-success mb-3">Sản phẩm đang khuyến mãi</h2>
+        <div class="row">
             <c:set var="hasPromotion" value="false"/>
             <c:forEach var="product" items="${allProducts}">
                 <c:if test="${product.giaGiamGia != null && product.giaGiamGia > 0}">
@@ -521,7 +611,7 @@
                             </div>
                             <div class="col-md-6 border-start">
                                 <h3 class="text-center mb-4 text-secondary">Thông tin thanh toán</h3>
-                                <form action="/trang-chu/xac-nhan-hoa-don" method="post">
+                                <form id="orderForm" action="/trang-chu/xac-nhan-hoa-don" method="post">
                                     <input type="hidden" name="sanPhamId" value="${sanPhamChiTiet.id}">
                                     <input type="hidden" name="soLuong" id="soLuongInput" value="1">
                                     <input type="hidden" name="tongTien" id="tongTienInput"
@@ -575,12 +665,31 @@
                                             <div class="mb-3">
                                                 <label for="email" class="form-label fw-bold">Email:</label>
                                                 <input type="email" class="form-control" id="email" name="email"
-                                                       placeholder="Nhập email của bạn" required>
+                                                       placeholder="Nhập email của bạn để nhận thông tin hóa đơn">
                                             </div>
                                         </c:when>
                                     </c:choose>
-                                    <button type="submit" class="btn btn-success w-100 py-2 mt-4">Xác nhận đơn hàng
+                                    <button type="button" class="btn btn-success w-100 py-2 mt-4" data-bs-toggle="modal" data-bs-target="#confirmModal">
+                                        Xác nhận đơn hàng
                                     </button>
+                                    </button>
+                                    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true" data-bs-backdrop="false">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content custom-modal">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="confirmModalLabel">Xác Nhận Đơn Hàng</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Bạn có chắc chắn các thông tin đúng và hoàn tất xác nhận đơn hàng?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Hủy</button>
+                                                    <button type="submit" class="btn btn-success" form="orderForm">Xác Nhận</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </form>
                             </div>
                         </div>
@@ -591,69 +700,11 @@
     </c:if>
 </div>
 
-<button id="back-to-top" title="Back to Top"><i class="fas fa-arrow-up"></i></button>
-
 <jsp:include page="../footer_user.jsp"/>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
 <script>
-    AOS.init();
-
-    window.onscroll = function () {
-        if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
-            document.getElementById("back-to-top").style.display = "block";
-        } else {
-            document.getElementById("back-to-top").style.display = "none";
-        }
-    };
-
-    document.getElementById("back-to-top").addEventListener("click", function () {
-        window.scrollTo({top: 0, behavior: 'smooth'});
-    });
-
-    document.querySelectorAll('.btn-close').forEach(btnClose => {
-        btnClose.addEventListener('click', function(event) {
-            event.preventDefault();
-
-            sessionStorage.setItem('scrollPosition', window.scrollY);
-
-            window.location.href = this.getAttribute('href');
-        });
-    });
-
-    window.onload = function() {
-        const scrollPosition = sessionStorage.getItem('scrollPosition');
-        if (scrollPosition) {
-            setTimeout(function() {
-                window.scrollTo({
-                    top: scrollPosition,
-                    behavior: 'smooth'
-                });
-                sessionStorage.removeItem('scrollPosition');
-            }, 100);
-        }
-    };
-
-    document.querySelectorAll('form').forEach(form => {
-        form.addEventListener('submit', function(event) {
-            sessionStorage.setItem('scrollPosition', window.scrollY);
-        });
-    });
-
-    window.onload = function() {
-        const scrollPosition = sessionStorage.getItem('scrollPosition');
-        if (scrollPosition) {
-            setTimeout(function() {
-                window.scrollTo({
-                    top: scrollPosition,
-                    behavior: 'smooth'
-                });
-                sessionStorage.removeItem('scrollPosition');
-            }, 100);
-        }
-    };
-
     const giaBan = ${sanPhamChiTiet.giaBan != null ? sanPhamChiTiet.giaBan : 0};
     const giaGiamGia = ${sanPhamChiTiet.giaGiamGia != null ? sanPhamChiTiet.giaGiamGia : 0};
     const diemTichLuy = ${khachHang != null ? khachHang.diemTichLuy : 0};

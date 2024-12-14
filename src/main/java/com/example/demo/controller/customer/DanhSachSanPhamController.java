@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -143,7 +144,7 @@ public class DanhSachSanPhamController {
                                 @RequestParam String soDienThoai,
                                 @RequestParam int soLuong,
                                 @RequestParam int sanPhamId,
-                                @RequestParam(required = false) String email) {
+                                @RequestParam(required = false) String email, RedirectAttributes redirectAttributes) {
         SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamId).orElse(null);
         if (sanPhamChiTiet == null) {
             return "redirect:/error";
@@ -173,7 +174,8 @@ public class DanhSachSanPhamController {
         hoaDon.setTinh_trang(0);
         if (khachHang != null) {
             hoaDon.setKhachHang(khachHang);
-        } else if (email != null && !email.isEmpty()) {
+        }
+        if (email != null && !email.isEmpty()) {
             emailService.sendHoaDonMuaNgayEmail(
                     email,
                     soHoaDon,
@@ -186,8 +188,6 @@ public class DanhSachSanPhamController {
                     giaSanPham,
                     tongTien
             );
-        } else {
-            return "redirect:/error";
         }
         hoaDonRepo.save(hoaDon);
         HoaDonChiTiet hoaDonChiTiet = new HoaDonChiTiet();
@@ -203,6 +203,7 @@ public class DanhSachSanPhamController {
         thoiGianDonHang.setHoaDon(hoaDon);
         thoiGianDonHang.setThoiGianTao(LocalDateTime.now());
         thoiGianDonHangRepo.save(thoiGianDonHang);
+        redirectAttributes.addFlashAttribute("message","Đặt hàng thành công");
         return "redirect:/danh-sach-san-pham/hien-thi";
     }
 

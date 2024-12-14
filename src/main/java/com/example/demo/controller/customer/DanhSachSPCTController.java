@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -92,7 +93,7 @@ public class DanhSachSPCTController {
     @PostMapping("/add")
     public String addCart(@RequestParam("sanPhamId") int sanPhamId,
                           @RequestParam("soLuong") int soLuong,
-                          HttpSession session, Model model) {
+                          HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         // Tìm sản phẩm chi tiết theo ID
         SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid product ID: " + sanPhamId));
@@ -168,6 +169,7 @@ public class DanhSachSPCTController {
         cart.setTongTien(tongTien);
         gioHangRepo.save(cart); // Lưu giỏ hàng đã cập nhật
 
+        redirectAttributes.addFlashAttribute("message","Thêm sản phẩm vào giỏ hàng thành công");
         // Chuyển hướng đến trang chi tiết hóa đơn mới được tạo
         return "redirect:/danh-sach-san-pham-chi-tiet/view-sp/" + sanPhamChiTiet.getId();
     }
@@ -200,7 +202,7 @@ public class DanhSachSPCTController {
                                 @RequestParam String soDienThoai,
                                 @RequestParam int soLuong,
                                 @RequestParam int sanPhamId,
-                                @RequestParam(required = false) String email) {
+                                @RequestParam(required = false) String email, RedirectAttributes redirectAttributes) {
         SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamId).orElse(null);
         if (sanPhamChiTiet == null) {
             return "redirect:/error";
@@ -261,6 +263,7 @@ public class DanhSachSPCTController {
         thoiGianDonHang.setThoiGianTao(LocalDateTime.now());
         thoiGianDonHangRepo.save(thoiGianDonHang);
 
+        redirectAttributes.addFlashAttribute("message","Đặt hàng thành công");
         return "redirect:/danh-sach-san-pham-chi-tiet/view-sp/" + sanPhamChiTiet.getId();
     }
 }
