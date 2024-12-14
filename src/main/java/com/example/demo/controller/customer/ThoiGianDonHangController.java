@@ -30,7 +30,7 @@ public class ThoiGianDonHangController {
         if (soHoaDon != null && !soHoaDon.isEmpty()) {
             soHoaDon = soHoaDon.trim();
 
-            String regex = "^HD\\d{5}$";
+            String regex = "^HD\\d+$";
             if (!soHoaDon.matches(regex)) {
                 model.addAttribute("error", "Số hóa đơn không hợp lệ");
             } else {
