@@ -15,9 +15,11 @@
             height: 80px;
             object-fit: cover;
         }
+
         .table th, .table td {
             vertical-align: middle;
         }
+
         .total-price {
             font-size: 1.2rem;
             font-weight: bold;
@@ -31,77 +33,92 @@
     <h1 class="text-center mb-4">Thông tin đổi hàng</h1>
     <form action="/doi-tra/xac-nhan-doi-hang" method="post" enctype="multipart/form-data" class="d-inline">
 
-    <div class="card">
-        <div class="card-body">
-            <h4>Mã hóa đơn ID: ${hoaDon.soHoaDon}</h4>
-            <p><strong>Lý do đổi hàng:</strong> ${lyDo}</p>
-            <p><strong>Lý do chi tiết:</strong> ${lyDoDetail}</p>
-            <p><strong>Mô tả:</strong> ${moTa}</p>
+        <div class="card">
+            <div class="card-body">
+                <h4>Mã hóa đơn ID: ${hoaDon.soHoaDon}</h4>
+                <p><strong>Lý do đổi hàng:</strong> ${lyDo}</p>
+                <p><strong>Lý do chi tiết:</strong> ${lyDoDetail}</p>
+                <p><strong>Mô tả:</strong> ${moTa}</p>
 
-            <c:if test="${not empty uploadImage}">
-                <p><strong>Ảnh chứng minh:</strong></p>
-                <img src="${pageContext.request.contextPath}/uploads/${uploadImage}" alt="Ảnh chứng minh" class="product-img">
-            </c:if>
+                <c:if test="${not empty uploadImage}">
+                    <p><strong>Ảnh chứng minh:</strong></p>
+                    <img src="${pageContext.request.contextPath}/uploads/${uploadImage}" alt="Ảnh chứng minh"
+                         class="product-img">
+                </c:if>
 
-            <h5 class="mt-4">Danh sách sản phẩm muốn đổi:</h5>
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Sản phẩm</th>
-                    <th>Hình ảnh</th>
-                    <th>Số lượng</th>
-                    <th>Đơn giá</th>
-                    <th>Thành tiền</th>
-                </tr>
-                </thead>
-                <tbody>
-                <c:forEach var="product" items="${selectedProducts}">
-                    <input type="hidden" name="sanPhamChiTietIds[]" value="${product.id}">
-                    <input type="hidden" name="soLuong_${product.id}" value="${soLuongMap[product.id]}">
+                <h5 class="mt-4">Danh sách sản phẩm muốn đổi:</h5>
+                <table class="table table-striped">
+                    <thead>
                     <tr>
-                        <td>${product.sanPham.ten}</td>
-                        <td>
-                            <img src="${pageContext.request.contextPath}/uploads/${product.hinhAnh}" class="product-img" alt="Ảnh sản phẩm">
-                        </td>
-                        <td>${soLuongMap[product.id]}</td>
-                        <td><fmt:formatNumber value="${giaSanPhamMap[product.id]}" type="number" pattern="#,###" /> VND</td>
-                        <td><fmt:formatNumber value="${soLuongMap[product.id] * giaSanPhamMap[product.id]}" type="number" pattern="#,###" /> VND</td>
+                        <th>Sản phẩm</th>
+                        <th>Hình ảnh</th>
+                        <th>Số lượng</th>
+                        <th>Đơn giá</th>
+                        <th>Thành tiền</th>
                     </tr>
-                </c:forEach>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    <c:forEach var="product" items="${selectedProducts}">
+                        <input type="hidden" name="sanPhamChiTietIds[]" value="${product.id}">
+                        <input type="hidden" name="soLuong_${product.id}" value="${soLuongMap[product.id]}">
+                        <tr>
+                            <td>${product.sanPham.ten}</td>
+                            <td>
+                                <img src="${pageContext.request.contextPath}/uploads/${product.hinhAnh}"
+                                     class="product-img" alt="Ảnh sản phẩm">
+                            </td>
+                            <td>${soLuongMap[product.id]}</td>
+                            <td><fmt:formatNumber value="${giaSanPhamMap[product.id]}" type="number" pattern="#,###"/>
+                                VND
+                            </td>
+                            <td><fmt:formatNumber value="${soLuongMap[product.id] * giaSanPhamMap[product.id]}"
+                                                  type="number" pattern="#,###"/> VND
+                            </td>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                </table>
 
-            <h5 class="mt-4">Danh sách sản phẩm đổi:</h5>
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Sản phẩm</th>
-                    <th>Hình ảnh</th>
-                    <th>Số lượng</th>
-                    <th>Đơn giá</th>
-                    <th>Thành tiền</th>
-                </tr>
-                </thead>
-                <tbody>
-                <c:forEach var="product" items="${sanPhamChiTietDoiList}">
-                    <input type="hidden" name="sanPhamChiTietDoiIds[]" value="${product.id}">
-                    <input type="hidden" name="soLuong_${product.id}" value="${soLuongMapDoi[product.id]}">
+                <h5 class="mt-4">Danh sách sản phẩm đổi:</h5>
+                <table class="table table-striped">
+                    <thead>
                     <tr>
-                        <td>${product.sanPham.ten}</td>
-                        <td>
-                            <img src="${pageContext.request.contextPath}/uploads/${product.hinhAnh}" class="product-img" alt="Ảnh sản phẩm">
-                        </td>
-                        <td>${soLuongMapDoi[product.id]}</td>
-                        <td><fmt:formatNumber value="${giaSanPhamMapDoi[product.id]}" type="number" pattern="#,###" /> VND</td>
-                        <td><fmt:formatNumber value="${soLuongMapDoi[product.id] * giaSanPhamMapDoi[product.id]}" type="number" pattern="#,###" /> VND</td>
+                        <th>Sản phẩm</th>
+                        <th>Hình ảnh</th>
+                        <th>Số lượng</th>
+                        <th>Đơn giá</th>
+                        <th>Thành tiền</th>
                     </tr>
-                </c:forEach>
-                </tbody>
-            </table>
-            <h5 class="total-price mt-4">Tổng tiền đổi hàng: <fmt:formatNumber value="${tongTienDoi}" type="number" pattern="#,###" /> VND</h5>
-            <h5 class="total-price mt-2">Tổng tiền hoàn trả: <fmt:formatNumber value="${tongTienHoan}" type="number" pattern="#,###" /> VND</h5>
-            <h5 class="total-price mt-2">Tổng tiền cần bù: <fmt:formatNumber value="${tongTienDoi - tongTienHoan}" type="number" pattern="#,###" /> VND</h5>
-            <div class="mt-4">
+                    </thead>
+                    <tbody>
+                    <c:forEach var="product" items="${sanPhamChiTietDoiList}">
+                        <input type="hidden" name="sanPhamChiTietDoiIds[]" value="${product.id}">
+                        <input type="hidden" name="soLuong_${product.id}" value="${soLuongMapDoi[product.id]}">
+                        <tr>
+                            <td>${product.sanPham.ten}</td>
+                            <td>
+                                <img src="${pageContext.request.contextPath}/uploads/${product.hinhAnh}"
+                                     class="product-img" alt="Ảnh sản phẩm">
+                            </td>
+                            <td>${soLuongMapDoi[product.id]}</td>
+                            <td><fmt:formatNumber value="${giaSanPhamMapDoi[product.id]}" type="number"
+                                                  pattern="#,###"/> VND
+                            </td>
+                            <td><fmt:formatNumber value="${soLuongMapDoi[product.id] * giaSanPhamMapDoi[product.id]}"
+                                                  type="number" pattern="#,###"/> VND
+                            </td>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                </table>
+                <h5 class="total-price mt-4">Tổng tiền đổi hàng: <fmt:formatNumber value="${tongTienDoi}" type="number"
+                                                                                   pattern="#,###"/> VND</h5>
+                <h5 class="total-price mt-2">Tổng tiền hoàn trả: <fmt:formatNumber value="${tongTienHoan}" type="number"
+                                                                                   pattern="#,###"/> VND</h5>
+                <h5 class="total-price mt-2">Tổng tiền cần bù: <fmt:formatNumber value="${tongTienDoi - tongTienHoan}"
+                                                                                 type="number" pattern="#,###"/>
+                    VND</h5>
+                <div class="mt-4">
                     <input type="hidden" name="hoaDonId" value="${hoaDon.id}">
                     <input type="hidden" name="lyDo" value="${lyDo}">
                     <input type="hidden" name="lyDoDetail" value="${lyDoDetail}">
@@ -116,11 +133,16 @@
                         <div class="alert alert-danger">${error}</div>
                         <div class="alert alert-danger">${errorTongtien}</div>
                     </c:if>
-                    <button type="submit" class="btn btn-primary">Xác nhận đổi hàng</button>
+                    <c:if test="${tongTienDoi >= tongTienHoan}">
+                        <button type="submit" class="btn btn-primary">Xác nhận đổi hàng</button>
+                    </c:if>
+                    <c:if test="${tongTienDoi <= tongTienHoan}">
+                        <button type="submit" class="btn btn-primary" disabled>Không thể xác nhận đổi hàng</button>
+                    </c:if>
                     <a href="/doi-tra/chi-tiet?id=${hoaDon.id}" class="btn btn-warning">Quay lại</a>
+                </div>
             </div>
         </div>
-    </div>
     </form>
 </div>
 <jsp:include page="../footer_user.jsp"/>
