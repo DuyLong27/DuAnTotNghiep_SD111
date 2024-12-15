@@ -385,9 +385,9 @@
                 <div class="col-md-3 mb-4">
                     <div class="card">
                         <c:if test="${product.giaGiamGia != null && product.giaGiamGia > 0}">
-                                <span class="discount-badge">
-                                    ${product.khuyenMaiChiTietList[0].khuyenMai.giaTriKhuyenMai}%
-                                </span>
+                    <span class="discount-badge">
+                        ${product.khuyenMaiChiTietList[0].khuyenMai.giaTriKhuyenMai}%
+                    </span>
                         </c:if>
                         <a href="/danh-sach-san-pham-chi-tiet/view-sp/${product.id}">
                             <img src="${pageContext.request.contextPath}/uploads/${product.hinhAnh}" class="card-img-top"
@@ -398,31 +398,45 @@
                             <p class="card-text text-success">
                                 <c:choose>
                                     <c:when test="${product.giaGiamGia != null && product.giaGiamGia > 0}">
-                                        <span style="color: red; text-decoration: line-through;"><fmt:formatNumber value="${product.giaBan}" type="number" pattern="#,###" /> VNĐ</span>
+                                <span style="color: red; text-decoration: line-through;">
+                                    <fmt:formatNumber value="${product.giaBan}" type="number" pattern="#,###" /> VNĐ
+                                </span>
                                         <br>
-                                        <span style="color: green;"><fmt:formatNumber value="${product.giaGiamGia}" type="number" pattern="#,###" /> VNĐ</span>
+                                        <span style="color: green;">
+                                    <fmt:formatNumber value="${product.giaGiamGia}" type="number" pattern="#,###" /> VNĐ
+                                </span>
                                     </c:when>
                                     <c:otherwise>
                                         <fmt:formatNumber value="${product.giaBan}" type="number" pattern="#,###" /> VNĐ
                                     </c:otherwise>
                                 </c:choose>
                             </p>
-                            <a href="/danh-sach-san-pham-chi-tiet/view-sp/${product.id}"
-                               class="btn btn-outline-success">Xem chi tiết</a>
-                            <div class="product-buy position-absolute top-50 start-50 translate-middle">
-                                <form action="/trang-chu/mua-ngay" method="get" id="my-form">
-                                    <input type="hidden" name="productId" value="${product.id}">
-                                    <button type="submit" class="btn-custom"><i class="fa-solid fa-money-bill"></i>
-                                    </button>
-                                </form>
-                            </div>
-                            <div class="product-cart position-absolute top-50 start-50 translate-middle">
-                                <form action="/trang-chu/add" method="post" >
-                                    <input type="hidden" name="sanPhamId" value="${product.id}">
-                                    <button type="submit" class="btn-custom"><i class="fa-solid fa-cart-shopping"></i>
-                                    </button>
-                                </form>
-                            </div>
+                            <c:choose>
+                                <c:when test="${product.soLuong > 0}">
+                                    <div class="product-buy position-absolute top-50 start-50 translate-middle">
+                                        <form action="/trang-chu/mua-ngay" method="get" id="my-form">
+                                            <input type="hidden" name="productId" value="${product.id}">
+                                            <button type="submit" class="btn-custom">
+                                                <i class="fa-solid fa-money-bill"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <div class="product-cart position-absolute top-50 start-50 translate-middle">
+                                        <form action="/trang-chu/add" method="post">
+                                            <input type="hidden" name="sanPhamId" value="${product.id}">
+                                            <button type="submit" class="btn-custom">
+                                                <i class="fa-solid fa-cart-shopping"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <a href="/danh-sach-san-pham-chi-tiet/view-sp/${product.id}"
+                                       class="btn btn-outline-success mt-2">Xem chi tiết</a>
+                                </c:when>
+                                <c:otherwise>
+                                    <a href="/danh-sach-san-pham-chi-tiet/view-sp/${product.id}"
+                                       class="btn btn-outline-danger mt-2">Đã hết hàng</a>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
                     </div>
                 </div>
@@ -572,9 +586,19 @@
                                     <button type="button" class="btn btn-outline-secondary rounded-circle px-2"
                                             onclick="changeQuantity(-1)">-
                                     </button>
-                                    <input type="number" class="form-control mx-2 text-center" id="soLuong"
-                                           name="soLuong" min="1" value="1" required onchange="updateTotal()"
-                                           style="width: 80px;">
+                                    <input
+                                            type="number"
+                                            class="form-control mx-2 text-center"
+                                            id="soLuong"
+                                            name="soLuong"
+                                            min="1"
+                                            max="${soLuongTon}"
+                                            value="1"
+                                            required
+                                            onchange="handleQuantityChange()"
+                                            onkeyup="handleQuantityChange()"
+                                            style="width: 80px;"
+                                    >
                                     <button type="button" class="btn btn-outline-secondary rounded-circle px-2"
                                             onclick="changeQuantity(1)">+
                                     </button>
@@ -707,26 +731,37 @@
 <script>
     const giaBan = ${sanPhamChiTiet.giaBan != null ? sanPhamChiTiet.giaBan : 0};
     const giaGiamGia = ${sanPhamChiTiet.giaGiamGia != null ? sanPhamChiTiet.giaGiamGia : 0};
+    const soLuongTon = ${soLuongTon};
     const diemTichLuy = ${khachHang != null ? khachHang.diemTichLuy : 0};
     const discountRate = Math.min(Math.floor(diemTichLuy / 1000) * 5, 30);
-
     function calculateDiscountAmount(price, rate) {
         return price * (rate / 100);
     }
-
+    function handleQuantityChange() {
+        const soLuongInput = document.getElementById("soLuong");
+        const soLuongHiddenInput = document.getElementById("soLuongInput");
+        let soLuong = parseInt(soLuongInput.value) || 1;
+        if (soLuong < 1) {
+            soLuong = 1;
+            alert("Số lượng không thể nhỏ hơn 1.");
+        } else if (soLuong > soLuongTon) {
+            soLuong = soLuongTon;
+            alert("Số lượng vượt quá tồn kho. Vui lòng chọn lại.");
+        }
+        soLuongInput.value = soLuong;
+        soLuongHiddenInput.value = soLuong;
+        updateTotal();
+    }
     function updateTotal() {
-        const soLuong = parseInt(document.getElementById("soLuong").value) || 1;
+        const soLuongInput = document.getElementById("soLuong");
+        const soLuong = parseInt(soLuongInput.value) || 1;
         const selectedShipping = document.querySelector('input[name="phuongThucVanChuyen"]:checked');
-
         let shippingCost = 0;
         if (selectedShipping) {
             shippingCost = selectedShipping.value === "Giao Hàng Nhanh" ? 33000 : 20000;
         }
-
         const giaSuDung = giaGiamGia > 0 ? giaGiamGia : giaBan;
-
         const tongTienSanPham = giaSuDung * soLuong;
-
         let tongTien;
         if (diemTichLuy > 0) {
             const discountAmount = calculateDiscountAmount(tongTienSanPham, discountRate);
@@ -735,54 +770,28 @@
         } else {
             tongTien = tongTienSanPham + shippingCost;
         }
-
         document.getElementById("tongTien").innerText = tongTien.toLocaleString('vi-VN') + " VNĐ";
         document.getElementById("tongTienInput").value = tongTien;
     }
+    function changeQuantity(amount) {
+        const soLuongInput = document.getElementById("soLuong");
+        let soLuong = parseInt(soLuongInput.value) || 1;
+        soLuong = Math.max(1, Math.min(soLuong + amount, soLuongTon));
 
-
-    document.getElementById("soLuong").addEventListener("change", updateTotal);
-
+        soLuongInput.value = soLuong;
+        handleQuantityChange();
+    }
+    function displayImage() {
+        const paymentMethod = document.getElementById("phuongThucThanhToan").value;
+        const imageContainer = document.getElementById("imageContainer");
+        imageContainer.style.display = paymentMethod === "Chuyển khoản" ? "block" : "none";
+    }
+    document.getElementById("soLuong").addEventListener("change", handleQuantityChange);
+    document.getElementById("soLuong").addEventListener("keyup", handleQuantityChange);
     document.querySelectorAll('input[name="phuongThucVanChuyen"]').forEach((input) => {
         input.addEventListener("change", updateTotal);
     });
-
-    function changeQuantity(amount) {
-        const soLuongInput = document.getElementById("soLuong");
-        let currentQuantity = parseInt(soLuongInput.value);
-        currentQuantity = isNaN(currentQuantity) ? 1 : currentQuantity;
-        currentQuantity = Math.max(1, currentQuantity + amount);
-        soLuongInput.value = currentQuantity;
-
-        updateTotal();
-    }
-
     updateTotal();
-
-    function changeQuantity(amount) {
-        const soLuongInput = document.getElementById("soLuong");
-        const soLuongHiddenInput = document.getElementById("soLuongInput");
-
-        let currentQuantity = parseInt(soLuongInput.value);
-        currentQuantity = isNaN(currentQuantity) ? 1 : currentQuantity;
-        currentQuantity = Math.max(1, currentQuantity + amount);
-        soLuongInput.value = currentQuantity;
-        soLuongHiddenInput.value = currentQuantity;
-
-        updateTotal();
-    }
-
-
-    function displayImage() {
-        var paymentMethod = document.getElementById("phuongThucThanhToan").value;
-        var imageContainer = document.getElementById("imageContainer");
-        if (paymentMethod === "Chuyển khoản") {
-            imageContainer.style.display = "block";
-        } else {
-            imageContainer.style.display = "none";
-        }
-    }
-
 </script>
 </body>
 </html>

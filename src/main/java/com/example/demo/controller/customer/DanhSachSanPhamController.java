@@ -116,22 +116,37 @@ public class DanhSachSanPhamController {
     @GetMapping("/mua-ngay")
     public String muaNgay(@RequestParam("productId") Integer productId, Model model, HttpSession session) {
         SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(productId).orElse(null);
-        model.addAttribute("sanPhamChiTiet", sanPhamChiTiet);
+        if (sanPhamChiTiet == null) {
+            model.addAttribute("errorMessage", "Sản phẩm không tồn tại.");
+            return "customer/error_page";
+        }
+        if (sanPhamChiTiet.getSoLuong() <= 0) {
+            model.addAttribute("errorMessage", "Sản phẩm đã hết hàng.");
+            return "customer/error_page";
+        }
         KhachHang khachHang = (KhachHang) session.getAttribute("khachHang");
-        int diemTichLuy = khachHang != null ? khachHang.getDiemTichLuy() : 0;
-        double discountRate = Math.min(Math.floor(diemTichLuy / 1000.0) * 5, 30);
+        int diemTichLuy = (khachHang != null) ? khachHang.getDiemTichLuy() : 0;
+        double discountRate = calculateDiscountRate(diemTichLuy);
         int giaSanPham = (sanPhamChiTiet.getGiaGiamGia() != null && sanPhamChiTiet.getGiaGiamGia() > 0)
                 ? sanPhamChiTiet.getGiaGiamGia()
                 : sanPhamChiTiet.getGiaBan();
-        int discountAmount = (int) (giaSanPham * (discountRate / 100.0));
+        int discountAmount = calculateDiscountAmount(giaSanPham, discountRate);
+        int tongTien = giaSanPham - discountAmount;
+        model.addAttribute("sanPhamChiTiet", sanPhamChiTiet);
+        model.addAttribute("soLuongTon", sanPhamChiTiet.getSoLuong());
         model.addAttribute("discountRate", discountRate);
         model.addAttribute("discountAmount", discountAmount);
-        model.addAttribute("tongTien", giaSanPham - discountAmount);
-
+        model.addAttribute("tongTien", tongTien);
         List<SanPhamChiTiet> sanPhamList = sanPhamChiTietRepo.findAll();
         model.addAttribute("listSanPham", sanPhamList);
 
         return "customer/san_pham/index";
+    }
+    private double calculateDiscountRate(int diemTichLuy) {
+        return Math.min(Math.floor(diemTichLuy / 1000.0) * 5, 30);
+    }
+    private int calculateDiscountAmount(int giaSanPham, double discountRate) {
+        return (int) (giaSanPham * (discountRate / 100.0));
     }
 
 
@@ -144,23 +159,36 @@ public class DanhSachSanPhamController {
                                 @RequestParam String soDienThoai,
                                 @RequestParam int soLuong,
                                 @RequestParam int sanPhamId,
-                                @RequestParam(required = false) String email, RedirectAttributes redirectAttributes) {
+                                @RequestParam(required = false) String email,
+                                RedirectAttributes redirectAttributes,
+                                Model model) {
         SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamId).orElse(null);
         if (sanPhamChiTiet == null) {
+            redirectAttributes.addFlashAttribute("error", "Sản phẩm không tồn tại.");
             return "redirect:/error";
+        }
+        if (soLuong <= 0 || soLuong > sanPhamChiTiet.getSoLuong()) {
+            redirectAttributes.addFlashAttribute("error", "Số lượng không hợp lệ.");
+            return "redirect:/danh-sach-san-pham/hien-thi";
+        }
+        KhachHang khachHang = (KhachHang) session.getAttribute("khachHang");
+        if (khachHang != null) {
+            model.addAttribute("diaChi", diaChi.isEmpty() ? khachHang.getDiaChi() : diaChi);
+            model.addAttribute("soDienThoai", soDienThoai.isEmpty() ? khachHang.getSoDienThoai() : soDienThoai);
+        } else {
+            model.addAttribute("diaChi", diaChi);
+            model.addAttribute("soDienThoai", soDienThoai);
         }
         int giaSanPham = (sanPhamChiTiet.getGiaGiamGia() != null && sanPhamChiTiet.getGiaGiamGia() > 0)
                 ? sanPhamChiTiet.getGiaGiamGia()
                 : sanPhamChiTiet.getGiaBan();
         int tongTienSanPham = soLuong * giaSanPham;
         int phiVanChuyen = phuongThucVanChuyen.equals("Giao Hàng Tiêu Chuẩn") ? 20000 : 33000;
-        KhachHang khachHang = (KhachHang) session.getAttribute("khachHang");
         int diemTichLuy = khachHang != null ? khachHang.getDiemTichLuy() : 0;
         double discountRate = Math.min(Math.floor(diemTichLuy / 1000) * 0.05, 0.30);
-        double discountAmount = tongTienSanPham * discountRate;
-        int tongTienSauGiam = tongTienSanPham - (int) discountAmount;
+        int discountAmount = (int) (tongTienSanPham * discountRate);
+        int tongTienSauGiam = tongTienSanPham - discountAmount;
         int tongTien = tongTienSauGiam + phiVanChuyen;
-        String soHoaDon = "HD" + new Random().nextInt(90000);
         HoaDon hoaDon = new HoaDon();
         hoaDon.setPhuong_thuc_thanh_toan(phuongThucThanhToan);
         hoaDon.setPhuongThucVanChuyen(phuongThucVanChuyen);
@@ -170,41 +198,33 @@ public class DanhSachSanPhamController {
         hoaDon.setThoiGianTao(LocalDateTime.now());
         hoaDon.setKieuHoaDon(1);
         hoaDon.setTongTien(tongTien);
-        hoaDon.setSoHoaDon(soHoaDon);
+        hoaDon.setSoHoaDon("HD" + new Random().nextInt(90000));
         hoaDon.setTinh_trang(0);
-        if (khachHang != null) {
-            hoaDon.setKhachHang(khachHang);
-        }
-        if (email != null && !email.isEmpty()) {
-            emailService.sendHoaDonMuaNgayEmail(
-                    email,
-                    soHoaDon,
-                    phuongThucThanhToan,
-                    phuongThucVanChuyen,
-                    diaChi,
-                    soDienThoai,
-                    soLuong,
-                    sanPhamChiTiet.getSanPham().getTen(),
-                    giaSanPham,
-                    tongTien
-            );
-        }
+        if (khachHang != null) hoaDon.setKhachHang(khachHang);
         hoaDonRepo.save(hoaDon);
         HoaDonChiTiet hoaDonChiTiet = new HoaDonChiTiet();
         hoaDonChiTiet.setHoaDon(hoaDon);
         hoaDonChiTiet.setSanPhamChiTiet(sanPhamChiTiet);
         hoaDonChiTiet.setSo_luong(soLuong);
-        int giaSanPhamSauGiam = (int) (giaSanPham * (1 - discountRate));
-        hoaDonChiTiet.setGia_san_pham(giaSanPhamSauGiam);
+        hoaDonChiTiet.setGia_san_pham((int) (giaSanPham * (1 - discountRate)));
         hoaDonChiTietRepo.save(hoaDonChiTiet);
         sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - soLuong);
         sanPhamChiTietRepo.save(sanPhamChiTiet);
+        if (email != null && !email.isEmpty()) {
+            emailService.sendHoaDonMuaNgayEmail(
+                    email, hoaDon.getSoHoaDon(), phuongThucThanhToan, phuongThucVanChuyen,
+                    diaChi, soDienThoai, soLuong, sanPhamChiTiet.getSanPham().getTen(),
+                    giaSanPham, tongTien
+            );
+        }
         ThoiGianDonHang thoiGianDonHang = new ThoiGianDonHang();
         thoiGianDonHang.setHoaDon(hoaDon);
         thoiGianDonHang.setThoiGianTao(LocalDateTime.now());
         thoiGianDonHangRepo.save(thoiGianDonHang);
-        redirectAttributes.addFlashAttribute("message","Đặt hàng thành công");
+        redirectAttributes.addFlashAttribute("message", "Đặt hàng thành công!");
         return "redirect:/danh-sach-san-pham/hien-thi";
     }
+
+
 
 }

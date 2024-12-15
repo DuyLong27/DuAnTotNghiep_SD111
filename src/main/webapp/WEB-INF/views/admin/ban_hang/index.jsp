@@ -43,14 +43,14 @@
 
         .card .card-text span {
             display: inline-block;
-            font-size: 14px; /* Kích thước vừa phải */
+            font-size: 14px;
             margin-top: 5px;
         }
 
         .card .card-text .old-price {
             text-decoration: line-through;
             color: red;
-            font-size: 13px; /* Kích thước nhỏ hơn để phân biệt */
+            font-size: 13px;
         }
 
         .card .card-text .discount-price {
@@ -63,7 +63,7 @@
             width: 80px;
             height: auto;
             margin-bottom: 10px;
-            border-radius: 8px; /* Giúp hình ảnh bo tròn hơn một chút */
+            border-radius: 8px;
         }
 
         .btn-outline-custom {
@@ -88,33 +88,32 @@
             color: white;
             padding: 5px 10px;
             font-size: 12px;
-            border-top-right-radius: 8px; /* Bo tròn góc trên bên phải */
-            border-bottom-left-radius: 8px; /* Bo tròn góc dưới bên trái */
-            z-index: 1; /* Đảm bảo badge hiển thị phía trên nội dung khác */
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Hiệu ứng đổ bóng */
+            border-top-right-radius: 8px;
+            border-bottom-left-radius: 8px;
+            z-index: 1;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
-        /* Tạo hộp thông báo */
         .notification {
             position: fixed;
             top: 20px;
             right: 20px;
-            background-color: #4CAF50; /* Màu xanh thành công */
+            background-color: #4CAF50;
             color: white;
             padding: 16px;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
             z-index: 1000;
-            display: none; /* Ẩn mặc định */
+            display: none;
         }
 
         .notification.error {
-            background-color: #f44336; /* Màu đỏ lỗi */
+            background-color: #f44336;
         }
 
         .notification.show {
-            display: block; /* Hiển thị khi cần */
-            animation: fadeInOut 3s; /* Hiệu ứng hiển thị */
+            display: block;
+            animation: fadeInOut 3s;
         }
 
         @keyframes fadeInOut {
@@ -133,19 +132,16 @@
         }
 
 
-        /* Ẩn mũi tên của input */
         input[type="number"]::-webkit-outer-spin-button,
         input[type="number"]::-webkit-inner-spin-button {
             -webkit-appearance: none;
             margin: 0;
         }
 
-        /* Ẩn mũi tên trong Firefox */
         input[type="number"] {
             -moz-appearance: textfield;
         }
 
-        /* Cải thiện kết quả hiển thị */
         #result {
             max-width: 500px;
             margin: 0 auto;
@@ -159,20 +155,17 @@
         }
 
         #tenKhachHang {
-            color: #4CAF50; /* Màu xanh cho tên khách hàng */
+            color: #4CAF50;
         }
 
-        /* Nếu là "Khách lẻ", áp dụng màu nền đỏ */
         #result.error .alert-info {
-            background-color: #f8d7da; /* Màu nền đỏ cho "Khách lẻ" */
-            color: #842029; /* Màu chữ đỏ cho "Khách lẻ" */
+            background-color: #f8d7da;
+            color: #842029;
         }
 
         #result.error #tenKhachHang {
-            color: #842029; /* Màu đỏ cho "Khách lẻ" */
+            color: #842029;
         }
-
-
     </style>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

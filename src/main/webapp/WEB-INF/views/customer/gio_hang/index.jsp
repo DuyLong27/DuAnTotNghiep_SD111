@@ -67,14 +67,12 @@
             font-size: 1.2em;
         }
 
-        /* Tăng kích thước checkbox */
         input[type="checkbox"] {
             width: 30px;
             height: 30px;
             cursor: pointer;
         }
 
-        /* Thêm khoảng cách cho các nút */
         .btn-secondary {
             margin: 0 5px;
         }
@@ -91,9 +89,9 @@
 
         th div.text-center {
             display: flex;
-            justify-content: center; /* Căn giữa theo chiều ngang */
-            align-items: center;    /* Căn giữa theo chiều dọc */
-            height: 100%;           /* Đảm bảo chiều cao bằng với chiều cao của ô */
+            justify-content: center;
+            align-items: center;
+            height: 100%;
         }
 
         .alert {
@@ -139,10 +137,9 @@
 <div class="container cart-container mb-3">
     <div class="container mt-3 position-relative">
         <c:if test="${not empty message}">
-            <div id="autoCloseAlert" class="alert alert-success alert-dismissible fade show shadow-lg rounded"
-                 role="alert"
-                 style="max-width: 500px; margin: 0 auto; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1050;">
-                <i class="fa-solid fa-check-circle me-2"></i>
+            <div id="autoCloseAlert" class="alert alert-danger alert-dismissible fade show shadow-lg rounded"
+                 role="alert" style="max-width: 500px; margin: 0 auto; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1050;">
+                <i class="fa-solid fa-exclamation-circle me-2"></i>
                 <span>${message}</span>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>

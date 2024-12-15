@@ -28,7 +28,6 @@
             margin-top: 10px;
         }
 
-        /* Display old price on a new line */
         .quantity {
             margin-top: 10px;
             display: flex;
@@ -54,29 +53,24 @@
             font-weight: bold;
         }
 
-        /* Bold product names in related products */
         .related-products .product-price {
             font-weight: normal;
         }
 
-        /* Normal font weight for prices */
         .description {
             margin-top: 60px;
         }
 
-        /* Giảm khoảng cách giữa các nút */
         .row {
-            margin-top: 20px; /* Nếu cần thêm khoảng cách với các phần tử khác */
+            margin-top: 20px;
         }
 
-        /* Nếu bạn muốn khoảng cách tùy chỉnh giữa các nút */
         .d-flex {
-            gap: 15px; /* Điều chỉnh giá trị này tùy ý để có khoảng cách phù hợp */
+            gap: 15px;
         }
 
-        /* Căn chỉnh chữ trong nút */
         .btn {
-            white-space: nowrap; /* Đảm bảo chữ không bị xuống dòng */
+            white-space: nowrap;
         }
 
         .related-products a {
@@ -160,6 +154,15 @@
             padding: 20px;
             color: #555;
         }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
     </style>
 </head>
 <body>
@@ -177,7 +180,7 @@
         </c:if>
     </div>
     <div class="row">
-        <div class="col-lg-9"> <!-- Increased size to 75% -->
+        <div class="col-lg-9">
             <div class="row">
                 <div class="col-md-6">
                     <img src="${pageContext.request.contextPath}/uploads/${sanPhamChiTiet.hinhAnh}"
@@ -189,9 +192,13 @@
                     <div class="price">
                         <c:choose>
                             <c:when test="${sanPhamChiTiet.giaGiamGia != null and sanPhamChiTiet.giaGiamGia > 0}">
-                                <span style="color: red; text-decoration: line-through; font-size: 20px;"><fmt:formatNumber value="${sanPhamChiTiet.giaBan}" type="number" pattern="#,###" /> VNĐ</span>
+                    <span style="color: red; text-decoration: line-through; font-size: 20px;">
+                        <fmt:formatNumber value="${sanPhamChiTiet.giaBan}" type="number" pattern="#,###" /> VNĐ
+                    </span>
                                 <br>
-                                <span style="color: green; font-size: 30px;"><fmt:formatNumber value="${sanPhamChiTiet.giaGiamGia}" type="number" pattern="#,###" /> VNĐ</span>
+                                <span style="color: green; font-size: 30px;">
+                        <fmt:formatNumber value="${sanPhamChiTiet.giaGiamGia}" type="number" pattern="#,###" /> VNĐ
+                    </span>
                             </c:when>
                             <c:otherwise>
                                 <fmt:formatNumber value="${sanPhamChiTiet.giaBan}" type="number" pattern="#,###" /> VNĐ
@@ -200,31 +207,36 @@
                     </div>
                     <hr>
                     <div class="items">
-                        <p>Còn ${sanPhamChiTiet.soLuong} sản phẩm trong kho</p>
-                    </div>
-                    <hr>
-                    <div class="row mt-3">
-                        <div class="col-12">
-                            <div class="col-12 d-flex justify-content-between align-items-center gap-3">
-                            <form action="/danh-sach-san-pham-chi-tiet/add" method="post" class="w-100">
-                                <input type="hidden" name="sanPhamId" value="${sanPhamChiTiet.id}">
-                                <div class="form-group">
-                                    <label for="soLuong">Số lượng</label>
-                                    <input type="number" id="soLuong" name="soLuong" class="form-control" min="1" max="${sanPhamChiTiet.soLuong}" value="1">
+                        <c:if test="${sanPhamChiTiet.soLuong > 0}">
+                            <p class="text-success">Còn ${sanPhamChiTiet.soLuong} sản phẩm trong kho</p>
+                            <hr>
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <div class="col-12 d-flex justify-content-between align-items-center gap-3">
+                                        <form action="/danh-sach-san-pham-chi-tiet/add" method="post" class="w-100">
+                                            <input type="hidden" name="sanPhamId" value="${sanPhamChiTiet.id}">
+                                            <div class="form-group">
+                                                <label for="soLuong">Số lượng</label>
+                                                <input type="number" id="soLuong" name="soLuong" class="form-control" min="1" max="${sanPhamChiTiet.soLuong}" value="1">
+                                            </div>
+                                            <button type="submit" class="product-cart btn btn-dark btn-lg w-100 text-center mt-3">Thêm vào giỏ hàng</button>
+                                        </form>
+                                    </div>
+                                    <form action="/danh-sach-san-pham-chi-tiet/mua-ngay" method="get" class="w-100">
+                                        <input type="hidden" name="productId" value="${sanPhamChiTiet.id}">
+                                        <button type="button" class="product-buy btn btn-success btn-lg w-100 text-center mt-3"
+                                                data-bs-toggle="modal" data-bs-target="#productModal">
+                                            Mua ngay
+                                        </button>
+                                    </form>
                                 </div>
-                                <button type="submit" class="product-cart btn btn-dark btn-lg w-100 text-center mt-3">Thêm vào giỏ hàng</button>
-                            </form>
+                                <c:if test="${not empty errorMessage}">
+                                    <div class="alert alert-danger">${errorMessage}</div>
+                                </c:if>
                             </div>
-                            <form action="/danh-sach-san-pham-chi-tiet/mua-ngay" method="get" class="w-100">
-                                <input type="hidden" name="productId" value="${sanPhamChiTiet.id}">
-                                <button type="button" class="product-buy btn btn-success btn-lg w-100 text-center mt-3"
-                                        data-bs-toggle="modal" data-bs-target="#productModal">
-                                    Mua ngay
-                                </button>
-                            </form>
-                        </div>
-                        <c:if test="${not empty errorMessage}">
-                            <div class="alert alert-danger">${errorMessage}</div>
+                        </c:if>
+                        <c:if test="${sanPhamChiTiet.soLuong <= 0}">
+                            <p class="text-danger">Hãy đợi cửa hàng cập nhật thêm nhé, mong khách hàng thông cảm!</p>
                         </c:if>
                     </div>
                 </div>
@@ -263,32 +275,32 @@
         <div class="col-lg-3">
             <div class="related-products">
                 <h3 class="mb-3">Sản phẩm bán chạy</h3>
-                    <c:forEach items="${bestSellingProducts}" var="spct">
-                        <div class="row mb-3">
-                            <div class="col-4">
-                                <a href="/danh-sach-san-pham-chi-tiet/view-sp/${spct.id}">
-                                    <img src="${pageContext.request.contextPath}/uploads/${spct.hinhAnh}"
-                                         class="img-fluid product-image" alt="${spct.sanPham.ten}">
-                                </a>
-                            </div>
-                            <div class="col-8">
-                                <a href="/danh-sach-san-pham-chi-tiet/view-sp/${spct.id}">
-                                    <p class="product-name" style="color: black">${spct.sanPham.ten}</p>
-                                    <c:choose>
-                                        <c:when test="${spct.giaGiamGia != null and spct.giaGiamGia > 0}">
-                                            <p class="product-price"
-                                               style="color: red; text-decoration: line-through;"><fmt:formatNumber value="${spct.giaBan}" type="number" pattern="#,###" /> VNĐ</p>
-                                            <p class="product-price" style="color: green;"><fmt:formatNumber value="${spct.giaGiamGia}" type="number" pattern="#,###" /> VNĐ</p>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <p class="product-price" style="color: green;"><fmt:formatNumber value="${spct.giaBan}" type="number" pattern="#,###" /> VNĐ</p>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </a>
-                            </div>
+                <c:forEach items="${bestSellingProducts}" var="spct">
+                    <div class="row mb-3">
+                        <div class="col-4">
+                            <a href="/danh-sach-san-pham-chi-tiet/view-sp/${spct.id}">
+                                <img src="${pageContext.request.contextPath}/uploads/${spct.hinhAnh}"
+                                     class="img-fluid product-image" alt="${spct.sanPham.ten}">
+                            </a>
                         </div>
-                        <hr>
-                    </c:forEach>
+                        <div class="col-8">
+                            <a href="/danh-sach-san-pham-chi-tiet/view-sp/${spct.id}">
+                                <p class="product-name" style="color: black">${spct.sanPham.ten}</p>
+                                <c:choose>
+                                    <c:when test="${spct.giaGiamGia != null and spct.giaGiamGia > 0}">
+                                        <p class="product-price"
+                                           style="color: red; text-decoration: line-through;"><fmt:formatNumber value="${spct.giaBan}" type="number" pattern="#,###" /> VNĐ</p>
+                                        <p class="product-price" style="color: green;"><fmt:formatNumber value="${spct.giaGiamGia}" type="number" pattern="#,###" /> VNĐ</p>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <p class="product-price" style="color: green;"><fmt:formatNumber value="${spct.giaBan}" type="number" pattern="#,###" /> VNĐ</p>
+                                    </c:otherwise>
+                                </c:choose>
+                            </a>
+                        </div>
+                    </div>
+                    <hr>
+                </c:forEach>
             </div>
         </div>
         <!-- Modal hiển thị thông tin sản phẩm (hiển thị nếu sản phẩm được chọn) -->
@@ -380,11 +392,11 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="diaChi" class="form-label fw-bold">Địa chỉ cụ thể:</label>
-                                            <input type="text" class="form-control" id="diaChi" name="diaChi" required>
+                                            <input type="text" class="form-control" id="diaChi" name="diaChi" value="${khachHang != null ? khachHang.diaChi : ''}" required>
                                         </div>
                                         <div class="mb-3">
                                             <label for="soDienThoai" class="form-label fw-bold">Số điện thoại:</label>
-                                            <input type="tel" class="form-control" id="soDienThoai" name="soDienThoai" pattern="[0-9]{10}" required>
+                                            <input type="tel" class="form-control" id="soDienThoai" name="soDienThoai" value="${khachHang != null ? khachHang.soDienThoai : ''}" pattern="[0-9]{10}" required>
                                         </div>
                                         <c:choose>
                                             <c:when test="${empty khachHang}">
@@ -408,8 +420,8 @@
                                                         Bạn có chắc chắn các thông tin đúng và hoàn tất xác nhận đơn hàng?
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Hủy</button>
-                                                        <button type="submit" class="btn btn-success" form="orderForm">Xác Nhận</button>
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                                        <button type="submit" class="btn btn-primary">Xác nhận</button>
                                                     </div>
                                                 </div>
                                             </div>

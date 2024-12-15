@@ -158,16 +158,16 @@
                         </div>
                         <div class="mb-3">
                             <label for="diaChi" class="form-label">Địa Chỉ Cụ Thể:</label>
-                            <input type="text" class="form-control" id="diaChi" name="diaChi" required>
+                            <input type="text" class="form-control" id="diaChi" name="diaChi" value="${khachHang != null ? khachHang.diaChi : ''}" required>
                         </div>
                         <div class="mb-3">
                             <label for="soDienThoai" class="form-label">Số Điện Thoại:</label>
-                            <input type="tel" class="form-control" id="soDienThoai" name="soDienThoai" pattern="[0-9]{10}" required>
+                            <input type="tel" class="form-control" id="soDienThoai" name="soDienThoai" pattern="[0-9]{10}" value="${khachHang != null ? khachHang.soDienThoai : ''}" required>
                         </div>
                         <c:if test="${empty khachHang}">
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email:</label>
-                                <input type="email" class="form-control" id="email" name="email">
+                                <input type="email" class="form-control" id="email" name="email" value="${khachHang != null ? khachHang.email : ''}">
                                 <small class="form-text text-muted">Nếu bạn không có tài khoản, vui lòng nhập email để nhận hóa đơn.</small>
                             </div>
                         </c:if>
