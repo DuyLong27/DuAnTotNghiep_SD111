@@ -215,8 +215,6 @@
                     </h5>
                 </div>
                 <div class="modal-footer">
-                    <form action="${pageContext.request.contextPath}/ban-hang/${hoaDon.id}/confirm-order" method="post">
-                        <!-- Form để xác nhận đơn hàng và lưu dữ liệu -->
                         <form id="orderForm"
                               action="${pageContext.request.contextPath}/ban-hang/${hoaDon.id}/confirm-order"
                               method="post">
