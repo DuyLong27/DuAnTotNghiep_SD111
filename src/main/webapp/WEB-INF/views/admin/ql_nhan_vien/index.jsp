@@ -13,11 +13,60 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;400;500;600&display=swap" rel="stylesheet">
 
     <title>Danh Sách Sản Phẩm</title>
+    <style>
+        .alert {
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 1.5;
+            border-left: 4px solid #28a745;
+            padding: 15px 20px;
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .alert i {
+            color: #28a745;
+        }
+
+
+        .alert .btn-close {
+            background-color: transparent;
+            opacity: 0.8;
+        }
+
+        #autoCloseAlert {
+            animation: fadeOut 3s forwards;
+        }
+
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+            }
+            80% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
 <jsp:include page="../layout.jsp" />
 <div class="container mt-3">
     <h1 class="text-center mt-3">Danh Sách Nhân Viên</h1>
+    <div class="container mt-3 position-relative">
+        <c:if test="${not empty message}">
+            <div id="autoCloseAlert" class="alert alert-success alert-dismissible fade show shadow-lg rounded"
+                 role="alert"
+                 style="max-width: 500px; margin: 0 auto; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1050;">
+                <i class="fa-solid fa-check-circle me-2"></i>
+                <span>${message}</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </c:if>
+    </div>
     <div class="filter-section mb-3">
         <form action="/nhan-vien/hien-thi" method="get" id="filterSearchForm">
             <div class="row">
@@ -25,8 +74,8 @@
                     <h5>Lọc Theo Tình Trạng</h5>
                     <select name="tinhTrang" class="form-select" onchange="this.form.submit();">
                         <option value="" ${param.tinhTrang == '' ? 'selected' : ''}>Tất Cả</option>
-                        <option value="1" ${param.tinhTrang == '1' ? 'selected' : ''}>Làm Việc</option>
-                        <option value="0" ${param.tinhTrang == '0' ? 'selected' : ''}>Tan Ca</option>
+                        <option value="1" ${param.tinhTrang == '1' ? 'selected' : ''}>Đang làm việc</option>
+                        <option value="0" ${param.tinhTrang == '0' ? 'selected' : ''}>Đã nghỉ</option>
                     </select>
                 </div>
 
@@ -100,7 +149,7 @@
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="tinhTrang" id="tinhTrangHetHang" value="0" required>
-                                    <label class="form-check-label" for="tinhTrangHetHang">Tan ca</label>
+                                    <label class="form-check-label" for="tinhTrangHetHang">Đã nghỉ</label>
                                 </div>
                             </div>
                         </div>
@@ -144,7 +193,7 @@
                     <td>${nv.chucVu}</td>
                     <td>${nv.ngayDiLam}</td>
                     <td class="${nv.tinhTrang == 1 ? 'text-success' : 'text-danger'}">
-                            ${nv.tinhTrang == 1 ? "Đang làm" : "Tan ca"}
+                            ${nv.tinhTrang == 1 ? "Đang làm" : "Đã nghỉ"}
                     </td>
                     <c:if test="${sessionScope.role == 0}">
                         <td>

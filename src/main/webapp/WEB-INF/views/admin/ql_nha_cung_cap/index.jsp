@@ -9,12 +9,41 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <title>Quản Lý Nhà Cung Cấp</title>
     <style>
-        /* CSS cho thông báo */
-        #successMessage {
-            position: fixed; /* Sử dụng fixed để thông báo không di chuyển khi cuộn */
-            top: 20px; /* Cách mép trên 20px */
-            right: 20px; /* Cách mép bên phải 20px */
-            z-index: 1050; /* Đảm bảo thông báo nằm trên các phần tử khác */
+        .alert {
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 1.5;
+            border-left: 4px solid #28a745;
+            padding: 15px 20px;
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .alert i {
+            color: #28a745;
+        }
+
+
+        .alert .btn-close {
+            background-color: transparent;
+            opacity: 0.8;
+        }
+
+        #autoCloseAlert {
+            animation: fadeOut 3s forwards;
+        }
+
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+            }
+            80% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                display: none;
+            }
         }
     </style>
 </head>
@@ -23,11 +52,17 @@
 <div class="container mt-5">
     <h1 class="text-center mt-3">Danh Sách Nhà Cung Cấp</h1>
     <!-- Thông báo -->
-    <c:if test="${not empty message}">
-        <div class="alert alert-success alert-dismissible fade show" role="alert" id="successMessage">
-                ${message}
-        </div>
-    </c:if>
+    <div class="container mt-3 position-relative">
+        <c:if test="${not empty message}">
+            <div id="autoCloseAlert" class="alert alert-success alert-dismissible fade show shadow-lg rounded"
+                 role="alert"
+                 style="max-width: 500px; margin: 0 auto; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1050;">
+                <i class="fa-solid fa-check-circle me-2"></i>
+                <span>${message}</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </c:if>
+    </div>
     <!-- Form tìm kiếm và lọc -->
     <form action="/nha-cung-cap" method="get" class="mb-4 filter-section">
         <div class="row mb-3">
