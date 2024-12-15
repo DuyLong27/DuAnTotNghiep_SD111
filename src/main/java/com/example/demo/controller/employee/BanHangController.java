@@ -81,6 +81,7 @@ public class BanHangController {
         SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamId).orElseThrow();
         HoaDonChiTiet existingDetail = hoaDonChiTietRepository.findByHoaDonIdAndSanPhamChiTietId(id, sanPhamChiTiet.getId());
         if (sanPhamChiTiet.getSoLuong() <= 0) {
+            redirectAttributes.addFlashAttribute("message","Số lượng không hợp lệ");
             return "redirect:/ban-hang/" + id + "?error=InsufficientStock";
         }
         int giaApDung = (sanPhamChiTiet.getGiaGiamGia() != null && sanPhamChiTiet.getGiaGiamGia() > 0)

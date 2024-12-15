@@ -313,7 +313,7 @@
                         <div class="col-md-12">
                             <div class="card-wrapper">
                                 <c:forEach items="${sanPhamChiTiets}" var="sp">
-                                    <c:if test="${sp != null && sp.id != null}">
+                                    <c:if test="${sp != null && sp.id != null && sp.tinhTrang == 1}">
                                         <div class="card-item" data-product-id="${sp.id}">
                                             <div class="card">
                                                 <div class="card-body text-center">

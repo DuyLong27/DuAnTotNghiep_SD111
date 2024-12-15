@@ -166,8 +166,6 @@
         #result.error #tenKhachHang {
             color: #842029;
         }
-<<<<<<< HEAD
-=======
         .alert {
             font-size: 16px;
             font-weight: 500;
@@ -207,7 +205,6 @@
 
 
 
->>>>>>> e30b2ebdf761dd7a8d1055c0560f34e45acf52d2
     </style>
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

@@ -10,7 +10,8 @@
     <title>Xác nhận Đơn hàng</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
     <style>
         body {
             background: linear-gradient(to right, #4CAF50, #0B745E);
@@ -199,52 +200,60 @@
                         <c:forEach items="${chiTietList}" var="chiTiet">
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                     ${chiTiet.sanPhamChiTiet.sanPham.ten}
-                                <span>${chiTiet.so_luong} x <fmt:formatNumber value="${chiTiet.gia_san_pham}" type="number" pattern="#,###" /> VNĐ</span>
+                                <span>${chiTiet.so_luong} x <fmt:formatNumber value="${chiTiet.gia_san_pham}"
+                                                                              type="number" pattern="#,###"/> VNĐ</span>
                             </li>
                         </c:forEach>
                     </ul>
                     <p class="total-price">
-                        <strong>Tổng Tiền:</strong> <span><fmt:formatNumber value="${hoaDon.tongTien}" type="number" pattern="#,###" /> VNĐ</span>
+                        <strong>Tổng Tiền:</strong> <span><fmt:formatNumber value="${hoaDon.tongTien}" type="number"
+                                                                            pattern="#,###"/> VNĐ</span>
                     </p>
                     <h5 class="discount">
-                        <strong>Giảm giá:</strong> <span id="discountedPrice"><fmt:formatNumber value="${discountAmount}" type="number" pattern="#,###" /> VNĐ</span>
+                        <strong>Giảm giá:</strong> <span id="discountedPrice"><fmt:formatNumber
+                            value="${discountAmount}" type="number" pattern="#,###"/> VNĐ</span>
                     </h5>
                 </div>
                 <div class="modal-footer">
-<<<<<<< HEAD
                     <form action="${pageContext.request.contextPath}/ban-hang/${hoaDon.id}/confirm-order" method="post">
-=======
-                    <!-- Form để xác nhận đơn hàng và lưu dữ liệu -->
-                    <form id="orderForm" action="${pageContext.request.contextPath}/ban-hang/${hoaDon.id}/confirm-order" method="post">
->>>>>>> e30b2ebdf761dd7a8d1055c0560f34e45acf52d2
-                        <input type="hidden" name="ghiChu" value="${hoaDon.ghiChu}">
-                        <input type="hidden" name="soDienThoai" value="${soDienThoai}">
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmModal">
-                            <i class="bi bi-check-circle"></i> Xác nhận Đơn hàng
-                        </button>
-                        <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true" data-bs-backdrop="false">
-                            <div class="modal-dialog">
-                                <div class="modal-content custom-modal">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="confirmModalLabel">Xác Nhận Đơn Hàng</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        Bạn có chắc chắn các thông tin đúng và hoàn tất xác nhận đơn hàng?
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Hủy</button>
-                                        <button type="submit" class="btn btn-success" form="orderForm">Xác Nhận</button>
+                        <!-- Form để xác nhận đơn hàng và lưu dữ liệu -->
+                        <form id="orderForm"
+                              action="${pageContext.request.contextPath}/ban-hang/${hoaDon.id}/confirm-order"
+                              method="post">
+                            <input type="hidden" name="ghiChu" value="${hoaDon.ghiChu}">
+                            <input type="hidden" name="soDienThoai" value="${soDienThoai}">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#confirmModal">
+                                <i class="bi bi-check-circle"></i> Xác nhận Đơn hàng
+                            </button>
+                            <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel"
+                                 aria-hidden="true" data-bs-backdrop="false">
+                                <div class="modal-dialog">
+                                    <div class="modal-content custom-modal">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="confirmModalLabel">Xác Nhận Đơn Hàng</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Bạn có chắc chắn các thông tin đúng và hoàn tất xác nhận đơn hàng?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-outline-danger"
+                                                    data-bs-dismiss="modal">Hủy
+                                            </button>
+                                            <button type="submit" class="btn btn-success" form="orderForm">Xác Nhận
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </form>
-                    <form action="${pageContext.request.contextPath}/ban-hang/${hoaDon.id}" method="get">
-                        <button type="submit" class="btn btn-secondary">
-                            <i class="bi bi-arrow-left-circle"></i> Quay lại chi tiết hóa đơn
-                        </button>
-                    </form>
+                        </form>
+                        <form action="${pageContext.request.contextPath}/ban-hang/${hoaDon.id}" method="get">
+                            <button type="submit" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left-circle"></i> Quay lại chi tiết hóa đơn
+                            </button>
+                        </form>
                 </div>
             </div>
         </div>
