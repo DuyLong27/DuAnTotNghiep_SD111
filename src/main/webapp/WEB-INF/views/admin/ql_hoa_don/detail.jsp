@@ -122,6 +122,43 @@
             z-index: 1053; !important;
         }
 
+        .alert {
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 1.5;
+            border-left: 4px solid #28a745;
+            padding: 15px 20px;
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .alert i {
+            color: #28a745;
+        }
+
+
+        .alert .btn-close {
+            background-color: transparent;
+            opacity: 0.8;
+        }
+
+        #autoCloseAlert {
+            animation: fadeOut 3s forwards;
+        }
+
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+            }
+            80% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                display: none;
+            }
+        }
+
     </style>
 </head>
 <jsp:include page="../layout.jsp" />
@@ -130,7 +167,6 @@
     <div class="mt-3 mb-3">
         <a href="/hoa-don/tinhTrang=all" class="btn btn-outline-success">Quay lại</a>
     </div>
-
     <div class="order-status">
         <div class="status-group">
             <div class="status-item ${hoaDon.tinh_trang >= 0 && hoaDon.tinh_trang != 14 ? 'active' : ''}">
@@ -185,6 +221,17 @@
 
     <div id="alertMessage" class="alert alert-warning" role="alert">
         Phải xác nhận thanh toán trước khi hoàn thành đơn hàng.
+    </div>
+    <div class="container mt-3 position-relative">
+        <c:if test="${not empty message}">
+            <div id="autoCloseAlert" class="alert alert-success alert-dismissible fade show shadow-lg rounded"
+                 role="alert"
+                 style="max-width: 500px; margin: 0 auto; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1050;">
+                <i class="fa-solid fa-check-circle me-2"></i>
+                <span>${message}</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </c:if>
     </div>
 
     <c:if test="${hoaDon.tinh_trang == 0}">

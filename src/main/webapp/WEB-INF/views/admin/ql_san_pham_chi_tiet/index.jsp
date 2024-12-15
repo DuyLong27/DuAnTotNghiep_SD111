@@ -52,6 +52,43 @@
             right: 20px;
             z-index: 1050;
         }
+
+        .alert {
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 1.5;
+            border-left: 4px solid #28a745;
+            padding: 15px 20px;
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .alert i {
+            color: #28a745;
+        }
+
+
+        .alert .btn-close {
+            background-color: transparent;
+            opacity: 0.8;
+        }
+
+        #autoCloseAlert {
+            animation: fadeOut 3s forwards;
+        }
+
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+            }
+            80% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                display: none;
+            }
+        }
     </style>
 </head>
 
@@ -60,11 +97,17 @@
 <div class="container mt-3">
     <h4>Danh sách sản phẩm chi tiết</h4>
     <!-- Thông báo -->
-    <c:if test="${not empty message}">
-        <div class="alert alert-success alert-dismissible fade show" role="alert" id="successMessage">
-                ${message}
-        </div>
-    </c:if>
+    <div class="container mt-3 position-relative">
+        <c:if test="${not empty message}">
+            <div id="autoCloseAlert" class="alert alert-success alert-dismissible fade show shadow-lg rounded"
+                 role="alert"
+                 style="max-width: 500px; margin: 0 auto; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1050;">
+                <i class="fa-solid fa-check-circle me-2"></i>
+                <span>${message}</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </c:if>
+    </div>
     <div class="mb-3 filter-section">
         <form method="get" action="/spct/index" class="d-flex align-items-center">
             <c:if test="${sessionScope.role == 0}">
@@ -218,8 +261,8 @@
                                 </select>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary">Thêm sản phẩm</button>
-                        <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset</button>
+                        <button type="submit" class="btn btn-success">Thêm sản phẩm</button>
+                        <button type="button" class="btn btn-secondary-outline" onclick="resetForm()">Reset</button>
                     </form>
                 </div>
             </div>

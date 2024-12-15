@@ -141,7 +141,7 @@ public class QLNhapHangController {
     public String addNhapHang(
             @RequestParam Map<String, String> formData,
             @RequestParam(value = "selectedItems", required = false) List<String> selectedItems,
-            HttpSession session) {
+            HttpSession session, RedirectAttributes redirectAttributes) {
         NhanVien nhanVien = (NhanVien) session.getAttribute("khachHang");
 
         if (nhanVien == null) {
@@ -208,6 +208,7 @@ public class QLNhapHangController {
             nhapHang.setTongGiaTri(tongGiaTri);
             repo.save(nhapHang);
         }
+        redirectAttributes.addFlashAttribute("message", "Gửi phiếu nhập thành công!");
         return "redirect:/nhap-hang/hien-thi";
     }
 
@@ -261,7 +262,7 @@ public class QLNhapHangController {
         nhapHang.setTinhTrang(1);
         nhapHang.setNgayNhap(new Date());
         repo.save(nhapHang);
-        redirectAttributes.addFlashAttribute("successMessage", "Hàng đã vào cửa hàng!");
+        redirectAttributes.addFlashAttribute("message", "Hàng đã vào cửa hàng!");
 
         return "redirect:/nhap-hang/chi-tiet/" + nhapHangId;
     }
