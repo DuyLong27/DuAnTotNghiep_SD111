@@ -125,6 +125,48 @@
             padding-left: 15px;
             padding-right: 15px;
         }
+
+        .custom-modal {
+            background-color: #ffffff;
+            border-radius: 10px;
+            border: 2px solid #0b745e;
+        }
+
+
+        .custom-modal .modal-header {
+            background-color: #0b745e;
+            color: #ffffff;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .custom-modal .btn-success {
+            background-color: #0b745e;
+            border-color: #0b745e;
+            transition: background-color 0.3s ease;
+        }
+
+        .custom-modal .btn-success:hover {
+            background-color: #085f3b;
+        }
+
+        .custom-modal .btn-outline-danger {
+            border-color: #e74c3c;
+            color: #e74c3c;
+            transition: border-color 0.3s, color 0.3s;
+        }
+
+        .custom-modal .btn-outline-danger:hover {
+            background-color: #e74c3c;
+            color: #ffffff;
+            border-color: #e74c3c;
+        }
+
+        .custom-modal .modal-body {
+            font-size: 1.1rem;
+            padding: 20px;
+            color: #555;
+        }
     </style>
 </head>
 <body>
@@ -169,12 +211,34 @@
                     </h5>
                 </div>
                 <div class="modal-footer">
+<<<<<<< HEAD
                     <form action="${pageContext.request.contextPath}/ban-hang/${hoaDon.id}/confirm-order" method="post">
+=======
+                    <!-- Form để xác nhận đơn hàng và lưu dữ liệu -->
+                    <form id="orderForm" action="${pageContext.request.contextPath}/ban-hang/${hoaDon.id}/confirm-order" method="post">
+>>>>>>> e30b2ebdf761dd7a8d1055c0560f34e45acf52d2
                         <input type="hidden" name="ghiChu" value="${hoaDon.ghiChu}">
                         <input type="hidden" name="soDienThoai" value="${soDienThoai}">
-                        <button type="submit" class="btn btn-primary">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmModal">
                             <i class="bi bi-check-circle"></i> Xác nhận Đơn hàng
                         </button>
+                        <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true" data-bs-backdrop="false">
+                            <div class="modal-dialog">
+                                <div class="modal-content custom-modal">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="confirmModalLabel">Xác Nhận Đơn Hàng</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Bạn có chắc chắn các thông tin đúng và hoàn tất xác nhận đơn hàng?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Hủy</button>
+                                        <button type="submit" class="btn btn-success" form="orderForm">Xác Nhận</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </form>
                     <form action="${pageContext.request.contextPath}/ban-hang/${hoaDon.id}" method="get">
                         <button type="submit" class="btn btn-secondary">

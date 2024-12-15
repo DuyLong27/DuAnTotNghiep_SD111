@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
@@ -75,7 +76,7 @@ public class BanHangController {
 
 
     @PostMapping("/{id}/add-product")
-    public String addProductToInvoice(@PathVariable Integer id, @RequestParam Integer sanPhamId) {
+    public String addProductToInvoice(@PathVariable Integer id, @RequestParam Integer sanPhamId, RedirectAttributes redirectAttributes) {
         HoaDon hoaDon = hoaDonRepository.findById(id).orElseThrow();
         SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamId).orElseThrow();
         HoaDonChiTiet existingDetail = hoaDonChiTietRepository.findByHoaDonIdAndSanPhamChiTietId(id, sanPhamChiTiet.getId());
@@ -99,6 +100,7 @@ public class BanHangController {
         }
         sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() - 1);
         sanPhamChiTietRepo.save(sanPhamChiTiet);
+        redirectAttributes.addFlashAttribute("message","Thêm sản phẩm thành công");
         return "redirect:/ban-hang/" + id;
     }
 
@@ -110,7 +112,7 @@ public class BanHangController {
     }
 
     @PostMapping("addHoaDon")
-    public String addHoaDon(@ModelAttribute HoaDon hoaDon, HttpSession session) {
+    public String addHoaDon(@ModelAttribute HoaDon hoaDon, HttpSession session, RedirectAttributes redirectAttributes) {
         NhanVien nhanVien = (NhanVien) session.getAttribute("khachHang");
         if (nhanVien == null || !(nhanVien instanceof NhanVien)) {
             return "redirect:/auth/login";
@@ -122,6 +124,7 @@ public class BanHangController {
         hoaDon.setPhuong_thuc_thanh_toan("Tiền mặt");
         hoaDon.setNhanVien(nhanVien);
         hoaDonRepository.save(hoaDon);
+        redirectAttributes.addFlashAttribute("message","Tạo hóa đơn mới thành công !");
         return "redirect:/ban-hang/" + hoaDon.getId();
     }
 
@@ -130,7 +133,7 @@ public class BanHangController {
 
     @PostMapping("/{id}/delete")
     @Transactional
-    public String cancelHoaDon(@PathVariable Integer id, Model model) {
+    public String cancelHoaDon(@PathVariable Integer id, Model model,RedirectAttributes redirectAttributes) {
         HoaDon hoaDon = hoaDonRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Hóa đơn không tồn tại"));
         hoaDon.setTinh_trang(14);
@@ -150,6 +153,7 @@ public class BanHangController {
                 nextHoaDonId = remainingHoaDons.get(0).getId();
             }
         }
+        redirectAttributes.addFlashAttribute("message","Xóa hóa đơn thành công !");
         return nextHoaDonId != null
                 ? "redirect:/ban-hang"
                 : "redirect:/ban-hang";
@@ -158,7 +162,7 @@ public class BanHangController {
 
 
     @PostMapping("/{hoaDonId}/remove-product/{sanPhamChiTietId}")
-    public String removeProductFromInvoice(@PathVariable Integer hoaDonId, @PathVariable Integer sanPhamChiTietId) {
+    public String removeProductFromInvoice(@PathVariable Integer hoaDonId, @PathVariable Integer sanPhamChiTietId, RedirectAttributes redirectAttributes) {
         HoaDonChiTiet hoaDonChiTiet = hoaDonChiTietRepository.findByHoaDonIdAndSanPhamChiTietId(hoaDonId, sanPhamChiTietId);
         if (hoaDonChiTiet != null) {
             SanPhamChiTiet sanPhamChiTiet = hoaDonChiTiet.getSanPhamChiTiet();
@@ -167,6 +171,7 @@ public class BanHangController {
             sanPhamChiTiet.setSoLuong(sanPhamChiTiet.getSoLuong() + soLuong);
             sanPhamChiTietRepo.save(sanPhamChiTiet);
         }
+        redirectAttributes.addFlashAttribute("message","Xóa sản phẩm thành công !");
         return "redirect:/ban-hang/" + hoaDonId;
     }
 
@@ -253,7 +258,7 @@ public class BanHangController {
     @PostMapping("/{id}/confirm-order")
     public String confirmOrder(@PathVariable Integer id,
                                @RequestParam("ghiChu") String ghiChu,
-                               @RequestParam("soDienThoai") String soDienThoai) {
+                               @RequestParam("soDienThoai") String soDienThoai, RedirectAttributes redirectAttributes) {
         HoaDon hoaDon = hoaDonRepository.findById(id).orElseThrow();
         hoaDon.setGhiChu(ghiChu);
         hoaDon.setSoDienThoai(soDienThoai);
@@ -297,6 +302,7 @@ public class BanHangController {
                 .map(HoaDon::getId)
                 .findFirst()
                 .orElse(null);
+        redirectAttributes.addFlashAttribute("message","Bán hàng thành công");
         return nextHoaDonId != null
                 ? "redirect:/ban-hang/" + nextHoaDonId
                 : "redirect:/ban-hang";
