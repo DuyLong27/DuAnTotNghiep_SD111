@@ -43,14 +43,14 @@
 
         .card .card-text span {
             display: inline-block;
-            font-size: 14px; /* Kích thước vừa phải */
+            font-size: 14px;
             margin-top: 5px;
         }
 
         .card .card-text .old-price {
             text-decoration: line-through;
             color: red;
-            font-size: 13px; /* Kích thước nhỏ hơn để phân biệt */
+            font-size: 13px;
         }
 
         .card .card-text .discount-price {
@@ -63,7 +63,7 @@
             width: 80px;
             height: auto;
             margin-bottom: 10px;
-            border-radius: 8px; /* Giúp hình ảnh bo tròn hơn một chút */
+            border-radius: 8px;
         }
 
         .btn-outline-custom {
@@ -88,33 +88,32 @@
             color: white;
             padding: 5px 10px;
             font-size: 12px;
-            border-top-right-radius: 8px; /* Bo tròn góc trên bên phải */
-            border-bottom-left-radius: 8px; /* Bo tròn góc dưới bên trái */
-            z-index: 1; /* Đảm bảo badge hiển thị phía trên nội dung khác */
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Hiệu ứng đổ bóng */
+            border-top-right-radius: 8px;
+            border-bottom-left-radius: 8px;
+            z-index: 1;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
-        /* Tạo hộp thông báo */
         .notification {
             position: fixed;
             top: 20px;
             right: 20px;
-            background-color: #4CAF50; /* Màu xanh thành công */
+            background-color: #4CAF50;
             color: white;
             padding: 16px;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
             z-index: 1000;
-            display: none; /* Ẩn mặc định */
+            display: none;
         }
 
         .notification.error {
-            background-color: #f44336; /* Màu đỏ lỗi */
+            background-color: #f44336;
         }
 
         .notification.show {
-            display: block; /* Hiển thị khi cần */
-            animation: fadeInOut 3s; /* Hiệu ứng hiển thị */
+            display: block;
+            animation: fadeInOut 3s;
         }
 
         @keyframes fadeInOut {
@@ -133,19 +132,16 @@
         }
 
 
-        /* Ẩn mũi tên của input */
         input[type="number"]::-webkit-outer-spin-button,
         input[type="number"]::-webkit-inner-spin-button {
             -webkit-appearance: none;
             margin: 0;
         }
 
-        /* Ẩn mũi tên trong Firefox */
         input[type="number"] {
             -moz-appearance: textfield;
         }
 
-        /* Cải thiện kết quả hiển thị */
         #result {
             max-width: 500px;
             margin: 0 auto;
@@ -159,18 +155,54 @@
         }
 
         #tenKhachHang {
-            color: #4CAF50; /* Màu xanh cho tên khách hàng */
+            color: #4CAF50;
         }
 
-        /* Nếu là "Khách lẻ", áp dụng màu nền đỏ */
         #result.error .alert-info {
-            background-color: #f8d7da; /* Màu nền đỏ cho "Khách lẻ" */
-            color: #842029; /* Màu chữ đỏ cho "Khách lẻ" */
+            background-color: #f8d7da;
+            color: #842029;
         }
 
         #result.error #tenKhachHang {
-            color: #842029; /* Màu đỏ cho "Khách lẻ" */
+            color: #842029;
         }
+        .alert {
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 1.5;
+            border-left: 4px solid #28a745;
+            padding: 15px 20px;
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .alert i {
+            color: #28a745;
+        }
+
+
+        .alert .btn-close {
+            background-color: transparent;
+            opacity: 0.8;
+        }
+
+        #autoCloseAlert {
+            animation: fadeOut 3s forwards;
+        }
+
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+            }
+            80% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                display: none;
+            }
+        }
+
 
 
     </style>
@@ -181,6 +213,17 @@
 <body>
 <jsp:include page="../layout.jsp"/>
 <div class="container mt-3">
+    <div class="container mt-3 position-relative">
+        <c:if test="${not empty message}">
+            <div id="autoCloseAlert" class="alert alert-success alert-dismissible fade show shadow-lg rounded"
+                 role="alert"
+                 style="max-width: 500px; margin: 0 auto; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1050;">
+                <i class="fa-solid fa-check-circle me-2"></i>
+                <span>${message}</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </c:if>
+    </div>
     <div id="notification" class="notification"></div>
     <h2>Trang Bán Hàng</h2>
     <br>
@@ -322,7 +365,7 @@
                             <button type="button" class="btn btn-create mt-2" disabled>Không thể xác nhận hóa đơn</button>
                         </c:if>
                         <c:if test="${not empty hoaDonChiTiets}">
-                        <button type="submit" class="btn btn-create mt-2">Xác nhận hóa đơn</button>
+                            <button type="submit" class="btn btn-create mt-2" onclick="return confirm('Bạn có chắc chắn các thông tin đúng và xác nhận đơn hàng?')">Xác nhận hóa đơn</button>
                         </c:if>
                     </form>
                 </c:if>

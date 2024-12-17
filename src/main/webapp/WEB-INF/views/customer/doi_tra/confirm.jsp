@@ -46,7 +46,7 @@
                 <p>Lý Do Cụ Thể: ${lyDoDetail}</p>
                 <div class="mb-3">
                     <label for="tongTienHoan" class="form-label">Tổng Tiền Phải Hoàn:</label>
-                    <input type="text" id="tongTienHoan" name="tongTienHoan" class="form-control" value="<fmt:formatNumber value="${tongTienHoan}" type="number" pattern="#,###" />" readonly>
+                    <input type="text" id="tongTienHoan" name="tongTienHoan" class="form-control" value="${tongTienHoan}" readonly>
                 </div>
                 <div class="mb-3">
                     <label for="phuongThucChuyenTien" class="form-label">Phương Thức Chuyển Tiền:</label>

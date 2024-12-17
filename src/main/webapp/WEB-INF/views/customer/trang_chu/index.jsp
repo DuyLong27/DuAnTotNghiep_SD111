@@ -259,6 +259,85 @@
             border-bottom-left-radius: 8px;
             z-index: 1;
         }
+
+        .alert {
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 1.5;
+            border-left: 4px solid #28a745;
+            padding: 15px 20px;
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .alert i {
+            color: #28a745;
+        }
+
+
+        .alert .btn-close {
+            background-color: transparent;
+            opacity: 0.8;
+        }
+
+        #autoCloseAlert {
+            animation: fadeOut 3s forwards;
+        }
+
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+            }
+            80% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                display: none;
+            }
+        }
+
+        .custom-modal {
+            background-color: #ffffff;
+            border-radius: 10px;
+            border: 2px solid #0b745e;
+        }
+
+
+        .custom-modal .modal-header {
+            background-color: #0b745e;
+            color: #ffffff;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .custom-modal .btn-success {
+            background-color: #0b745e;
+            border-color: #0b745e;
+            transition: background-color 0.3s ease;
+        }
+
+        .custom-modal .btn-success:hover {
+            background-color: #085f3b;
+        }
+
+        .custom-modal .btn-outline-danger {
+            border-color: #e74c3c;
+            color: #e74c3c;
+            transition: border-color 0.3s, color 0.3s;
+        }
+
+        .custom-modal .btn-outline-danger:hover {
+            background-color: #e74c3c;
+            color: #ffffff;
+            border-color: #e74c3c;
+        }
+
+        .custom-modal .modal-body {
+            font-size: 1.1rem;
+            padding: 20px;
+            color: #555;
+        }
     </style>
 </head>
 <body data-bs-spy="scroll" data-bs-target="#navbar" data-bs-offset="70">
@@ -288,16 +367,27 @@
     </button>
 </div>
 <div class="container">
+    <div class="container mt-3 position-relative">
+        <c:if test="${not empty message}">
+            <div id="autoCloseAlert" class="alert alert-success alert-dismissible fade show shadow-lg rounded"
+                 role="alert"
+                 style="max-width: 500px; margin: 0 auto; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1050;">
+                <i class="fa-solid fa-check-circle me-2"></i>
+                <span>${message}</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </c:if>
+    </div>
     <div class="section">
-        <h2 class="text-success mb-3" data-aos="fade-up">Sản phẩm bán chạy</h2>
-        <div class="row" data-aos="fade-up" data-aos-delay="100">
+        <h2 class="text-success mb-3">Sản phẩm bán chạy</h2>
+        <div class="row">
             <c:forEach var="product" items="${bestSellers}">
                 <div class="col-md-3 mb-4">
                     <div class="card">
                         <c:if test="${product.giaGiamGia != null && product.giaGiamGia > 0}">
-                                <span class="discount-badge">
-                                    ${product.khuyenMaiChiTietList[0].khuyenMai.giaTriKhuyenMai}%
-                                </span>
+                    <span class="discount-badge">
+                        ${product.khuyenMaiChiTietList[0].khuyenMai.giaTriKhuyenMai}%
+                    </span>
                         </c:if>
                         <a href="/danh-sach-san-pham-chi-tiet/view-sp/${product.id}">
                             <img src="${pageContext.request.contextPath}/uploads/${product.hinhAnh}" class="card-img-top"
@@ -308,38 +398,52 @@
                             <p class="card-text text-success">
                                 <c:choose>
                                     <c:when test="${product.giaGiamGia != null && product.giaGiamGia > 0}">
-                                        <span style="color: red; text-decoration: line-through;"><fmt:formatNumber value="${product.giaBan}" type="number" pattern="#,###" /> VNĐ</span>
+                                <span style="color: red; text-decoration: line-through;">
+                                    <fmt:formatNumber value="${product.giaBan}" type="number" pattern="#,###" /> VNĐ
+                                </span>
                                         <br>
-                                        <span style="color: green;"><fmt:formatNumber value="${product.giaGiamGia}" type="number" pattern="#,###" /> VNĐ</span>
+                                        <span style="color: green;">
+                                    <fmt:formatNumber value="${product.giaGiamGia}" type="number" pattern="#,###" /> VNĐ
+                                </span>
                                     </c:when>
                                     <c:otherwise>
                                         <fmt:formatNumber value="${product.giaBan}" type="number" pattern="#,###" /> VNĐ
                                     </c:otherwise>
                                 </c:choose>
                             </p>
-                            <a href="/danh-sach-san-pham-chi-tiet/view-sp/${product.id}"
-                               class="btn btn-outline-success">Xem chi tiết</a>
-                            <div class="product-buy position-absolute top-50 start-50 translate-middle">
-                                <form action="/trang-chu/mua-ngay" method="get" id="my-form">
-                                    <input type="hidden" name="productId" value="${product.id}">
-                                    <button type="submit" class="btn-custom"><i class="fa-solid fa-money-bill"></i>
-                                    </button>
-                                </form>
-                            </div>
-                            <div class="product-cart position-absolute top-50 start-50 translate-middle">
-                                <form action="/trang-chu/add" method="post" >
-                                    <input type="hidden" name="sanPhamId" value="${product.id}">
-                                    <button type="submit" class="btn-custom"><i class="fa-solid fa-cart-shopping"></i>
-                                    </button>
-                                </form>
-                            </div>
+                            <c:choose>
+                                <c:when test="${product.soLuong > 0}">
+                                    <div class="product-buy position-absolute top-50 start-50 translate-middle">
+                                        <form action="/trang-chu/mua-ngay" method="get" id="my-form">
+                                            <input type="hidden" name="productId" value="${product.id}">
+                                            <button type="submit" class="btn-custom">
+                                                <i class="fa-solid fa-money-bill"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <div class="product-cart position-absolute top-50 start-50 translate-middle">
+                                        <form action="/trang-chu/add" method="post">
+                                            <input type="hidden" name="sanPhamId" value="${product.id}">
+                                            <button type="submit" class="btn-custom">
+                                                <i class="fa-solid fa-cart-shopping"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <a href="/danh-sach-san-pham-chi-tiet/view-sp/${product.id}"
+                                       class="btn btn-outline-success mt-2">Xem chi tiết</a>
+                                </c:when>
+                                <c:otherwise>
+                                    <a href="/danh-sach-san-pham-chi-tiet/view-sp/${product.id}"
+                                       class="btn btn-outline-danger mt-2">Đã hết hàng</a>
+                                </c:otherwise>
+                            </c:choose>
                         </div>
                     </div>
                 </div>
             </c:forEach>
         </div>
-        <h2 class="text-success mb-3" data-aos="fade-up">Sản phẩm mới nhất</h2>
-        <div class="row" data-aos="fade-up" data-aos-delay="100">
+        <h2 class="text-success mb-3">Sản phẩm mới nhất</h2>
+        <div class="row">
             <c:forEach var="newestProducts" items="${newestProducts}">
                 <div class="col-md-3 mb-4">
                     <div class="card">
@@ -387,8 +491,8 @@
                 </div>
             </c:forEach>
         </div>
-        <h2 class="text-success mb-3" data-aos="fade-up">Sản phẩm đang khuyến mãi</h2>
-        <div class="row" data-aos="fade-up" data-aos-delay="100">
+        <h2 class="text-success mb-3">Sản phẩm đang khuyến mãi</h2>
+        <div class="row">
             <c:set var="hasPromotion" value="false"/>
             <c:forEach var="product" items="${allProducts}">
                 <c:if test="${product.giaGiamGia != null && product.giaGiamGia > 0}">
@@ -482,9 +586,19 @@
                                     <button type="button" class="btn btn-outline-secondary rounded-circle px-2"
                                             onclick="changeQuantity(-1)">-
                                     </button>
-                                    <input type="number" class="form-control mx-2 text-center" id="soLuong"
-                                           name="soLuong" min="1" value="1" required onchange="updateTotal()"
-                                           style="width: 80px;">
+                                    <input
+                                            type="number"
+                                            class="form-control mx-2 text-center"
+                                            id="soLuong"
+                                            name="soLuong"
+                                            min="1"
+                                            max="${soLuongTon}"
+                                            value="1"
+                                            required
+                                            onchange="handleQuantityChange()"
+                                            onkeyup="handleQuantityChange()"
+                                            style="width: 80px;"
+                                    >
                                     <button type="button" class="btn btn-outline-secondary rounded-circle px-2"
                                             onclick="changeQuantity(1)">+
                                     </button>
@@ -521,7 +635,7 @@
                             </div>
                             <div class="col-md-6 border-start">
                                 <h3 class="text-center mb-4 text-secondary">Thông tin thanh toán</h3>
-                                <form action="/trang-chu/xac-nhan-hoa-don" method="post">
+                                <form id="orderForm" action="/trang-chu/xac-nhan-hoa-don" method="post">
                                     <input type="hidden" name="sanPhamId" value="${sanPhamChiTiet.id}">
                                     <input type="hidden" name="soLuong" id="soLuongInput" value="1">
                                     <input type="hidden" name="tongTien" id="tongTienInput"
@@ -575,12 +689,31 @@
                                             <div class="mb-3">
                                                 <label for="email" class="form-label fw-bold">Email:</label>
                                                 <input type="email" class="form-control" id="email" name="email"
-                                                       placeholder="Nhập email của bạn" required>
+                                                       placeholder="Nhập email của bạn để nhận thông tin hóa đơn">
                                             </div>
                                         </c:when>
                                     </c:choose>
-                                    <button type="submit" class="btn btn-success w-100 py-2 mt-4">Xác nhận đơn hàng
+                                    <button type="button" class="btn btn-success w-100 py-2 mt-4" data-bs-toggle="modal" data-bs-target="#confirmModal">
+                                        Xác nhận đơn hàng
                                     </button>
+                                    </button>
+                                    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true" data-bs-backdrop="false">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content custom-modal">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="confirmModalLabel">Xác Nhận Đơn Hàng</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Bạn có chắc chắn các thông tin đúng và hoàn tất xác nhận đơn hàng?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Hủy</button>
+                                                    <button type="submit" class="btn btn-success" form="orderForm">Xác Nhận</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </form>
                             </div>
                         </div>
@@ -591,91 +724,44 @@
     </c:if>
 </div>
 
-<button id="back-to-top" title="Back to Top"><i class="fas fa-arrow-up"></i></button>
-
 <jsp:include page="../footer_user.jsp"/>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
 <script>
-    AOS.init();
-
-    window.onscroll = function () {
-        if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
-            document.getElementById("back-to-top").style.display = "block";
-        } else {
-            document.getElementById("back-to-top").style.display = "none";
-        }
-    };
-
-    document.getElementById("back-to-top").addEventListener("click", function () {
-        window.scrollTo({top: 0, behavior: 'smooth'});
-    });
-
-    document.querySelectorAll('.btn-close').forEach(btnClose => {
-        btnClose.addEventListener('click', function(event) {
-            event.preventDefault();
-
-            sessionStorage.setItem('scrollPosition', window.scrollY);
-
-            window.location.href = this.getAttribute('href');
-        });
-    });
-
-    window.onload = function() {
-        const scrollPosition = sessionStorage.getItem('scrollPosition');
-        if (scrollPosition) {
-            setTimeout(function() {
-                window.scrollTo({
-                    top: scrollPosition,
-                    behavior: 'smooth'
-                });
-                sessionStorage.removeItem('scrollPosition');
-            }, 100);
-        }
-    };
-
-    document.querySelectorAll('form').forEach(form => {
-        form.addEventListener('submit', function(event) {
-            sessionStorage.setItem('scrollPosition', window.scrollY);
-        });
-    });
-
-    window.onload = function() {
-        const scrollPosition = sessionStorage.getItem('scrollPosition');
-        if (scrollPosition) {
-            setTimeout(function() {
-                window.scrollTo({
-                    top: scrollPosition,
-                    behavior: 'smooth'
-                });
-                sessionStorage.removeItem('scrollPosition');
-            }, 100);
-        }
-    };
-
     const giaBan = ${sanPhamChiTiet.giaBan != null ? sanPhamChiTiet.giaBan : 0};
     const giaGiamGia = ${sanPhamChiTiet.giaGiamGia != null ? sanPhamChiTiet.giaGiamGia : 0};
+    const soLuongTon = ${soLuongTon};
     const diemTichLuy = ${khachHang != null ? khachHang.diemTichLuy : 0};
     const discountRate = Math.min(Math.floor(diemTichLuy / 1000) * 5, 30);
-
     function calculateDiscountAmount(price, rate) {
         return price * (rate / 100);
     }
-
+    function handleQuantityChange() {
+        const soLuongInput = document.getElementById("soLuong");
+        const soLuongHiddenInput = document.getElementById("soLuongInput");
+        let soLuong = parseInt(soLuongInput.value) || 1;
+        if (soLuong < 1) {
+            soLuong = 1;
+            alert("Số lượng không thể nhỏ hơn 1.");
+        } else if (soLuong > soLuongTon) {
+            soLuong = soLuongTon;
+            alert("Số lượng vượt quá tồn kho. Vui lòng chọn lại.");
+        }
+        soLuongInput.value = soLuong;
+        soLuongHiddenInput.value = soLuong;
+        updateTotal();
+    }
     function updateTotal() {
-        const soLuong = parseInt(document.getElementById("soLuong").value) || 1;
+        const soLuongInput = document.getElementById("soLuong");
+        const soLuong = parseInt(soLuongInput.value) || 1;
         const selectedShipping = document.querySelector('input[name="phuongThucVanChuyen"]:checked');
-
         let shippingCost = 0;
         if (selectedShipping) {
             shippingCost = selectedShipping.value === "Giao Hàng Nhanh" ? 33000 : 20000;
         }
-
         const giaSuDung = giaGiamGia > 0 ? giaGiamGia : giaBan;
-
         const tongTienSanPham = giaSuDung * soLuong;
-
         let tongTien;
         if (diemTichLuy > 0) {
             const discountAmount = calculateDiscountAmount(tongTienSanPham, discountRate);
@@ -684,54 +770,28 @@
         } else {
             tongTien = tongTienSanPham + shippingCost;
         }
-
         document.getElementById("tongTien").innerText = tongTien.toLocaleString('vi-VN') + " VNĐ";
         document.getElementById("tongTienInput").value = tongTien;
     }
+    function changeQuantity(amount) {
+        const soLuongInput = document.getElementById("soLuong");
+        let soLuong = parseInt(soLuongInput.value) || 1;
+        soLuong = Math.max(1, Math.min(soLuong + amount, soLuongTon));
 
-
-    document.getElementById("soLuong").addEventListener("change", updateTotal);
-
+        soLuongInput.value = soLuong;
+        handleQuantityChange();
+    }
+    function displayImage() {
+        const paymentMethod = document.getElementById("phuongThucThanhToan").value;
+        const imageContainer = document.getElementById("imageContainer");
+        imageContainer.style.display = paymentMethod === "Chuyển khoản" ? "block" : "none";
+    }
+    document.getElementById("soLuong").addEventListener("change", handleQuantityChange);
+    document.getElementById("soLuong").addEventListener("keyup", handleQuantityChange);
     document.querySelectorAll('input[name="phuongThucVanChuyen"]').forEach((input) => {
         input.addEventListener("change", updateTotal);
     });
-
-    function changeQuantity(amount) {
-        const soLuongInput = document.getElementById("soLuong");
-        let currentQuantity = parseInt(soLuongInput.value);
-        currentQuantity = isNaN(currentQuantity) ? 1 : currentQuantity;
-        currentQuantity = Math.max(1, currentQuantity + amount);
-        soLuongInput.value = currentQuantity;
-
-        updateTotal();
-    }
-
     updateTotal();
-
-    function changeQuantity(amount) {
-        const soLuongInput = document.getElementById("soLuong");
-        const soLuongHiddenInput = document.getElementById("soLuongInput");
-
-        let currentQuantity = parseInt(soLuongInput.value);
-        currentQuantity = isNaN(currentQuantity) ? 1 : currentQuantity;
-        currentQuantity = Math.max(1, currentQuantity + amount);
-        soLuongInput.value = currentQuantity;
-        soLuongHiddenInput.value = currentQuantity;
-
-        updateTotal();
-    }
-
-
-    function displayImage() {
-        var paymentMethod = document.getElementById("phuongThucThanhToan").value;
-        var imageContainer = document.getElementById("imageContainer");
-        if (paymentMethod === "Chuyển khoản") {
-            imageContainer.style.display = "block";
-        } else {
-            imageContainer.style.display = "none";
-        }
-    }
-
 </script>
 </body>
 </html>

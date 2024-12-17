@@ -26,6 +26,42 @@
             right: 20px;
             z-index: 1050;
         }
+        .alert {
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 1.5;
+            border-left: 4px solid #28a745;
+            padding: 15px 20px;
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .alert i {
+            color: #28a745;
+        }
+
+
+        .alert .btn-close {
+            background-color: transparent;
+            opacity: 0.8;
+        }
+
+        #autoCloseAlert {
+            animation: fadeOut 3s forwards;
+        }
+
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+            }
+            80% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                display: none;
+            }
+        }
     </style>
 
 </head>
@@ -34,11 +70,17 @@
 <%--body--%>
 <div class="container mt-3">
     <!-- Thông báo -->
-    <c:if test="${not empty message}">
-        <div class="alert alert-success alert-dismissible fade show" role="alert" id="successMessage">
-                ${message}
-        </div>
-    </c:if>
+    <div class="container mt-3 position-relative">
+        <c:if test="${not empty message}">
+            <div id="autoCloseAlert" class="alert alert-success alert-dismissible fade show shadow-lg rounded"
+                 role="alert"
+                 style="max-width: 500px; margin: 0 auto; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1050;">
+                <i class="fa-solid fa-check-circle me-2"></i>
+                <span>${message}</span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </c:if>
+    </div>
 
     <div class="row">
         <div class="col-md-3 filter-section">
@@ -143,12 +185,9 @@
                         <a class="page-link btn-custom"
                            href="?page=${currentPage - 1}&size=5&maKhuyenMai=${maKhuyenMai}&tenKhuyenMai=${tenKhuyenMai}&giaTriMin=${giaTriMin}&giaTriMax=${giaTriMax}&ngayBatDau=${ngayBatDau}&ngayKetThuc=${ngayKetThuc}">Previous</a>
                     </li>
-                    <c:forEach var="i" begin="0" end="${totalPages - 1}">
-                        <li class="page-item ${currentPage == i ? 'active' : ''}">
-                            <a class="page-link btn-custom"
-                               href="?page=${i}&size=5&maKhuyenMai=${maKhuyenMai}&tenKhuyenMai=${tenKhuyenMai}&giaTriMin=${giaTriMin}&giaTriMax=${giaTriMax}&ngayBatDau=${ngayBatDau}&ngayKetThuc=${ngayKetThuc}">${i + 1}</a>
-                        </li>
-                    </c:forEach>
+                    <div class="pagination-info">
+                        <span>Trang ${currentPage + 1} trên ${totalPages}</span>
+                    </div>
                     <li class="page-item ${currentPage == totalPages - 1 ? 'disabled' : ''}">
                         <a class="page-link btn-custom"
                            href="?page=${currentPage + 1}&size=5&maKhuyenMai=${maKhuyenMai}&tenKhuyenMai=${tenKhuyenMai}&giaTriMin=${giaTriMin}&giaTriMax=${giaTriMax}&ngayBatDau=${ngayBatDau}&ngayKetThuc=${ngayKetThuc}">Next</a>

@@ -184,13 +184,14 @@ public class QLKhuyenMaiController {
 
 
     @PostMapping("/xoa-san-pham")
-    public String deleteSanPhamFromKhuyenMai(@RequestParam("khuyenMaiChiTietId") Integer khuyenMaiChiTietId) {
+    public String deleteSanPhamFromKhuyenMai(@RequestParam("khuyenMaiChiTietId") Integer khuyenMaiChiTietId, RedirectAttributes redirectAttributes) {
         KhuyenMaiChiTiet khuyenMaiChiTiet = khuyenMaiChiTietRepo.findById(khuyenMaiChiTietId)
                 .orElseThrow(() -> new IllegalArgumentException("Sản phẩm không hợp lệ"));
         SanPhamChiTiet sanPhamChiTiet = khuyenMaiChiTiet.getSanPhamChiTiet();
         sanPhamChiTiet.setGiaGiamGia(0);
         sanPhamChiTietRepo.save(sanPhamChiTiet);
         khuyenMaiChiTietRepo.delete(khuyenMaiChiTiet);
+        redirectAttributes.addFlashAttribute("message", "Hủy áp dụng thành công!");
         return "redirect:/quan-ly-khuyen-mai/chi-tiet";
     }
 

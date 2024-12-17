@@ -311,7 +311,7 @@ public class QLHoaDonController {
     @PostMapping("/xac-nhan-hoa-don/{id}")
     public String xacNhanHoaDon(
             @PathVariable("id") Integer hoaDonId,
-            Model model, HttpSession session) {
+            Model model, HttpSession session, RedirectAttributes redirectAttributes) {
 
         NhanVien nhanVien = (NhanVien) session.getAttribute("khachHang");
         if (nhanVien == null || !(nhanVien instanceof NhanVien)) {
@@ -338,14 +338,14 @@ public class QLHoaDonController {
         hoaDon.setNhanVien(nhanVien);
         hoaDonRepo.save(hoaDon);
 
-        model.addAttribute("successMessage", "Hóa đơn đã được xác nhận thành công.");
+        redirectAttributes.addFlashAttribute("message", "Hóa đơn đã được xác nhận thành công.");
         return "redirect:/hoa-don/detail/" + hoaDon.getId();
     }
 
     @PostMapping("/ban-giao-van-chuyen/{id}")
     public String banGiaoVanChuyen(
             @PathVariable("id") Integer hoaDonId,
-            Model model) {
+            Model model, RedirectAttributes redirectAttributes) {
 
         Optional<HoaDon> optionalHoaDon = hoaDonRepo.findById(hoaDonId);
         if (!optionalHoaDon.isPresent()) {
@@ -369,7 +369,7 @@ public class QLHoaDonController {
 
         hoaDonRepo.save(hoaDon);
 
-        model.addAttribute("successMessage", "Hóa đơn đã được bàn giao vận chuyển thành công.");
+        redirectAttributes.addFlashAttribute("message", "Hóa đơn đã được bàn giao vận chuyển thành công.");
 
         return "redirect:/hoa-don/detail/" + hoaDon.getId();
     }
@@ -424,7 +424,7 @@ public class QLHoaDonController {
     @PostMapping("/xac-nhan-hoan-tra/{id}")
     public String xacNhanHoanTra(
             @PathVariable("id") Integer hoaDonId,
-            Model model) {
+            Model model, RedirectAttributes redirectAttributes) {
 
         Optional<HoaDon> optionalHoaDon = hoaDonRepo.findById(hoaDonId);
         if (!optionalHoaDon.isPresent()) {
@@ -447,13 +447,13 @@ public class QLHoaDonController {
         thoiGianDonHangRepo.save(thoiGianDonHang);
         hoaDonRepo.save(hoaDon);
 
-        model.addAttribute("successMessage", "Hóa đơn đã được xác nhận hoàn trả thành công.");
+        redirectAttributes.addFlashAttribute("message", "Hóa đơn đã được xác nhận hoàn trả thành công.");
 
         return "redirect:/hoa-don/detail/" + hoaDon.getId();
     }
 
     @PostMapping("/khong-xac-nhan/{id}")
-    public String khongXacNhanDon(@PathVariable("id") Integer id, Model model) {
+    public String khongXacNhanDon(@PathVariable("id") Integer id, Model model, RedirectAttributes redirectAttributes) {
         HoaDon hoaDon = hoaDonRepo.findById(id).orElse(null);
         if (hoaDon != null) {
             List<HoaDonChiTiet> hoaDonChiTietList = hoaDonChiTietRepo.findByHoaDon(hoaDon);
@@ -475,17 +475,17 @@ public class QLHoaDonController {
                 thoiGianDonHangRepo.save(thoiGianDonHang);
             }
 
-            model.addAttribute("message", "Đơn hàng đã được chuyển sang trạng thái không xác nhận.");
+            redirectAttributes.addFlashAttribute("message", "Đơn hàng đã được chuyển sang trạng thái không xác nhận.");
             return "redirect:/hoa-don/detail/" + id;
         }
 
-        model.addAttribute("errorMessage", "Không tìm thấy hóa đơn.");
+        redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy hóa đơn.");
         return "admin/ql_hoa_don/error";
     }
 
 
     @PostMapping("/khong-xac-nhan-doi-tra/{id}")
-    public String khongXacNhanDoiTra(@PathVariable("id") Integer id, Model model) {
+    public String khongXacNhanDoiTra(@PathVariable("id") Integer id, Model model, RedirectAttributes redirectAttributes) {
         HoaDon hoaDon = hoaDonRepo.findById(id).orElse(null);
         if (hoaDon == null) {
             model.addAttribute("errorMessage", "Không tìm thấy hóa đơn.");
@@ -514,7 +514,7 @@ public class QLHoaDonController {
             thoiGianDonHangRepo.save(thoiGianDonHang);
         }
 
-        model.addAttribute("message", "Đơn hàng đã được chuyển sang trạng thái không xác nhận đổi trả và các yêu cầu đổi trả đã bị hủy.");
+        redirectAttributes.addFlashAttribute("message", "Đơn hàng đã được chuyển sang trạng thái không xác nhận đổi trả và các yêu cầu đổi trả đã bị hủy.");
         return "redirect:/hoa-don/detail/" + id;
     }
 

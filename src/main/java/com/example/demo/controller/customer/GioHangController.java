@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -35,78 +36,56 @@ public class GioHangController {
     private EmailService emailService;
 
     @PostMapping("/add")
-    public String addCart(@RequestParam("sanPhamId") int sanPhamId, HttpSession session, Model model) {
-        // Tìm sản phẩm chi tiết theo ID
+    public String addCart(@RequestParam("sanPhamId") int sanPhamId, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         SanPhamChiTiet sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid product ID: " + sanPhamId));
-
-        // Kiểm tra người dùng đã đăng nhập hay chưa
         KhachHang khachHang = (KhachHang) session.getAttribute("khachHang");
         GioHang cart;
-
         if (khachHang != null) {
-            // Nếu khách hàng đã đăng nhập, tìm giỏ hàng của họ
             Optional<GioHang> existingCart = gioHangRepo.findByKhachHang(khachHang);
             if (existingCart.isPresent()) {
                 cart = existingCart.get();
             } else {
-                // Nếu chưa có giỏ hàng, tạo mới giỏ hàng và gán cho khách hàng
                 cart = new GioHang();
                 cart.setKhachHang(khachHang);
-                gioHangRepo.save(cart); // Lưu giỏ hàng mới
+                gioHangRepo.save(cart);
             }
         } else {
-            // Nếu chưa đăng nhập, tìm giỏ hàng có khách hàng là null
             Optional<GioHang> existingCart = gioHangRepo.findByKhachHangIsNull();
             if (existingCart.isPresent()) {
                 cart = existingCart.get();
             } else {
-                // Nếu chưa có giỏ hàng, tạo mới giỏ hàng
                 cart = new GioHang();
-                gioHangRepo.save(cart); // Lưu giỏ hàng mới
+                gioHangRepo.save(cart);
             }
         }
-
-        // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
         Optional<GioHangChiTiet> existingDetail = gioHangChiTietRepo.findByGioHangAndSanPhamChiTiet(cart, sanPhamChiTiet);
         if (existingDetail.isPresent()) {
-            // Nếu sản phẩm đã có trong giỏ hàng, chỉ cần tăng số lượng
             GioHangChiTiet cartDetail = existingDetail.get();
             cartDetail.setSoLuong(cartDetail.getSoLuong() + 1);
             gioHangChiTietRepo.save(cartDetail);
         } else {
-            // Nếu sản phẩm chưa có trong giỏ hàng, thêm sản phẩm mới vào giỏ hàng
             GioHangChiTiet newDetail = new GioHangChiTiet();
             newDetail.setGioHang(cart);
             newDetail.setSanPhamChiTiet(sanPhamChiTiet);
-            newDetail.setSoLuong(1); // Số lượng ban đầu
-
-            // Kiểm tra giá giảm, nếu có thì dùng giaGiamGia, nếu không thì dùng giaBan
+            newDetail.setSoLuong(1);
             int giaSanPham = (sanPhamChiTiet.getGiaGiamGia() != null && sanPhamChiTiet.getGiaGiamGia() > 0)
                     ? sanPhamChiTiet.getGiaGiamGia()
                     : sanPhamChiTiet.getGiaBan();
-            newDetail.setGiaBan(giaSanPham); // Set giá bán
-
+            newDetail.setGiaBan(giaSanPham);
             gioHangChiTietRepo.save(newDetail);
         }
-
-        // Cập nhật tổng tiền và tổng số lượng
         int tongTien = 0;
         int tongSoLuong = 0;
-
-        // Lấy tất cả chi tiết giỏ hàng liên quan đến giỏ hàng này
         List<GioHangChiTiet> cartDetails = gioHangChiTietRepo.findByGioHang(cart);
         for (GioHangChiTiet detail : cartDetails) {
             tongSoLuong += detail.getSoLuong();
-            tongTien += detail.getSoLuong() * detail.getGiaBan(); // Cộng dồn tiền
+            tongTien += detail.getSoLuong() * detail.getGiaBan();
         }
-
-        // Cập nhật giỏ hàng với tổng tiền và tổng số lượng
         cart.setTongSoLuong(tongSoLuong);
         cart.setTongTien(tongTien);
-        gioHangRepo.save(cart); // Lưu giỏ hàng đã cập nhật
-
-        // Chuyển hướng đến trang chi tiết hóa đơn mới được tạo
+        gioHangRepo.save(cart);
+        redirectAttributes.addFlashAttribute("message","Thêm sản phẩm vào giỏ hàng thành công");
         return "redirect:/danh-sach-san-pham/hien-thi";
     }
 
@@ -114,73 +93,52 @@ public class GioHangController {
 
     @GetMapping("/cart")
     public String viewCart(HttpSession session, Model model) {
-        // Kiểm tra người dùng đã đăng nhập hay chưa
         KhachHang khachHang = (KhachHang) session.getAttribute("khachHang");
         GioHang cart;
 
         if (khachHang != null) {
-            // Nếu đã đăng nhập, tìm giỏ hàng của khách hàng
             Optional<GioHang> existingCart = gioHangRepo.findByKhachHang(khachHang);
-            cart = existingCart.orElse(new GioHang()); // Nếu không có, tạo mới
+            cart = existingCart.orElse(new GioHang());
         } else {
-            // Nếu chưa đăng nhập, tìm giỏ hàng có khách hàng là null
             Optional<GioHang> existingCart = gioHangRepo.findByKhachHangIsNull();
-            cart = existingCart.orElse(new GioHang()); // Nếu không có, tạo mới
+            cart = existingCart.orElse(new GioHang());
         }
-
-        // Lấy các chi tiết giỏ hàng liên quan đến giỏ hàng này
         List<GioHangChiTiet> cartDetails = gioHangChiTietRepo.findByGioHang(cart);
-
-        // Tính tổng tiền và tổng số lượng
         int tongTien = 0;
         int tongSoLuong = 0;
         for (GioHangChiTiet detail : cartDetails) {
             tongSoLuong += detail.getSoLuong();
             tongTien += detail.getSoLuong() * detail.getGiaBan();
         }
-
-        // Gán các giá trị vào model để gửi sang view
         model.addAttribute("listGioHang", cartDetails);
         model.addAttribute("tongSoLuong", tongSoLuong);
         model.addAttribute("tongTien", tongTien);
-
-        // Trả về trang xem giỏ hàng
         return "customer/gio_hang/index";
     }
 
 
     @PostMapping("/remove")
-    public String removeCartItem(HttpSession session, @RequestParam("sanPhamId") int sanPhamId) {
-        // Kiểm tra khách hàng đã đăng nhập hay chưa
+    public String removeCartItem(HttpSession session, @RequestParam("sanPhamId") int sanPhamId, RedirectAttributes redirectAttributes) {
         KhachHang khachHang = (KhachHang) session.getAttribute("khachHang");
         GioHang cart;
-
-        // Xác định giỏ hàng dựa trên trạng thái đăng nhập
         if (khachHang != null) {
-            // Khách hàng đã đăng nhập -> tìm giỏ hàng của khách hàng này
             Optional<GioHang> existingCart = gioHangRepo.findByKhachHang(khachHang);
             if (!existingCart.isPresent()) {
-                return "redirect:/gio-hang/cart"; // Nếu không có giỏ hàng, chuyển hướng về trang giỏ hàng
+                return "redirect:/gio-hang/cart";
             }
             cart = existingCart.get();
         } else {
-            // Khách hàng chưa đăng nhập -> tìm giỏ hàng có KhachHang là null
             Optional<GioHang> existingCart = gioHangRepo.findByKhachHangIsNull();
             if (!existingCart.isPresent()) {
-                return "redirect:/gio-hang/cart"; // Nếu không có giỏ hàng, chuyển hướng về trang giỏ hàng
+                return "redirect:/gio-hang/cart";
             }
             cart = existingCart.get();
         }
-
-        // Tìm sản phẩm chi tiết cần xóa trong giỏ hàng này
         Optional<SanPhamChiTiet> sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamId);
         if (sanPhamChiTiet.isPresent()) {
             Optional<GioHangChiTiet> cartDetail = gioHangChiTietRepo.findByGioHangAndSanPhamChiTiet(cart, sanPhamChiTiet.get());
             if (cartDetail.isPresent()) {
-                // Xóa sản phẩm chi tiết khỏi giỏ hàng
                 gioHangChiTietRepo.delete(cartDetail.get());
-
-                // Tính lại tổng số lượng và tổng tiền của giỏ hàng
                 int tongSoLuong = 0;
                 int tongTien = 0;
                 List<GioHangChiTiet> cartDetails = gioHangChiTietRepo.findByGioHang(cart);
@@ -188,22 +146,35 @@ public class GioHangController {
                     tongSoLuong += detail.getSoLuong();
                     tongTien += detail.getSoLuong() * detail.getGiaBan();
                 }
-
-                // Cập nhật lại giỏ hàng
                 cart.setTongSoLuong(tongSoLuong);
                 cart.setTongTien(tongTien);
-                gioHangRepo.save(cart); // Lưu giỏ hàng đã cập nhật
+                gioHangRepo.save(cart);
             }
         }
-
-        // Chuyển hướng về trang giỏ hàng
+        redirectAttributes.addFlashAttribute("message","Sản phẩm đã được xóa khỏi giỏ hàng");
         return "redirect:/gio-hang/cart";
     }
 
 
     @PostMapping("/updateQuantity")
-    public String updateQuantity(HttpSession session, @RequestParam("sanPhamId") int sanPhamId, @RequestParam("soLuong") int soLuong) {
-        if (soLuong < 1) {
+    public String updateQuantity(HttpSession session,
+                                 @RequestParam("sanPhamId") int sanPhamId,
+                                 @RequestParam("soLuong") int soLuong,
+                                 RedirectAttributes redirectAttributes) {
+        if (soLuong <= 0) {
+            redirectAttributes.addFlashAttribute("error", "Số lượng sản phẩm phải lớn hơn 0.");
+            return "redirect:/gio-hang/cart";
+        }
+
+        Optional<SanPhamChiTiet> sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamId);
+        if (!sanPhamChiTiet.isPresent()) {
+            redirectAttributes.addFlashAttribute("error", "Sản phẩm không tồn tại.");
+            return "redirect:/gio-hang/cart";
+        }
+
+        SanPhamChiTiet product = sanPhamChiTiet.get();
+        if (soLuong > product.getSoLuong()) {
+            redirectAttributes.addFlashAttribute("error", "Không thể vượt quá số lượng sản phẩm hiện tại đang có.");
             return "redirect:/gio-hang/cart";
         }
         KhachHang khachHang = (KhachHang) session.getAttribute("khachHang");
@@ -211,42 +182,34 @@ public class GioHangController {
         if (khachHang != null) {
             Optional<GioHang> existingCart = gioHangRepo.findByKhachHang(khachHang);
             if (!existingCart.isPresent()) {
-                return "redirect:/gio-hang/cart"; // Nếu không có giỏ hàng, chuyển hướng về trang giỏ hàng
+                redirectAttributes.addFlashAttribute("error", "Giỏ hàng không tồn tại.");
+                return "redirect:/gio-hang/cart";
             }
             cart = existingCart.get();
         } else {
             Optional<GioHang> existingCart = gioHangRepo.findByKhachHangIsNull();
             if (!existingCart.isPresent()) {
-                return "redirect:/gio-hang/cart"; // Nếu không có giỏ hàng, chuyển hướng về trang giỏ hàng
+                redirectAttributes.addFlashAttribute("error", "Giỏ hàng không tồn tại.");
+                return "redirect:/gio-hang/cart";
             }
             cart = existingCart.get();
         }
-
-        // Tìm sản phẩm chi tiết trong giỏ hàng này
-        Optional<SanPhamChiTiet> sanPhamChiTiet = sanPhamChiTietRepo.findById(sanPhamId);
-        if (sanPhamChiTiet.isPresent()) {
-            Optional<GioHangChiTiet> cartDetail = gioHangChiTietRepo.findByGioHangAndSanPhamChiTiet(cart, sanPhamChiTiet.get());
-            if (cartDetail.isPresent()) {
-                GioHangChiTiet detail = cartDetail.get();
-                detail.setSoLuong(soLuong); // Cập nhật số lượng
-                gioHangChiTietRepo.save(detail); // Lưu chi tiết giỏ hàng đã cập nhật
-
-                // Tính lại tổng số lượng và tổng tiền của giỏ hàng
-                int tongSoLuong = 0;
-                int tongTien = 0;
-                List<GioHangChiTiet> cartDetails = gioHangChiTietRepo.findByGioHang(cart);
-                for (GioHangChiTiet item : cartDetails) {
-                    tongSoLuong += item.getSoLuong();
-                    tongTien += item.getSoLuong() * item.getGiaBan();
-                }
-
-                // Cập nhật giỏ hàng với thông tin mới
-                cart.setTongSoLuong(tongSoLuong);
-                cart.setTongTien(tongTien);
-                gioHangRepo.save(cart);
+        Optional<GioHangChiTiet> cartDetail = gioHangChiTietRepo.findByGioHangAndSanPhamChiTiet(cart, product);
+        if (cartDetail.isPresent()) {
+            GioHangChiTiet detail = cartDetail.get();
+            detail.setSoLuong(soLuong);
+            gioHangChiTietRepo.save(detail);
+            int tongSoLuong = 0;
+            int tongTien = 0;
+            List<GioHangChiTiet> cartDetails = gioHangChiTietRepo.findByGioHang(cart);
+            for (GioHangChiTiet item : cartDetails) {
+                tongSoLuong += item.getSoLuong();
+                tongTien += item.getSoLuong() * item.getGiaBan();
             }
+            cart.setTongSoLuong(tongSoLuong);
+            cart.setTongTien(tongTien);
+            gioHangRepo.save(cart);
         }
-
         return "redirect:/gio-hang/cart";
     }
 
@@ -386,15 +349,21 @@ public class GioHangController {
             @RequestParam("soDienThoai") String soDienThoai,
             @RequestParam(value = "email", required = false) String email,
             HttpSession session,
-            Model model) {
+            Model model, RedirectAttributes redirectAttributes) {
         if (selectedIds == null || selectedIds.isEmpty()) {
             model.addAttribute("errorMessage", "Bạn chưa chọn sản phẩm nào.");
             return "customer/gio_hang/index";
         }
         KhachHang khachHang = (KhachHang) session.getAttribute("khachHang");
+        if (khachHang != null) {
+            diaChi = diaChi.isEmpty() ? khachHang.getDiaChi() : diaChi;
+            soDienThoai = soDienThoai.isEmpty() ? khachHang.getSoDienThoai() : soDienThoai;
+            email = (email == null || email.isEmpty()) ? khachHang.getEmail() : email;
+        }
         Optional<GioHang> existingCart = khachHang != null
                 ? gioHangRepo.findByKhachHang(khachHang)
                 : gioHangRepo.findByKhachHangIsNull();
+
         if (existingCart.isPresent()) {
             GioHang cart = existingCart.get();
             int totalProductAmount = 0;
@@ -433,7 +402,7 @@ public class GioHangController {
             model.addAttribute("phuongThucVanChuyen", phuongThucVanChuyen);
             model.addAttribute("diaChi", diaChi);
             model.addAttribute("soDienThoai", soDienThoai);
-            int adjustedTotalProductAmount = 0; // Tổng giá sau khi điều chỉnh
+            int adjustedTotalProductAmount = 0;
             for (HoaDonChiTiet invoiceDetail : invoiceDetails) {
                 int productPrice = invoiceDetail.getGia_san_pham();
                 double adjustedPrice = productPrice * (1 - discountRate);
@@ -462,20 +431,20 @@ public class GioHangController {
             thoiGianDonHang.setHoaDon(invoice);
             thoiGianDonHang.setThoiGianTao(LocalDateTime.now());
             thoiGianDonHangRepo.save(thoiGianDonHang);
-
             for (HoaDonChiTiet invoiceDetail : invoiceDetails) {
                 invoiceDetail.setHoaDon(invoice);
             }
             hoaDonChiTietRepo.saveAll(invoiceDetails);
-
-            // Gửi email cho khách hàng nếu là khách vãng lai và có email
             if (email != null && !email.isEmpty()) {
                 emailService.sendHoaDonMuaNhieuSanPhamEmail(email, invoice.getSoHoaDon(), phuongThucThanhToan,
                         phuongThucVanChuyen, diaChi, soDienThoai, invoiceDetails, totalAmount);
             }
         }
+        redirectAttributes.addFlashAttribute("message", "Đặt hàng thành công");
         return "redirect:/danh-sach-san-pham/hien-thi";
     }
+
+
 
 
 

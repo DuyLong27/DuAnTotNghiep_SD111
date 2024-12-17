@@ -10,7 +10,49 @@
     <title>Xác nhận đơn hàng</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<style>
+    .custom-modal {
+        background-color: #ffffff;
+        border-radius: 10px;
+        border: 2px solid #0b745e;
+    }
 
+
+    .custom-modal .modal-header {
+        background-color: #0b745e;
+        color: #ffffff;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+    .custom-modal .btn-success {
+        background-color: #0b745e;
+        border-color: #0b745e;
+        transition: background-color 0.3s ease;
+    }
+
+    .custom-modal .btn-success:hover {
+        background-color: #085f3b;
+    }
+
+    .custom-modal .btn-outline-danger {
+        border-color: #e74c3c;
+        color: #e74c3c;
+        transition: border-color 0.3s, color 0.3s;
+    }
+
+    .custom-modal .btn-outline-danger:hover {
+        background-color: #e74c3c;
+        color: #ffffff;
+        border-color: #e74c3c;
+    }
+
+    .custom-modal .modal-body {
+        font-size: 1.1rem;
+        padding: 20px;
+        color: #555;
+    }
+</style>
 </head>
 <body>
 <jsp:include page="../header_user.jsp" />
@@ -92,7 +134,7 @@
                     <h2>Thông Tin Thanh Toán</h2>
                 </div>
                 <div class="card-body">
-                    <form action="/gio-hang/xac-nhan-hoa-don" method="post">
+                    <form id="orderForm" action="/gio-hang/xac-nhan-hoa-don" method="post">
                         <div class="mb-3">
                             <label for="phuongThucThanhToan" class="form-label fw-bold">Phương Thức Thanh Toán:</label>
                             <select class="form-select" id="phuongThucThanhToan" name="phuongThucThanhToan" required onchange="displayImage()">
@@ -116,23 +158,42 @@
                         </div>
                         <div class="mb-3">
                             <label for="diaChi" class="form-label">Địa Chỉ Cụ Thể:</label>
-                            <input type="text" class="form-control" id="diaChi" name="diaChi" required>
+                            <input type="text" class="form-control" id="diaChi" name="diaChi" value="${khachHang != null ? khachHang.diaChi : ''}" required>
                         </div>
                         <div class="mb-3">
                             <label for="soDienThoai" class="form-label">Số Điện Thoại:</label>
-                            <input type="tel" class="form-control" id="soDienThoai" name="soDienThoai" pattern="[0-9]{10}" required>
+                            <input type="tel" class="form-control" id="soDienThoai" name="soDienThoai" pattern="[0-9]{10}" value="${khachHang != null ? khachHang.soDienThoai : ''}" required>
                         </div>
                         <c:if test="${empty khachHang}">
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email:</label>
-                                <input type="email" class="form-control" id="email" name="email" required>
+                                <input type="email" class="form-control" id="email" name="email" value="${khachHang != null ? khachHang.email : ''}">
                                 <small class="form-text text-muted">Nếu bạn không có tài khoản, vui lòng nhập email để nhận hóa đơn.</small>
                             </div>
                         </c:if>
                         <c:forEach var="item" items="${selectedItems}">
                             <input type="hidden" name="selectedItems" value="${item.sanPhamChiTiet.id}">
                         </c:forEach>
-                        <button type="submit" class="btn btn-success w-100 mt-3">Xác Nhận Đơn Hàng</button>
+                        <button type="button" class="btn btn-success w-100 mt-3" data-bs-toggle="modal" data-bs-target="#confirmModal">
+                            Xác Nhận Đơn Hàng
+                        </button>
+                        <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true" data-bs-backdrop="false">
+                            <div class="modal-dialog">
+                                <div class="modal-content custom-modal">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="confirmModalLabel">Xác Nhận Đơn Hàng</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Bạn có chắc chắn các thông tin đúng và hoàn tất xác nhận đơn hàng?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Hủy</button>
+                                        <button type="submit" class="btn btn-success" form="orderForm">Xác Nhận</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
